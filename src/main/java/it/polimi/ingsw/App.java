@@ -1,11 +1,16 @@
 package it.polimi.ingsw;
 
-public class App 
+import java.util.logging.Logger;
+
+public class App
 {
+    private static final Logger LOGGER = Logger.getLogger(
+            Thread.currentThread().getStackTrace()[0].getClassName() );
+
     public static void main( String[] args )
     {
 
-        System.out.println( "Hello World!" );
+        LOGGER.info("Hello, World!");
 
     }
 }
