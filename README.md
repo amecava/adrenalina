@@ -6,12 +6,12 @@ Prendi fucile e munizioni ed inizia a sparare!
 
 ## Authors
 * **Jacopo Bertolini** <br>
-Mail: jacopo.bertolini@mail.polimi.it
+Mail: jacopo.bertolini@mail.polimi.it <br>
 Personal ID: 10565677 (869661)
 * **Amedeo Cavallo** <br>
-Mail: amedeo.cavallo@mail.polimi.it
+Mail: amedeo.cavallo@mail.polimi.it <br>
 Personal ID: 10562259 (868665)
 * **Federico Capaccio** <br>
-Mail: federico.capaccio@mail.polimi.it
+Mail: federico.capaccio@mail.polimi.it <br>
 Personal ID: 10535432 (866111)
 
