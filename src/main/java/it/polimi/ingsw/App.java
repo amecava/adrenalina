@@ -10,7 +10,6 @@ public class App {
     public static void main(String[] args) {
 
         LOGGER.info("Hello, World!");
-        LOGGER.info("Hello, World from jacopo!");
 
     }
 }
