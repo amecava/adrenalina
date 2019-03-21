@@ -5,3 +5,4 @@
 !resources/
 !.gitignore
 !.gitattributes
+!intellij-java-google-style.xml
