@@ -4,7 +4,7 @@ Adrenalina porta i classici videogiochi “spara-tutto” direttamente sul vostr
 Costruisci il tuo arsenale per un turno micidiale, la risoluzione dei combattimenti è facile, ma senza dadi.
 Prendi fucile e munizioni ed inizia a sparare!
 
-## Authors
+## AM48
 * **Jacopo Bertolini** <br>
 Mail: jacopo.bertolini@mail.polimi.it <br>
 Personal ID: 10565677 (869661)
