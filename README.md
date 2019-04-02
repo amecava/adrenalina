@@ -1,5 +1,5 @@
 # Prova Finale Ingegneria del Software 2019
-## Gruppo AM00
+## Gruppo AM48
 
 - ###   10565677    Jacopo Bertolini   ([@jacopobertolini](https://github.com/jacopobertolini))<br>jacopo.bertolini@mail.polimi.it
 - ###   10562259    Amedeo Cavallo     ([@amecava](https://github.com/amecava))<br>amedeo.cavallo@mail.polimi.it
