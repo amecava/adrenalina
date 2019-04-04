@@ -14,7 +14,7 @@
 | RMI | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | GUI | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | CLI | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| Multiple games | [![RED](https://placehold.it/15/ffdd00/ffdd00))](#) |
+| Multiple games | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | Persistence | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | Domination or Towers modes | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
 | Terminator | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
