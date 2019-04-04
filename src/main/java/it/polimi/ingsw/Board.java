@@ -33,7 +33,7 @@ public class Board {
 
 
     }
-    */
+    
 
     public void connectSquares() {
         // Blue room's connections

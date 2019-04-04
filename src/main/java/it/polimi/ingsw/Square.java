@@ -61,6 +61,9 @@ public class Square implements Target {
         this.players.add(player);
 
     }
+    public void removePlayer (Player player){
+        this.players.remove(player);
+    }
 
     public List<Player> playersInSquare() {
         return this.players;

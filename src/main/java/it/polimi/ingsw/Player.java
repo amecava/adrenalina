@@ -9,12 +9,21 @@ public class Player implements Target {
     private CardHandler cardHandler;
     private List<Card> weaponDeck;
     private Color playerColor;
+    private  Square currentPosition;
 
     public Player(String playerID, Color playerColor) {
 
         this.playerID = playerID;
         this.playerColor = playerColor;
         this.weaponDeck = new ArrayList<Card>();
+    }
+
+    public void setCurrentPosition(Square currentPosition) {
+        this.currentPosition = currentPosition;
+    }
+
+    public Square getCurrentPosition() {
+        return currentPosition;
     }
 
     public void setCardHandler(CardHandler cardHandler) {
