@@ -1,7 +1,9 @@
 package it.polimi.ingsw;
 
-public abstract class AtomicEffect {
+import java.util.List;
 
-    public abstract void run();
+public interface AtomicEffect {
+
+    public abstract void execute(Target source, List<Target> target);
 
 }

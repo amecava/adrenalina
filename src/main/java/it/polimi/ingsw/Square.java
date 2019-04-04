@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 import java.util.List;
 
-public class Square {
+public class Square implements Target{
     private Square north;
     private Square south;
     private Square east;
@@ -56,6 +56,10 @@ public class Square {
     public void addPlayer(Player player) {
         this.players.add(player);
 
+    }
+
+    public List<Player> playersInSquare() {
+        return this.players;
     }
 
     public List<Player> playersInSquare() {

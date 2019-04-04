@@ -1,9 +1,19 @@
 package it.polimi.ingsw;
 
-public class PlayerMark extends AtomicEffect {
+import java.util.List;
+
+public class PlayerMark implements AtomicEffect {
+    private int quantity;
+
+    public PlayerMark(int quantity) {
+        this.quantity = quantity;
+    }
 
     @Override
-    public void run() {
-        System.out.println("ApplyAtomic - Player Mark");
+    public void execute(Target source, List<Target> target) {
+        target.stream()
+                .map(x -> (Player) x)
+                .forEach(x -> x.setMark((Player)source, this.quantity));
     }
 }
+

@@ -74,7 +74,6 @@ public class Model {
         for(Player p: this.playerList){
             System.out.println("Ciao " + p.getPlayerID());
         }
-
-        this.playerList.stream().forEach( x ->System.out.println(x.getPlayerID()));
+        this.playerList.stream().forEach(System.out::println);
     }
 }
