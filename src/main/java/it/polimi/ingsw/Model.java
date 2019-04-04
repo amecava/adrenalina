@@ -25,7 +25,6 @@ public class Model {
         this.tmpList.add(new Square(tmpRoom, 2));
         this.tmpList.add(new Square(tmpRoom, 3));
         this.board.getRoomsList().get(0).addSquaresList(tmpList);
-        // per ogni squares e
         this.tmpList.clear();
         this.board.addRooms(tmpRoom = new Room("Red"));
         this.tmpList.add(new Square(tmpRoom, 1));
