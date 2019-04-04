@@ -3,6 +3,7 @@ package it.polimi.ingsw;
 import java.util.List;
 
 public class PlayerMark implements AtomicEffect {
+
     private int quantity;
 
     public PlayerMark(int quantity) {
@@ -13,7 +14,7 @@ public class PlayerMark implements AtomicEffect {
     public void execute(Target source, List<Target> target) {
         target.stream()
                 .map(x -> (Player) x)
-                .forEach(x -> x.setMark((Player)source, this.quantity));
+                .forEach(x -> x.setMark((Player) source, this.quantity));
     }
 }
 

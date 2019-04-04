@@ -3,16 +3,20 @@ package it.polimi.ingsw;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room implements Target{
+public class Room implements Target {
 
     private List<Square> squaresList;
-    private String color;
+    private Color color;
     private List<Player> playersInRoom;
 
-    public Room(String color) {
+    public Room(Color color) {
         this.squaresList = new ArrayList<Square>();
         this.color = color;
         this.playersInRoom = new ArrayList<>();
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public void addSquaresList(List<Square> squaresList) {
@@ -20,9 +24,13 @@ public class Room implements Target{
 
     }
 
-    public List<Player> getPlayers(){
+    public List<Square> getSquaresList() {
+        return squaresList;
+    }
+
+    public List<Player> getPlayers() {
         this.playersInRoom.clear(); // WARNING
-        for(Square s: squaresList){
+        for (Square s : squaresList) {
             this.playersInRoom.addAll(s.playersInSquare());
         }
         return this.playersInRoom;

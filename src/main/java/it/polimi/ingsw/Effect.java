@@ -40,6 +40,7 @@ public class Effect {
 
     //Builder Class
     public static class EffectBuilder {
+
         private boolean used = false;
 
         private Effect sequence;
@@ -63,7 +64,7 @@ public class Effect {
             return this;
         }
 
-        public Effect build(){
+        public Effect build() {
             return new Effect(this);
         }
     }

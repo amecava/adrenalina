@@ -1,9 +1,11 @@
 package it.polimi.ingsw;
 
-public class RoomMark extends AtomicEffect {
+import java.util.List;
+
+public class RoomMark implements AtomicEffect {
 
     @Override
-    public void run() {
-        System.out.println("ApplyAtomic - Room Mark");
+    public void execute(Target source, List<Target> target) {
+
     }
 }

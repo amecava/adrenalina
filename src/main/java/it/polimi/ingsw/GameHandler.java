@@ -3,7 +3,7 @@ package it.polimi.ingsw;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model {
+public class GameHandler {
 
     private CardHandler cardHandler;
     private List<Player> playerList;
@@ -12,43 +12,44 @@ public class Model {
     private Player activePlayer;
     private List<Square> tmpList;
     private Room tmpRoom;
-    public Model() {
+
+    public GameHandler() {
         this.playerList = new ArrayList<Player>();
         this.tmpList = new ArrayList<>();
     }
 
-    public void buildBoard(){
+    public void buildBoard() {
 
         this.board = new Board();
-        this.board.addRooms(tmpRoom = new Room("Blue"));
+        this.board.addRooms(tmpRoom = new Room(Color.BLUE));
         this.tmpList.add(new Square(tmpRoom, 1));
         this.tmpList.add(new Square(tmpRoom, 2));
         this.tmpList.add(new Square(tmpRoom, 3));
         this.board.getRoomsList().get(0).addSquaresList(tmpList);
         this.tmpList.clear();
-        this.board.addRooms(tmpRoom = new Room("Red"));
+        this.board.addRooms(tmpRoom = new Room(Color.RED));
         this.tmpList.add(new Square(tmpRoom, 1));
         this.tmpList.add(new Square(tmpRoom, 2));
         this.tmpList.add(new Square(tmpRoom, 3));
         this.board.getRoomsList().get(1).addSquaresList(tmpList);
         this.tmpList.clear();
-        this.board.addRooms(tmpRoom = new Room("Yellow"));
+        this.board.addRooms(tmpRoom = new Room(Color.YELLOW));
         this.tmpList.add(new Square(tmpRoom, 1));
         this.tmpList.add(new Square(tmpRoom, 2));
         this.board.getRoomsList().get(2).addSquaresList(tmpList);
         this.tmpList.clear();
-        this.board.addRooms(tmpRoom = new Room("White"));
+        this.board.addRooms(tmpRoom = new Room(Color.WHITE));
         this.tmpList.add(new Square(tmpRoom, 1));
         this.tmpList.add(new Square(tmpRoom, 2));
         this.board.getRoomsList().get(3).addSquaresList(tmpList);
         this.tmpList.clear();
-
+        this.board.connectSquares();
     }
 
-    public void initCardHandler(){
+    public void initCardHandler() {
 
         this.cardHandler = new CardHandler(this.board);
-        for(Player p: playerList){
+        for (Player p : playerList) {
             p.setCardHandler(this.cardHandler);
         }
     }
@@ -64,14 +65,14 @@ public class Model {
     }
     */
 
-    public void setPlayerList(List<Player> playersList){
+    public void setPlayerList(List<Player> playersList) {
         this.playerList = playersList;
         this.board.setPlayersList(playerList);
     }
 
-    public void displayPlayers(){
+    public void displayPlayers() {
 
-        for(Player p: this.playerList){
+        for (Player p : this.playerList) {
             System.out.println("Ciao " + p.getPlayerID());
         }
         this.playerList.stream().forEach(System.out::println);

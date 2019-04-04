@@ -15,6 +15,6 @@ public class RoomDamage implements AtomicEffect {
         target.stream()
                 .map(x -> (Room) x)
                 .flatMap(x -> x.getPlayers().stream())
-                .forEach(x -> x.setDamage((Player)source, this.quantity));
+                .forEach(x -> x.setDamage((Player) source, this.quantity));
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 public class Properties {
+
     private Integer cost;
     private String effectType;
 
@@ -75,7 +76,8 @@ public class Properties {
     }
 
     //Builder Class
-    public static class PropertiesBuilder{
+    public static class PropertiesBuilder {
+
         private Integer cost;
         private String effectType;
 
@@ -141,7 +143,7 @@ public class Properties {
             return this;
         }
 
-        public Properties build(){
+        public Properties build() {
             return new Properties(this);
         }
     }

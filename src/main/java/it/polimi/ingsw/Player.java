@@ -3,7 +3,8 @@ package it.polimi.ingsw;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player implements Target{
+public class Player implements Target {
+
     private String playerID;
     private CardHandler cardHandler;
     private List<Card> weaponDeck;
@@ -26,9 +27,9 @@ public class Player implements Target{
     }
 
 
-    public void addCardToHand(Card card ) throws MaxCardException {
-        if (weaponCards.size() < 3) {
-            weaponCards.add(card);
+    public void addCardToHand(Card card) throws MaxCardException {
+        if (weaponDeck.size() < 3) {
+            weaponDeck.add(card);
             return;
         } else {
             throw new MaxCardException("You already have 3 cards in your hand!!", card);

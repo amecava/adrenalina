@@ -2,7 +2,8 @@ package it.polimi.ingsw;
 
 import java.util.List;
 
-public class Square implements Target{
+public class Square implements Target {
+
     private Square north;
     private Square south;
     private Square east;
@@ -22,34 +23,37 @@ public class Square implements Target{
         this.south = null;
         this.east = null;
         this.west = null;
-        this.northConnection=Connection.ENDMAP;
-        this.southConnection=Connection.ENDMAP;
-        this.eastConnection=Connection.ENDMAP;
-        this.westConnection=Connection.ENDMAP;
+        this.northConnection = Connection.ENDMAP;
+        this.southConnection = Connection.ENDMAP;
+        this.eastConnection = Connection.ENDMAP;
+        this.westConnection = Connection.ENDMAP;
 
     }
 
     public Square setNorth(Square north, Connection connection) {
         this.north = north;
-        this.northConnection=connection;
+        this.northConnection = connection;
         return this;
 
     }
+
     public Square setSouth(Square south, Connection connection) {
         this.south = south;
-        this.southConnection=connection;
+        this.southConnection = connection;
         return this;
 
     }
-    public Square setEast (Square east, Connection connection){
-        this.eastConnection=connection;
-        this.east=east;
-        return  this;
+
+    public Square setEast(Square east, Connection connection) {
+        this.eastConnection = connection;
+        this.east = east;
+        return this;
 
     }
-    public Square setwest(Square west, Connection connection){
-        this.westConnection=connection;
-        this.west=west;
+
+    public Square setwest(Square west, Connection connection) {
+        this.westConnection = connection;
+        this.west = west;
         return this;
     }
 
@@ -62,7 +66,4 @@ public class Square implements Target{
         return this.players;
     }
 
-    public List<Player> playersInSquare() {
-        return this.players;
-    }
 }

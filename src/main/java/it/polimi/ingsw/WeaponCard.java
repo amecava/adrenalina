@@ -23,6 +23,7 @@ public class WeaponCard implements Card {
 
     //Builder Class
     public static class WeaponCardBuilder {
+
         private String name;
         private Color color;
 
@@ -50,7 +51,7 @@ public class WeaponCard implements Card {
             return this;
         }
 
-        public WeaponCard build(){
+        public WeaponCard build() {
             return new WeaponCard(this);
         }
     }
