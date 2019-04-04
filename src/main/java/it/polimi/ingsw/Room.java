@@ -3,7 +3,7 @@ package it.polimi.ingsw;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room {
+public class Room implements Target{
 
     private List<Square> squaresList;
     private String color;

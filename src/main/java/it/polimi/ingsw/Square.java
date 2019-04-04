@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 import java.util.List;
 
-public class Square {
+public class Square implements Target{
 
     private Room myRoom;
     private int squareID;
@@ -14,6 +14,10 @@ public class Square {
     }
 
     public List<Player> hasPlayer(){
+        return this.players;
+    }
+
+    public List<Player> playersInSquare() {
         return this.players;
     }
 }
