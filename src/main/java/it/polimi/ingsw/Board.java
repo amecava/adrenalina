@@ -28,11 +28,10 @@ public class Board {
         this.playersList = playerList;
     }
 
-    /*
-    public Card  giveWeaponCardToPlayer (Player player){
-           try {
+    public void giveWeaponCardToPlayer (Player player) throws MaxCardException{// da gestire eccezione lanciata, nel controller
                 player.addCardToHand(weaponDeck.getcard());
-           }
+
+
     }
     */
 
