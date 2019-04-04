@@ -10,18 +10,40 @@ public class Model {
     private Card currentCard;
     private Board board;
     private Player activePlayer;
-
-
+    private List<Square> tmpList;
+    private Room tmpRoom;
     public Model() {
         this.playerList = new ArrayList<Player>();
+        this.tmpList = new ArrayList<>();
     }
 
     public void buildBoard(){
+
         this.board = new Board();
-        this.board.addRoomsList(new Room("Blue"));
-        this.board.addRoomsList(new Room("Red"));
-        this.board.addRoomsList(new Room("Yellow"));
-        this.board.addRoomsList(new Room("Green"));
+        this.board.addRooms(tmpRoom = new Room("Blue"));
+        this.tmpList.add(new Square(tmpRoom, 1));
+        this.tmpList.add(new Square(tmpRoom, 2));
+        this.tmpList.add(new Square(tmpRoom, 3));
+        this.board.getRoomsList().get(0).addSquaresList(tmpList);
+        // per ogni squares e
+        this.tmpList.clear();
+        this.board.addRooms(tmpRoom = new Room("Red"));
+        this.tmpList.add(new Square(tmpRoom, 1));
+        this.tmpList.add(new Square(tmpRoom, 2));
+        this.tmpList.add(new Square(tmpRoom, 3));
+        this.board.getRoomsList().get(1).addSquaresList(tmpList);
+        this.tmpList.clear();
+        this.board.addRooms(tmpRoom = new Room("Yellow"));
+        this.tmpList.add(new Square(tmpRoom, 1));
+        this.tmpList.add(new Square(tmpRoom, 2));
+        this.board.getRoomsList().get(2).addSquaresList(tmpList);
+        this.tmpList.clear();
+        this.board.addRooms(tmpRoom = new Room("White"));
+        this.tmpList.add(new Square(tmpRoom, 1));
+        this.tmpList.add(new Square(tmpRoom, 2));
+        this.board.getRoomsList().get(3).addSquaresList(tmpList);
+        this.tmpList.clear();
+
     }
 
     public void initCardHandler(){

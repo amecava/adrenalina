@@ -17,7 +17,7 @@ public class Game {
         this.players.add(p);
     }
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
 
         Game game = new Game();
 
@@ -37,4 +37,5 @@ public class Game {
         game.controller.displayPlayers();
         game.controller.initCardHandler();
     }
+    */
 }

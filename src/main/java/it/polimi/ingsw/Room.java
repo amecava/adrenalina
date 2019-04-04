@@ -15,14 +15,15 @@ public class Room implements Target{
         this.playersInRoom = new ArrayList<>();
     }
 
-    public void setSquaresList(List<Square> squaresList) {
+    public void addSquaresList(List<Square> squaresList) {
         this.squaresList = squaresList;
+
     }
 
     public List<Player> getPlayers(){
         this.playersInRoom.clear(); // WARNING
         for(Square s: squaresList){
-            this.playersInRoom.addAll(s.hasPlayer());
+            this.playersInRoom.addAll(s.playersInSquare());
         }
         return this.playersInRoom;
     }
