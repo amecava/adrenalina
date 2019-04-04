@@ -15,8 +15,9 @@ public class Room {
         this.playersInRoom = new ArrayList<>();
     }
 
-    public void setSquaresList(List<Square> squaresList) {
+    public void addSquaresList(List<Square> squaresList) {
         this.squaresList = squaresList;
+
     }
 
     public List<Player> getPlayers(){

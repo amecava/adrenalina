@@ -15,8 +15,13 @@ public class Board {
 
     }
 
-    public void addRoomsList(Room room) {
+    public void addRooms(Room room) {
         this.roomsList.add(room);
+    }
+
+    public List<Room> getRoomsList() {
+        List<Room> roomsList = this.roomsList;
+        return roomsList;
     }
 
     public void setPlayersList(List<Player> playerList) {
