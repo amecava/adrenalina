@@ -1,21 +1,58 @@
 package it.polimi.ingsw;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WeaponCard implements Card {
 
     private String name;
-    private String color;
+    private Color color;
+
     private Effect primary;
     private Effect alternative;
-    private Effect optional;
+
+    private List<Effect> optional;
+
+    public WeaponCard(WeaponCardBuilder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
+        this.primary = builder.primary;
+        this.alternative = builder.alternative;
+        this.optional = builder.optional;
+    }
+
+    //Builder Class
+    public static class WeaponCardBuilder {
+        private String name;
+        private Color color;
+
+        private Effect primary;
+        private Effect alternative;
+
+        private List<Effect> optional = new ArrayList<>();
+
+        public WeaponCardBuilder(String name, Color color, Effect primary) {
+            this.name = name;
+            this.color = color;
+            this.primary = primary;
+        }
 
 
-    public WeaponCard(String name, String color) {
-        this.name = name;
-        this.color = color;
-        this.primary = new Effect();
-        this.alternative = new Effect();
-        this.optional = new Effect();
+        public WeaponCardBuilder setAlternative(Effect alternative) {
+            // If optional != null or throw exception
+            this.alternative = alternative;
+            return this;
+        }
 
+        public WeaponCardBuilder setOptional(Effect optional) {
+            // If alternative != null or throw exception
+            this.optional.add(optional);
+            return this;
+        }
+
+        public WeaponCard build(){
+            return new WeaponCard(this);
+        }
     }
 
     @Override
@@ -24,9 +61,7 @@ public class WeaponCard implements Card {
     }
 
     @Override
-    public String getColor() {
+    public Color getColor() {
         return this.color;
     }
-
-
 }
