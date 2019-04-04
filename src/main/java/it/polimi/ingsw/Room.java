@@ -22,7 +22,7 @@ public class Room {
     public List<Player> getPlayers(){
         this.playersInRoom.clear(); // WARNING
         for(Square s: squaresList){
-            this.playersInRoom.addAll(s.hasPlayer());
+            this.playersInRoom.addAll(s.playersInSquare());
         }
         return this.playersInRoom;
     }
