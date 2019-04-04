@@ -6,12 +6,12 @@ import java.util.List;
 public class Player {
     private String playerID;
     private CardHandler cardHandler;
-    private List<Card> weaponDeck;
+    private List<Card> weaponsDeck;
 
     public Player(String playerID) {
 
         this.playerID = playerID;
-        this.weaponDeck = new ArrayList<Card>();
+        this.weaponsDeck = new ArrayList<Card>();
     }
 
     public void setCardHandler(CardHandler cardHandler){
@@ -24,6 +24,6 @@ public class Player {
     }
 
     public void addCardToDeck(Card card){
-        this.weaponDeck.add(card);
+        this.weaponsDeck.add(card);
     }
 }
