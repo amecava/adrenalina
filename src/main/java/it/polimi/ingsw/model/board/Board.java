@@ -16,7 +16,6 @@ public class Board {
     public Board() {
 
         this.roomsList = new ArrayList<>();
-
     }
 
     public void addRooms(Room room) { this.roomsList.add(room); }
@@ -26,7 +25,6 @@ public class Board {
     public void giveWeaponCardToPlayer(Player player) throws CardException {
         player.addCardToHand(weaponDeck.getCard());
     }
-
 
     public void connectSquares() {
         // Blue room's connections

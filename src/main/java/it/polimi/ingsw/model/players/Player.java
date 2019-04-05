@@ -64,14 +64,14 @@ public class Player implements Target {
     }
 
     public void setDamage(Player enemy, int quantity) {
-        System.out.println("Damaged by" + enemy.getPlayerID());
-        System.out.println("Enemy color" + enemy.getPlayerColor());
-        System.out.println("Quantity" + quantity);
+        System.out.println("Damaged by " + enemy.getPlayerID());
+        System.out.println("Enemy color " + enemy.getPlayerColor());
+        System.out.println("Quantity " + quantity);
     }
 
     public void setMark(Player enemy, int quantity) {
-        System.out.println("Marked by" + enemy.getPlayerID());
-        System.out.println("Enemy color" + enemy.getPlayerColor());
-        System.out.println("Quantity" + quantity);
+        System.out.println("Marked by " + enemy.getPlayerID());
+        System.out.println("Enemy color " + enemy.getPlayerColor());
+        System.out.println("Quantity " + quantity);
     }
 }

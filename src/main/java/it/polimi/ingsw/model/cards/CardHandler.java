@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.effects.Effect;
-import it.polimi.ingsw.model.cards.effects.properties.EffectType;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.effects.EffectInputException;
@@ -46,6 +46,8 @@ public class CardHandler {
     }
 
     public void useEffect(Effect effect) throws EffectException {
+        this.target.clear();
+
         if (effect.getInputQuantity() != 0) {
             throw new EffectInputException("Wrong method call, no arguments needed!");
         }
@@ -59,15 +61,14 @@ public class CardHandler {
         }
 
         if (effect.getEffectProperties().getSameAsFather()) {
-            if (effect.getEffectProperties().getEffectType() == EffectType.PLAYER) {
+            if (effect.getEffectType() == EffectType.PLAYER) {
                 this.target.add(this.active.get(0));
-            } else if (effect.getEffectProperties().getEffectType() == EffectType.SQUARE) {
+            } else if (effect.getEffectType() == EffectType.SQUARE) {
                 this.target.add(this.activeSquare);
             }
         } // else if (effect.getEffectProperties().getCardinal())
         //this.target.add(the four directions);
 
-        // Catch ClassCastException
         effect.execute(this.activePlayer, target);
 
         this.updateOptionals(effect);
@@ -85,14 +86,6 @@ public class CardHandler {
 
         if (!effect.isActivated()) {
             throw new EffectNotActivatedException("You can't use this effect right now!");
-        }
-
-        if (effect.getEffectProperties().getEffectType() == EffectType.MOVE) {
-            if (effect.getEffectProperties().getSameAsFather()) {
-                target.add(0, this.activeSquare);
-            } else {
-                target.add(this.activePlayer);
-            }
         }
 
         this.checkProperties(effect, target);
@@ -116,10 +109,10 @@ public class CardHandler {
             throw new EffectNotActivatedException("You can't use this effect right now!");
         }
 
-        this.checkProperties(effect, target);
-        this.updateActiveInactive();
+        this.checkProperties(effect, new ArrayList<>(Arrays.asList(square)));
+        this.checkProperties(effect.getSequence(), target);
 
-        this.checkProperties(effect.getSequence(), new ArrayList<>(Arrays.asList(square)));
+        target.add(0, square);
 
         effect.getSequence().execute(this.activePlayer, target);
     }
@@ -129,7 +122,7 @@ public class CardHandler {
                 .forEach(x -> {
                     this.card.getOptional().stream()
                             .forEach(y -> {
-                                if (x == y.getID()) {
+                                if (x == y.getId()) {
                                     y.setActivated(true);
                                 }
                             });

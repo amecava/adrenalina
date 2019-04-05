@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class WeaponCard implements Card {
     private String name;
     private Color color;
 
-    private int cost;
+    private Ammo cost;
     private boolean loaded;
 
     private Effect primary;
@@ -29,7 +30,7 @@ public class WeaponCard implements Card {
         return this.color;
     }
 
-    public int getCost() { return cost; }
+    public Ammo getCost() { return cost; }
 
     public boolean isLoaded() { return loaded; }
 
@@ -74,7 +75,7 @@ public class WeaponCard implements Card {
         private String name;
         private Color color;
 
-        private int cost;
+        private Ammo cost;
         private boolean loaded = true;
 
         private Effect primary;
@@ -82,7 +83,7 @@ public class WeaponCard implements Card {
 
         private List<Effect> optional = new ArrayList<>();
 
-        public WeaponCardBuilder(String name, Color color, int cost, Effect primary) {
+        public WeaponCardBuilder(String name, Color color, Ammo cost, Effect primary) {
             this.name = name;
             this.color = color;
             this.cost = cost;
