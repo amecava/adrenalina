@@ -19,16 +19,16 @@ public class Room implements Target {
     }
 
     public Color getColor() {
-        return color;
+        return this.color;
     }
 
     public void addSquaresList(List<Square> squaresList) {
-        this.squaresList = squaresList;
+        this.squaresList.addAll(squaresList);
 
     }
 
     public List<Square> getSquaresList() {
-        return squaresList;
+        return this.squaresList;
     }
 
     public List<Player> getPlayers() {

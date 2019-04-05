@@ -9,34 +9,31 @@ import java.util.List;
 public class App {
 
     private Presenter presenter;
-    private List<Player> players;
+
 
     public App() {
-        this.players = new ArrayList<>();
+        this.presenter = new Presenter();
     }
 
-    public void addPlayer(Player p) {
-        this.players.add(p);
-    }
 
     public static void main(String[] args) {
 
         App game = new App();
+        List<Player> players = new ArrayList<>();
 
         Player playerOne = new Player("Jacop", Color.VIOLET);
         Player playerTwo = new Player("Amedeo", Color.GRAY);
         Player playerThree = new Player("Federico", Color.GREEN);
 
-        game.addPlayer(playerOne);
-        game.addPlayer(playerTwo);
-        game.addPlayer(playerThree);
+        players.add(playerOne);
+        players.add(playerTwo);
+        players.add(playerThree);
 
-        /*
         game.presenter = new Presenter();
         game.presenter.buildBoard();
-        game.presenter.setPlayersList(App.players);
+        game.presenter.setPlayersList(players);
         game.presenter.displayPlayers();
         game.presenter.initCardHandler();
-        */
+
     }
 }

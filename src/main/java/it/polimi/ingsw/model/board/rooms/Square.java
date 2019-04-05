@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.board.rooms;
 
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Square implements Target {
@@ -16,15 +17,11 @@ public class Square implements Target {
     private Connection westConnection;
     private Room myRoom;
     private int squareID;
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>();
 
     public Square(Room myRoom, int squareID) {
         this.myRoom = myRoom;
         this.squareID = squareID;
-        this.north = null;
-        this.south = null;
-        this.east = null;
-        this.west = null;
         this.northConnection = Connection.ENDMAP;
         this.southConnection = Connection.ENDMAP;
         this.eastConnection = Connection.ENDMAP;
@@ -35,6 +32,7 @@ public class Square implements Target {
     public Square setNorth(Square north, Connection connection) {
         this.north = north;
         this.northConnection = connection;
+        north.setSouth(this, connection);
         return this;
 
     }
@@ -61,10 +59,16 @@ public class Square implements Target {
 
     public void addPlayer(Player player) {
         this.players.add(player);
+        player.setCurrentPosition(this);
 
     }
 
+    public int getSquareID() {
+        return squareID;
+    }
+
     public void removePlayer(Player player) {
+
         this.players.remove(player);
     }
 

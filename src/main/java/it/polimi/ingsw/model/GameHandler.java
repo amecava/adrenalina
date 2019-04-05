@@ -52,6 +52,10 @@ public class GameHandler {
         this.board.connectSquares();
     }
 
+    public Board getBoard() {
+        return board;
+    }
+
     public void initCardHandler() {
 
         this.cardHandler = new CardHandler();
@@ -59,17 +63,6 @@ public class GameHandler {
             p.setCardHandler(this.cardHandler);
         }
     }
-
-    /*
-    public void setActivePlayer(Player p){
-
-        this.activePlayer = p;
-    }
-
-    public void giveCardToPlayer(){
-        this.activePlayer.addCardToDeck(new WeaponCard("Machine Gun", "Blue"));
-    }
-    */
 
     public void setPlayerList(List<Player> playersList) {
         this.playerList = playersList;

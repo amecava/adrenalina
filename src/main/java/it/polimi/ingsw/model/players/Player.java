@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.MaxCardException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Player implements Target {
 
@@ -58,7 +59,8 @@ public class Player implements Target {
 
     public void movePlayer(Square destination) {
 
-        System.out.println("Player moved!");
+        this.getCurrentPosition().removePlayer(this);
+        destination.addPlayer(this);
     }
 
     public void setDamage(Player enemy, int quantity) {
