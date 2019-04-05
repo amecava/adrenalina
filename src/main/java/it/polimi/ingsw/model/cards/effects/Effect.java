@@ -68,6 +68,20 @@ public class Effect {
         this.atomicEffectList = builder.atomicEffectList;
     }
 
+    public void appendAtomicEffect(AtomicEffect atomicEffect) {
+
+        this.atomicEffectList.add(atomicEffect);
+
+    }
+
+    public void execute(Target source, List<Target> target) {
+
+        for (AtomicEffect atomicEffect : this.atomicEffectList) {
+            atomicEffect.execute(source, target);
+        }
+
+    }
+
     //Builder Class
     public static class EffectBuilder {
 
@@ -103,19 +117,5 @@ public class Effect {
         public Effect build() {
             return new Effect(this);
         }
-    }
-
-    public void appendAtomicEffect(AtomicEffect atomicEffect) {
-
-        this.atomicEffectList.add(atomicEffect);
-
-    }
-
-    public void execute(Target source, List<Target> target) {
-
-        for (AtomicEffect atomicEffect : this.atomicEffectList) {
-            atomicEffect.execute(source, target);
-        }
-
     }
 }

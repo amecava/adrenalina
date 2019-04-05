@@ -133,7 +133,6 @@ public class Properties {
             return this;
         }
 
-
         public Properties build() {
             return new Properties(this);
         }

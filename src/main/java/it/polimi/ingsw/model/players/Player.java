@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.CardHandler;
 import it.polimi.ingsw.model.cards.Target;
+import it.polimi.ingsw.model.exceptions.cards.CardException;
+import it.polimi.ingsw.model.exceptions.cards.MaxCardException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class Player implements Target {
     }
 
 
-    public void addCardToHand(Card card) throws MaxCardException {
+    public void addCardToHand(Card card) throws CardException {
         if (weaponDeck.size() < 3) {
             weaponDeck.add(card);
         } else {
@@ -55,6 +57,7 @@ public class Player implements Target {
     }
 
     public void movePlayer(Square destination) {
+
         System.out.println("Player moved!");
     }
 

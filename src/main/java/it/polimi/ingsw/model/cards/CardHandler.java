@@ -3,8 +3,14 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.properties.EffectType;
-import it.polimi.ingsw.model.cards.effects.properties.PropertiesException;
+import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
+import it.polimi.ingsw.model.exceptions.effects.EffectException;
+import it.polimi.ingsw.model.exceptions.effects.EffectInputException;
+import it.polimi.ingsw.model.exceptions.effects.EffectNotActivatedException;
+import it.polimi.ingsw.model.exceptions.effects.EffectUsedException;
+import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.cards.effects.properties.PropertyChecker;
+import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,21 +38,24 @@ public class CardHandler {
         this.activeSquare = activePlayer.getCurrentPosition();
     }
 
-    public void setCard(WeaponCard card) {
+    public void setCard(WeaponCard card) throws CardException {
+        if (!card.isLoaded())
+            throw new CardNotLoadedException("Weapon not loaded!");
+
         this.card = card;
     }
 
-    public void useEffect(Effect effect) throws CardException, PropertiesException {
+    public void useEffect(Effect effect) throws EffectException {
         if (effect.getInputQuantity() != 0) {
-            throw new CardException("Wrong method call, no arguments needed!");
+            throw new EffectInputException("Wrong method call, no arguments needed!");
         }
 
         if (effect.isUsed()) {
-            throw new CardException("Effect already used!");
+            throw new EffectUsedException("Effect already used!");
         }
 
         if (!effect.isActivated()) {
-            throw new CardException("You can't use this effect right now!");
+            throw new EffectNotActivatedException("You can't use this effect right now!");
         }
 
         if (effect.getEffectProperties().getSameAsFather()) {
@@ -65,18 +74,17 @@ public class CardHandler {
         this.updateActiveInactive();
     }
 
-    public void useEffect(Effect effect, List<Target> target)
-            throws CardException, PropertiesException {
+    public void useEffect(Effect effect, List<Target> target) throws EffectException, PropertiesException {
         if (effect.getInputQuantity() != 1) {
-            throw new CardException("Wrong method call, one argument needed!");
+            throw new EffectInputException("Wrong method call, one argument needed!");
         }
 
         if (effect.isUsed()) {
-            throw new CardException("Effect already used!");
+            throw new EffectUsedException("Effect already used!");
         }
 
         if (!effect.isActivated()) {
-            throw new CardException("You can't use this effect right now!");
+            throw new EffectNotActivatedException("You can't use this effect right now!");
         }
 
         if (effect.getEffectProperties().getEffectType() == EffectType.MOVE) {
@@ -95,18 +103,17 @@ public class CardHandler {
         this.updateActiveInactive();
     }
 
-    public void useEffect(Effect effect, Square square, List<Target> target)
-            throws CardException, PropertiesException {
+    public void useEffect(Effect effect, Square square, List<Target> target) throws EffectException, PropertiesException {
         if (effect.getInputQuantity() != 3) {
-            throw new CardException("Wrong method call, two arguments needed!");
+            throw new EffectInputException("Wrong method call, two arguments needed!");
         }
 
         if (effect.isUsed()) {
-            throw new CardException("Effect already used!");
+            throw new EffectUsedException("Effect already used!");
         }
 
         if (!effect.isActivated()) {
-            throw new CardException("You can't use this effect right now!");
+            throw new EffectNotActivatedException("You can't use this effect right now!");
         }
 
         this.checkProperties(effect, target);

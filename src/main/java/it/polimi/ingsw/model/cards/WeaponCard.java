@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.effects.Effect;
+import it.polimi.ingsw.model.exceptions.cards.CardException;
 import java.util.ArrayList;
 import java.util.List;
 
