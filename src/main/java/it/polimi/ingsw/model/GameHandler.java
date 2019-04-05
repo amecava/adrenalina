@@ -3,10 +3,13 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.bridges.DamageBridge;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.CardHandler;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class GameHandler {
@@ -18,10 +21,14 @@ public class GameHandler {
     private Player activePlayer;
     private List<Square> tmpList;
     private Room tmpRoom;
+    private  List<Integer> tempPoints;
+    private List<Integer> tempPlayers;
 
     public GameHandler() {
         this.playerList = new ArrayList<Player>();
         this.tmpList = new ArrayList<>();
+        this.tempPlayers=new ArrayList<>();
+        this.tempPoints=new ArrayList<>();
     }
 
     public void buildBoard() {
@@ -74,5 +81,25 @@ public class GameHandler {
             System.out.println("Ciao " + p.getPlayerID());
         }
         this.playerList.stream().forEach(System.out::println);
+    }
+    public void deathUpdate(DamageBridge damageBridge){
+       tempPoints.clear();
+       tempPlayers.clear();
+       for (Player player: playerList){
+           tempPlayers.add(player.countPoints(damageBridge));
+       }
+       tempPoints.addAll(tempPlayers);
+        Collections.sort(tempPlayers);// need to sort in a diffrent whay because of shot priority
+        for (Integer value: tempPlayers){
+            (playerList.get(tempPoints.indexOf(value))).setPoints(10);//the first free with the most points
+        }
+        for (Player player: playerList){
+            player.setTempPoints(0);
+        }
+
+
+
+
+
     }
 }
