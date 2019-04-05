@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.GameHandler;
+import it.polimi.ingsw.model.bridges.DamageBridge;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.presenter.Presenter;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class App {
         game.presenter.setPlayersList(players);
         game.presenter.displayPlayers();
         game.presenter.initCardHandler();
+
 
     }
 }
