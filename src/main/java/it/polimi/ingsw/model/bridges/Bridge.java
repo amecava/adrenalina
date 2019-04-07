@@ -27,4 +27,7 @@ public class Bridge {
     public void setDamage(Color color, int quantity ){
         this.damageBridge.addDamage(color, quantity );
     }
+    public void setMarker (Color color , int quantity){
+        this.damageBridge.addMarker(color ,quantity);
+    }
 }

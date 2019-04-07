@@ -21,14 +21,10 @@ public class GameHandler {
     private Player activePlayer;
     private List<Square> tmpList;
     private Room tmpRoom;
-    private  List<Integer> tempPoints;
-    private List<Integer> tempPlayers;
 
     public GameHandler() {
         this.playerList = new ArrayList<Player>();
         this.tmpList = new ArrayList<>();
-        this.tempPlayers=new ArrayList<>();
-        this.tempPoints=new ArrayList<>();
     }
 
     public void buildBoard() {
@@ -82,24 +78,5 @@ public class GameHandler {
         }
         this.playerList.stream().forEach(System.out::println);
     }
-    public void deathUpdate(DamageBridge damageBridge){
-       tempPoints.clear();
-       tempPlayers.clear();
-       for (Player player: playerList){
-           tempPlayers.add(player.countPoints(damageBridge));
-       }
-       tempPoints.addAll(tempPlayers);
-        Collections.sort(tempPlayers);// need to sort in a diffrent whay because of shot priority
-        for (Integer value: tempPlayers){
-            (playerList.get(tempPoints.indexOf(value))).setPoints(10);//the first free with the most points
-        }
-        for (Player player: playerList){
-            player.setTempPoints(0);
-        }
 
-
-
-
-
-    }
 }
