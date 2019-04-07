@@ -33,7 +33,7 @@ public class PointHandler {
         boolean foundLastShot = false;
         pointStructures.clear();
         for (Player player : playerList) {
-            pointStructures.add(player.countPoints(damageBridge));
+            pointStructures.add(player.countPoints(damageBridge.getShots()));
         }
         pointStructures.sort(new PointSorter());
         for (PointStructure pointStructure1 : pointStructures) {
@@ -57,4 +57,17 @@ public class PointHandler {
         damageBridge.restorePoints();
         damageBridge.setKill();
     }
+    public void endGame(List<Shots> kills){
+        List<PointStructure> killpoints = new ArrayList<>();
+        for (Player player: playerList){
+            killpoints.add(player.countPoints(kills));
+        }
+        killpoints.sort(new PointSorter());
+        for (PointStructure pointStructure2 : killpoints){}
+
+
+
+    }
+
+
 }

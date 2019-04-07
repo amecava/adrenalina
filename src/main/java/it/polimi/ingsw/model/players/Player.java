@@ -116,13 +116,12 @@ public class Player implements Target {
         this.bridge.setMarker(color ,quantity);
     }
 
-    public PointStructure countPoints(DamageBridge damageBridge) {
+    public PointStructure countPoints(List<Shots> shots )  {
         int tempPoints=0;
         int firstShot=0;
         int lastShot=0;
         int counter=0;
         boolean foundFirstShot=false;
-        List<Shots> shots = damageBridge.getShots();
         for (Shots shots1 : shots) {
             counter++;
             if (shots1.getColor().equals(this.getPlayerColor())) {

@@ -79,6 +79,13 @@ public class DamageBridge {
         temp.addAll(shots);
         return temp;
     }
+    public Adrenalin checkAdrenalin (){
+        if (this.shots.size()<=2)
+            return Adrenalin.NORMAL;
+        else if (this.shots.size()<=5)
+            return  Adrenalin.FIRSTADRENALIN;
+        else return Adrenalin.SECONDADRENALIN;
+    }
 
     public void setKill() {
         this.deathBridge.setIndexOfDeath();
