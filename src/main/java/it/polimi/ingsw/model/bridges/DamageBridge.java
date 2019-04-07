@@ -15,6 +15,10 @@ public class DamageBridge {
     private PointHandler pointHandler;
     private Color color;
 
+    public void setShots(List<Shots> shots) {
+        this.shots = shots;
+    }
+
     public DamageBridge(PointHandler pointHandler, Color color) {
         this.pointHandler = pointHandler;
         this.color=color;
@@ -98,5 +102,11 @@ public class DamageBridge {
     public void restorePoints() {
         this.deathBridge.restorePoints();
         this.shots.clear();
+    }
+    public void EOG (){
+        for (Shots shots1: markers){
+            this.addDamage(shots1.getColor(), 1);
+        }
+        markers.clear();
     }
 }

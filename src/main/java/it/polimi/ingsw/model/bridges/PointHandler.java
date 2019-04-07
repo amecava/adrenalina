@@ -7,6 +7,8 @@ import java.util.ListIterator;
 
 public class PointHandler {
     private List<Player> playerList;
+    private boolean EOG=false;
+    private List<PointStructure> pointStructures= new ArrayList<>();
 
     public List<Player> getPlayerList() {
         List<Player> playerList1=  new ArrayList<>();
@@ -14,7 +16,17 @@ public class PointHandler {
         return playerList1;
     }
 
-    private List<PointStructure> pointStructures= new ArrayList<>();
+    public boolean isEOG() {
+        return EOG;
+    }
+
+    public void setEOG(boolean EOG) {
+        this.EOG = EOG;
+        for (Player player : playerList){
+            player.getBridge().getDamageBridge().EOG();
+            this.deathUpdate(player.getBridge().getDamageBridge());
+        }
+    }
 
     public PointHandler(List<Player> playerList) {
         this.playerList = playerList;
@@ -39,13 +51,13 @@ public class PointHandler {
         for (PointStructure pointStructure1 : pointStructures) {
             if (pointStructure1.getNumberDamage() != 0) {
                 pointStructure1.getPlayer().setPoints(damageBridge.getPoints());
-                if (!foundFirstBlood) {
+                if (!foundFirstBlood && !this.EOG) {
                     if (pointStructure1.getFirstDamage() == 1) {
                         pointStructure1.getPlayer().setPoints(1);
                         foundFirstBlood = true;
                     }
                 }
-                if (!foundLastShot) {
+                if (!foundLastShot && !this.EOG) {
                     if (pointStructure1.getLastDamage() == 12) {
                         pointStructure1.getPlayer().setMark(damageBridge.getColor(), 1);
                         foundLastShot = true;
@@ -57,17 +69,7 @@ public class PointHandler {
         damageBridge.restorePoints();
         damageBridge.setKill();
     }
-    public void endGame(List<Shots> kills){
-        List<PointStructure> killpoints = new ArrayList<>();
-        for (Player player: playerList){
-            killpoints.add(player.countPoints(kills));
-        }
-        killpoints.sort(new PointSorter());
-        for (PointStructure pointStructure2 : killpoints){}
 
-
-
-    }
 
 
 }

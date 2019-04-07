@@ -24,12 +24,16 @@ public class Deaths {
         temp.addAll(killStreak);
         return  temp;
     }
+    public void endgame(){
+        DamageBridge damageBridge= new DamageBridge(pointHandler, Color.EOG);
+        damageBridge.setShots(killStreak);
+        this.pointHandler.setEOG(true);
+        this.pointHandler.deathUpdate(damageBridge);
+    }
     public void addKill( Color color){
             killStreak.add(new Shots(color));
             if (killStreak.size()==this.numberOfDeaths)
-                ;
-            return false ;
-
+                this.endgame();
     }
 
 }
