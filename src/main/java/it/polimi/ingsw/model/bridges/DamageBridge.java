@@ -12,15 +12,13 @@ public class DamageBridge {
     private List<Shots> markers = new ArrayList<>();
     private List<Shots> temp = new ArrayList<>();
     private DeathBridge deathBridge = new DeathBridge();
-    private PointHandler pointHandler;
     private Color color;
 
     public void setShots(List<Shots> shots) {
         this.shots = shots;
     }
 
-    public DamageBridge(PointHandler pointHandler, Color color) {
-        this.pointHandler = pointHandler;
+    public DamageBridge(Color color) {
         this.color=color;
     }
 
@@ -53,11 +51,12 @@ public class DamageBridge {
         }
     }
 
-    public void checkIfDead() {
+    public boolean checkIfDead() {
         if (this.shots.size() >= 11) {
             System.out.println("player " + this.color+ " is dead ");
-            pointHandler.deathUpdate(this);
+            return true;
         }
+        return false;
     }
     public List<Shots> getMarkers(){
         List<Shots> temp=new ArrayList<>();
@@ -75,7 +74,6 @@ public class DamageBridge {
         for (int i = 0; (i < quantity) && i < (3 - tempMarker); i++) {
             markers.add(new Shots(color));
         }
-        tempMarker = 0;
     }
 
     public List<Shots> getShots() {

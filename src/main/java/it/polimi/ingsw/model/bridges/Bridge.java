@@ -6,12 +6,8 @@ public class Bridge {
     private DamageBridge damageBridge;
     private ActionBridge actionBridge;
 
-
-    public void setDamageBridge(DamageBridge damageBridge) {
+    public Bridge(DamageBridge damageBridge, ActionBridge actionBridge) {
         this.damageBridge = damageBridge;
-    }
-
-    public void setActionBridge(ActionBridge actionBridge) {
         this.actionBridge = actionBridge;
     }
 
