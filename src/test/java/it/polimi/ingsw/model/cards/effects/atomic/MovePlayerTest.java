@@ -14,6 +14,7 @@ class MovePlayerTest {
 
     @Test
     void execute() {
+
         AtomicEffect tester = new MovePlayer();
 
         Player player = new Player("player", Color.GRAY);
@@ -25,20 +26,24 @@ class MovePlayerTest {
 
         square.addPlayer(target);
 
-        tester.execute(player, new ArrayList<>(Arrays.asList(destination, target)));
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(destination, target)));
+        } catch (IllegalArgumentException e) {
+           fail();
+        }
 
         assertTrue(destination.getPlayers().contains(target));
         assertEquals(target.getCurrentPosition(), destination);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(destination, square)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
     }

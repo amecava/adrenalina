@@ -14,6 +14,7 @@ class SquareDamageTest {
 
     @Test
     void execute() {
+
         AtomicEffect tester = new SquareDamage(1);
 
         Player player = new Player("player", Color.GRAY);
@@ -25,27 +26,66 @@ class SquareDamageTest {
         Player target1 = new Player("target1", Color.GREEN);
         Player target2 = new Player("target2", Color.VIOLET);
 
-
         square1.addPlayer(target1);
         square1.addPlayer(target2);
         square2.addPlayer(player);
 
-        tester.execute(player, new ArrayList<>(Arrays.asList(square1, square2)));
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(square1, square2)));
+        } catch (IllegalArgumentException e) {
+            fail();
+        }
 
-        assertTrue(true); // target1 damaged
-        assertTrue(true); // target2 damaged
-        assertTrue(true); // player not damaged
+        assertSame(
+                target1.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                target2.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                player.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .size(),
+                0
+        );
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(room)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
+        }
+
+        Player target4 = new Player("target4", Color.LIGHTBLUE);
+
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(square1, target4)));
+        } catch (IllegalArgumentException e) {
+            assertSame(
+                    target4.getBridge()
+                            .getDamageBridge()
+                            .getShots()
+                            .size(),
+                    0
+            );
         }
     }
 }

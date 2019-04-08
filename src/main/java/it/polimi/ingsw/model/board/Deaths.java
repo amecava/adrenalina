@@ -14,35 +14,48 @@ public class Deaths {
     PointHandler pointHandler;
 
     public Deaths(int numberOfDeaths) {
+
         this.numberOfDeaths = numberOfDeaths;
     }
 
     public void setPointHandler(PointHandler pointHandler) {
+
         this.pointHandler = pointHandler;
     }
 
     public List<Shots> getKillStreak() {
+
         List<Shots> temp = new ArrayList<>();
         temp.addAll(killStreak);
+
         return temp;
     }
-    public void endgame(){
-        this.pointHandler.setEOG(true);// all markers become shots
-        DamageBridge damageBridge= new DamageBridge(Color.EOG);
+
+    public void endgame() {
+
+        this.pointHandler.setEog(true);// all markers become shots
+        DamageBridge damageBridge = new DamageBridge(Color.EOG);
         damageBridge.setShots(killStreak);
         this.pointHandler.deathUpdate(damageBridge);
     }
-    public void addKill( Color color, Boolean twelve){
-            if (twelve ==true){
-                this.numberOfDeaths++;
-                killStreak.add(new Shots(color));
-            }
+
+    public void addKill(Color color, Boolean twelve) {
+
+        if (twelve) {
+            this.numberOfDeaths++;
             killStreak.add(new Shots(color));
-            if (killStreak.size()==this.numberOfDeaths)
-                this.endgame();
+        }
+
+        killStreak.add(new Shots(color));
+
+        if (killStreak.size() == this.numberOfDeaths) {
+            this.endgame();
+        }
     }
-    public int remainingKills (){
-        return (this.numberOfDeaths- this.killStreak.size());
+
+    public int remainingKills() {
+
+        return (this.numberOfDeaths - this.killStreak.size());
     }
 
     @Override

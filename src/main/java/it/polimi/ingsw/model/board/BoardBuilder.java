@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import org.json.simple.parser.JSONParser;
@@ -16,24 +15,22 @@ import org.json.simple.parser.ParseException;
 
 public class BoardBuilder {
 
-    private Board board;
-    private List<Room> roomsList;
-    private List<Square> squaresList;
-    private JSONParser parser;
+    private Board board = new Board();
+
+    private List<Room> roomsList = new ArrayList<>();
+    private List<Square> squaresList = new ArrayList<>();
+
     private static final String NORTH = "north";
     private static final String SOUTH = "south";
     private static final String EAST = "east";
     private static final String WEST = "west";
+
     private static final String ROOMINDEX = "roomIndex";
     private static final String SQUAREINDEX = "squareIndex";
     private static final String CONNECTION = "connection";
 
 
     public BoardBuilder() {
-        this.board = new Board();
-        this.roomsList = new ArrayList<>();
-        this.squaresList = new ArrayList<>();
-        this.parser = new JSONParser();
     }
 
     public Board buildBoard(int boardID) {
@@ -46,10 +43,11 @@ public class BoardBuilder {
 
     private void setAndConnectFromJson(int boardID) {
 
-        try {
-            FileReader reader = new FileReader(
-                    "lib/Board.json");
-            JSONArray b = (JSONArray) this.parser.parse(reader);
+        try (FileReader reader = new FileReader("lib/board/Board.json");) {
+
+            JSONParser parser = new JSONParser();
+
+            JSONArray b = (JSONArray) parser.parse(reader);
             JSONObject jsonObject = (JSONObject) b.get(0);
             JSONArray a;
             b = (JSONArray) jsonObject.get("boards");
@@ -59,6 +57,7 @@ public class BoardBuilder {
 
             int i = 0;
             int j;
+
             for (Object o : b) {
                 jsonObject = (JSONObject) b.get(i);
                 this.roomsList.add(new Room(Color.valueOf((String) jsonObject.get("roomColor"))));
@@ -133,14 +132,7 @@ public class BoardBuilder {
                     }
                 }
             }
-
-            reader.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }

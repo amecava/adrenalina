@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.cards.effects;
 
-import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
 import it.polimi.ingsw.model.cards.effects.properties.Properties;
@@ -10,76 +9,100 @@ import java.util.List;
 public class Effect {
 
     private int id;
-    private int inputQuantity;
+    private int args;
+    private String name;
     private EffectType effectType;
 
     private boolean used;
-    private boolean activated;
 
-    private Effect sequence;
+    private Effect next;
     private List<Integer> optionalID;
 
     private Properties effectProperties;
 
     private List<AtomicEffect> atomicEffectList;
 
-    public int getId() { return id; }
+    private String description;
 
-    public int getInputQuantity() {
-        return inputQuantity;
+    public int getId() {
+
+        return this.id;
     }
 
-    public EffectType getEffectType() { return effectType; }
+    public int getArgs() {
+
+        return this.args;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public EffectType getEffectType() {
+
+        return this.effectType;
+    }
 
     public boolean isUsed() {
-        return used;
+
+        return this.used;
     }
 
     public void setUsed(boolean used) {
+
         this.used = used;
     }
 
-    public boolean isActivated() {
-        return activated;
-    }
+    public Effect getNext() {
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
-    public Effect getSequence() {
-        return sequence;
+        return this.next;
     }
 
     public List<Integer> getOptionalID() {
-        return optionalID;
+
+        return this.optionalID;
     }
 
     public Properties getEffectProperties() {
-        return effectProperties;
+
+        return this.effectProperties;
     }
 
-    public List<AtomicEffect> getAtomicEffectList() { return atomicEffectList; }
+    public List<AtomicEffect> getAtomicEffectList() {
 
-    public Effect(EffectBuilder builder) {
+        return this.atomicEffectList;
+    }
+
+    public String getDescription() {
+
+        return this.description;
+    }
+
+    private Effect(EffectBuilder builder) {
+
         this.id = builder.id;
-        this.inputQuantity = builder.inputQuantity;
+        this.args = builder.args;
+        this.name = builder.name;
         this.effectType = builder.effectType;
 
         this.used = builder.used;
-        this.activated = builder.activated;
 
-        this.sequence = builder.sequence;
+        this.next = builder.next;
         this.optionalID = builder.optionalID;
 
         this.effectProperties = builder.effectProperties;
 
         this.atomicEffectList = builder.atomicEffectList;
+
+        this.description = builder.description;
     }
 
     public void appendAtomicEffect(AtomicEffect atomicEffect) {
-        if (atomicEffect == null)
+
+        if (atomicEffect == null) {
             throw new NullPointerException();
+        }
 
         this.atomicEffectList.add(atomicEffect);
 
@@ -90,45 +113,53 @@ public class Effect {
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
             atomicEffect.execute(source, target);
         }
-
     }
 
-    //Builder Class
     public static class EffectBuilder {
 
         private int id;
-        private int inputQuantity;
+        private int args;
+        private String name;
         private EffectType effectType;
 
         private boolean used = false;
-        private boolean activated = true;
 
-        private Effect sequence;
+        private Effect next;
         private List<Integer> optionalID = new ArrayList<>();
 
         private Properties effectProperties;
 
         private List<AtomicEffect> atomicEffectList = new ArrayList<>();
 
-        public EffectBuilder(int id, int inputQuantity, EffectType effectType, Properties effectProperties) {
+        private String description;
+
+        public EffectBuilder(int id, int args, String name, EffectType effectType,
+                Properties effectProperties, String description) {
+
             this.id = id;
-            this.inputQuantity = inputQuantity;
+            this.args = args;
+            this.name = name;
             this.effectType = effectType;
 
             this.effectProperties = effectProperties;
+
+            this.description = description;
         }
 
-        public EffectBuilder setSequence(Effect sequence) {
-            this.sequence = sequence;
+        public EffectBuilder setNext(Effect next) {
+
+            this.next = next;
             return this;
         }
 
         public EffectBuilder appendOptionalID(Integer optionalID) {
+
             this.optionalID.add(optionalID);
             return this;
         }
 
         public Effect build() {
+
             return new Effect(this);
         }
     }

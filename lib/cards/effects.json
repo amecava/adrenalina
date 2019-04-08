@@ -1,0 +1,820 @@
+{
+    "effects": [
+        {
+            "id": 1,
+            "args": 1,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "optionalId": [2],
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "atomicEffectList": [["DAMAGE", 2], ["MARK", 1]],
+
+            "description": "Deal 2 damage and 1 mark to 1 target you can see."
+        },
+        {
+            "id": 2,
+            "args": 1,
+            "name": "with second lock",
+            "effectType": "PLAYER",
+
+            "cost": ["RED"],
+            "activated": false,
+
+            "maxTargets": 1,
+            "sameAsFather": [false],
+            "targetView": true,
+
+            "atomicEffectList": [["MARK", 1]],
+
+            "description": "Deal 1 mark to a different target you can see."
+        },
+        {
+            "id": 3,
+            "args": 1,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "optionalId": [4, 5],
+
+            "maxTargets": 2,
+            "targetView": true,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Choose 1 or 2 targets you can see and deal 1 damage to each."
+        },
+        {
+            "id": 4,
+            "args": 1,
+            "name": "with focus shot",
+            "effectType": "PLAYER",
+
+            "cost": ["YELLOW"],
+            "activated": false,
+
+            "maxTargets": 1,
+            "sameAsFather": [true],
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 additional damage to one of those targets."
+        },
+        {
+            "id": 5,
+            "args": 1,
+            "name": "with turret tripod",
+            "effectType": "PLAYER",
+
+            "cost": ["BLUE"],
+            "activated": false,
+
+            "maxTargets": 2,
+            "sameAsFather": [true, false],
+            "targetView": true,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 additional damage to the other of those targets and/or deal 1 damage to a different target you can see."
+        },
+        {
+            "id": 6,
+            "args": 1,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "optionalId": [7],
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to 1 target you can see."
+        },
+        {
+            "id": 7,
+            "args": 1,
+            "name": "with chain reaction",
+            "effectType": "PLAYER",
+
+            "optionalId": [8],
+
+            "cost": ["BLUE"],
+            "activated": false,
+
+            "maxTargets": 1,
+            "sameAsFather": [false],
+            "seenByActive": true,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 damage to a second target that your first target can see."
+        },
+        {
+            "id": 8,
+            "args": 1,
+            "name": "with high voltage",
+            "effectType": "PLAYER",
+
+            "cost": ["BLUE"],
+            "activated": false,
+
+            "maxTargets": 1,
+            "sameAsFather": [false],
+            "seenByActive": true,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to a third target that your second target can see. You cannot use this effect unless you first use the chain reaction."
+        },
+        {
+            "id": 9,
+            "args": 1,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "optionalId": [11],
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to 1 target you can see."
+        },
+        {
+            "id": 10,
+            "args": 1,
+            "name": "with phase glide",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+            "sameAsPlayer": true,
+
+            "minDist": 1,
+            "maxDist": 2,
+
+            "atomicEffectList": [["MOVE", null]],
+
+            "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect."
+        },
+        {
+            "id": 11,
+            "args": 0,
+            "name": "with charged shot",
+            "effectType": "PLAYER",
+
+            "cost": ["BLUE"],
+            "activated": false,
+
+            "sameAsFather": [true],
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 additional damage to your target."
+        },
+        {
+            "id": 12,
+            "args": 1,
+            "name": "effect",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "minDist": 2,
+
+            "atomicEffectList": [["DAMAGE", 3], ["MARK", 1]],
+
+            "description": "Deal 3 damage and 1 mark to 1 target you can see. Your target must be at least 2 moves away from you."
+        },
+        {
+            "id": 13,
+            "args": 0,
+            "name": "basic mode",
+            "effectType": "SQUARE",
+
+            "sameAsPlayer": true,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 damage to every other player on your square."
+        },
+        {
+            "id": 14,
+            "args": 0,
+            "name": "in reaper mode",
+            "effectType": "SQUARE",
+
+            "cost": ["BLUE", "RED"],
+
+            "sameAsPlayer": true,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to every other player on your square."
+        },
+        {
+            "id": 15,
+            "args": 2,
+            "name": "basic mode",
+            "effectType": "PLAYER",
+
+            "next": 151,
+
+            "maxTargets": 1,
+
+            "maxDist": 2,
+
+            "description": "Move a target 0, 1, or 2 squares to a square you can see, and give it 1 damage."
+        },
+        {
+            "id": 151,
+            "args": null,
+            "name": "next of 15",
+            "effectType": "PLAYER",
+
+            "targetView": true,
+
+            "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
+        },
+        {
+            "id": 16,
+            "args": 1,
+            "name": "in punisher mode",
+            "effectType": "SQUARE",
+
+            "cost": ["RED", "YELLOW"],
+
+            "maxTargets": 1,
+            "sameAsPlayer": true,
+
+            "maxDist": 2,
+
+            "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]],
+
+            "description": "Choose a target 0, 1, or 2 moves away from you. Move the target to your square and deal 3 damage to it."
+        },
+        {
+            "id": 17,
+            "args": 2,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "next": 171,
+            "optionalId": [18],
+
+            "maxTargets": 1,
+
+            "maxDist": 1,
+
+            "description": "Choose a square you can see, but not your square. Call it 'the vortex'. Choose a target on the vortex or 1 move away from it. Move it onto the vortex and give it 2 damage."
+        },
+        {
+            "id": 171,
+            "args": null,
+            "name": "next of 17",
+            "effectType": "PLAYER",
+
+            "targetView": true,
+
+            "minDist": 1,
+
+            "atomicEffectList": [["DAMAGE, 2"]]
+        },
+        {
+            "id": 18,
+            "args": 1,
+            "name": "with black hole",
+            "effectType": "SQUARE",
+
+            "maxTargets": 2,
+            "sameAsFather": [false, false],
+            "sameAsPlayer": true,
+
+            "maxDist": 1,
+
+            "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]],
+
+            "description": "Choose up to 2 other targets on the vortex or 1 move away from it. Move them onto the vortex and give them each 1 damage."
+        },
+        {
+            "id": 19,
+            "args": 1,
+            "name": "basic mode",
+            "effectType": "ROOM",
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "minDist": 1,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Choose a room you can see, but not the room you are in. Deal 1 damage to everyone in that room."
+        },
+        {
+            "id": 20,
+            "args": 1,
+            "name": "in cozy fire mode",
+            "effectType": "SQUARE",
+
+            "maxTargets": 1,
+
+            "minDist": 1,
+            "maxDist": 1,
+
+            "atomicEffectList": [["DAMAGE", 1], ["MARK", 1]],
+
+            "description": "Choose a square exactly one move away. Deal 1 damage and 1 mark to everyone on that square."
+        },
+        {
+            "id": 21,
+            "args": 1,
+            "name": "effect",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+            "targetView": false,
+
+            "atomicEffectList": [["DAMAGE", 3]],
+
+            "description": "Choose 1 target you cannot see and deal 3 damage to it."
+        },
+        {
+            "id": 22,
+            "args": 1,
+            "name": "basic mode",
+            "effectType": "COMBINED",
+
+            "next": 221,
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "minDist": 1,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 1 mark to that target and everyone else on that square."
+        },
+        {
+            "id": 221,
+            "args": null,
+            "name": "next of 22",
+            "effectType": "SQUARE",
+
+            "atomicEffectList": [["MARK", 1]]
+        },
+        {
+            "id": 23,
+            "args": 1,
+            "name": "in nano-tracer mode",
+            "effectType": "COMBINED",
+
+            "next": 231,
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "minDist": 1,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 2 marks to that target and everyone else on that square."
+        },
+        {
+            "id": 231,
+            "args": null,
+            "name": "next of 23",
+            "effectType": "SQUARE",
+
+            "atomicEffectList": [["MARK", 2]]
+        },
+        {
+            "id": 24,
+            "args": 1,
+            "name": "basic mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 2,
+
+            "minDist": 1,
+            "maxDist": 2,
+            "cardinal": true,
+            "differentSquares": true,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Choose a square 1 move away and possibly a second square 1 more move away in the same direction. On each square, you may choose 1 target and give it 1 damage."
+        },
+        {
+            "id": 25,
+            "args": 1,
+            "name": "in barbecue mode",
+            "effectType": "COMBINED",
+
+            "next": 251,
+
+            "cost": ["YELLOW", "YELLOW"],
+
+            "maxTargets": 2,
+
+            "minDist": 1,
+            "maxDist": 2,
+            "cardinal": true,
+
+            "atomicEffectList": ["MARK", 1],
+
+            "description": "Choose 2 squares as above. Deal 2 damage to everyone on the first square and 1 damage to everyone on the second square."
+        },
+        {
+            "id": 251,
+            "args": null,
+            "name": "next of 25",
+            "effectType": "SQUARE",
+
+            "maxDist": 1,
+
+            "atomicEffectList": [["MARK", 1]]
+        },
+        {
+            "id": 26,
+            "args": 2,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "next": 261,
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "maxDist": 1,
+
+            "description": "Deal 1 damage to 1 target you can see. Then you may move the target 1 square."
+        },
+        {
+            "id": 261,
+            "args": null,
+            "name": "next of 26",
+            "effectType": "PLAYER",
+
+            "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
+        },
+        {
+            "id": 27,
+            "args": 1,
+            "name": "with extra grenade",
+            "effectType": "SQUARE",
+
+            "cost": ["RED"],
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "atomicEffectList": ["DAMAGE", 1],
+
+            "description": "Deal 1 damage to every player on a square you can see. You can use this before or after the basic effect's move."
+        },
+        {
+            "id": 28,
+            "args": 2,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "next": 281,
+            "optionalId": [30],
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "minDist": 1,
+            "maxDist": 1,
+
+            "description": "Deal 2 damage to 1 target you can see that is not on your square. Then you may move the target 1 square."
+        },
+        {
+            "id": 281,
+            "args": null,
+            "name": "next of 28",
+            "effectType": "PLAYER",
+
+            "atomicEffectList": [["MOVE", null], ["DAMAGE", 2]]
+        },
+        {
+            "id": 29,
+            "args": 1,
+            "name": "with rocket jump",
+            "effectType": "PLAYER",
+
+            "cost": ["BLUE"],
+
+            "maxTargets": 1,
+            "sameAsPlayer": true,
+
+            "minDist": 1,
+            "maxDist": 2,
+
+            "atomicEffectList": [["MOVE", null]],
+
+            "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect."
+        },
+        {
+            "id": 30,
+            "args": 0,
+            "name": "with fragmenting warhead",
+            "effectType": "COMBINED",
+        
+            "next": 301,
+        
+            "cost": ["YELLOW"],
+            "activated": false,
+        
+            "description": "During the basic effect, deal 1 damage to every player on your target's original square – including the target, even if you move it."
+        },
+        {
+            "id": 301,
+            "args": 0,
+            "name": "next of 30",
+            "effectType": "PLAYER",
+
+            "maxTargets": 0,
+        
+            "atomicEffectList": [["DAMAGE", 1]]
+        },
+        {
+            "id": 31,
+            "args": 1,
+            "name": "basic mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+
+            "cardinal": true,
+            "throughWalls": true,
+
+            "atomicEffectList": [["DAMAGE", 3]],
+
+            "description": "Choose a cardinal direction and 1 target in that direction. Deal 3 damage to it."
+        },
+        {
+            "id": 32,
+            "args": 1,
+            "name": "in piercing mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 2,
+
+            "cardinal": true,
+            "throughWalls": true,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Choose a cardinal direction and 1 or 2 targets in that direction. Deal 2 damage to each."
+        },
+        {
+            "id": 33,
+            "args": 1,
+            "name": "basic effect",
+            "effectType": "PLAYER",
+
+            "optionalId": [35],
+
+            "maxTargets": true,
+
+            "maxDist": 0,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to 1 target on your square."
+        },
+        {
+            "id": 34,
+            "args": 1,
+            "name": "with shadowstep",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+            "sameAsPlayer": true,
+
+            "minDist": 1,
+            "maxDist": 1,
+
+            "atomicEffectList": [["MOVE", null]],
+
+            "description": "Move 1 square before or after the basic effect."
+        },
+        {
+            "id": 35,
+            "args": 1,
+            "name": "with slice and dice",
+            "effectType": "PLAYER",
+
+            "cost": ["YELLOW"],
+            "activated": false,
+
+            "maxTargets": 1,
+            "sameAsFather": [false],
+
+            "maxDist": 0,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to a different target on your square. The shadowstep may be used before or after this effect."
+        },
+        {
+            "id": 36,
+            "args": 1,
+            "name": "basic mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+            "targetView": true,
+
+            "atomicEffectList": [["DAMAGE", 1], ["MARK", 2]],
+
+            "description": "Deal 1 damage and 2 marks to 1 target you can see."
+        },
+        {
+            "id": 37,
+            "args": 1,
+            "name": "in scanner mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 3,
+            "targetView": true,
+
+            "atomicEffectList": [["MARK", 1]],
+
+            "description": "Choose up to 3 targets you can see and deal 1 mark to each."
+        },
+        {
+            "id": 38,
+            "args": 2,
+            "name": "basic mode",
+            "effectType": "PLAYER",
+
+            "next": 381,
+
+            "maxTargets": 1,
+            "sameAsPlayer": true,
+
+            "maxDist": 1,
+
+            "description": "Deal 3 damage to 1 target on your square. If you want, you may then move the target 1 square."
+        },
+        {
+            "id": 381,
+            "args": null,
+            "name": "next of 38",
+            "effectType": "PLAYER",
+
+            "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
+        },
+        {
+            "id": 39,
+            "args": 1,
+            "name": "in long barrel mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+
+            "minDist": 1,
+            "maxDist": 1,
+            "throughWalls": true,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to 1 target on any square exactly one move."
+        },
+        {
+            "id": 40,
+            "args": 2,
+            "name": "basic mode",
+            "effectType": "MOVETT",
+        
+            "next": 401,
+        
+            "maxTargets": 1,
+        
+            "minDist": 1,
+            "maxDist": 1,
+        
+            "atomicEffectList": [["DAMAGE", 1], ["MARK", 2]],
+        
+            "description": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks."
+        },
+        {
+            "id": 401,
+            "args": null,
+            "name": "next of 40",
+            "effectType": "PLAYER",
+        
+            "atomicEffectList": [["MOVE", null]]
+        },
+        {
+            "id": 41,
+            "args": 2,
+            "name": "basic mode",
+            "effectType": "MOVETT",
+        
+            "next": 401,
+
+            "cost": ["BLUE"],
+
+            "maxTargets": 2,
+
+            "minDist": 1,
+            "maxDist": 2,
+            "cardinal": true,
+            "differentSquares": true,
+        
+            "atomicEffectList": [["DAMAGE", 2]],
+        
+            "description": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks."
+        },
+        {
+            "id": 411,
+            "args": null,
+            "name": "next of 41",
+            "effectType": "PLAYER",
+        
+            "atomicEffectList": [["MOVE", null]]
+        },
+        {
+            "id": 42,
+            "args": 1,
+            "name": "basic mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 3,
+
+            "minDist": 1,
+            "maxDist": 1,
+            "differentSquares": true,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Choose up to 3 targets on different squares, each exactly 1 move away. Deal 1 damage to each target."
+        },
+        {
+            "id": 43,
+            "args": 0,
+            "name": "in tsunami mode",
+            "effectType": "SQUARE",
+
+            "cost": ["YELLOW"],
+
+            "cardinal": true,
+
+            "atomicEffectList": [["DAMAGE", 1]],
+
+            "description": "Deal 1 damage to all targets that are exactly 1 move away."
+        },
+        {
+            "id": 44,
+            "args": 1,
+            "name": "basic mode",
+            "effectType": "PLAYER",
+
+            "maxTargets": 1,
+
+            "maxDist": 0,
+
+            "atomicEffectList": [["DAMAGE", 2]],
+
+            "description": "Deal 2 damage to 1 target on your square."
+        },
+        {
+            "id": 45,
+            "args": 2,
+            "name": "in pulverize mode",
+            "effectType": "PLAYER",
+
+            "next": 451,
+
+            "cost": ["RED"],
+
+            "maxTargets": 1,
+            "sameAsPlayer": true,
+
+            "maxDist": 2,
+
+            "description": "Deal 3 damage to 1 target on your square, then move that target 0, 1, or 2 squares in one direction."
+        },
+        {
+            "id": 45,
+            "args": null,
+            "name": "next of 45",
+            "effectType": "PLAYER",
+
+            "cardinal": true,
+
+            "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
+        }
+    ]
+}

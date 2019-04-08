@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.cards.effects.atomic.PlayerDamage;
 import it.polimi.ingsw.model.cards.effects.atomic.PlayerMark;
 import it.polimi.ingsw.model.cards.effects.atomic.RoomDamage;
 import it.polimi.ingsw.model.cards.effects.properties.Properties;
+import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +21,15 @@ class EffectTest {
 
     @Test
     void appendAtomicEffect() {
+
         Properties properties = new Properties.PropertiesBuilder().build();
-        Effect tester = new Effect.EffectBuilder(1, 1, EffectType.PLAYER, properties).build();
+        Effect tester = new Effect.EffectBuilder(
+                1,
+                1,
+                "effect name",
+                EffectType.PLAYER,
+                properties,
+                "description").build();
 
         AtomicEffect damage = new PlayerDamage(1);
         AtomicEffect mark = new PlayerMark(2);
@@ -44,8 +52,15 @@ class EffectTest {
 
     @Test
     void execute1() {
+
         Properties properties = new Properties.PropertiesBuilder().build();
-        Effect tester = new Effect.EffectBuilder(1, 1, EffectType.PLAYER, properties).build();
+        Effect tester = new Effect.EffectBuilder(
+                1,
+                1,
+                "effect name",
+                EffectType.PLAYER,
+                properties,
+                "description").build();
 
         AtomicEffect damage = new PlayerDamage(1);
         AtomicEffect mark = new PlayerMark(2);
@@ -58,33 +73,75 @@ class EffectTest {
         Player target1 = new Player("target1", Color.GREEN);
         Player target2 = new Player("target2", Color.YELLOW);
 
-        tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2)));
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2)));
+        } catch (IllegalArgumentException e) {
+            fail();
+        }
 
-        assertTrue(true); // target1 damaged
-        assertTrue(true); // target2 damaged
-        assertTrue(true); // target1 marked
-        assertTrue(true); // target2 marked
+        assertSame(
+                target1.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                target2.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                target1.getBridge()
+                        .getDamageBridge()
+                        .getMarkers()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                target2.getBridge()
+                        .getDamageBridge()
+                        .getMarkers()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
 
         Room room = new Room(Color.RED);
         Square square = new Square(room, 1);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(room)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
     }
 
     @Test
     void execute2() {
+
         Properties properties = new Properties.PropertiesBuilder().build();
-        Effect tester = new Effect.EffectBuilder(1, 1, EffectType.ROOM, properties).build();
+        Effect tester = new Effect.EffectBuilder(
+                1,
+                1,
+                "effect name",
+                EffectType.ROOM,
+                properties,
+                "description").build();
 
         AtomicEffect damage = new RoomDamage(1);
         tester.appendAtomicEffect(damage);
@@ -104,29 +161,62 @@ class EffectTest {
         square2.addPlayer(target2);
         square2.addPlayer(player);
 
-        tester.execute(player, new ArrayList<>(Arrays.asList(room)));
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(room)));
+        } catch (IllegalArgumentException e) {
+            fail();
+        }
 
-        assertTrue(true); // target1 damaged
-        assertTrue(true); // target2 damaged
-        assertTrue(true); // player not damaged
+        assertSame(
+                target1.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                target2.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                player.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .size(),
+                0
+        );
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square1, square2)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
     }
 
     @Test
     void execute3() {
+
         Properties properties = new Properties.PropertiesBuilder().build();
-        Effect tester = new Effect.EffectBuilder(1, 2, EffectType.PLAYER, properties).build();
+        Effect tester = new Effect.EffectBuilder(
+                1,
+                2,
+                "effect name",
+                EffectType.PLAYER,
+                properties,
+                "description").build();
 
         AtomicEffect move = new MovePlayer();
         AtomicEffect damage = new PlayerDamage(1);
@@ -143,21 +233,33 @@ class EffectTest {
 
         square.addPlayer(target);
 
-        tester.execute(player, new ArrayList<>(Arrays.asList(destination, target)));
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(destination, target)));
+        } catch (IllegalArgumentException e) {
+            fail();
+        }
 
         assertTrue(destination.getPlayers().contains(target));
         assertEquals(target.getCurrentPosition(), destination);
-        assertTrue(true); // target damaged
+
+        assertSame(
+                target.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(room)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
     }

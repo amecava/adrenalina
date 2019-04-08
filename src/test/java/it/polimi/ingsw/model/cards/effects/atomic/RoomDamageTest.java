@@ -14,6 +14,7 @@ class RoomDamageTest {
 
     @Test
     void execute() {
+
         AtomicEffect tester = new RoomDamage(1);
 
         Player player = new Player("player", Color.GRAY);
@@ -31,22 +32,62 @@ class RoomDamageTest {
         square2.addPlayer(target2);
         square2.addPlayer(player);
 
-        tester.execute(player, new ArrayList<>(Arrays.asList(room)));
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(room)));
+        } catch (IllegalArgumentException e) {
+            fail();
+        }
 
-        assertTrue(true); // target1 damaged
-        assertTrue(true); // target2 damaged
-        assertTrue(true); // player not damaged
+        assertSame(
+                target1.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                target2.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .get(0)
+                        .getColor(),
+                Color.GRAY
+        );
+
+        assertSame(
+                player.getBridge()
+                        .getDamageBridge()
+                        .getShots()
+                        .size(),
+                0
+        );
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square1)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target1)));
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(true);
+        }
+
+        Player target4 = new Player("target4", Color.LIGHTBLUE);
+
+        try {
+            tester.execute(player, new ArrayList<>(Arrays.asList(room, target4)));
+        } catch (IllegalArgumentException e) {
+            assertSame(
+                    target4.getBridge()
+                            .getDamageBridge()
+                            .getShots()
+                            .size(),
+                    0
+            );
         }
     }
 }

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cards.effects.atomic;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.players.Player;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PlayerDamage implements AtomicEffect {
 
@@ -14,9 +15,16 @@ public class PlayerDamage implements AtomicEffect {
     }
 
     @Override
-    public void execute(Target source, List<Target> target) {
-        target.stream()
-                .map(x -> (Player) x)
-                .forEach(x -> x.setDamage((Player) source, this.quantity));
+    public void execute(Target source, List<Target> targetList) {
+        Stream<Player> target;
+
+        try {
+            target = targetList.stream()
+                    .map(x -> (Player) x);
+
+            target.forEach(x -> x.setDamage((Player) source, this.quantity));
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException();
+        }
     }
 }

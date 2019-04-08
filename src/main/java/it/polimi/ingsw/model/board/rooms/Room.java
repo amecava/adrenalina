@@ -8,38 +8,43 @@ import java.util.List;
 
 public class Room implements Target {
 
-    private List<Square> squaresList;
     private Color color;
-    private List<Player> playersInRoom;
+
+    private List<Square> squaresList = new ArrayList<>();
+    private List<Player> playersInRoom = new ArrayList<>();
 
     public Room(Color color) {
-        this.squaresList = new ArrayList<>();
+
         this.color = color;
-        this.playersInRoom = new ArrayList<>();
     }
 
     public Color getColor() {
+
         return this.color;
     }
 
-    public void addSquaresList(List<Square> squaresList) {
-        this.squaresList.addAll(squaresList);
-
-    }
-
     public void setColor(Color color) {
+
         this.color = color;
     }
 
+    public void addSquaresList(List<Square> squaresList) {
+
+        this.squaresList.addAll(squaresList);
+    }
+
     public List<Square> getSquaresList() {
+
         return this.squaresList;
     }
 
     public List<Player> getPlayers() {
-        this.playersInRoom.clear(); // WARNING
+        this.playersInRoom.clear();
+
         for (Square s : squaresList) {
             this.playersInRoom.addAll(s.getPlayers());
         }
+
         return this.playersInRoom;
     }
 }

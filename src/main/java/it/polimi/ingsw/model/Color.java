@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 public enum Color {
+
     YELLOW,
     LIGHTBLUE,
     GRAY,
