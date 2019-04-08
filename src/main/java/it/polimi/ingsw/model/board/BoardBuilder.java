@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
-import java.io.PipedReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.FileNotFoundException;
@@ -42,10 +41,6 @@ public class BoardBuilder {
         this.setAndConnectFromJson(boardID);
         this.board.setRoomsList(this.roomsList);
 
-        return this.board;
-    }
-
-    public Board getBoard() {
         return this.board;
     }
 

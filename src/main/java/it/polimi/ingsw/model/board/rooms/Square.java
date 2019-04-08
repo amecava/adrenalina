@@ -33,10 +33,12 @@ public class Square implements Target {
 
     }
 
-    public Color getRoomColor() {
-        return this.myRoom.getColor();
+    public void removePlayer(Player player) {
+        this.players.remove(player);
     }
 
+
+    /*
     public void getInfo(){
         System.out.println("square number: " + this.squareID + "in room: " + this.myRoom.getColor());
 
@@ -60,15 +62,7 @@ public class Square implements Target {
         System.out.println(this.westConnection);
         System.out.println();
     }
-
-    public int getSquareID() {
-        return squareID;
-    }
-
-    public void removePlayer(Player player) {
-
-        this.players.remove(player);
-    }
+    */
 
     public void setConnections(Connection northConnection, Connection southConnection,
             Connection eastConnection, Connection westConnection) {
@@ -115,7 +109,6 @@ public class Square implements Target {
     }
 
     public Square getNorth() {
-
         return north;
     }
 
@@ -133,6 +126,10 @@ public class Square implements Target {
 
     public List<Player> getPlayers() {
         return this.players;
+    }
+
+    public int getSquareID() {
+        return squareID;
     }
 
 }

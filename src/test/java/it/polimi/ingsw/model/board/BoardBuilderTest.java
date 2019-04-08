@@ -19,7 +19,16 @@ class BoardBuilderTest {
         board = boardBuilder.buildBoard(0);
 
         assertTrue(board.getRoomsList().get(0).getColor() == Color.BLUE);
+        assertTrue(board.getRoomsList().get(1).getColor() == Color.RED);
+        assertTrue(board.getRoomsList().get(2).getColor() == Color.WHITE);
+        assertTrue(board.getRoomsList().get(3).getColor() == Color.YELLOW);
         assertTrue(board.getRoomsList().get(1).getSquaresList().get(2).getEast() == board.getRoomsList().get(3).getSquaresList().get(0));
+        assertTrue(board.getRoomsList().get(3).getSquaresList().get(0).getWest() == board.getRoomsList().get(1).getSquaresList().get(2));
+        assertTrue(board.getRoomsList().get(2).getSquaresList().get(1).getNorth() == board.getRoomsList().get(1).getSquaresList().get(2));
+        assertTrue(board.getRoomsList().get(3).getSquaresList().get(0).getSouth() == board.getRoomsList().get(3).getSquaresList().get(1));
         assertTrue(board.getRoomsList().get(1).getSquaresList().get(2).getEastConnection() == Connection.DOOR);
+        assertTrue(board.getRoomsList().get(1).getSquaresList().get(1).getNorthConnection() == Connection.WALL);
+        assertTrue(board.getRoomsList().get(3).getSquaresList().get(0).getSouthConnection() == Connection.SQUARE);
+        assertTrue(board.getRoomsList().get(2).getSquaresList().get(0).getWestConnection() == Connection.ENDMAP);
     }
 }

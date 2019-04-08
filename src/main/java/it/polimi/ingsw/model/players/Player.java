@@ -18,12 +18,19 @@ import java.util.logging.Logger;
 public class Player implements Target {
 
     private String playerID;
-    private CardHandler cardHandler;
     private List<Card> weaponDeck;
     private Color playerColor;
     private Square currentPosition;
     private int points;
     private Bridge bridge = new Bridge();
+
+    public Player(String playerID, Color playerColor) {
+
+        this.playerID = playerID;
+        this.playerColor = playerColor;
+        this.weaponDeck = new ArrayList<>();
+        this.points = 0;
+    }
 
     public void setBridge(Bridge bridge) {
         this.bridge = bridge;
@@ -42,26 +49,15 @@ public class Player implements Target {
     }
 
     public void setPoints(int points) {
-        this.points=this.points+ points;
+        this.points = this.points + points;
     }
 
 
-    public CardHandler getCardHandler() {
-        return cardHandler;
-    }
 
     public int getPoints() {
         return points;
     }
 
-
-    public Player(String playerID, Color playerColor) {
-
-        this.playerID = playerID;
-        this.playerColor = playerColor;
-        this.weaponDeck = new ArrayList<>();
-        this.points = 0;
-    }
 
     public void setCurrentPosition(Square currentPosition) {
         this.currentPosition = currentPosition;
@@ -71,9 +67,6 @@ public class Player implements Target {
         return currentPosition;
     }
 
-    public void setCardHandler(CardHandler cardHandler) {
-        this.cardHandler = cardHandler;
-    }
 
     public String getPlayerID() {
         return this.playerID;
@@ -94,7 +87,6 @@ public class Player implements Target {
     }
 
     public void movePlayer(Square destination) {
-
         this.getCurrentPosition().removePlayer(this);
         destination.addPlayer(this);
     }
@@ -105,36 +97,36 @@ public class Player implements Target {
         System.out.println("Enemy color " + enemy.getPlayerColor());
         System.out.println("Quantity " + quantity);
     }
+
     public void setMark(Player enemy, int quantity) {
-        this.bridge.setMarker(enemy.getPlayerColor(),quantity);
+        this.bridge.setMarker(enemy.getPlayerColor(), quantity);
         System.out.println("Marked by " + enemy.getPlayerID());
         System.out.println("Enemy color " + enemy.getPlayerColor());
         System.out.println("Quantity " + quantity);
     }
-    public void setMark(Color color , int quantity) {
-        this.bridge.setMarker(color ,quantity);
+
+    public void setMark(Color color, int quantity) {
+        this.bridge.setMarker(color, quantity);
     }
 
-    public PointStructure countPoints(List<Shots> shots )  {
-        int tempPoints=0;
-        int firstShot=0;
-        int lastShot=0;
-        int counter=0;
-        boolean foundFirstShot=false;
+    public PointStructure countPoints(List<Shots> shots) {
+        int tempPoints = 0;
+        int firstShot = 0;
+        int lastShot = 0;
+        int counter = 0;
+        boolean foundFirstShot = false;
         for (Shots shots1 : shots) {
             counter++;
             if (shots1.getColor().equals(this.getPlayerColor())) {
                 tempPoints++;
-                lastShot=counter;
+                lastShot = counter;
                 if (!foundFirstShot) {
                     firstShot = counter;
                     foundFirstShot = true;
                 }
             }
         }
-        return new PointStructure(this, tempPoints,firstShot, lastShot);
-
-
+        return new PointStructure(this, tempPoints, firstShot, lastShot);
     }
 
 }

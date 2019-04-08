@@ -34,28 +34,19 @@ public class GameHandler {
         this.board = boardBuilder.buildBoard(boardID);
     }
 
-    public Board getBoard() {
-        return this.boardBuilder.getBoard();
-    }
+
 
     public void initCardHandler() {
 
         this.cardHandler = new CardHandler();
-        for (Player p : playerList) {
-            p.setCardHandler(this.cardHandler);
-        }
     }
 
     public void setPlayerList(List<Player> playersList) {
         this.playerList = playersList;
     }
 
-    public void displayPlayers() {
-
-        for (Player p : this.playerList) {
-            System.out.println("Ciao " + p.getPlayerID());
-        }
-        this.playerList.stream().forEach(System.out::println);
+    public void displayPlayers(){
+        ;
     }
 
 }

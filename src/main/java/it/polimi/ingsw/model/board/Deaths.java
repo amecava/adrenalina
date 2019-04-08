@@ -8,32 +8,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Deaths {
+
     private int numberOfDeaths;
-    List<Shots> killStreak= new ArrayList<>();
+    List<Shots> killStreak = new ArrayList<>();
     PointHandler pointHandler;
 
     public Deaths(int numberOfDeaths) {
         this.numberOfDeaths = numberOfDeaths;
     }
-    public void setPointHandler(PointHandler pointHandler){
-        this.pointHandler=pointHandler;
+
+    public void setPointHandler(PointHandler pointHandler) {
+        this.pointHandler = pointHandler;
     }
 
     public List<Shots> getKillStreak() {
         List<Shots> temp = new ArrayList<>();
         temp.addAll(killStreak);
-        return  temp;
+        return temp;
     }
-    public void endgame(){
-        DamageBridge damageBridge= new DamageBridge(pointHandler, Color.EOG);
+
+    public void endgame() {
+        DamageBridge damageBridge = new DamageBridge(pointHandler, Color.EOG);
         damageBridge.setShots(killStreak);
         this.pointHandler.setEOG(true);
         this.pointHandler.deathUpdate(damageBridge);
     }
-    public void addKill( Color color){
-            killStreak.add(new Shots(color));
-            if (killStreak.size()==this.numberOfDeaths)
-                this.endgame();
+
+    public void addKill(Color color) {
+        killStreak.add(new Shots(color));
+        if (killStreak.size() == this.numberOfDeaths) {
+            this.endgame();
+        }
     }
 
 }
