@@ -9,6 +9,7 @@ public class PlayerDamage implements AtomicEffect {
     private int quantity;
 
     public PlayerDamage(int quantity) {
+
         this.quantity = quantity;
     }
 

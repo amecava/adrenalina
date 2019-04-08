@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.cards.effects;
 
+import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
 import it.polimi.ingsw.model.cards.effects.properties.Properties;
@@ -10,6 +11,7 @@ public class Effect {
 
     private int id;
     private int inputQuantity;
+    private EffectType effectType;
 
     private boolean used;
     private boolean activated;
@@ -21,13 +23,13 @@ public class Effect {
 
     private List<AtomicEffect> atomicEffectList;
 
-    public int getID() {
-        return id;
-    }
+    public int getId() { return id; }
 
     public int getInputQuantity() {
         return inputQuantity;
     }
+
+    public EffectType getEffectType() { return effectType; }
 
     public boolean isUsed() {
         return used;
@@ -57,18 +59,27 @@ public class Effect {
         return effectProperties;
     }
 
+    public List<AtomicEffect> getAtomicEffectList() { return atomicEffectList; }
+
     public Effect(EffectBuilder builder) {
         this.id = builder.id;
         this.inputQuantity = builder.inputQuantity;
+        this.effectType = builder.effectType;
+
         this.used = builder.used;
         this.activated = builder.activated;
+
         this.sequence = builder.sequence;
         this.optionalID = builder.optionalID;
+
         this.effectProperties = builder.effectProperties;
+
         this.atomicEffectList = builder.atomicEffectList;
     }
 
     public void appendAtomicEffect(AtomicEffect atomicEffect) {
+        if (atomicEffect == null)
+            throw new NullPointerException();
 
         this.atomicEffectList.add(atomicEffect);
 
@@ -87,6 +98,7 @@ public class Effect {
 
         private int id;
         private int inputQuantity;
+        private EffectType effectType;
 
         private boolean used = false;
         private boolean activated = true;
@@ -98,9 +110,11 @@ public class Effect {
 
         private List<AtomicEffect> atomicEffectList = new ArrayList<>();
 
-        public EffectBuilder(int id, int inputQuantity, Properties effectProperties) {
+        public EffectBuilder(int id, int inputQuantity, EffectType effectType, Properties effectProperties) {
             this.id = id;
             this.inputQuantity = inputQuantity;
+            this.effectType = effectType;
+
             this.effectProperties = effectProperties;
         }
 

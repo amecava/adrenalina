@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.cards.effects.properties;
 
 public class Properties {
 
-    private EffectType effectType;
-
     private Integer maxTargets;
     private Boolean sameAsFather;
     private Boolean sameAsPlayer;
@@ -14,10 +12,6 @@ public class Properties {
     private Integer maxDist;
     private Boolean cardinal;
     private Boolean throughWalls;
-
-    public EffectType getEffectType() {
-        return effectType;
-    }
 
     public Integer getMaxTargets() {
         return maxTargets;
@@ -56,7 +50,6 @@ public class Properties {
     }
 
     public Properties(PropertiesBuilder builder) {
-        this.effectType = builder.effectType;
         this.maxTargets = builder.maxTargets;
         this.sameAsFather = builder.sameAsFather;
         this.sameAsPlayer = builder.sameAsPlayer;
@@ -71,8 +64,6 @@ public class Properties {
     //Builder Class
     public static class PropertiesBuilder {
 
-        private EffectType effectType;
-
         private Integer maxTargets = null;
         private Boolean sameAsFather = null;
         private Boolean sameAsPlayer = null;
@@ -84,8 +75,7 @@ public class Properties {
         private Boolean cardinal = false;
         private Boolean throughWalls = false;
 
-        public PropertiesBuilder(Integer cost, EffectType effectType) {
-            this.effectType = effectType;
+        public PropertiesBuilder() {
         }
 
         public PropertiesBuilder setMaxTargets(Integer maxTargets) {
