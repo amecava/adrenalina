@@ -32,7 +32,6 @@ public class App {
         game.presenter = new Presenter();
         game.presenter.buildBoard();
         game.presenter.setPlayersList(players);
-        game.presenter.displayPlayers();
         game.presenter.initCardHandler();
 
     }

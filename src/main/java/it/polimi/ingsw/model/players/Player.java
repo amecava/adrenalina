@@ -36,7 +36,6 @@ public class Player implements Target {
 
     public void setCardHandler(CardHandler cardHandler) {
         this.cardHandler = cardHandler;
-        System.out.println(cardHandler);
     }
 
     public String getPlayerID() {

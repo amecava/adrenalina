@@ -27,6 +27,10 @@ public class Room implements Target {
 
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
     public List<Square> getSquaresList() {
         return this.squaresList;
     }
