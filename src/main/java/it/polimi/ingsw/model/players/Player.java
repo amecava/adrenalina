@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.players;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.bridges.ActionBridge;
 import it.polimi.ingsw.model.bridges.Bridge;
 import it.polimi.ingsw.model.bridges.DamageBridge;
 import it.polimi.ingsw.model.bridges.PointStructure;
@@ -18,11 +19,12 @@ import java.util.logging.Logger;
 public class Player implements Target {
 
     private String playerID;
-    private List<Card> weaponDeck;
+    private CardHandler cardHandler;
+    private List<Card> weaponDeck = new ArrayList<>();;
     private Color playerColor;
     private Square currentPosition;
-    private int points;
-    private Bridge bridge = new Bridge();
+    private int points = 0;
+    private Bridge bridge;
 
     public Player(String playerID, Color playerColor) {
 
@@ -58,6 +60,13 @@ public class Player implements Target {
         return points;
     }
 
+
+    public Player(String playerID, Color playerColor) {
+
+        this.playerID = playerID;
+        this.playerColor = playerColor;
+        bridge=new Bridge(new DamageBridge(playerColor), new ActionBridge());
+    }
 
     public void setCurrentPosition(Square currentPosition) {
         this.currentPosition = currentPosition;
@@ -127,6 +136,9 @@ public class Player implements Target {
             }
         }
         return new PointStructure(this, tempPoints, firstShot, lastShot);
+    }
+    public  boolean checkIfdead(){
+        return (this.bridge.getDamageBridge().checkIfDead());
     }
 
 }

@@ -26,19 +26,27 @@ public class Deaths {
         temp.addAll(killStreak);
         return temp;
     }
-
-    public void endgame() {
-        DamageBridge damageBridge = new DamageBridge(pointHandler, Color.EOG);
+    public void endgame(){
+        this.pointHandler.setEOG(true);// all markers become shots
+        DamageBridge damageBridge= new DamageBridge(Color.EOG);
         damageBridge.setShots(killStreak);
-        this.pointHandler.setEOG(true);
         this.pointHandler.deathUpdate(damageBridge);
     }
-
-    public void addKill(Color color) {
-        killStreak.add(new Shots(color));
-        if (killStreak.size() == this.numberOfDeaths) {
-            this.endgame();
-        }
+    public void addKill( Color color, Boolean twelve){
+            if (twelve ==true){
+                this.numberOfDeaths++;
+                killStreak.add(new Shots(color));
+            }
+            killStreak.add(new Shots(color));
+            if (killStreak.size()==this.numberOfDeaths)
+                this.endgame();
+    }
+    public int remainingKills (){
+        return (this.numberOfDeaths- this.killStreak.size());
     }
 
+    @Override
+    public String toString() {
+        return killStreak.toString();
+    }
 }

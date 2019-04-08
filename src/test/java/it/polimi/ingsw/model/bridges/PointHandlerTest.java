@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.bridges;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.board.Deaths;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +21,14 @@ class PointHandlerTest {
         playerList.add(player2);
         playerList.add(player3);
         PointHandler pointHandler = new PointHandler(playerList);
-        DamageBridge damageBridge1 = new DamageBridge(pointHandler, player1.getPlayerColor());
-        Bridge bridge = new Bridge();
-        bridge.setDamageBridge(damageBridge1);
-        player1.setBridge(bridge);
-        DamageBridge damageBridge2 = new DamageBridge(pointHandler, player2.getPlayerColor());
-        Bridge bridge1 = new Bridge();
-        bridge1.setDamageBridge(damageBridge2);
-        player2.setBridge(bridge1);
-        DamageBridge damageBridge3 = new DamageBridge(pointHandler, player3.getPlayerColor());
-        Bridge bridge2= new Bridge();
-        bridge2.setDamageBridge(damageBridge3);
-        player3.setBridge(bridge2);
+        pointHandler.setDeaths(new Deaths(4));
         for (int i=0; i<5; i++ ) {
             player1.setMark(player2, 1);
             player1.setDamage(player3, 1);
         }
         System.out.println("player 1 marks  "+ player1.getBridge().getDamageBridge().getMarkers());
         player1.setDamage(player2, 4);
-        damageBridge1.checkIfDead();
+        pointHandler.checkIfdead();
         for (PointStructure pointStructure: pointHandler.getPointStructures()) {
             System.out.println(pointStructure);
         }
@@ -64,22 +54,7 @@ class PointHandlerTest {
         playerList.add(player3);
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList);
-        DamageBridge damageBridge1 = new DamageBridge(pointHandler, player1.getPlayerColor());
-        Bridge bridge = new Bridge();
-        bridge.setDamageBridge(damageBridge1);
-        player1.setBridge(bridge);
-        DamageBridge damageBridge2 = new DamageBridge(pointHandler, player2.getPlayerColor());
-        Bridge bridge1 = new Bridge();
-        bridge1.setDamageBridge(damageBridge2);
-        player2.setBridge(bridge1);
-        DamageBridge damageBridge3 = new DamageBridge(pointHandler, player3.getPlayerColor());
-        Bridge bridge2= new Bridge();
-        bridge2.setDamageBridge(damageBridge3);
-        player3.setBridge(bridge2);
-        DamageBridge bridge3= new DamageBridge(pointHandler, player4.getPlayerColor());
-        Bridge bridge4= new Bridge();
-        bridge4.setDamageBridge(bridge3);
-        player4.setBridge(bridge4);
+        pointHandler.setDeaths(new Deaths(4));
         for (int i=0; i<5; i++ ) {
             player1.setMark(player2, 1);
             player1.setMark(player3, 1);
@@ -89,13 +64,13 @@ class PointHandlerTest {
         player1.setDamage(player4, 1);
         player1.setDamage(player3,2);
         player1.setMark(Color.LIGHTBLUE,2);
-        damageBridge1.checkIfDead();
+        pointHandler.checkIfdead();
         for (PointStructure pointStructure: pointHandler.getPointStructures()) {
             System.out.println(pointStructure);
         }
         player1.setDamage(player2,6);
         player1.setDamage(player3,6);
-        damageBridge1.checkIfDead();
+        pointHandler.checkIfdead();
         for (Player player: pointHandler.getPlayerList()){
             System.out.println("giocatore:"+
                     player.getPlayerColor()+
@@ -107,7 +82,7 @@ class PointHandlerTest {
                     " player points " + player.getPoints());
 
         }
-
+        System.out.println("deaths of the game  " + pointHandler.getDeaths() );
         assertTrue(player2.getPoints()==16);
         assertTrue(player3.getPoints()==10);
         assertTrue(player3.getBridge().getDamageBridge().getMarkers().size()==2);
