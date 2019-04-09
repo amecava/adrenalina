@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Connection;
+import it.polimi.ingsw.model.exceptions.FileException;
 import org.junit.jupiter.api.Test;
 
 class BoardBuilderTest {
@@ -13,7 +14,12 @@ class BoardBuilderTest {
         BoardBuilder boardBuilder = new BoardBuilder();
         Board board = new Board();
 
-        board = boardBuilder.buildBoard(0);
+        try {
+
+            board = boardBuilder.buildBoard(0);
+        } catch (FileException e){
+            e.printStackTrace();
+        }
 
         assertTrue(board.getRoomsList().get(0).getColor() == Color.BLUE);
         assertTrue(board.getRoomsList().get(1).getColor() == Color.RED);

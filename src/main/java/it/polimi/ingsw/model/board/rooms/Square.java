@@ -28,6 +28,7 @@ public class Square implements Target {
         this.squareID = squareID;
     }
 
+
     public void addPlayer(Player player) {
 
         this.players.add(player);
@@ -39,13 +40,32 @@ public class Square implements Target {
         this.players.remove(player);
     }
 
-    public void setConnections(Connection northConnection, Connection southConnection,
-            Connection eastConnection, Connection westConnection) {
+    public Connection setNorthConnection(String northConnection) {
 
-        this.northConnection = northConnection;
-        this.southConnection = southConnection;
-        this.eastConnection = eastConnection;
-        this.westConnection = westConnection;
+        this.northConnection = Connection.valueOf(northConnection);
+
+        return this.northConnection;
+    }
+
+    public Connection setSouthConnection(String southConnection) {
+
+        this.southConnection = Connection.valueOf(southConnection);
+
+        return this.southConnection;
+    }
+
+    public Connection setEastConnection(String eastConnection) {
+
+        this.eastConnection = Connection.valueOf(eastConnection);
+
+        return this.eastConnection;
+    }
+
+    public Connection setWestConnection(String westConnection) {
+
+        this.westConnection = Connection.valueOf(westConnection);
+
+        return this.westConnection;
     }
 
     public void setNorth(Square north) {

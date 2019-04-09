@@ -1,6 +1,7 @@
 package it.polimi.ingsw.presenter;
 
 import it.polimi.ingsw.model.GameHandler;
+import it.polimi.ingsw.model.exceptions.FileException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.List;
 
@@ -17,7 +18,12 @@ public class Presenter {
     public void buildBoard() {
 
         this.boardID = 0;
-        this.gameHandler.buildBoard(boardID);
+        try{
+
+            this.gameHandler.buildBoard(boardID);
+        } catch (FileException e){
+            e.printStackTrace();
+        }
     }
 
     public void setPlayersList(List<Player> list) {

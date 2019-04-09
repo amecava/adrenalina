@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.board.BoardBuilder;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.exceptions.FileException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class GameHandler {
         this.tmpList = new ArrayList<>();
     }
 
-    public void buildBoard(int boardID) {
+    public void buildBoard(int boardID) throws FileException {
 
         this.board = boardBuilder.buildBoard(boardID);
     }

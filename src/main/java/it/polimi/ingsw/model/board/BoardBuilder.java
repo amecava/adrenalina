@@ -1,139 +1,132 @@
 package it.polimi.ingsw.model.board;
 
+
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
-import java.util.ArrayList;
-import java.util.List;
+import it.polimi.ingsw.model.exceptions.FileException;
+import it.polimi.ingsw.model.exceptions.board.BoardFileException;
 import java.io.FileReader;
 import java.io.IOException;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+import javax.json.Json;
+import javax.json.JsonReader;
+import javax.json.JsonArray;
+import javax.json.JsonValue;
 
 public class BoardBuilder {
 
     private Board board = new Board();
-
-    private List<Room> roomsList = new ArrayList<>();
-    private List<Square> squaresList = new ArrayList<>();
 
     private static final String NORTH = "north";
     private static final String SOUTH = "south";
     private static final String EAST = "east";
     private static final String WEST = "west";
 
-    private static final String ROOMINDEX = "roomIndex";
-    private static final String SQUAREINDEX = "squareIndex";
+    private static final String ROOMS = "rooms";
+    private static final String ROOM_COLOR = "roomColor";
+    private static final String SQUARES = "squares";
+    private static final String ROOM_INDEX = "roomIndex";
+    private static final String ROOM_ID = "roomId";
+    private static final String SQUARE_INDEX = "squareIndex";
+    private static final String SQUARE_ID = "squareId";
     private static final String CONNECTION = "connection";
 
 
     public BoardBuilder() {
     }
 
-    public Board buildBoard(int boardID) {
+    public Board buildBoard(int boardID) throws FileException {
 
-        this.setAndConnectFromJson(boardID);
-        this.board.setRoomsList(this.roomsList);
+        this.readFromJson(boardID);
 
         return this.board;
     }
 
-    private void setAndConnectFromJson(int boardID) {
+    private void readFromJson(int boardID) throws FileException {
 
-        try (FileReader reader = new FileReader("lib/board/Board.json");) {
+        try (JsonReader reader = Json.createReader(new FileReader("lib/board/Board.json"))) {
 
-            JSONParser parser = new JSONParser();
+            JsonArray jBoardsArray = reader.readArray();
+            JsonArray jRoomsArray = jBoardsArray.getJsonObject(boardID).getJsonArray(ROOMS);
 
-            JSONArray b = (JSONArray) parser.parse(reader);
-            JSONObject jsonObject = (JSONObject) b.get(0);
-            JSONArray a;
-            b = (JSONArray) jsonObject.get("boards");
-            jsonObject = (JSONObject) b.get(boardID);
-            b = (JSONArray) jsonObject.get("rooms");
-            JSONArray c = b;
+            jRoomsArray.forEach(x -> {
+                this.board.addRoom(new Room(
+                        Color.valueOf(x.asJsonObject().getString(ROOM_COLOR))));
 
-            int i = 0;
-            int j;
+                x.asJsonObject().getJsonArray(SQUARES).forEach(y ->
+                        this.board.addSquare(
+                                x.asJsonObject().getInt(ROOM_ID),
+                                new Square(
+                                        this.board.getRoomsList()
+                                                .get(x.asJsonObject().getInt(ROOM_ID)),
+                                        y.asJsonObject().getInt(SQUARE_ID)))
+                );
+            });
 
-            for (Object o : b) {
-                jsonObject = (JSONObject) b.get(i);
-                this.roomsList.add(new Room(Color.valueOf((String) jsonObject.get("roomColor"))));
-                a = (JSONArray) jsonObject.get("squares");
-                j = 0;
-                for (Object square : a) {
-                    jsonObject = (JSONObject) a.get(j);
-                    this.squaresList.add(new Square(roomsList.get(i),
-                            Math.toIntExact((Long) jsonObject.get("squareId"))));
-                    j++;
+            this.connectSquares(jRoomsArray);
+
+        } catch (IOException e) {
+            throw new BoardFileException("Board Json file error!");
+        }
+    }
+
+    private void connectSquares(JsonArray jRoomsArray) {
+
+        int i = 0;
+        int j;
+
+        for (JsonValue room : jRoomsArray) {
+
+            j = 0;
+
+            for (JsonValue square : room.asJsonObject().getJsonArray(SQUARES)) {
+
+                if (this.board.getRoomsList(i).getSquaresList(j).setNorthConnection(
+                        square.asJsonObject().getJsonObject(NORTH).getString(CONNECTION))
+                        != Connection.ENDMAP) {
+                    this.board.getRoomsList(i).getSquaresList(j)
+                            .setNorth(this.board.getRoomsList().get(
+                                    square.asJsonObject().getJsonObject(NORTH).getInt(ROOM_INDEX))
+                                    .getSquaresList(square.asJsonObject()
+                                            .getJsonObject(NORTH).getInt(SQUARE_INDEX)));
                 }
-                this.roomsList.get(i).addSquaresList(this.squaresList);
-                this.squaresList.clear();
-                i++;
+
+                if (this.board.getRoomsList(i).getSquaresList(j).setSouthConnection(
+                        square.asJsonObject().getJsonObject(SOUTH).getString(CONNECTION))
+                        != Connection.ENDMAP) {
+                    this.board.getRoomsList(i).getSquaresList(j)
+                            .setSouth(this.board.getRoomsList(
+                                    square.asJsonObject().getJsonObject(SOUTH).getInt(ROOM_INDEX))
+                                    .getSquaresList(square.asJsonObject()
+                                            .getJsonObject(SOUTH).getInt(SQUARE_INDEX)));
+                }
+
+                if (this.board.getRoomsList(i).getSquaresList(j).setEastConnection(
+                        square.asJsonObject().getJsonObject(EAST).getString(CONNECTION))
+                        != Connection.ENDMAP) {
+                    this.board.getRoomsList(i).getSquaresList(j)
+                            .setEast(this.board.getRoomsList(
+                                    square.asJsonObject().getJsonObject(EAST).getInt(ROOM_INDEX))
+                                    .getSquaresList(square.asJsonObject()
+                                            .getJsonObject(EAST).getInt(SQUARE_INDEX)));
+                }
+
+                if (this.board.getRoomsList(i).getSquaresList(j).setWestConnection(
+                        square.asJsonObject().getJsonObject(WEST).getString(CONNECTION))
+                        != Connection.ENDMAP) {
+                    this.board.getRoomsList(i).getSquaresList(j)
+                            .setWest(this.board.getRoomsList(
+                                    square.asJsonObject().getJsonObject(WEST).getInt(ROOM_INDEX))
+                                    .getSquaresList(square.asJsonObject()
+                                            .getJsonObject(WEST).getInt(SQUARE_INDEX)));
+                }
+
+                j++;
+
             }
 
-            JSONObject jsonObjectNorth;
-            JSONObject jsonObjectSouth;
-            JSONObject jsonObjectEast;
-            JSONObject jsonObjectWest;
-            b = c;
-
-            for (Room r : this.roomsList) {
-
-                jsonObject = (JSONObject) b.get(roomsList.indexOf(r));
-                for (Square s : r.getSquaresList()) {
-
-                    c = (JSONArray) jsonObject.get("squares");
-                    i = r.getSquaresList().indexOf(s);
-
-                    jsonObjectNorth = (JSONObject) c.get(i);
-                    jsonObjectSouth = jsonObjectNorth;
-                    jsonObjectEast = jsonObjectSouth;
-                    jsonObjectWest = jsonObjectEast;
-
-                    jsonObjectNorth = (JSONObject) jsonObjectNorth.get(NORTH);
-                    jsonObjectSouth = (JSONObject) jsonObjectSouth.get(SOUTH);
-                    jsonObjectEast = (JSONObject) jsonObjectEast.get(EAST);
-                    jsonObjectWest = (JSONObject) jsonObjectWest.get(WEST);
-
-                    s.setConnections(Connection.valueOf((String) jsonObjectNorth.get(CONNECTION)),
-                            Connection.valueOf((String) jsonObjectSouth.get(CONNECTION)),
-                            Connection.valueOf((String) jsonObjectEast.get(CONNECTION)),
-                            Connection.valueOf((String) jsonObjectWest.get(CONNECTION)));
-
-                    if (s.getNorthConnection() != Connection.ENDMAP) {
-                        s.setNorth(this.roomsList
-                                .get(Math.toIntExact((Long) jsonObjectNorth.get(ROOMINDEX)))
-                                .getSquaresList()
-                                .get(Math.toIntExact((Long) jsonObjectNorth.get(SQUAREINDEX))));
-                    }
-
-                    if (s.getSouthConnection() != Connection.ENDMAP) {
-                        s.setSouth(this.roomsList
-                                .get(Math.toIntExact((Long) jsonObjectSouth.get(ROOMINDEX)))
-                                .getSquaresList()
-                                .get(Math.toIntExact((Long) jsonObjectSouth.get(SQUAREINDEX))));
-                    }
-
-                    if (s.getEastConnection() != Connection.ENDMAP) {
-                        s.setEast(this.roomsList
-                                .get(Math.toIntExact((Long) jsonObjectEast.get(ROOMINDEX)))
-                                .getSquaresList()
-                                .get(Math.toIntExact((Long) jsonObjectEast.get(SQUAREINDEX))));
-                    }
-
-                    if (s.getWestConnection() != Connection.ENDMAP) {
-                        s.setWest(this.roomsList
-                                .get(Math.toIntExact((Long) jsonObjectWest.get(ROOMINDEX)))
-                                .getSquaresList()
-                                .get(Math.toIntExact((Long) jsonObjectWest.get(SQUAREINDEX))));
-                    }
-                }
-            }
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
+            i++;
         }
     }
 
