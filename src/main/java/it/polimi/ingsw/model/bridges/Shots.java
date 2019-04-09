@@ -35,6 +35,6 @@ public class Shots {
             return " light blue ";
         }
 
-        return " no color ";
+        return "EOG";
     }
 }

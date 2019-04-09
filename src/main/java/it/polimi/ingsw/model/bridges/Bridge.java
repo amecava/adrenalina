@@ -6,7 +6,6 @@ public class Bridge {
 
     private DamageBridge damageBridge;
     private ActionBridge actionBridge;
-
     public Bridge(DamageBridge damageBridge, ActionBridge actionBridge) {
 
         this.damageBridge = damageBridge;

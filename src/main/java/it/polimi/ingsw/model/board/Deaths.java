@@ -13,9 +13,11 @@ public class Deaths {
     List<Shots> killStreak = new ArrayList<>();
     PointHandler pointHandler;
 
-    public Deaths(int numberOfDeaths) {
+    public Deaths(int numberOfDeaths, PointHandler pointHandler) {
 
         this.numberOfDeaths = numberOfDeaths;
+        this.pointHandler = pointHandler;
+
     }
 
     public void setPointHandler(PointHandler pointHandler) {
@@ -33,9 +35,10 @@ public class Deaths {
 
     public void endgame() {
 
-        this.pointHandler.setEog(true);// all markers become shots
+        this.pointHandler.setEog(true);// count points forall the bridges with at least 1 damage!!!
         DamageBridge damageBridge = new DamageBridge(Color.EOG);
         damageBridge.setShots(killStreak);
+        this.pointHandler.setKillStreakCount();
         this.pointHandler.deathUpdate(damageBridge);
     }
 
@@ -47,15 +50,16 @@ public class Deaths {
         }
 
         killStreak.add(new Shots(color));
-
-        if (killStreak.size() == this.numberOfDeaths) {
-            this.endgame();
-        }
     }
 
     public int remainingKills() {
-
         return (this.numberOfDeaths - this.killStreak.size());
+    }
+    public boolean checkEndGame (){
+        if (killStreak.size() >= this.numberOfDeaths) {
+            return true;
+        }
+        return false;
     }
 
     @Override

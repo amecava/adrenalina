@@ -10,62 +10,74 @@ public class PointHandler {
 
     private List<Player> playerList;
     private boolean eog = false;
+    private boolean killStreakCount = false;
+    private boolean frenzy;
     private List<PointStructure> pointStructures = new ArrayList<>();
     private Deaths deaths;
 
-    public PointHandler(List<Player> playerList) {
-
+    public PointHandler(List<Player> playerList, int numberOfDeaths) {
+        this.deaths = new Deaths(numberOfDeaths, this);
         this.playerList = playerList;
     }
 
     public List<Player> getPlayerList() {
-
         List<Player> playerList1 = new ArrayList<>();
         playerList1.addAll(this.playerList);
-
         return playerList1;
     }
 
-    public void setDeaths(Deaths deaths) {
+    public void setKillStreakCount() {
+        this.killStreakCount = true;
+    }
 
+    public void setDeaths(Deaths deaths) {
         this.deaths = deaths;
     }
 
     public boolean isEog() {
-
         return this.eog;
     }
 
     public void setEog(boolean eog) {
-
         this.eog = eog;
-
         for (Player player : playerList) {
-            player.getBridge().getDamageBridge().eog();
+            //player.getBridge().getDamageBridge().eog(); && makes all marker damage points
             this.deathUpdate(player.getBridge().getDamageBridge());
         }
     }
 
     public List<PointStructure> getPointStructures() {
-
         List<PointStructure> temp = new ArrayList<>();
         temp.addAll(this.pointStructures);
-
         return temp;
-
     }
 
-    public void checkIfdead() {
+    public void setFrenzy(boolean frenzy) {
+        this.frenzy = frenzy;
+    }
 
+    public void checkIfdead()  {
         for (Player player : playerList) {
             if (player.checkIfdead()) {
                 deathUpdate(player.getBridge().getDamageBridge());
             }
         }
+        if (!eog && deaths.checkEndGame()) {
+            if (!frenzy) {
+                this.deaths.endgame();
+            }
+            else{
+                 this.setKillStreakCount();
+                 for (Player player: playerList){
+                     if (player.getBridge().getDamageBridge().getShots().isEmpty()){
+                         player.getBridge().getDamageBridge().setFrenzy();
+                     }
+                 }
+            }
+        }
     }
 
     public List<Shots> getDeaths() {
-
         return this.deaths.getKillStreak();
     }
 
@@ -86,13 +98,11 @@ public class PointHandler {
         for (PointStructure pointStructure1 : pointStructures) {
             if (pointStructure1.getNumberDamage() != 0) {
                 pointStructure1.getPlayer().setPoints(damageBridge.getPoints());
-
+                if (!foundFirstBlood && pointStructure1.getFirstDamage() == 1 && !killStreakCount) {
+                    pointStructure1.getPlayer().setPoints(1);
+                    foundFirstBlood = true;
+                }
                 if (!this.eog) {
-                    if (!foundFirstBlood && pointStructure1.getFirstDamage() == 1) {
-                        pointStructure1.getPlayer().setPoints(1);
-                        foundFirstBlood = true;
-                    }
-
                     if (!foundLastShot && pointStructure1.getLastDamage() == 12) {
                         pointStructure1.getPlayer().setMark(damageBridge.getColor(), 1);
                         foundLastShot = true;
@@ -105,13 +115,34 @@ public class PointHandler {
                 }
             }
         }
-
-        if (eog) {
-            deaths.addKill(Color.EOG, false);
-        } else {
-            deaths.addKill(killShot, foundLastShot);
+        if (!eog) {
             damageBridge.restorePoints();
             damageBridge.setKill();
+            deaths.addKill(killShot, foundLastShot);
+
         }
     }
+    public List<Player>  getWinner () {
+        List<PointStructure> points = new ArrayList<>();
+        List<Player> winner= new ArrayList<>();
+        PointStructure pointStructure;
+        for (Player player: playerList){
+            pointStructure= player.countPoints(this.deaths.getKillStreak());
+            pointStructure.setNumberDamage(player.getPoints());
+            points.add(pointStructure);
+        }
+        points.sort(new PointSorter());
+        System.out.println(points);
+        winner.add(points.get(0).getPlayer());
+            for (int i=0 ; i< points.size()-1; i++){
+                if ((points.get(i).getNumberDamage()==points.get(i+1).getNumberDamage() && points.get(i).getLastDamage()==-1)){
+                    winner.add(points.get(i+1).getPlayer());
+                }
+                else break;
+            }
+            return winner;
+    }
+
+
+
 }

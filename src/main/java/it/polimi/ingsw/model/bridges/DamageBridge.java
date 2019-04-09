@@ -34,26 +34,24 @@ public class DamageBridge {
         return deathBridge.getIndexOfDeath();
     }
 
+    public void setDeathBridge(DeathBridge deathBridge) {
+        this.deathBridge = deathBridge;
+    }
+    public void setFrenzy(){
+        this.deathBridge.setFrenzy();
+    }
+
     public void addDamage(Color color, int quantity) {
-
-        boolean look = true;
-
-        for (int i = 0; i < quantity; i++) {
-            if (shots.size() < 12) {
-                shots.add(new Shots(color));
-
-                if (look) {
-                    ListIterator<Shots> iterator = markers.listIterator();
-                    while (iterator.hasNext()) {
-
-                        if (iterator.next().getColor().equals(color)) {
-                            i--;
-                            iterator.remove();
-                            look = false;
-                        }
-                    }
-                }
+        ListIterator<Shots> listIterator=markers.listIterator();
+        while (listIterator.hasNext()){
+            if (listIterator.next().getColor()==color){
+                quantity++;
+                listIterator.remove();
             }
+        }
+        for (int i = 0; i < quantity; i++) {
+            if (shots.size() < 12)
+                shots.add(new Shots(color));
         }
     }
 
@@ -123,11 +121,11 @@ public class DamageBridge {
     }
 
     public void eog() {
-
-        for (Shots shots1 : markers) {
+        List<Shots> markerToDamage= new ArrayList<>();
+        markerToDamage.addAll(markers);
+        markers.clear();
+        for (Shots shots1 : markerToDamage){
             this.addDamage(shots1.getColor(), 1);
         }
-
-        markers.clear();
     }
 }

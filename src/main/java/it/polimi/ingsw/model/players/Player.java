@@ -62,6 +62,12 @@ public class Player implements Target {
         return this.points;
     }
 
+    @Override
+    public String toString() {
+        return this.getPlayerID();
+
+    }
+
     public Square getOldPosition() {
 
         return this.oldPosition;
@@ -146,7 +152,6 @@ public class Player implements Target {
     }
 
     public boolean checkIfdead() {
-
         return this.bridge.getDamageBridge().checkIfDead();
     }
 

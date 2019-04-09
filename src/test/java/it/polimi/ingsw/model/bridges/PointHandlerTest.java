@@ -20,8 +20,7 @@ class PointHandlerTest {
         playerList.add(player1);
         playerList.add(player2);
         playerList.add(player3);
-        PointHandler pointHandler = new PointHandler(playerList);
-        pointHandler.setDeaths(new Deaths(4));
+        PointHandler pointHandler = new PointHandler(playerList,4 );
         for (int i = 0; i < 5; i++) {
             player1.setMark(player2, 1);
             player1.setDamage(player3, 1);
@@ -46,8 +45,7 @@ class PointHandlerTest {
         playerList.add(player2);
         playerList.add(player3);
         playerList.add(player4);
-        PointHandler pointHandler = new PointHandler(playerList);
-        pointHandler.setDeaths(new Deaths(4));
+        PointHandler pointHandler = new PointHandler(playerList, 4);
         for (int i = 0; i < 5; i++) {
             player1.setMark(player2, 1);
             player1.setMark(player3, 1);
