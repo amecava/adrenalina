@@ -1,24 +1,14 @@
-package it.polimi.ingsw.model.bridges;
+package it.polimi.ingsw.model.points;
 
 public class PointsOfDeath {
 
-    int value;
-    boolean used;
+    private int value;
+    private boolean used;
 
     public PointsOfDeath(int value) {
 
         this.value = value;
         this.used = false;
-    }
-
-    public void setValue(int value) {
-
-        this.value = value;
-    }
-
-    public void setUsed(boolean used) {
-
-        this.used = used;
     }
 
     public int getValue() {
@@ -29,5 +19,10 @@ public class PointsOfDeath {
     public boolean isUsed() {
 
         return this.used;
+    }
+
+    public void setUsed(boolean used) {
+
+        this.used = used;
     }
 }

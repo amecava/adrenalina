@@ -2,9 +2,9 @@ package it.polimi.ingsw.model.players;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Square;
-import it.polimi.ingsw.model.bridges.Bridge;
-import it.polimi.ingsw.model.bridges.PointStructure;
-import it.polimi.ingsw.model.bridges.Shots;
+import it.polimi.ingsw.model.players.bridges.Bridge;
+import it.polimi.ingsw.model.players.bridges.Shots;
+import it.polimi.ingsw.model.points.PointStructure;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -17,21 +17,16 @@ public class Player implements Target {
     private String playerId;
     private Color playerColor;
 
-    private int points = 0;
     private Bridge bridge;
 
-    private List<Card> weaponDeck = new ArrayList<>();
-
-    private Square oldPosition;
-    private Square currentPosition;
-
+    private List<Card> weaponHand = new ArrayList<>();
 
     public Player(String playerId, Color playerColor) {
 
         this.playerId = playerId;
         this.playerColor = playerColor;
 
-        bridge = new Bridge(playerColor);
+        this.bridge = new Bridge(playerColor);
     }
 
     public String getPlayerId() {
@@ -44,34 +39,9 @@ public class Player implements Target {
         return this.playerColor;
     }
 
-    public void setPoints(int points) {
-
-        this.points += points;
-    }
-
-    public int getPoints() {
-
-        return this.points;
-    }
-
     public Bridge getBridge() {
 
         return this.bridge;
-    }
-
-    public Square getOldPosition() {
-
-        return this.oldPosition;
-    }
-
-    public void setCurrentPosition(Square currentPosition) {
-
-        this.currentPosition = currentPosition;
-    }
-
-    public Square getCurrentPosition() {
-
-        return this.currentPosition;
     }
 
     @Override
@@ -80,33 +50,93 @@ public class Player implements Target {
         return this.playerId;
     }
 
+    public Card getWeaponCard(int index) {
+
+        return this.weaponHand.get(index);
+    }
+
+    public void setWeaponHand(List<Card> weaponHand) {
+
+        this.weaponHand = weaponHand;
+    }
+
+    public int getPoints() {
+
+        return this.bridge.getPoints();
+    }
+
+    public void setPoints(int points) {
+
+        this.bridge.setPoints(points);
+    }
+
+    public int calculatePoints() {
+
+        return this.bridge.calculatePoints();
+    }
+
+    public void setPointsUsed() {
+
+        this.bridge.setPointsUsed();
+    }
+
+    public void setFrenzy() {
+
+        this.bridge.setFrenzy();
+    }
+
+    public List<Shots> getShots() {
+
+        return this.bridge.getShots();
+    }
+
+    public List<Shots> getMarks() {
+
+        return this.bridge.getMarks();
+    }
+
+    public boolean isDead() {
+
+        return this.bridge.isDead();
+    }
+
     public void movePlayer(Square destination) {
 
-        this.oldPosition = this.currentPosition;
-        this.currentPosition.removePlayer(this);
+        this.bridge.setOldPosition(this.bridge.getCurrentPosition());
+        this.bridge.getCurrentPosition().removePlayer(this);
 
         destination.addPlayer(this);
     }
 
-    public void setDamage(Color color, int quantity) {
+    public void damagePlayer(Color color, int quantity) {
 
-        this.bridge.setDamage(color, quantity);
+        this.bridge.appendShot(color, quantity);
     }
 
-    public void setMark(Color color, int quantity) {
+    public void markPlayer(Color color, int quantity) {
 
-        this.bridge.setMark(color, quantity);
+        this.bridge.appendMark(color, quantity);
     }
 
-    public boolean checkIfdead() {
+    public Square getOldPosition() {
 
-        return this.bridge.getDamageBridge().checkIfDead();
+        return this.bridge.getOldPosition();
+    }
+
+    public Square getCurrentPosition() {
+
+        return this.bridge.getCurrentPosition();
+    }
+
+    public void setCurrentPosition(Square currentPosition) {
+
+        this.bridge.setCurrentPosition(currentPosition);
     }
 
     public void addCardToHand(Card card) throws CardException {
 
-        if (weaponDeck.size() < 3) {
-            weaponDeck.add(card);
+        if (weaponHand.size() < 3) {
+            weaponHand.add(card);
         } else {
             throw new MaxCardException("You already have 3 cards in your hand!", card);
         }
