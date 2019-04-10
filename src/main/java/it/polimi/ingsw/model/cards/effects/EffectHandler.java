@@ -10,7 +10,6 @@ import it.polimi.ingsw.model.exceptions.effects.EffectNotActivatedException;
 import it.polimi.ingsw.model.exceptions.effects.EffectUsedException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.cards.effects.properties.PropertyChecker;
-import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +33,7 @@ public class EffectHandler {
     public EffectHandler() {
     }
 
-    public void setPlayerCard(Player activePlayer, WeaponCard card) throws CardException {
+    public void setPlayerCard(Player activePlayer, WeaponCard card) throws CardNotLoadedException {
 
         if (!card.isLoaded()) {
             throw new CardNotLoadedException("Weapon not loaded!");
@@ -79,13 +78,17 @@ public class EffectHandler {
 
         this.executeNextIfEffectType(effect);
 
-        this.updateOptionals(effect);
+        this.updateCardVariables(effect);
         this.updateActiveInactive(square, this.target);
     }
 
-    private void updateOptionals(Effect effect) {
+    private void updateCardVariables(Effect effect) {
 
         effect.setUsed(true);
+
+        if (this.card.isLoaded()) {
+            this.card.unloadWeapon();
+        }
 
         effect.getOptionalID().forEach(x ->
                 this.card.getOptional().forEach(y -> {
@@ -102,19 +105,15 @@ public class EffectHandler {
             this.activeSquare = square;
         }
 
-        try {
-            target.stream()
-                    .filter(x -> x != this.activePlayer)
-                    .forEach(x -> {
-                        if (this.active.contains(x)) {
-                            this.inactive.add(this.active.remove(this.active.indexOf(x)));
-                        } else {
-                            this.active.add((Player) x);
-                        }
-                    });
-        } catch (ClassCastException e) {
-            //
-        }
+        target.stream()
+                .filter(x -> x != this.activePlayer)
+                .forEach(x -> {
+                    if (this.active.contains(x)) {
+                        this.inactive.add(this.active.remove(this.active.indexOf(x)));
+                    } else {
+                        this.active.add((Player) x);
+                    }
+                });
     }
 
     private void createTargetList(Effect effect, List<Target> target) {
@@ -125,17 +124,14 @@ public class EffectHandler {
             this.target.addAll(target);
         } else if (effect.getEffectProperties().getSameAsFather().get(0)) {
             this.target.add(this.active.get(0));
+        } else if (effect.getEffectProperties().isCardinal()) {
+            this.target.addAll(this.activeSquare.getAdjacent());
         } else if (effect.getEffectProperties().getSameAsPlayer()) {
             if (effect.getEffectType() == EffectType.PLAYER) {
                 this.target.add(this.activePlayer);
             } else if (effect.getEffectType() == EffectType.SQUARE) {
                 this.target.add(0, this.activeSquare);
             }
-        } else if (effect.getEffectProperties().isCardinal()) {
-            this.target.add(this.activeSquare.getNorth());
-            this.target.add(this.activeSquare.getEast());
-            this.target.add(this.activeSquare.getSouth());
-            this.target.add(this.activeSquare.getWest());
         }
     }
 
@@ -162,7 +158,9 @@ public class EffectHandler {
             effect.getNext().execute(
                     this.activePlayer,
                     new ArrayList<>(Arrays.asList(
-                            this.target.get(effect.getEffectProperties().getMaxTargets() - 1),
+                            ((Player) this.target
+                                    .get(effect.getEffectProperties().getMaxTargets() - 1))
+                                    .getCurrentPosition(),
                             this.activePlayer)));
         }
     }

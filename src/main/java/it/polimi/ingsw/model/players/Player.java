@@ -2,9 +2,7 @@ package it.polimi.ingsw.model.players;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Square;
-import it.polimi.ingsw.model.bridges.ActionBridge;
 import it.polimi.ingsw.model.bridges.Bridge;
-import it.polimi.ingsw.model.bridges.DamageBridge;
 import it.polimi.ingsw.model.bridges.PointStructure;
 import it.polimi.ingsw.model.bridges.Shots;
 import it.polimi.ingsw.model.cards.Card;
@@ -16,40 +14,34 @@ import java.util.List;
 
 public class Player implements Target {
 
-    private String playerID;
-    private List<Card> weaponDeck = new ArrayList<>();
+    private String playerId;
     private Color playerColor;
-    private Square oldPosition;
-    private Square currentPosition;
+
     private int points = 0;
     private Bridge bridge;
 
-    public Player(String playerID, Color playerColor) {
+    private List<Card> weaponDeck = new ArrayList<>();
 
-        this.playerID = playerID;
+    private Square oldPosition;
+    private Square currentPosition;
+
+
+    public Player(String playerId, Color playerColor) {
+
+        this.playerId = playerId;
         this.playerColor = playerColor;
 
-        bridge = new Bridge(new DamageBridge(playerColor), new ActionBridge());
+        bridge = new Bridge(playerColor);
     }
 
-    public void setBridge(Bridge bridge) {
+    public String getPlayerId() {
 
-        this.bridge = bridge;
+        return this.playerId;
     }
 
-    public Bridge getBridge() {
+    public Color getPlayerColor() {
 
-        return this.bridge;
-    }
-
-    public void setPlayerID(String playerID) {
-
-        this.playerID = playerID;
-    }
-
-    public void setPlayerColor(Color playerColor) {
-
-        this.playerColor = playerColor;
+        return this.playerColor;
     }
 
     public void setPoints(int points) {
@@ -62,10 +54,9 @@ public class Player implements Target {
         return this.points;
     }
 
-    @Override
-    public String toString() {
-        return this.getPlayerID();
+    public Bridge getBridge() {
 
+        return this.bridge;
     }
 
     public Square getOldPosition() {
@@ -83,11 +74,34 @@ public class Player implements Target {
         return this.currentPosition;
     }
 
-    public String getPlayerID() {
+    @Override
+    public String toString() {
 
-        return this.playerID;
+        return this.playerId;
     }
 
+    public void movePlayer(Square destination) {
+
+        this.oldPosition = this.currentPosition;
+        this.currentPosition.removePlayer(this);
+
+        destination.addPlayer(this);
+    }
+
+    public void setDamage(Color color, int quantity) {
+
+        this.bridge.setDamage(color, quantity);
+    }
+
+    public void setMark(Color color, int quantity) {
+
+        this.bridge.setMark(color, quantity);
+    }
+
+    public boolean checkIfdead() {
+
+        return this.bridge.getDamageBridge().checkIfDead();
+    }
 
     public void addCardToHand(Card card) throws CardException {
 
@@ -96,33 +110,6 @@ public class Player implements Target {
         } else {
             throw new MaxCardException("You already have 3 cards in your hand!", card);
         }
-    }
-
-    public Color getPlayerColor() {
-
-        return this.playerColor;
-    }
-
-    public void movePlayer(Square destination) {
-
-        this.oldPosition = this.currentPosition;
-        this.getCurrentPosition().removePlayer(this);
-        destination.addPlayer(this);
-    }
-
-    public void setDamage(Player enemy, int quantity) {
-
-        this.bridge.setDamage(enemy.getPlayerColor(), quantity);
-    }
-
-    public void setMark(Player enemy, int quantity) {
-
-        this.bridge.setMarker(enemy.getPlayerColor(), quantity);
-    }
-
-    public void setMark(Color color, int quantity) {
-
-        this.bridge.setMarker(color, quantity);
     }
 
     public PointStructure countPoints(List<Shots> shots) {
@@ -150,9 +137,4 @@ public class Player implements Target {
 
         return new PointStructure(this, tempPoints, firstShot, lastShot);
     }
-
-    public boolean checkIfdead() {
-        return this.bridge.getDamageBridge().checkIfDead();
-    }
-
 }

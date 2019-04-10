@@ -24,6 +24,25 @@ public class Effect {
 
     private String description;
 
+    private Effect(EffectBuilder builder) {
+
+        this.id = builder.id;
+        this.args = builder.args;
+        this.name = builder.name;
+        this.effectType = builder.effectType;
+
+        this.used = builder.used;
+
+        this.next = builder.next;
+        this.optionalID = builder.optionalID;
+
+        this.effectProperties = builder.effectProperties;
+
+        this.atomicEffectList = builder.atomicEffectList;
+
+        this.description = builder.description;
+    }
+
     public int getId() {
 
         return this.id;
@@ -79,25 +98,6 @@ public class Effect {
         return this.description;
     }
 
-    private Effect(EffectBuilder builder) {
-
-        this.id = builder.id;
-        this.args = builder.args;
-        this.name = builder.name;
-        this.effectType = builder.effectType;
-
-        this.used = builder.used;
-
-        this.next = builder.next;
-        this.optionalID = builder.optionalID;
-
-        this.effectProperties = builder.effectProperties;
-
-        this.atomicEffectList = builder.atomicEffectList;
-
-        this.description = builder.description;
-    }
-
     public void appendAtomicEffect(AtomicEffect atomicEffect) {
 
         if (atomicEffect == null) {
@@ -133,17 +133,24 @@ public class Effect {
 
         private String description;
 
-        public EffectBuilder(int id, int args, String name, EffectType effectType,
-                Properties effectProperties, String description) {
+        public EffectBuilder(int id, EffectType effectType, Properties effectProperties) {
 
             this.id = id;
-            this.args = args;
-            this.name = name;
+
             this.effectType = effectType;
-
             this.effectProperties = effectProperties;
+        }
 
-            this.description = description;
+        public EffectBuilder setArgs(int args) {
+
+            this.args = args;
+            return this;
+        }
+
+        public EffectBuilder setName(String name) {
+
+            this.name = name;
+            return this;
         }
 
         public EffectBuilder setNext(Effect next) {
@@ -155,6 +162,12 @@ public class Effect {
         public EffectBuilder appendOptionalID(Integer optionalID) {
 
             this.optionalID.add(optionalID);
+            return this;
+        }
+
+        public EffectBuilder setDescription(String description) {
+
+            this.description = description;
             return this;
         }
 

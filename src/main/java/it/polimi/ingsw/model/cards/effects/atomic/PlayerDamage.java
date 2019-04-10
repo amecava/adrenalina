@@ -19,10 +19,12 @@ public class PlayerDamage implements AtomicEffect {
         Stream<Player> target;
 
         try {
+            // Cast the targets to Player.class
             target = targetList.stream()
                     .map(x -> (Player) x);
 
-            target.forEach(x -> x.setDamage((Player) source, this.quantity));
+            // Execute the player damage atomic effect
+            target.forEach(x -> x.setDamage(((Player) source).getPlayerColor(), this.quantity));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

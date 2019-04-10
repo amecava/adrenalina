@@ -18,9 +18,9 @@ public class PointSorter implements Comparator<PointStructure> {
         if (o1.getFirstDamage() < o2.getFirstDamage()) {
             return -1;
         }
-        if (o1.getFirstDamage()> o2.getFirstDamage() )
+        if (o1.getFirstDamage() > o2.getFirstDamage()) {
             return +1;
-        else {// for finding the winners in case of  equity (the only way two players can have same first damage is fd=0  )
+        } else {
             o1.setLastDamage(-1);
             o2.setLastDamage(-1);
             return 0;

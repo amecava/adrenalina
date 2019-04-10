@@ -21,12 +21,14 @@ public class SquareDamage implements AtomicEffect {
         Stream<Player> target;
 
         try {
+            // Get the targets from squares, cast them to Player.class and filter the source
             target = targetList.stream()
                     .map(x -> (Square) x)
                     .flatMap(x -> x.getPlayers().stream())
                     .filter(x -> x != source);
 
-            target.forEach(x -> x.setDamage((Player) source, this.quantity));
+            // Execute the square damage atomic effect
+            target.forEach(x -> x.setDamage(((Player) source).getPlayerColor(), this.quantity));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

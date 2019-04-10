@@ -21,10 +21,12 @@ public class PlayerMark implements AtomicEffect {
         Stream<Player> target;
 
         try {
+            // Cast the targets to Player.class
             target = targetList.stream()
                     .map(x -> (Player) x);
 
-            target.forEach(x -> x.setMark((Player) source, this.quantity));
+            // Execute the player mark atomic effect
+            target.forEach(x -> x.setMark(((Player) source).getPlayerColor(), this.quantity));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

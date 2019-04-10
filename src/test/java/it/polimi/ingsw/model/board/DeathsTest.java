@@ -25,23 +25,20 @@ class DeathsTest {
         PointHandler pointHandler = new PointHandler(playerList, 2);
         pointHandler.setFrenzy(false);
         for (int i = 0; i < 8; i++) {
-            player3.setDamage(player2, 1);
+            player3.setDamage(player2.getPlayerColor(), 1);
         }
-        player3.setDamage(player1, 4);
+        player3.setDamage(player1.getPlayerColor(), 4);
         pointHandler.checkIfdead();
         pointHandler.setFrenzy(false);
-        player3.setDamage(player2, 3);
-        player3.setDamage(player1, 2);
-        player3.setDamage(player2, 10);
-        player1.setDamage(player3, 1);
-        player2.setDamage(player3, 1);
+        player3.setDamage(player2.getPlayerColor(), 3);
+        player3.setDamage(player1.getPlayerColor(), 2);
+        player3.setDamage(player2.getPlayerColor(), 10);
+        player1.setDamage(player3.getPlayerColor(), 1);
+        player2.setDamage(player3.getPlayerColor(), 1);
         pointHandler.checkIfdead();
         player2.setPoints(-3);
         player3.setPoints(+10);
         player4.setPoints(+28);
-        System.out.println( pointHandler.getDeaths());
-        System.out.println(pointHandler.getWinner());
-        System.out.println(player4.getPoints());
         assertTrue(player1.getPoints() == 18);
         assertTrue(player2.getPoints() == 19);
         assertTrue(player3.getPoints() == 28);

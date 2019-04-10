@@ -5,21 +5,21 @@ import it.polimi.ingsw.model.Color;
 public class Bridge {
 
     private DamageBridge damageBridge;
-    private ActionBridge actionBridge;
-    public Bridge(DamageBridge damageBridge, ActionBridge actionBridge) {
+    private ActionBridge actionBridge = new ActionBridge();
 
-        this.damageBridge = damageBridge;
-        this.actionBridge = actionBridge;
+    public Bridge(Color playerColor) {
+
+        this.damageBridge = new DamageBridge(playerColor);
     }
 
     public DamageBridge getDamageBridge() {
 
-        return damageBridge;
+        return this.damageBridge;
     }
 
     public ActionBridge getActionBridge() {
 
-        return actionBridge;
+        return this.actionBridge;
     }
 
     public void setDamage(Color color, int quantity) {
@@ -27,7 +27,7 @@ public class Bridge {
         this.damageBridge.addDamage(color, quantity);
     }
 
-    public void setMarker(Color color, int quantity) {
+    public void setMark(Color color, int quantity) {
 
         this.damageBridge.addMarker(color, quantity);
     }

@@ -18,11 +18,14 @@ public class MovePlayer implements AtomicEffect {
         Stream<Player> target;
 
         try {
+            // Get the move destination from the head of the target list
             destination = (Square) targetList.remove(0);
 
+            // Cast the remaining targets to Player.class
             target = targetList.stream()
                     .map(x -> (Player) x);
 
+            // Execute the move player atomic effect
             target.forEach(x -> x.movePlayer(destination));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();

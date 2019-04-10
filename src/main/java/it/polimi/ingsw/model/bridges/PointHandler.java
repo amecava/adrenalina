@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.bridges;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.board.Deaths;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ public class PointHandler {
     private Deaths deaths;
 
     public PointHandler(List<Player> playerList, int numberOfDeaths) {
+
         this.deaths = new Deaths(numberOfDeaths, this);
         this.playerList = playerList;
     }
@@ -132,7 +132,6 @@ public class PointHandler {
             points.add(pointStructure);
         }
         points.sort(new PointSorter());
-        System.out.println(points);
         winner.add(points.get(0).getPlayer());
             for (int i=0 ; i< points.size()-1; i++){
                 if ((points.get(i).getNumberDamage()==points.get(i+1).getNumberDamage() && points.get(i).getLastDamage()==-1)){

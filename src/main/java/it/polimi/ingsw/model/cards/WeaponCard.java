@@ -30,6 +30,24 @@ public class WeaponCard implements Card {
 
     private String notes;
 
+    private WeaponCard(WeaponCardBuilder builder) {
+
+        this.effectHandler = builder.effectHandler;
+
+        this.id = builder.id;
+
+        this.name = builder.name;
+        this.loaded = builder.loaded;
+        this.reloadCost = builder.reloadCost;
+
+        this.primary = builder.primary;
+        this.alternative = builder.alternative;
+
+        this.optional = builder.optional;
+
+        this.notes = builder.notes;
+    }
+
     public void setOwner(Player owner) {
 
         this.owner = owner;
@@ -87,24 +105,6 @@ public class WeaponCard implements Card {
         return this.notes;
     }
 
-    private WeaponCard(WeaponCardBuilder builder) {
-
-        this.effectHandler = builder.effectHandler;
-
-        this.id = builder.id;
-
-        this.name = builder.name;
-        this.loaded = builder.loaded;
-        this.reloadCost = builder.reloadCost;
-
-        this.primary = builder.primary;
-        this.alternative = builder.alternative;
-
-        this.optional = builder.optional;
-
-        this.notes = builder.notes;
-    }
-
     public void reloadWeapon() {
 
         if (!this.loaded) {
@@ -119,15 +119,14 @@ public class WeaponCard implements Card {
                 this.alternative.setUsed(false);
             }
 
-            this.optional.stream()
-                    .forEach(x -> x.setUsed(false));
+            this.optional.forEach(x ->
+                    x.setUsed(false));
 
-            this.optional.stream()
-                    .forEach(x -> {
-                        if (x.getEffectProperties().getActivated() != null) {
-                            x.getEffectProperties().setActivated(false);
-                        }
-                    });
+            this.optional.forEach(x -> {
+                if (x.getEffectProperties().getActivated() != null) {
+                    x.getEffectProperties().setActivated(false);
+                }
+            });
         }
     }
 

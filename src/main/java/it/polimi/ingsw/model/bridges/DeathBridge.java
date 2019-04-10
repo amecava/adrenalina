@@ -9,6 +9,7 @@ public class DeathBridge {
     private List<PointsOfDeath> pointsOfDeaths = new ArrayList<>();
 
     public DeathBridge() {
+
         indexOfDeath = 0;
         pointsOfDeaths.add(new PointsOfDeath(8));
         pointsOfDeaths.add(new PointsOfDeath(6));
@@ -19,7 +20,8 @@ public class DeathBridge {
     }
 
     public void setIndexOfDeath() {
-            this.indexOfDeath++;
+
+        this.indexOfDeath++;
     }
 
     public int getIndexOfDeath() {
@@ -28,9 +30,11 @@ public class DeathBridge {
     }
 
     public void setFrenzy () {
+
         this.pointsOfDeaths.clear();
-        this.pointsOfDeaths.add(new PointsOfDeath(2));
+
         this.indexOfDeath=0;
+        this.pointsOfDeaths.add(new PointsOfDeath(2));
     }
 
     public int getPoints() {

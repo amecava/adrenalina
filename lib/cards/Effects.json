@@ -224,23 +224,20 @@
             "name": "basic mode",
             "effectType": "PLAYER",
 
-            "next": 151,
+            "next": {
+                "id": 15,
+                "effectType": "PLAYER",
+    
+                "targetView": true,
+    
+                "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
+            },
 
             "maxTargets": 1,
 
             "maxDist": 2,
 
             "description": "Move a target 0, 1, or 2 squares to a square you can see, and give it 1 damage."
-        },
-        {
-            "id": 151,
-            "args": null,
-            "name": "next of 15",
-            "effectType": "PLAYER",
-
-            "targetView": true,
-
-            "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
         },
         {
             "id": 16,
@@ -265,7 +262,16 @@
             "name": "basic effect",
             "effectType": "PLAYER",
 
-            "next": 171,
+            "next": {
+                "id": 17,
+                "effectType": "PLAYER",
+    
+                "targetView": true,
+    
+                "minDist": 1,
+    
+                "atomicEffectList": [["DAMAGE, 2"]]
+            },
             "optionalId": [18],
 
             "maxTargets": 1,
@@ -273,18 +279,6 @@
             "maxDist": 1,
 
             "description": "Choose a square you can see, but not your square. Call it 'the vortex'. Choose a target on the vortex or 1 move away from it. Move it onto the vortex and give it 2 damage."
-        },
-        {
-            "id": 171,
-            "args": null,
-            "name": "next of 17",
-            "effectType": "PLAYER",
-
-            "targetView": true,
-
-            "minDist": 1,
-
-            "atomicEffectList": [["DAMAGE, 2"]]
         },
         {
             "id": 18,
@@ -351,7 +345,12 @@
             "name": "basic mode",
             "effectType": "COMBINED",
 
-            "next": 221,
+            "next": {
+                "id": 22,
+                "effectType": "SQUARE",
+    
+                "atomicEffectList": [["MARK", 1]]
+            },
 
             "maxTargets": 1,
             "targetView": true,
@@ -363,20 +362,17 @@
             "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 1 mark to that target and everyone else on that square."
         },
         {
-            "id": 221,
-            "args": null,
-            "name": "next of 22",
-            "effectType": "SQUARE",
-
-            "atomicEffectList": [["MARK", 1]]
-        },
-        {
             "id": 23,
             "args": 1,
             "name": "in nano-tracer mode",
             "effectType": "COMBINED",
 
-            "next": 231,
+            "next": {
+                "id": 23,
+                "effectType": "SQUARE",
+    
+                "atomicEffectList": [["MARK", 2]]
+            },
 
             "maxTargets": 1,
             "targetView": true,
@@ -386,14 +382,6 @@
             "atomicEffectList": [["DAMAGE", 1]],
 
             "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 2 marks to that target and everyone else on that square."
-        },
-        {
-            "id": 231,
-            "args": null,
-            "name": "next of 23",
-            "effectType": "SQUARE",
-
-            "atomicEffectList": [["MARK", 2]]
         },
         {
             "id": 24,
@@ -418,7 +406,14 @@
             "name": "in barbecue mode",
             "effectType": "COMBINED",
 
-            "next": 251,
+            "next": {
+                "id": 25,
+                "effectType": "SQUARE",
+    
+                "maxDist": 1,
+    
+                "atomicEffectList": [["MARK", 1]]
+            },
 
             "cost": ["YELLOW", "YELLOW"],
 
@@ -433,22 +428,17 @@
             "description": "Choose 2 squares as above. Deal 2 damage to everyone on the first square and 1 damage to everyone on the second square."
         },
         {
-            "id": 251,
-            "args": null,
-            "name": "next of 25",
-            "effectType": "SQUARE",
-
-            "maxDist": 1,
-
-            "atomicEffectList": [["MARK", 1]]
-        },
-        {
             "id": 26,
             "args": 2,
             "name": "basic effect",
             "effectType": "PLAYER",
 
-            "next": 261,
+            "next": {
+                "id": 26,
+                "effectType": "PLAYER",
+    
+                "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
+            },
 
             "maxTargets": 1,
             "targetView": true,
@@ -456,14 +446,6 @@
             "maxDist": 1,
 
             "description": "Deal 1 damage to 1 target you can see. Then you may move the target 1 square."
-        },
-        {
-            "id": 261,
-            "args": null,
-            "name": "next of 26",
-            "effectType": "PLAYER",
-
-            "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
         },
         {
             "id": 27,
@@ -486,7 +468,12 @@
             "name": "basic effect",
             "effectType": "PLAYER",
 
-            "next": 281,
+            "next": {
+                "id": 28,
+                "effectType": "PLAYER",
+    
+                "atomicEffectList": [["MOVE", null], ["DAMAGE", 2]]
+            },
             "optionalId": [30],
 
             "maxTargets": 1,
@@ -496,14 +483,6 @@
             "maxDist": 1,
 
             "description": "Deal 2 damage to 1 target you can see that is not on your square. Then you may move the target 1 square."
-        },
-        {
-            "id": 281,
-            "args": null,
-            "name": "next of 28",
-            "effectType": "PLAYER",
-
-            "atomicEffectList": [["MOVE", null], ["DAMAGE", 2]]
         },
         {
             "id": 29,
@@ -529,22 +508,19 @@
             "name": "with fragmenting warhead",
             "effectType": "COMBINED",
         
-            "next": 301,
+            "next": {
+                "id": 30,
+                "effectType": "PLAYER",
+    
+                "maxTargets": 0,
+            
+                "atomicEffectList": [["DAMAGE", 1]]
+            },
         
             "cost": ["YELLOW"],
             "activated": false,
         
             "description": "During the basic effect, deal 1 damage to every player on your target's original square – including the target, even if you move it."
-        },
-        {
-            "id": 301,
-            "args": 0,
-            "name": "next of 30",
-            "effectType": "PLAYER",
-
-            "maxTargets": 0,
-        
-            "atomicEffectList": [["DAMAGE", 1]]
         },
         {
             "id": 31,
@@ -658,7 +634,12 @@
             "name": "basic mode",
             "effectType": "PLAYER",
 
-            "next": 381,
+            "next": {
+                "id": 38,
+                "effectType": "PLAYER",
+    
+                "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
+            },
 
             "maxTargets": 1,
             "sameAsPlayer": true,
@@ -666,14 +647,6 @@
             "maxDist": 1,
 
             "description": "Deal 3 damage to 1 target on your square. If you want, you may then move the target 1 square."
-        },
-        {
-            "id": 381,
-            "args": null,
-            "name": "next of 38",
-            "effectType": "PLAYER",
-
-            "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
         },
         {
             "id": 39,
@@ -697,7 +670,12 @@
             "name": "basic mode",
             "effectType": "MOVETT",
         
-            "next": 401,
+            "next": {
+                "id": 40,
+                "effectType": "PLAYER",
+            
+                "atomicEffectList": [["MOVE", null]]
+            },
         
             "maxTargets": 1,
         
@@ -709,20 +687,17 @@
             "description": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks."
         },
         {
-            "id": 401,
-            "args": null,
-            "name": "next of 40",
-            "effectType": "PLAYER",
-        
-            "atomicEffectList": [["MOVE", null]]
-        },
-        {
             "id": 41,
             "args": 2,
             "name": "basic mode",
             "effectType": "MOVETT",
         
-            "next": 401,
+            "next": {
+                "id": 41,
+                "effectType": "PLAYER",
+            
+                "atomicEffectList": [["MOVE", null]]
+            },
 
             "cost": ["BLUE"],
 
@@ -735,15 +710,7 @@
         
             "atomicEffectList": [["DAMAGE", 2]],
         
-            "description": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks."
-        },
-        {
-            "id": 411,
-            "args": null,
-            "name": "next of 41",
-            "effectType": "PLAYER",
-        
-            "atomicEffectList": [["MOVE", null]]
+            "description": "Choose a square exactly 1 move away. Move onto that square. You may deal 2 damage to 1 target there. If you want, you may move 1 more square in that same direction (but only if it is a legal move). You may deal 2 damage to 1 target there, as well."
         },
         {
             "id": 42,
@@ -795,7 +762,14 @@
             "name": "in pulverize mode",
             "effectType": "PLAYER",
 
-            "next": 451,
+            "next": {
+                "id": 45,
+                "effectType": "PLAYER",
+    
+                "cardinal": true,
+    
+                "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
+            },
 
             "cost": ["RED"],
 
@@ -805,16 +779,6 @@
             "maxDist": 2,
 
             "description": "Deal 3 damage to 1 target on your square, then move that target 0, 1, or 2 squares in one direction."
-        },
-        {
-            "id": 45,
-            "args": null,
-            "name": "next of 45",
-            "effectType": "PLAYER",
-
-            "cardinal": true,
-
-            "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
         }
     ]
 }

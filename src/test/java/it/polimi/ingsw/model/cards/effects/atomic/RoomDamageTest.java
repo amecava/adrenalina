@@ -26,7 +26,7 @@ class RoomDamageTest {
         Player target1 = new Player("target1", Color.GREEN);
         Player target2 = new Player("target2", Color.VIOLET);
 
-        room.addSquaresList(new ArrayList<>(Arrays.asList(square1, square2)));
+        room.setSquaresList(new ArrayList<>(Arrays.asList(square1, square2)));
 
         square1.addPlayer(target1);
         square2.addPlayer(target2);

@@ -3,31 +3,66 @@ package it.polimi.ingsw.model.board.rooms;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 public class Square implements Target {
 
-    private Square north;
-    private Square south;
-    private Square east;
-    private Square west;
-
-    private Connection northConnection;
-    private Connection southConnection;
-    private Connection eastConnection;
-    private Connection westConnection;
-
+    private int squareId;
     private Room myRoom;
-    private int squareID;
+
+    private EnumMap<Direction, Square> adjacent = new EnumMap<>(Direction.class);
+    private EnumMap<Direction, Connection> connection = new EnumMap<>(Direction.class);
 
     private List<Player> players = new ArrayList<>();
 
-    public Square(Room myRoom, int squareID) {
+    public Square(Room myRoom, int squareId) {
 
         this.myRoom = myRoom;
-        this.squareID = squareID;
+        this.squareId = squareId;
     }
 
+    public int getSquareId() {
+
+        return this.squareId;
+    }
+
+    public Room getMyRoom() {
+
+        return this.myRoom;
+    }
+
+    public List<Square> getAdjacent() {
+
+        return new ArrayList<>(this.adjacent.values());
+    }
+
+    public Square getAdjacent(Direction direction) {
+
+        return this.adjacent.get(direction);
+    }
+
+    public void setAdjacent(Direction direction, Square square) {
+
+        this.adjacent.put(direction, square);
+    }
+
+    public Connection getConnection(Direction direction) {
+
+        return this.connection.get(direction);
+    }
+
+    public boolean setConnection(Direction direction, Connection connection) {
+
+        this.connection.put(direction, connection);
+
+        return !connection.equals(Connection.ENDMAP);
+    }
+
+    public List<Player> getPlayers() {
+
+        return this.players;
+    }
 
     public void addPlayer(Player player) {
 
@@ -39,109 +74,4 @@ public class Square implements Target {
 
         this.players.remove(player);
     }
-
-    public Connection setNorthConnection(String northConnection) {
-
-        this.northConnection = Connection.valueOf(northConnection);
-
-        return this.northConnection;
-    }
-
-    public Connection setSouthConnection(String southConnection) {
-
-        this.southConnection = Connection.valueOf(southConnection);
-
-        return this.southConnection;
-    }
-
-    public Connection setEastConnection(String eastConnection) {
-
-        this.eastConnection = Connection.valueOf(eastConnection);
-
-        return this.eastConnection;
-    }
-
-    public Connection setWestConnection(String westConnection) {
-
-        this.westConnection = Connection.valueOf(westConnection);
-
-        return this.westConnection;
-    }
-
-    public void setNorth(Square north) {
-
-        this.north = north;
-    }
-
-    public void setSouth(Square south) {
-
-        this.south = south;
-    }
-
-    public void setEast(Square east) {
-
-        this.east = east;
-    }
-
-    public void setWest(Square west) {
-
-        this.west = west;
-    }
-
-    public Connection getNorthConnection() {
-
-        return this.northConnection;
-    }
-
-    public Connection getSouthConnection() {
-
-        return this.southConnection;
-    }
-
-    public Connection getEastConnection() {
-
-        return this.eastConnection;
-    }
-
-    public Connection getWestConnection() {
-
-        return this.westConnection;
-    }
-
-    public Room getMyRoom() {
-
-        return this.myRoom;
-    }
-
-    public Square getNorth() {
-
-        return this.north;
-    }
-
-    public Square getSouth() {
-
-        return this.south;
-    }
-
-    public Square getEast() {
-
-        return this.east;
-    }
-
-    public Square getWest() {
-
-        return this.west;
-    }
-
-    public List<Player> getPlayers() {
-
-        return this.players;
-    }
-
-    public int getSquareID() {
-
-        return this.squareID;
-    }
-
 }
-

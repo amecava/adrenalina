@@ -5,13 +5,13 @@ import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Room implements Target {
 
     private Color color;
 
     private List<Square> squaresList = new ArrayList<>();
-    private List<Player> playersInRoom = new ArrayList<>();
 
     public Room(Color color) {
 
@@ -28,14 +28,9 @@ public class Room implements Target {
         this.color = color;
     }
 
-    public void addSquare(Square square) {
+    public void setSquaresList(List<Square> squaresList) {
 
-        this.squaresList.add(square);
-    }
-
-    public List<Square> getSquaresList() {
-
-        return this.squaresList;
+        this.squaresList.addAll(squaresList);
     }
 
     public Square getSquaresList(int index) {
@@ -43,13 +38,20 @@ public class Room implements Target {
         return this.squaresList.get(index);
     }
 
+    public List<Square> getSquaresList() {
+
+        return this.squaresList;
+    }
+
+    public void addSquare(Square square) {
+
+        this.squaresList.add(square);
+    }
+
     public List<Player> getPlayers() {
-        this.playersInRoom.clear();
 
-        for (Square s : squaresList) {
-            this.playersInRoom.addAll(s.getPlayers());
-        }
-
-        return this.playersInRoom;
+        return this.squaresList.stream()
+                .flatMap(x -> x.getPlayers().stream())
+                .collect(Collectors.toList());
     }
 }

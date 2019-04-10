@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.bridges;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.board.Deaths;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,10 @@ class PointHandlerTest {
         playerList.add(player3);
         PointHandler pointHandler = new PointHandler(playerList,4 );
         for (int i = 0; i < 5; i++) {
-            player1.setMark(player2, 1);
-            player1.setDamage(player3, 1);
+            player1.setMark(player2.getPlayerColor(), 1);
+            player1.setDamage(player3.getPlayerColor(), 1);
         }
-        player1.setDamage(player2, 4);
+        player1.setDamage(player2.getPlayerColor(), 4);
         pointHandler.checkIfdead();
         assertTrue(player2.getBridge().getDamageBridge().getMarkers().size() == 1 &&
                 player2.getBridge().getDamageBridge().getMarkers().get(0).getColor()
@@ -47,16 +46,16 @@ class PointHandlerTest {
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 4);
         for (int i = 0; i < 5; i++) {
-            player1.setMark(player2, 1);
-            player1.setMark(player3, 1);
+            player1.setMark(player2.getPlayerColor(), 1);
+            player1.setMark(player3.getPlayerColor(), 1);
         }
-        player1.setDamage(player2, 4);
-        player1.setDamage(player4, 1);
-        player1.setDamage(player3, 2);
+        player1.setDamage(player2.getPlayerColor(), 4);
+        player1.setDamage(player4.getPlayerColor(), 1);
+        player1.setDamage(player3.getPlayerColor(), 2);
         player1.setMark(Color.LIGHTBLUE, 2);
         pointHandler.checkIfdead();
-        player1.setDamage(player2, 6);
-        player1.setDamage(player3, 6);
+        player1.setDamage(player2.getPlayerColor(), 6);
+        player1.setDamage(player3.getPlayerColor(), 6);
         pointHandler.checkIfdead();
         assertTrue(player2.getPoints() == 16);
         assertTrue(player3.getPoints() == 10);
