@@ -35,7 +35,7 @@ class ViewInspector {
                 count = 0;
                 square = fromSquare;
 
-                while (square.getAdjacent(dir) != null) {
+                while (square.getAdjacent(dir) != null && (square.getConnection(dir) != Connection.WALL || throughWalls)) {
 
                     square = square.getAdjacent(dir);
 
@@ -86,13 +86,19 @@ class ViewInspector {
 
     boolean targetView(Square fromSquare, Square toSquare) {
 
+        if (fromSquare.getMyRoom().equals(toSquare.getMyRoom())) {
+            return true;
+        }
+
         for (Direction dir : Direction.values()) {
-            if (fromSquare.getConnection(dir) == Connection.DOOR) {
-                return fromSquare.getMyRoom().getSquaresList().contains(toSquare) || fromSquare
-                        .getAdjacent(dir).getMyRoom().getSquaresList().contains(toSquare);
+            if (fromSquare.getConnection(dir) == Connection.DOOR && fromSquare.getAdjacent(dir)
+                    .getMyRoom().getSquaresList().contains(toSquare)) {
+
+                return true;
             }
         }
-        return fromSquare.getMyRoom().getSquaresList().contains(toSquare);
+
+        return false;
     }
 
 }
