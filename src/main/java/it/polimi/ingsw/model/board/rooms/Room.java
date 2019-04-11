@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Room implements Target {
@@ -41,6 +42,19 @@ public class Room implements Target {
     public List<Square> getSquaresList() {
 
         return this.squaresList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Room room = (Room) o;
+        return color == room.color &&
+                Objects.equals(squaresList, room.squaresList);
     }
 
     public void addSquare(Square square) {

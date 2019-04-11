@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Square implements Target {
 
@@ -14,12 +16,20 @@ public class Square implements Target {
     private EnumMap<Direction, Square> adjacent = new EnumMap<>(Direction.class);
     private EnumMap<Direction, Connection> connection = new EnumMap<>(Direction.class);
 
+    private Map<Boolean, HashMap<Square, Integer>> map = new HashMap<>();
+
     private List<Player> players = new ArrayList<>();
 
     public Square(Room myRoom, int squareId) {
 
         this.myRoom = myRoom;
         this.squareId = squareId;
+
+        this.map.put(true, new HashMap<>());
+        this.map.put(false, new HashMap<>());
+
+        this.map.get(true).put(this, 0);
+        this.map.get(false).put(this, 0);
     }
 
     public int getSquareId() {
@@ -59,6 +69,11 @@ public class Square implements Target {
         return !connection.equals(Connection.ENDMAP);
     }
 
+    public HashMap<Square, Integer> getMap(boolean throughWalls) {
+
+        return this.map.get(throughWalls);
+    }
+
     public List<Player> getPlayers() {
 
         return this.players;
@@ -74,4 +89,18 @@ public class Square implements Target {
 
         this.players.remove(player);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Square square = (Square) o;
+        return squareId == square.squareId &&
+                myRoom.equals(square.myRoom);
+    }
+
 }
