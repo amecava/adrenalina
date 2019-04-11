@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.bridges;
+package it.polimi.ingsw.model.points;
 
 import java.util.Comparator;
 
@@ -20,9 +20,11 @@ public class PointSorter implements Comparator<PointStructure> {
         }
         if (o1.getFirstDamage() > o2.getFirstDamage()) {
             return +1;
+
         } else {
             o1.setLastDamage(-1);
             o2.setLastDamage(-1);
+
             return 0;
         }
     }

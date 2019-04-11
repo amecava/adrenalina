@@ -29,32 +29,9 @@ class PlayerMarkTest {
             fail();
         }
 
-        assertSame(
-                target1.getBridge()
-                        .getDamageBridge()
-                        .getMarkers()
-                        .get(0)
-                        .getColor(),
-                Color.GRAY
-        );
-
-        assertSame(
-                target2.getBridge()
-                        .getDamageBridge()
-                        .getMarkers()
-                        .get(0)
-                        .getColor(),
-                Color.GRAY
-        );
-
-        assertSame(
-                target3.getBridge()
-                        .getDamageBridge()
-                        .getMarkers()
-                        .get(0)
-                        .getColor(),
-                Color.GRAY
-        );
+        assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+        assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+        assertSame(target3.getBridge().getMarks().get(0).getColor(), Color.GRAY);
 
         Room room = new Room(Color.RED);
         Square square = new Square(room, 1);
@@ -76,13 +53,7 @@ class PlayerMarkTest {
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square, target4)));
         } catch (IllegalArgumentException e) {
-            assertSame(
-                    target4.getBridge()
-                            .getDamageBridge()
-                            .getMarkers()
-                            .size(),
-                    0
-            );
+            assertSame(target4.getBridge().getMarks().size(), 0);
         }
     }
 }

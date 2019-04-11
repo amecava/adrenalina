@@ -29,7 +29,7 @@ class MovePlayerTest {
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(destination, target)));
         } catch (IllegalArgumentException e) {
-           fail();
+            fail();
         }
 
         assertTrue(destination.getPlayers().contains(target));

@@ -28,7 +28,7 @@ public class RoomDamage implements AtomicEffect {
                     .filter(x -> x != source);
 
             // Execute the room damage atomic effect
-            target.forEach(x -> x.setDamage(((Player) source).getPlayerColor(), this.quantity));
+            target.forEach(x -> x.damagePlayer(((Player) source).getPlayerColor(), this.quantity));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

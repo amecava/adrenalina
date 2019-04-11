@@ -24,7 +24,7 @@ public class PlayerDamage implements AtomicEffect {
                     .map(x -> (Player) x);
 
             // Execute the player damage atomic effect
-            target.forEach(x -> x.setDamage(((Player) source).getPlayerColor(), this.quantity));
+            target.forEach(x -> x.damagePlayer(((Player) source).getPlayerColor(), this.quantity));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

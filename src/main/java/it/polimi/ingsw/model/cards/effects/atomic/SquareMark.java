@@ -28,7 +28,7 @@ public class SquareMark implements AtomicEffect {
                     .filter(x -> x != source);
 
             // Execute the square mark atomic effect
-            target.forEach(x -> x.setMark(((Player) source).getPlayerColor(), this.quantity));
+            target.forEach(x -> x.markPlayer(((Player) source).getPlayerColor(), this.quantity));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

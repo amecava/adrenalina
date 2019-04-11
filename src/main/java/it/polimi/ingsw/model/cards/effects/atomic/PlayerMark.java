@@ -26,7 +26,7 @@ public class PlayerMark implements AtomicEffect {
                     .map(x -> (Player) x);
 
             // Execute the player mark atomic effect
-            target.forEach(x -> x.setMark(((Player) source).getPlayerColor(), this.quantity));
+            target.forEach(x -> x.markPlayer(((Player) source).getPlayerColor(), this.quantity));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

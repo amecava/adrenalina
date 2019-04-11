@@ -36,31 +36,9 @@ class SquareMarkTest {
             fail();
         }
 
-        assertSame(
-                target1.getBridge()
-                        .getDamageBridge()
-                        .getMarkers()
-                        .get(0)
-                        .getColor(),
-                Color.GRAY
-        );
-
-        assertSame(
-                target2.getBridge()
-                        .getDamageBridge()
-                        .getMarkers()
-                        .get(0)
-                        .getColor(),
-                Color.GRAY
-        );
-
-        assertSame(
-                player.getBridge()
-                        .getDamageBridge()
-                        .getMarkers()
-                        .size(),
-                0
-        );
+        assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+        assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+        assertSame(player.getBridge().getMarks().size(), 0);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2)));
@@ -79,13 +57,7 @@ class SquareMarkTest {
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square1, target4)));
         } catch (IllegalArgumentException e) {
-            assertSame(
-                    target4.getBridge()
-                            .getDamageBridge()
-                            .getMarkers()
-                            .size(),
-                    0
-            );
+            assertSame(target4.getBridge().getMarks().size(), 0);
         }
     }
 }

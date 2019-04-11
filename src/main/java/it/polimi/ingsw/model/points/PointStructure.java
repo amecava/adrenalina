@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.bridges;
+package it.polimi.ingsw.model.points;
 
 import it.polimi.ingsw.model.players.Player;
 
