@@ -12,11 +12,11 @@ public class PointHandler {
 
     private List<Player> playerList;
     private boolean endOfGame = false;
-    private boolean killStreakCount = false;
     private boolean frenzy;
     private List<PointStructure> pointStructures = new ArrayList<>();
     private PointSorter pointSorter = new PointSorter();
     private Deaths deaths;
+    private boolean frenzyRegenartion=false;
 
     public PointHandler(List<Player> playerList, int numberOfDeaths) {
 
@@ -28,11 +28,6 @@ public class PointHandler {
         List<Player> playerList1 = new ArrayList<>();
         playerList1.addAll(this.playerList);
         return playerList1;
-    }
-
-    public void setKillStreakCount() {
-
-        this.killStreakCount = true;
     }
 
     public void setDeaths(Deaths deaths) {
@@ -67,19 +62,17 @@ public class PointHandler {
                 deathUpdate(player.getBridge());
             }
         }
-        if (!endOfGame && deaths.checkEndGame()) {
+        if (deaths.checkEndGame()) {
             if (!frenzy) {
                 this.setEndOfGame(true);
-                this.setKillStreakCount();
-
                 this.deathUpdate(this.deaths);
             } else {
-                this.setKillStreakCount();
                 for (Player player : playerList) {
                     if (player.getShots().isEmpty()) {
                         player.setFrenzy();
                     }
                 }
+                this.frenzyRegenartion=true;
             }
         }
     }
@@ -106,7 +99,7 @@ public class PointHandler {
         for (PointStructure pointStructure : pointStructures) {
             if (pointStructure.getNumberDamage() != 0) {
                 pointStructure.getPlayer().setPoints(bridge.calculatePoints());
-                if (!foundFirstBlood && pointStructure.getFirstDamage() == 1 && !killStreakCount) {
+                if (!foundFirstBlood && pointStructure.getFirstDamage() == 1 && !(bridge.isKillstreakCount())) {
                     pointStructure.getPlayer().setPoints(1);
                     foundFirstBlood = true;
                 }
@@ -123,12 +116,17 @@ public class PointHandler {
                 }
             }
         }
+        if (!endOfGame){
+            deaths.addKill(killShot,foundLastShot);
+            if (frenzyRegenartion && !(bridge.isKillstreakCount())){
+                bridge.setFrenzy();
+                bridge.setKillStreakCount();
+            }
+            else{
+                bridge.setPointsUsed();
+                bridge.addKill();
 
-        if (!endOfGame) {
-            bridge.setPointsUsed();
-            bridge.addKill();
-            deaths.addKill(killShot, foundLastShot);
-
+            }
         }
     }
 

@@ -9,18 +9,28 @@ class DamageBridge {
 
     private List<Shots> shots = new ArrayList<>();
     private List<Shots> marks = new ArrayList<>();
-
+    private boolean killStreakCount=false;
     DamageBridge() {
     }
 
     List<Shots> getShots() {
-
-        return this.shots;
+        List<Shots> temp = new ArrayList<>();
+        temp.addAll(this.shots);
+        return temp;
     }
 
     List<Shots> getMarks() {
+        List<Shots> temp= new ArrayList<>();
+        temp.addAll(this.marks);
+        return  temp;
+    }
 
-        return this.marks;
+    public void setKillStreakCount() {
+        this.killStreakCount = true;
+    }
+
+    public boolean isKillStreakCount() {
+        return killStreakCount;
     }
 
     void appendShot(Color color, int quantity) {
@@ -55,16 +65,19 @@ class DamageBridge {
     }
 
     boolean isDead() {
-
-        return this.shots.size() >= 11;
+       return this.shots.size()>=11;
+    }
+    public void clearShots(){
+        this.shots.clear();
     }
 
-    void endOfGame() {
+     /*void endOfGame() {
 
         for (Shots shot : this.marks) {
             this.appendShot(shot.getColor(), 1);
         }
     }
+    */
 
     Adrenalin checkAdrenalin() {
 

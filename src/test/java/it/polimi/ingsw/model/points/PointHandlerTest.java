@@ -65,6 +65,9 @@ class PointHandlerTest {
         player1.damagePlayer(player2.getPlayerColor(), 6);
         player1.damagePlayer(player3.getPlayerColor(), 6);
         pointHandler.checkIfDead();
+        for (Player player: playerList){
+            System.out.println("" + player + player.getPoints());
+        }
         assertEquals(player2.getPoints(), 16);
         assertEquals(player3.getPoints(), 10);
         assertEquals(player3.getMarks().size(), 2);

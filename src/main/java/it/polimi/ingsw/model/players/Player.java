@@ -81,8 +81,8 @@ public class Player implements Target {
     }
 
     public void setFrenzy() {
-
         this.bridge.setFrenzy();
+        this.bridge.setKillStreakCount();
     }
 
     public List<Shots> getShots() {

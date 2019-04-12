@@ -30,7 +30,9 @@ class DeathsTest {
         }
         player3.damagePlayer(player1.getPlayerColor(), 4);
         pointHandler.checkIfDead();
-        pointHandler.setFrenzy(false);
+        for (Player player5: playerList){
+            System.out.println( ""+player5.getPoints()+ player5.getPlayerColor());
+        }
         player3.damagePlayer(player2.getPlayerColor(), 3);
         player3.damagePlayer(player1.getPlayerColor(), 2);
         player3.damagePlayer(player2.getPlayerColor(), 10);
@@ -40,6 +42,9 @@ class DeathsTest {
         player2.setPoints(-3);
         player3.setPoints(+10);
         player4.setPoints(+28);
+        for (Player p: playerList){
+            System.out.println(p.getPoints());
+        }
         assertEquals(player1.getPoints(), 18);
         assertEquals(player2.getPoints(), 19);
         assertEquals(player3.getPoints(), 28);

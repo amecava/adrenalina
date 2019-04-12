@@ -7,9 +7,7 @@ import java.util.List;
 public class Bridge {
 
     private Color color;
-
     private int points = 0;
-
     private DeathBridge deathBridge = new DeathBridge();
     private DamageBridge damageBridge = new DamageBridge();
     private ActionBridge actionBridge = new ActionBridge();
@@ -18,7 +16,9 @@ public class Bridge {
 
         this.color = color;
     }
-
+    public void setKillStreakCount(){
+        this.damageBridge.setKillStreakCount();
+    }
     public Color getColor() {
 
         return this.color;
@@ -47,7 +47,7 @@ public class Bridge {
     public void setPointsUsed() {
 
         this.deathBridge.setPointsUsed();
-        this.damageBridge.getShots().clear();
+        this.damageBridge.clearShots();
     }
 
     public void setFrenzy() {
@@ -59,7 +59,9 @@ public class Bridge {
 
         return this.damageBridge.getShots();
     }
-
+    public boolean isKillstreakCount(){
+        return this.damageBridge.isKillStreakCount();
+    }
     public List<Shots> getMarks() {
 
         return this.damageBridge.getMarks();
