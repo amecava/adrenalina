@@ -18,6 +18,7 @@ public class Player implements Target {
     private Color playerColor;
 
     private Bridge bridge;
+    private PointStructure pointStructure;
 
     private List<Card> weaponHand = new ArrayList<>();
 
@@ -25,8 +26,8 @@ public class Player implements Target {
 
         this.playerId = playerId;
         this.playerColor = playerColor;
-
         this.bridge = new Bridge(playerColor);
+        this.pointStructure = new PointStructure(this);
     }
 
     public String getPlayerId() {
@@ -44,12 +45,6 @@ public class Player implements Target {
         return this.bridge;
     }
 
-    @Override
-    public String toString() {
-
-        return this.playerId;
-    }
-
     public Card getWeaponCard(int index) {
 
         return this.weaponHand.get(index);
@@ -58,6 +53,16 @@ public class Player implements Target {
     public void setWeaponHand(List<Card> weaponHand) {
 
         this.weaponHand = weaponHand;
+    }
+
+    public void addCardToHand(Card card) throws CardException {
+
+        if (weaponHand.size() < 3) {
+            weaponHand.add(card);
+        } else {
+
+            throw new MaxCardException("You already have 3 cards in your hand!", card);
+        }
     }
 
     public int getPoints() {
@@ -70,14 +75,9 @@ public class Player implements Target {
         this.bridge.setPoints(points);
     }
 
-    public int calculatePoints() {
+    public PointStructure createPointStructure(List<Shots> shots) {
 
-        return this.bridge.calculatePoints();
-    }
-
-    public void setPointsUsed() {
-
-        this.bridge.setPointsUsed();
+        return this.pointStructure.createPointStructure(shots);
     }
 
     public void setFrenzy() {
@@ -123,6 +123,7 @@ public class Player implements Target {
         return this.bridge.getOldPosition();
     }
 
+    @Override
     public Square getCurrentPosition() {
 
         return this.bridge.getCurrentPosition();
@@ -131,40 +132,5 @@ public class Player implements Target {
     public void setCurrentPosition(Square currentPosition) {
 
         this.bridge.setCurrentPosition(currentPosition);
-    }
-
-    public void addCardToHand(Card card) throws CardException {
-
-        if (weaponHand.size() < 3) {
-            weaponHand.add(card);
-        } else {
-            throw new MaxCardException("You already have 3 cards in your hand!", card);
-        }
-    }
-
-    public PointStructure countPoints(List<Shots> shots) {
-
-        int tempPoints = 0;
-        int firstShot = 0;
-        int lastShot = 0;
-        int counter = 0;
-
-        boolean foundFirstShot = false;
-
-        for (Shots shots1 : shots) {
-            counter++;
-
-            if (shots1.getColor().equals(this.getPlayerColor())) {
-                tempPoints++;
-                lastShot = counter;
-
-                if (!foundFirstShot) {
-                    firstShot = counter;
-                    foundFirstShot = true;
-                }
-            }
-        }
-
-        return new PointStructure(this, tempPoints, firstShot, lastShot);
     }
 }

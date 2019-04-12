@@ -13,8 +13,8 @@ public class Square implements Target {
     private int squareId;
     private Room myRoom;
 
-    private EnumMap<Direction, Square> adjacent = new EnumMap<>(Direction.class);
-    private EnumMap<Direction, Connection> connection = new EnumMap<>(Direction.class);
+    private Map<Direction, Square> adjacent = new EnumMap<>(Direction.class);
+    private Map<Direction, Connection> connection = new EnumMap<>(Direction.class);
 
     private Map<Boolean, HashMap<Square, Integer>> map = new HashMap<>();
 
@@ -69,7 +69,7 @@ public class Square implements Target {
         return !connection.equals(Connection.ENDMAP);
     }
 
-    public HashMap<Square, Integer> getMap(boolean throughWalls) {
+    public Map<Square, Integer> getMap(boolean throughWalls) {
 
         return this.map.get(throughWalls);
     }
@@ -91,16 +91,8 @@ public class Square implements Target {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Square square = (Square) o;
-        return squareId == square.squareId &&
-                myRoom.equals(square.myRoom);
-    }
+    public Square getCurrentPosition() {
 
+        return this;
+    }
 }

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.points;
 
 import it.polimi.ingsw.model.players.Player;
+import it.polimi.ingsw.model.players.bridges.Shots;
+import java.util.List;
 
 public class PointStructure {
 
@@ -10,13 +12,8 @@ public class PointStructure {
     private int firstDamage;
     private int lastDamage;
 
-    public PointStructure(Player player, int numberDamage, int firstDamage, int lastDamage) {
-
-        this.player = player;
-
-        this.numberDamage = numberDamage;
-        this.firstDamage = firstDamage;
-        this.lastDamage = lastDamage;
+    public PointStructure(Player player) {
+        this.player=player;
     }
 
     public Player getPlayer() {
@@ -52,5 +49,26 @@ public class PointStructure {
     public void setLastDamage(int lastDamage) {
 
         this.lastDamage = lastDamage;
+    }
+
+    public PointStructure createPointStructure(List<Shots> shots) {
+
+        this.numberDamage = 0;
+        boolean foundFirstShot = false;
+
+        for (int i = 0; i < shots.size(); i++) {
+
+            if (shots.get(i).getColor().equals(this.player.getPlayerColor())) {
+                this.numberDamage++;
+                this.lastDamage = i + 1;
+
+                if (!foundFirstShot) {
+                    this.firstDamage = i + 1;
+                    foundFirstShot = true;
+                }
+            }
+        }
+
+        return this;
     }
 }

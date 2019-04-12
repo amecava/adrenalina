@@ -18,11 +18,6 @@ class DamageBridge {
         return this.shots;
     }
 
-    void setShots(List<Shots> shots) {
-
-        this.shots = shots;
-    }
-
     List<Shots> getMarks() {
 
         return this.marks;
@@ -48,8 +43,8 @@ class DamageBridge {
 
         int tempMarker = 0;
 
-        for (Shots shot : this.marks) {
-            if (shot.getColor().equals(color)) {
+        for (Shots mark : this.marks) {
+            if (mark.getColor().equals(color)) {
                 tempMarker++;
             }
         }

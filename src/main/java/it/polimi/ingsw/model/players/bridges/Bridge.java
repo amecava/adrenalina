@@ -34,16 +34,6 @@ public class Bridge {
         this.points += points;
     }
 
-    public DeathBridge getDeathBridge() {
-
-        return deathBridge;
-    }
-
-    public int getKills() {
-
-        return this.deathBridge.getKills();
-    }
-
     public void addKill() {
 
         this.deathBridge.addKill();
@@ -68,11 +58,6 @@ public class Bridge {
     public List<Shots> getShots() {
 
         return this.damageBridge.getShots();
-    }
-
-    public void setShots(List<Shots> shots) {
-
-        this.damageBridge.setShots(shots);
     }
 
     public List<Shots> getMarks() {

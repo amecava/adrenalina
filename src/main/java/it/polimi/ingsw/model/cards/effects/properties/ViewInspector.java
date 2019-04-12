@@ -3,15 +3,17 @@ package it.polimi.ingsw.model.cards.effects.properties;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
-import it.polimi.ingsw.model.exceptions.board.SquareException;
+import it.polimi.ingsw.model.cards.Target;
+import it.polimi.ingsw.model.exceptions.properties.SquareDistanceException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 class ViewInspector {
 
     int computeDistance(Square fromSquare, Square toSquare, boolean cardinal,
-            boolean throughWalls) throws SquareException {
+            boolean throughWalls) throws SquareDistanceException {
 
         if (cardinal) {
             return computeCardinalDistance(fromSquare, toSquare, throughWalls);
@@ -21,8 +23,32 @@ class ViewInspector {
 
     }
 
+    boolean targetView(Square fromSquare, Square toSquare) {
+
+        if (fromSquare.getMyRoom().equals(toSquare.getMyRoom())) {
+            return true;
+        }
+
+        for (Direction dir : Direction.values()) {
+            if (fromSquare.getConnection(dir) == Connection.DOOR && fromSquare.getAdjacent(dir)
+                    .getMyRoom().getSquaresList().contains(toSquare)) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    boolean sameDirection(Square fromSquare, List<Target> targetList) {
+
+        // TODO
+        
+        return true;
+    }
+
     private int computeCardinalDistance(Square fromSquare, Square toSquare,
-            boolean throughWalls) throws SquareException {
+            boolean throughWalls) throws SquareDistanceException {
 
         int count = 0;
         Square square;
@@ -35,7 +61,8 @@ class ViewInspector {
                 count = 0;
                 square = fromSquare;
 
-                while (square.getAdjacent(dir) != null && (square.getConnection(dir) != Connection.WALL || throughWalls)) {
+                while (square.getAdjacent(dir) != null && (
+                        square.getConnection(dir) != Connection.WALL || throughWalls)) {
 
                     square = square.getAdjacent(dir);
 
@@ -48,7 +75,7 @@ class ViewInspector {
             }
         }
 
-        throw new SquareException("Destination square not found!");
+        throw new SquareDistanceException("Target not in cardinal direction!");
     }
 
     private int distance(Map<Square, Integer> map, Square toSquare,
@@ -83,22 +110,4 @@ class ViewInspector {
 
         return this.distance(map, toSquare, throughWalls);
     }
-
-    boolean targetView(Square fromSquare, Square toSquare) {
-
-        if (fromSquare.getMyRoom().equals(toSquare.getMyRoom())) {
-            return true;
-        }
-
-        for (Direction dir : Direction.values()) {
-            if (fromSquare.getConnection(dir) == Connection.DOOR && fromSquare.getAdjacent(dir)
-                    .getMyRoom().getSquaresList().contains(toSquare)) {
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 }

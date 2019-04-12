@@ -5,6 +5,5 @@ public enum EffectType {
     PLAYER,
     SQUARE,
     ROOM,
-    COMBINED,
-    MOVETT
+    COMBINED
 }

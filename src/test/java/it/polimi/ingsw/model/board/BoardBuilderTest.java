@@ -11,6 +11,7 @@ class BoardBuilderTest {
 
     @Test
     void buildBoard() {
+
         Board board = new Board.BoardBuilder(0).build();
 
         assertEquals(board.getRoomsList(0).getColor(), Color.BLUE);

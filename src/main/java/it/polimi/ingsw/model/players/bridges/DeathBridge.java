@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.players.bridges;
 
-import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.points.PointsOfDeath;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +16,6 @@ class DeathBridge {
         this.pointsOfDeaths.add(new PointsOfDeath(6));
         this.pointsOfDeaths.add(new PointsOfDeath(4));
         this.pointsOfDeaths.add(new PointsOfDeath(2));
-    }
-
-    int getKills() {
-
-        return this.kills;
     }
 
     void addKill() {

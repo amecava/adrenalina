@@ -1,38 +1,37 @@
 package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.players.bridges.Bridge;
 import it.polimi.ingsw.model.players.bridges.Shots;
-import java.util.ArrayList;
 import java.util.List;
 
-public class Deaths {
+public class Deaths extends Bridge {
 
     private int maxNumberOfDeaths;
 
-    private List<Shots> killStreak = new ArrayList<>();
-
     public Deaths(int maxNumberOfDeaths) {
 
+        super(Color.EOG);
         this.maxNumberOfDeaths = maxNumberOfDeaths;
     }
 
     public List<Shots> getKillStreak() {
 
-        return this.killStreak;
+        return this.getShots();
     }
 
     public void addKill(Color color, boolean infer) {
 
         if (infer) {
             this.maxNumberOfDeaths++;
-            killStreak.add(new Shots(color));
+            this.appendShot(color, 1);
         }
 
-        this.killStreak.add(new Shots(color));
+        this.appendShot(color, 1);
     }
 
     public boolean checkEndGame() {
 
-        return this.killStreak.size() >= this.maxNumberOfDeaths;
+        return this.getShots().size() >= this.maxNumberOfDeaths;
     }
 }

@@ -19,7 +19,7 @@ public class PlayerDamage implements AtomicEffect {
         Stream<Player> target;
 
         try {
-            // Cast the targets to Player.class
+            // Cast the targets to Player
             target = targetList.stream()
                     .map(x -> (Player) x);
 

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
+import it.polimi.ingsw.model.exceptions.FileException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.players.Player;
 import java.io.FileReader;

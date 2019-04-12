@@ -1,4 +1,5 @@
 /*
+!lib/
 !src/
 !pom.xml
 !README.md
@@ -6,4 +7,3 @@
 !.gitignore
 !.gitattributes
 !deliverable/
-!lib/

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.cards.effects;
 
+import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
-import it.polimi.ingsw.model.cards.effects.properties.Properties;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +11,7 @@ public class Effect {
     private int id;
     private int args;
     private String name;
+    private String description;
     private EffectType effectType;
 
     private boolean used;
@@ -18,17 +19,29 @@ public class Effect {
     private Effect next;
     private List<Integer> optionalID;
 
-    private Properties effectProperties;
+    private List<Ammo> cost;
+    private Boolean activated;
+
+    private Integer maxTargets;
+    private List<Boolean> sameAsFather;
+    private Boolean sameAsPlayer;
+    private Boolean targetView;
+    private Boolean seenByActive;
+
+    private Integer minDist;
+    private Integer maxDist;
+    private boolean cardinal;
+    private boolean throughWalls;
+    private boolean differentSquares;
 
     private List<AtomicEffect> atomicEffectList;
-
-    private String description;
 
     private Effect(EffectBuilder builder) {
 
         this.id = builder.id;
         this.args = builder.args;
         this.name = builder.name;
+        this.description = builder.description;
         this.effectType = builder.effectType;
 
         this.used = builder.used;
@@ -36,11 +49,22 @@ public class Effect {
         this.next = builder.next;
         this.optionalID = builder.optionalID;
 
-        this.effectProperties = builder.effectProperties;
+        this.cost = builder.cost;
+        this.activated = builder.activated;
+
+        this.maxTargets = builder.maxTargets;
+        this.sameAsFather = builder.sameAsFather;
+        this.sameAsPlayer = builder.sameAsPlayer;
+        this.targetView = builder.targetView;
+        this.seenByActive = builder.seenByActive;
+
+        this.minDist = builder.minDist;
+        this.maxDist = builder.maxDist;
+        this.cardinal = builder.cardinal;
+        this.throughWalls = builder.throughWalls;
+        this.differentSquares = builder.differentSquares;
 
         this.atomicEffectList = builder.atomicEffectList;
-
-        this.description = builder.description;
     }
 
     public int getId() {
@@ -56,6 +80,11 @@ public class Effect {
     public String getName() {
 
         return this.name;
+    }
+
+    public String getDescription() {
+
+        return this.description;
     }
 
     public EffectType getEffectType() {
@@ -83,19 +112,79 @@ public class Effect {
         return this.optionalID;
     }
 
-    public Properties getEffectProperties() {
+    public List<Ammo> getCost() {
 
-        return this.effectProperties;
+        return this.cost;
+    }
+
+    public Boolean getActivated() {
+
+        return this.activated;
+    }
+
+    public void setActivated(Boolean activated) {
+
+        this.activated = activated;
+    }
+
+    public Integer getMaxTargets() {
+
+        return this.maxTargets;
+    }
+
+    public List<Boolean> getSameAsFather() {
+
+        return this.sameAsFather;
+    }
+
+    public Boolean getSameAsFather(int index) {
+
+        return this.sameAsFather.get(index);
+    }
+
+    public Boolean getSameAsPlayer() {
+
+        return this.sameAsPlayer;
+    }
+
+    public Boolean getTargetView() {
+
+        return this.targetView;
+    }
+
+    public Boolean getSeenByActive() {
+
+        return this.seenByActive;
+    }
+
+    public Integer getMinDist() {
+
+        return this.minDist;
+    }
+
+    public Integer getMaxDist() {
+
+        return this.maxDist;
+    }
+
+    public boolean isCardinal() {
+
+        return this.cardinal;
+    }
+
+    public boolean isThroughWalls() {
+
+        return this.throughWalls;
+    }
+
+    public boolean isDifferentSquares() {
+
+        return this.differentSquares;
     }
 
     public List<AtomicEffect> getAtomicEffectList() {
 
         return this.atomicEffectList;
-    }
-
-    public String getDescription() {
-
-        return this.description;
     }
 
     public void appendAtomicEffect(AtomicEffect atomicEffect) {
@@ -105,7 +194,6 @@ public class Effect {
         }
 
         this.atomicEffectList.add(atomicEffect);
-
     }
 
     public void execute(Target source, List<Target> target) {
@@ -120,6 +208,7 @@ public class Effect {
         private int id;
         private int args;
         private String name;
+        private String description;
         private EffectType effectType;
 
         private boolean used = false;
@@ -127,49 +216,29 @@ public class Effect {
         private Effect next;
         private List<Integer> optionalID = new ArrayList<>();
 
-        private Properties effectProperties;
+        private List<Ammo> cost;
+        private Boolean activated = null;
+
+        private Integer maxTargets = null;
+        private List<Boolean> sameAsFather = null;
+        private boolean sameAsPlayer = false;
+        private Boolean targetView = null;
+        private Boolean seenByActive = null;
+
+        private Integer minDist = null;
+        private Integer maxDist = null;
+        private boolean cardinal = false;
+        private boolean throughWalls = false;
+        private boolean differentSquares = false;
 
         private List<AtomicEffect> atomicEffectList = new ArrayList<>();
 
-        private String description;
-
-        public EffectBuilder(int id, EffectType effectType, Properties effectProperties) {
+        public EffectBuilder(int id) {
 
             this.id = id;
-
-            this.effectType = effectType;
-            this.effectProperties = effectProperties;
         }
 
-        public EffectBuilder setArgs(int args) {
-
-            this.args = args;
-            return this;
-        }
-
-        public EffectBuilder setName(String name) {
-
-            this.name = name;
-            return this;
-        }
-
-        public EffectBuilder setNext(Effect next) {
-
-            this.next = next;
-            return this;
-        }
-
-        public EffectBuilder appendOptionalID(Integer optionalID) {
-
-            this.optionalID.add(optionalID);
-            return this;
-        }
-
-        public EffectBuilder setDescription(String description) {
-
-            this.description = description;
-            return this;
-        }
+        // TODO
 
         public Effect build() {
 

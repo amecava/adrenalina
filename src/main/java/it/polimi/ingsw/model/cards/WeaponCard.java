@@ -6,6 +6,8 @@ import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
+import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
+import it.polimi.ingsw.model.exceptions.cards.OwnerNotActiveException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
@@ -48,6 +50,11 @@ public class WeaponCard implements Card {
         this.notes = builder.notes;
     }
 
+    public Player getOwner() {
+
+        return this.owner;
+    }
+
     public void setOwner(Player owner) {
 
         this.owner = owner;
@@ -80,24 +87,14 @@ public class WeaponCard implements Card {
         return this.loaded;
     }
 
-    public Effect getPrimary() {
+    public void setLoaded(boolean loaded) {
 
-        return this.primary;
-    }
-
-    public Effect getAlternative() {
-
-        return this.alternative;
+        this.loaded = loaded;
     }
 
     public List<Effect> getOptional() {
 
         return this.optional;
-    }
-
-    public Effect getOptional(int index) {
-
-        return this.optional.get(index);
     }
 
     public String getNotes() {
@@ -107,67 +104,92 @@ public class WeaponCard implements Card {
 
     public void reloadWeapon() {
 
+        // If the card is not loaded
         if (!this.loaded) {
-            // check this.reloadCost
-            // Remove cost from player
+            // TODO Check reload cost
+            // TODO Remove reload cost from player
 
-            this.loaded = true;
-
+            // Set primary effect used flag to false
             this.primary.setUsed(false);
 
+            // Set alternative effect used flag to false if present
             if (this.alternative != null) {
+
                 this.alternative.setUsed(false);
             }
 
+            // Set optional effects used flag to false
             this.optional.forEach(x ->
                     x.setUsed(false));
 
+            // Deactivate optionals if they've been activated
             this.optional.forEach(x -> {
-                if (x.getEffectProperties().getActivated() != null) {
-                    x.getEffectProperties().setActivated(false);
+                if (x.getActivated() != null) {
+                    x.setActivated(false);
                 }
             });
+
+            // Set card loaded flag to true
+            this.loaded = true;
         }
-    }
-
-    public void unloadWeapon() {
-
-        this.loaded = false;
     }
 
     public void useCard() throws CardException {
 
-        effectHandler.setPlayerCard(this.owner, this);
+        // Launch exception if owner of card is not the active player
+        if (!this.effectHandler.getActivePlayer().equals(this.owner)) {
+
+            throw new OwnerNotActiveException("Can't use this card right now!");
+        }
+
+        // Launch exception if the card is not loaded
+        if (!this.loaded) {
+
+            throw new CardNotLoadedException("Weapon not loaded!");
+        }
     }
 
     public void usePrimary(Square square, List<Target> target)
             throws EffectException, PropertiesException {
 
-        effectHandler.useEffect(this.primary, square, target);
+        // Execute primary effect
+        this.effectHandler.useEffect(this.primary, square, target);
+        this.effectHandler.updateCardUsageVariables(this.primary, this);
     }
 
     public void useAlternative(Square square, List<Target> target)
             throws CardException, EffectException, PropertiesException {
 
+        // Launch exception if alternative effect not present
         if (this.alternative == null) {
+
             throw new CardException("Alternative effect not present!");
         }
 
-        // check this.alternative.getEffectProperties().getCost() PropertiesException
+        // TODO Check effect cost
+        // TODO Remove effect cost from player
 
-        effectHandler.useEffect(this.alternative, square, target);
+        // Execute alternative effect
+        this.effectHandler.useEffect(this.alternative, square, target);
+        this.effectHandler.updateCardUsageVariables(this.alternative, this);
     }
 
     public void useOptional(int index, Square square, List<Target> target)
             throws CardException, EffectException, PropertiesException {
 
+        // Launch exception if the optional effect at selected index doesn't exists
         try {
-            // check this.optional.get(index).getEffectProperties().getCost() PropertiesException
+
+            // TODO Check effect cost
+            // TODO Remove effect cost from player
         } catch (IndexOutOfBoundsException e) {
+
             throw new CardException("Optional effect at selected index not present!");
         }
 
-        effectHandler.useEffect(this.optional.get(index), square, target);
+        // Execute optional effect
+        this.effectHandler.useEffect(this.optional.get(index), square, target);
+        this.effectHandler.updateCardUsageVariables(this.optional.get(index), this);
     }
 
     public static class WeaponCardBuilder {
@@ -187,48 +209,14 @@ public class WeaponCard implements Card {
 
         private String notes;
 
-        public WeaponCardBuilder(EffectHandler effectHandler, int id, String name, List<Ammo> cost,
-                Effect primary) {
+        public WeaponCardBuilder(EffectHandler effectHandler, int id) {
 
             this.effectHandler = effectHandler;
 
             this.id = id;
-
-            this.name = name;
-            this.reloadCost = cost;
-
-            this.primary = primary;
         }
 
-        public WeaponCardBuilder setAlternative(Effect alternative) throws CardException {
-
-            if (!this.optional.isEmpty()) {
-                throw new CardException("Can't set alternative if optional present!");
-            }
-
-            this.alternative = alternative;
-            return this;
-        }
-
-        public WeaponCardBuilder appendOptional(Effect optional) throws CardException {
-
-            if (this.alternative != null) {
-                throw new CardException("Can't set optional if alternative present!");
-            }
-
-            if (this.optional.size() >= 2) {
-                throw new CardException("Optional slots full!");
-            }
-
-            this.optional.add(optional);
-            return this;
-        }
-
-        public WeaponCardBuilder setNote(String notes) {
-
-            this.notes = notes;
-            return this;
-        }
+        // TODO
 
         public WeaponCard build() {
 

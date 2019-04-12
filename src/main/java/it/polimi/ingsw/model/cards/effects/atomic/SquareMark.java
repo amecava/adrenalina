@@ -21,7 +21,7 @@ public class SquareMark implements AtomicEffect {
         Stream<Player> target;
 
         try {
-            // Get the targets from squares, cast them to Player.class and filter the source
+            // Get the targets from squares, cast them to Player and filter the source
             target = targetList.stream()
                     .map(x -> (Square) x)
                     .flatMap(x -> x.getPlayers().stream())

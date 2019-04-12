@@ -8,9 +8,6 @@ import java.util.stream.Stream;
 
 public class MovePlayer implements AtomicEffect {
 
-    public MovePlayer() {
-    }
-
     @Override
     public void execute(Target source, List<Target> targetList) {
 
@@ -21,7 +18,7 @@ public class MovePlayer implements AtomicEffect {
             // Get the move destination from the head of the target list
             destination = (Square) targetList.remove(0);
 
-            // Cast the remaining targets to Player.class
+            // Cast the remaining targets to Player
             target = targetList.stream()
                     .map(x -> (Player) x);
 

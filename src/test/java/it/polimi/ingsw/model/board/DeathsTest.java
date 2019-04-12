@@ -13,6 +13,7 @@ class DeathsTest {
 
     @Test
     void endGame() {
+
         List<Player> playerList = new ArrayList<>();
         Player player1 = new Player("Jacopo", Color.BLUE);
         playerList.add(player1);
@@ -43,6 +44,4 @@ class DeathsTest {
         assertEquals(player2.getPoints(), 19);
         assertEquals(player3.getPoints(), 28);
     }
-
-
 }

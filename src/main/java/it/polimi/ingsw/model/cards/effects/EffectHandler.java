@@ -3,13 +3,12 @@ package it.polimi.ingsw.model.cards.effects;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.WeaponCard;
-import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
 import it.polimi.ingsw.model.exceptions.effects.EffectCallException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.effects.EffectNotActivatedException;
 import it.polimi.ingsw.model.exceptions.effects.EffectUsedException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
-import it.polimi.ingsw.model.cards.effects.properties.PropertyChecker;
+import it.polimi.ingsw.model.cards.effects.properties.PropertiesAnalyzer;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EffectHandler {
-
-    private WeaponCard card;
 
     private Player activePlayer;
     private Square activeSquare;
@@ -28,29 +25,36 @@ public class EffectHandler {
     private List<Player> active = new ArrayList<>();
     private List<Player> inactive = new ArrayList<>();
 
-    private PropertyChecker propertyChecker = new PropertyChecker();
+    private PropertiesAnalyzer propertiesAnalyzer = new PropertiesAnalyzer();
 
     public EffectHandler() {
     }
 
-    public void setPlayerCard(Player activePlayer, WeaponCard card) throws CardNotLoadedException {
+    public Player getActivePlayer() {
 
-        if (!card.isLoaded()) {
-            throw new CardNotLoadedException("Weapon not loaded!");
-        }
+        return this.activePlayer;
+    }
 
-        this.activePlayer = activePlayer;
-        this.activeSquare = activePlayer.getCurrentPosition();
-
-        this.card = card;
+    public void setActivePlayer(Player activePlayer) {
 
         this.target.clear();
         this.active.clear();
         this.inactive.clear();
+
+        this.activePlayer = activePlayer;
+        this.activeSquare = activeSquare.getCurrentPosition();
     }
 
     public void useEffect(Effect effect, Square square, List<Target> target)
             throws EffectException, PropertiesException {
+
+        if (effect.isUsed()) {
+            throw new EffectUsedException("Effect already used!");
+        }
+
+        if (!effect.getActivated()) {
+            throw new EffectNotActivatedException("You can't use this effect right now!");
+        }
 
         if (effect.getArgs() == 0 && (square != null || target != null)) {
             throw new EffectCallException("Wrong number of arguments to method call!");
@@ -64,48 +68,38 @@ public class EffectHandler {
             target.add(0, square);
         }
 
-        if (effect.isUsed()) {
-            throw new EffectUsedException("Effect already used!");
-        }
-
-        if (!effect.getEffectProperties().getActivated()) {
-            throw new EffectNotActivatedException("You can't use this effect right now!");
-        }
-
         this.createTargetList(effect, target);
 
         this.checkProperties(effect, this.target).execute(this.activePlayer, this.target);
 
-        this.executeNextIfEffectType(effect);
-
-        this.updateCardVariables(effect);
-        this.updateActiveInactive(square, this.target);
+        this.executeNextIfPresent(effect);
+        this.updateActiveInactive(square);
     }
 
-    private void updateCardVariables(Effect effect) {
+    public void updateCardUsageVariables(Effect effect, WeaponCard card) {
 
         effect.setUsed(true);
 
-        if (this.card.isLoaded()) {
-            this.card.unloadWeapon();
+        if (card.isLoaded()) {
+            card.setLoaded(false);
         }
 
         effect.getOptionalID().forEach(x ->
-                this.card.getOptional().forEach(y -> {
+                card.getOptional().forEach(y -> {
                     if (x == y.getId()) {
-                        y.getEffectProperties().setActivated(true);
+                        y.setActivated(true);
                     }
                 })
         );
     }
 
-    private void updateActiveInactive(Square square, List<Target> target) {
+    private void updateActiveInactive(Square square) {
 
         if (square != null) {
             this.activeSquare = square;
         }
 
-        target.stream()
+        this.target.stream()
                 .filter(x -> x != this.activePlayer)
                 .forEach(x -> {
                     if (this.active.contains(x)) {
@@ -122,82 +116,78 @@ public class EffectHandler {
 
         if (target != null) {
             this.target.addAll(target);
-        } else if (effect.getEffectProperties().getSameAsFather().get(0)) {
-            this.target.add(this.active.get(0));
-        } else if (effect.getEffectProperties().isCardinal()) {
+
+        } else if (effect.getSameAsFather().stream().allMatch(Boolean::booleanValue)) {
+            this.target.addAll(this.active);
+
+        } else if (effect.isDifferentSquares()) {
             this.target.addAll(this.activeSquare.getAdjacent());
-        } else if (effect.getEffectProperties().getSameAsPlayer()) {
-            if (effect.getEffectType() == EffectType.PLAYER) {
+
+        } else if (effect.getSameAsPlayer()) {
+            if (effect.getEffectType().equals(EffectType.PLAYER)) {
                 this.target.add(this.activePlayer);
-            } else if (effect.getEffectType() == EffectType.SQUARE) {
+
+            } else if (effect.getEffectType().equals(EffectType.SQUARE)) {
                 this.target.add(0, this.activeSquare);
             }
         }
     }
 
-    private void executeNextIfEffectType(Effect effect) {
+    private void executeNextIfPresent(Effect effect) {
 
-        if (effect.getEffectType() == EffectType.COMBINED) {
-            if (effect.getEffectProperties().getMaxTargets() == 0) {
-                this.target.addAll(this.active.get(0).getOldPosition().getPlayers());
+        if (effect.getNext().getEffectType() == EffectType.COMBINED) {
+            if (effect.getNext().getSameAsFather().stream().allMatch(Boolean::booleanValue)) {
 
-                effect.getNext().execute(this.activePlayer, this.target);
-            } else if (effect.getEffectProperties().getMaxTargets() == 1) {
-                effect.getNext().execute(
-                        this.activePlayer,
-                        this.target.stream()
-                                .map(x -> ((Player) x).getCurrentPosition())
-                                .collect(Collectors.toList()));
-            } else if (effect.getEffectProperties().getMaxTargets() == 2) {
-                effect.getNext().execute(
-                        this.activePlayer,
-                        this.target
-                                .subList(0, effect.getNext().getEffectProperties().getMaxDist()));
+                if (effect.getNext().getMaxTargets() == null) {
+
+                    effect.getNext().execute(this.activePlayer,
+                            this.target.stream().map(Target::getCurrentPosition)
+                                    .collect(Collectors.toList()));
+                } else {
+
+                    effect.getNext().execute(this.activePlayer,
+                            this.target.subList(0, effect.getNext().getMaxTargets()));
+                }
+
+            } else if (effect.getNext().getSameAsPlayer()) {
+                effect.getNext().execute(this.activePlayer, new ArrayList<>(Arrays.asList(
+                        (this.target.get(effect.getMaxTargets() - 1)).getCurrentPosition(),
+                        this.activePlayer)));
+
+            } else if (effect.getNext().isDifferentSquares()) {
+                this.target.addAll(this.active.stream()
+                        .flatMap(x -> x.getOldPosition().getPlayers().stream()).distinct()
+                        .collect(Collectors.toList()));
+
+                effect.getNext().execute(this.activePlayer,
+                        this.target.stream().distinct().collect(Collectors.toList()));
             }
-        } else if (effect.getEffectType() == EffectType.MOVETT) {
-            effect.getNext().execute(
-                    this.activePlayer,
-                    new ArrayList<>(Arrays.asList(
-                            ((Player) this.target
-                                    .get(effect.getEffectProperties().getMaxTargets() - 1))
-                                    .getCurrentPosition(),
-                            this.activePlayer)));
         }
     }
 
     private Effect checkProperties(Effect effect, List<Target> target) throws PropertiesException {
 
-        propertyChecker.setProperties(effect.getEffectProperties());
+        this.propertiesAnalyzer.setEffect(effect);
 
-        /*
-        propertyChecker.maxTargets(target); if args == 2 target.subList(1, size())
-        propertyChecker.sameAsFather(this.active, this.inactive, target); if args == 2  target.subList(1, size())
-        propertyChecker.targetView(this.activePlayer, target.getSquare()); if args == 2 target.subList(1, size())
-        propertyChecker.seenByActive(this.active, target);
+        this.propertiesAnalyzer
+                .maxTargets(effect.getArgs() != 2 ? target : target.subList(1, target.size()));
+        this.propertiesAnalyzer.sameAsFather(this.active, this.inactive,
+                effect.getArgs() != 2 ? target : target.subList(1, target.size()));
+        this.propertiesAnalyzer.targetView(this.activePlayer,
+                effect.getArgs() != 2 ? target : target.subList(1, target.size()));
+        this.propertiesAnalyzer.seenByActive(this.active, target);
 
-        propertyChecker.minDist(this.activeSquare, target.getSquare()); if args == 2  target.subList(1, size()).getSquare()
-        propertyChecker.maxDist(this.activeSquare, target.getSquare()); if args == 2(target.get(0), target.subList(1, size()).getSquare())
-        propertyChecker.cardinal(this.activeSquare, target.getSquare());
-        propertyChecker.throughWalls(this.activeSquare, target.getSquare());
-        propertyChecker.checkDifferentSquares(target)
+        this.propertiesAnalyzer.checkDistance(this.activeSquare,
+                effect.getArgs() != 2 ? target : target.subList(1, target.size()));
+        this.propertiesAnalyzer.checkCardinal(this.activeSquare, target);
 
-        propertyChecker.sameAsPlayer(this.activePlayer, target);
-                                                                if (effect.getEffectProperties().getSameAsPlayer()) {
-                                                                    if args == 0 1
-                                                                        if (effect.getEffectType() == EffectType.PLAYER)
-                                                                            this.target.add(this.activePlayer);
-                                                                        else if (effect.getEffectType() == EffectType.SQUARE)
-                                                                            this.target.add(0, this.activeSquare);
-                                                                    else if args == 2
-                                                                        if target.getCurrentPosition != this.activePlayer.getCurrentPosition
-                                                                            throw new exception
-                                                                 else
-                                                                    if activePlayer in target
-                                                                        throw new exception
+        this.target = this.propertiesAnalyzer
+                .sameAsPlayer(effect.getArgs() == 2, this.activePlayer, this.activeSquare, target);
 
-        if args == 2 ad != COMBI
-            return checkProperties(effect.getSequence(), target.get(0))
-        */
+        if (effect.getNext() != null && effect.getNext().getEffectType() != EffectType.COMBINED) {
+
+            return checkProperties(effect.getNext(), new ArrayList<>(Arrays.asList(target.get(0))));
+        }
 
         return effect;
     }

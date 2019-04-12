@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.Color;
 
 public interface Card {
 
-    public String getName();
+    String getName();
 
-    public Color getColor();
+    Color getColor();
 }
