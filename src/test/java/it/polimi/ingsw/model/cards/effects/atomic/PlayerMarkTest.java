@@ -15,7 +15,7 @@ class PlayerMarkTest {
     @Test
     void execute() {
 
-        AtomicEffect tester = new PlayerMark(1);
+        AtomicEffect tester = new PlayerMark();
 
         Player player = new Player("player", Color.GRAY);
 
@@ -25,22 +25,24 @@ class PlayerMarkTest {
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2, target3)));
+
+            assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target3.getBridge().getMarks().get(0).getColor(), Color.GRAY);
         } catch (IllegalArgumentException e) {
             fail();
         }
 
-        assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
-        assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
-        assertSame(target3.getBridge().getMarks().get(0).getColor(), Color.GRAY);
 
-        Room room = new Room(Color.RED);
-        Square square = new Square(room, 1);
+        Square square = new Square(1);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
+
+        Room room = new Room(Color.RED);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(room)));

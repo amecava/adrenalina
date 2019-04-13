@@ -15,13 +15,12 @@ class SquareMarkTest {
     @Test
     void execute() {
 
-        AtomicEffect tester = new SquareMark(1);
+        AtomicEffect tester = new SquareMark();
 
         Player player = new Player("player", Color.GRAY);
 
-        Room room = new Room(Color.RED);
-        Square square1 = new Square(room, 1);
-        Square square2 = new Square(room, 2);
+        Square square1 = new Square(1);
+        Square square2 = new Square(2);
 
         Player target1 = new Player("target1", Color.GREEN);
         Player target2 = new Player("target2", Color.VIOLET);
@@ -32,19 +31,21 @@ class SquareMarkTest {
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square1, square2)));
+
+            assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(player.getBridge().getMarks().size(), 0);
         } catch (IllegalArgumentException e) {
             fail();
         }
-
-        assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
-        assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
-        assertSame(player.getBridge().getMarks().size(), 0);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
+
+        Room room = new Room(Color.RED);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(room)));

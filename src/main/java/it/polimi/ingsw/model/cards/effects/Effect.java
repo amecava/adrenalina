@@ -217,16 +217,16 @@ public class Effect {
         private List<Integer> optionalID = new ArrayList<>();
 
         private List<Ammo> cost;
-        private Boolean activated = null;
+        private Boolean activated;
 
-        private Integer maxTargets = null;
-        private List<Boolean> sameAsFather = null;
+        private Integer maxTargets;
+        private List<Boolean> sameAsFather;
         private boolean sameAsPlayer = false;
-        private Boolean targetView = null;
-        private Boolean seenByActive = null;
+        private Boolean targetView;
+        private Boolean seenByActive;
 
-        private Integer minDist = null;
-        private Integer maxDist = null;
+        private Integer minDist;
+        private Integer maxDist;
         private boolean cardinal = false;
         private boolean throughWalls = false;
         private boolean differentSquares = false;

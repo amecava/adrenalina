@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
-import it.polimi.ingsw.model.exceptions.FileException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.players.Player;
 import java.io.FileReader;
@@ -20,34 +19,18 @@ import javax.json.JsonValue;
 
 public class Board {
 
-    private WeaponDeck weaponDeck;
     private List<Room> roomsList;
+    private WeaponDeck weaponDeck;
 
     private Board(BoardBuilder builder) {
 
         this.roomsList = builder.roomsList;
     }
 
-    public List<Room> getRoomsList() {
-
-        return this.roomsList;
-    }
-
-    public Room getRoomsList(int index) {
+    public Room getRoom(int index) {
 
         return this.roomsList.get(index);
     }
-
-    public void addRoom(Room room) {
-
-        this.roomsList.add(room);
-    }
-
-    public void addSquare(int roomId, Square square) {
-
-        this.roomsList.get(roomId).addSquare(square);
-    }
-
 
     public void giveWeaponCardToPlayer(Player player) throws CardException {
 
@@ -86,9 +69,7 @@ public class Board {
 
                     x.asJsonObject().getJsonArray(SQUARES).forEach(y ->
                             this.roomsList.get(x.asJsonObject().getInt(ROOM_ID))
-                                    .addSquare(new Square(
-                                            this.roomsList.get(x.asJsonObject().getInt(ROOM_ID)),
-                                            y.asJsonObject().getInt(SQUARE_ID)))
+                                    .addSquare(new Square(y.asJsonObject().getInt(SQUARE_ID)))
 
                     );
                 });
@@ -114,16 +95,15 @@ public class Board {
 
                     for (JsonValue adjacent : square.asJsonObject().getJsonArray(ADJACENT)) {
 
-                        if (this.roomsList.get(i).getSquaresList(j).setConnection(
+                        if (this.roomsList.get(i).getSquare(j).setConnection(
                                 Direction.valueOf(adjacent.asJsonObject().getString(DIRECTION)),
                                 Connection
                                         .valueOf(adjacent.asJsonObject().getString(CONNECTION)))) {
 
-                            this.roomsList.get(i).getSquaresList(j).setAdjacent(
+                            this.roomsList.get(i).getSquare(j).setAdjacent(
                                     Direction.valueOf(adjacent.asJsonObject().getString(DIRECTION)),
                                     this.roomsList.get(adjacent.asJsonObject().getInt(ROOM_ID))
-                                            .getSquaresList(
-                                                    adjacent.asJsonObject().getInt(SQUARE_ID))
+                                            .getSquare(adjacent.asJsonObject().getInt(SQUARE_ID))
                             );
                         }
                     }

@@ -20,20 +20,19 @@ class MovePlayerTest {
         Player player = new Player("player", Color.GRAY);
         Player target = new Player("target", Color.GREEN);
 
-        Room room = new Room(Color.RED);
-        Square square = new Square(room, 1);
-        Square destination = new Square(room, 2);
+        Square square = new Square(1);
+        Square destination = new Square(2);
 
         square.addPlayer(target);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(destination, target)));
+
+            assertTrue(destination.getPlayers().contains(target));
+            assertEquals(target.getCurrentPosition(), destination);
         } catch (IllegalArgumentException e) {
             fail();
         }
-
-        assertTrue(destination.getPlayers().contains(target));
-        assertEquals(target.getCurrentPosition(), destination);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(target)));

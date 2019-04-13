@@ -179,7 +179,7 @@ public class PropertiesAnalyzer {
             // Launch exception if any target on same position of active player
         } else if (target.stream().anyMatch(x -> x.equals(activePlayer)) || (
                 this.effect.getEffectType().equals(EffectType.ROOM) && target.stream()
-                        .anyMatch(x -> x.equals(activePlayer.getCurrentPosition().getMyRoom())))) {
+                        .anyMatch(x -> x.equals(activePlayer.getCurrentPosition().getRoom())))) {
 
             throw new SameAsPlayerException("Same as player flag is false!");
         }

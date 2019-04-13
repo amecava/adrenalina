@@ -45,6 +45,11 @@ public class Player implements Target {
         return this.bridge;
     }
 
+    public PointStructure getPointStructure() {
+
+        return this.pointStructure;
+    }
+
     public Card getWeaponCard(int index) {
 
         return this.weaponHand.get(index);
@@ -81,6 +86,7 @@ public class Player implements Target {
     }
 
     public void setFrenzy() {
+
         this.bridge.setFrenzy();
         this.bridge.setKillStreakCount();
     }
@@ -108,14 +114,14 @@ public class Player implements Target {
         destination.addPlayer(this);
     }
 
-    public void damagePlayer(Color color, int quantity) {
+    public void damagePlayer(Color color) {
 
-        this.bridge.appendShot(color, quantity);
+        this.bridge.appendShot(color);
     }
 
-    public void markPlayer(Color color, int quantity) {
+    public void markPlayer(Color color) {
 
-        this.bridge.appendMark(color, quantity);
+        this.bridge.appendMark(color);
     }
 
     public Square getOldPosition() {

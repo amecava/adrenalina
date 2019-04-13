@@ -7,7 +7,9 @@ import java.util.List;
 public class Bridge {
 
     private Color color;
+
     private int points = 0;
+
     private DeathBridge deathBridge = new DeathBridge();
     private DamageBridge damageBridge = new DamageBridge();
     private ActionBridge actionBridge = new ActionBridge();
@@ -16,9 +18,7 @@ public class Bridge {
 
         this.color = color;
     }
-    public void setKillStreakCount(){
-        this.damageBridge.setKillStreakCount();
-    }
+
     public Color getColor() {
 
         return this.color;
@@ -39,9 +39,9 @@ public class Bridge {
         this.deathBridge.addKill();
     }
 
-    public int calculatePoints() {
+    public void setFrenzy() {
 
-        return this.deathBridge.calculatePoints();
+        this.deathBridge.setFrenzy();
     }
 
     public void setPointsUsed() {
@@ -50,36 +50,44 @@ public class Bridge {
         this.damageBridge.clearShots();
     }
 
-    public void setFrenzy() {
+    public int assignPoints() {
 
-        this.deathBridge.setFrenzy();
+        return this.deathBridge.assignPoints();
+    }
+
+    public boolean isKillStreakCount(){
+
+        return this.damageBridge.isKillStreakCount();
+    }
+
+    public void setKillStreakCount(){
+
+        this.damageBridge.setKillStreakCount();
     }
 
     public List<Shots> getShots() {
 
         return this.damageBridge.getShots();
     }
-    public boolean isKillstreakCount(){
-        return this.damageBridge.isKillStreakCount();
-    }
+
     public List<Shots> getMarks() {
 
         return this.damageBridge.getMarks();
     }
 
+    public void appendShot(Color color) {
+
+        this.damageBridge.appendShot(color);
+    }
+
+    public void appendMark(Color color) {
+
+        this.damageBridge.appendMark(color);
+    }
+
     public boolean isDead() {
 
         return this.damageBridge.isDead();
-    }
-
-    public void appendShot(Color color, int quantity) {
-
-        this.damageBridge.appendShot(color, quantity);
-    }
-
-    public void appendMark(Color color, int quantity) {
-
-        this.damageBridge.appendMark(color, quantity);
     }
 
     public Square getOldPosition() {

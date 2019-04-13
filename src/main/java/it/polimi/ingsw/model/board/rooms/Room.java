@@ -28,16 +28,6 @@ public class Room implements Target {
         this.color = color;
     }
 
-    public void setSquaresList(List<Square> squaresList) {
-
-        this.squaresList.addAll(squaresList);
-    }
-
-    public Square getSquaresList(int index) {
-
-        return this.squaresList.get(index);
-    }
-
     public List<Square> getSquaresList() {
 
         return this.squaresList;
@@ -49,9 +39,15 @@ public class Room implements Target {
         throw new UnsupportedOperationException();
     }
 
+    public Square getSquare(int index) {
+
+        return this.squaresList.get(index);
+    }
+
     public void addSquare(Square square) {
 
         this.squaresList.add(square);
+        square.setRoom(this);
     }
 
     public List<Player> getPlayers() {

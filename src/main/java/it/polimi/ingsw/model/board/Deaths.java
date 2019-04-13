@@ -25,13 +25,13 @@ public class Deaths extends Bridge {
 
         if (infer) {
             this.maxNumberOfDeaths++;
-            this.appendShot(color, 1);
+            this.appendShot(color);
         }
 
-        this.appendShot(color, 1);
+        this.appendShot(color);
     }
 
-    public boolean checkEndGame() {
+    public boolean isGameEnded() {
 
         return this.getShots().size() >= this.maxNumberOfDeaths;
     }

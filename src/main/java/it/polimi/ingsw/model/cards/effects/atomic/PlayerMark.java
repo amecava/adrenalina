@@ -7,14 +7,6 @@ import java.util.stream.Stream;
 
 public class PlayerMark implements AtomicEffect {
 
-
-    private int quantity;
-
-    public PlayerMark(int quantity) {
-
-        this.quantity = quantity;
-    }
-
     @Override
     public void execute(Target source, List<Target> targetList) {
 
@@ -26,7 +18,7 @@ public class PlayerMark implements AtomicEffect {
                     .map(x -> (Player) x);
 
             // Execute the player mark atomic effect
-            target.forEach(x -> x.markPlayer(((Player) source).getPlayerColor(), this.quantity));
+            target.forEach(x -> x.markPlayer(((Player) source).getPlayerColor()));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

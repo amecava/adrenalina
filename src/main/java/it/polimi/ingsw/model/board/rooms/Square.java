@@ -11,18 +11,17 @@ import java.util.Map;
 public class Square implements Target {
 
     private int squareId;
-    private Room myRoom;
+    private Room room;
+
+    private Map<Boolean, HashMap<Square, Integer>> map = new HashMap<>();
 
     private Map<Direction, Square> adjacent = new EnumMap<>(Direction.class);
     private Map<Direction, Connection> connection = new EnumMap<>(Direction.class);
 
-    private Map<Boolean, HashMap<Square, Integer>> map = new HashMap<>();
-
     private List<Player> players = new ArrayList<>();
 
-    public Square(Room myRoom, int squareId) {
+    public Square(int squareId) {
 
-        this.myRoom = myRoom;
         this.squareId = squareId;
 
         this.map.put(true, new HashMap<>());
@@ -37,9 +36,14 @@ public class Square implements Target {
         return this.squareId;
     }
 
-    public Room getMyRoom() {
+    public Room getRoom() {
 
-        return this.myRoom;
+        return this.room;
+    }
+
+    public void setRoom(Room room) {
+
+        this.room = room;
     }
 
     public List<Square> getAdjacent() {

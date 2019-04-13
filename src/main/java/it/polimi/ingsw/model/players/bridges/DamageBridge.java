@@ -3,81 +3,63 @@ package it.polimi.ingsw.model.players.bridges;
 import it.polimi.ingsw.model.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 class DamageBridge {
 
+    private boolean killStreakCount = false;
+
     private List<Shots> shots = new ArrayList<>();
     private List<Shots> marks = new ArrayList<>();
-    private boolean killStreakCount=false;
-    DamageBridge() {
+
+
+    boolean isKillStreakCount() {
+
+        return this.killStreakCount;
     }
 
-    List<Shots> getShots() {
-        List<Shots> temp = new ArrayList<>();
-        temp.addAll(this.shots);
-        return temp;
-    }
+    void setKillStreakCount() {
 
-    List<Shots> getMarks() {
-        List<Shots> temp= new ArrayList<>();
-        temp.addAll(this.marks);
-        return  temp;
-    }
-
-    public void setKillStreakCount() {
         this.killStreakCount = true;
     }
 
-    public boolean isKillStreakCount() {
-        return killStreakCount;
+    List<Shots> getShots() {
+
+        return new ArrayList<>(this.shots);
     }
 
-    void appendShot(Color color, int quantity) {
-        ListIterator<Shots> listIterator = this.marks.listIterator();
+    List<Shots> getMarks() {
 
-        while (listIterator.hasNext()) {
-            if (listIterator.next().getColor() == color) {
-                quantity++;
-                listIterator.remove();
-            }
-        }
-        for (int i = 0; i < quantity; i++) {
-            if (this.shots.size() < 12) {
-                this.shots.add(new Shots(color));
-            }
-        }
+        return new ArrayList<>(this.marks);
     }
 
-    void appendMark(Color color, int quantity) {
+    void clearShots() {
 
-        int tempMarker = 0;
+        this.shots.clear();
+    }
 
-        for (Shots mark : this.marks) {
-            if (mark.getColor().equals(color)) {
-                tempMarker++;
-            }
+    void appendShot(Color color) {
+
+        if (this.shots.size() < 12) {
+
+            this.shots.add(new Shots(color));
         }
 
-        for (int i = 0; (i < quantity) && i < (3 - tempMarker); i++) {
+        this.marks = this.updateMarksToShots(color);
+    }
+
+    void appendMark(Color color) {
+
+        if (this.marks.stream().filter(x -> x.getColor().equals(color)).count() < 3) {
+
             this.marks.add(new Shots(color));
         }
     }
 
     boolean isDead() {
-       return this.shots.size()>=11;
-    }
-    public void clearShots(){
-        this.shots.clear();
-    }
 
-     /*void endOfGame() {
-
-        for (Shots shot : this.marks) {
-            this.appendShot(shot.getColor(), 1);
-        }
+        return this.shots.size() >= 11;
     }
-    */
 
     Adrenalin checkAdrenalin() {
 
@@ -90,5 +72,20 @@ class DamageBridge {
         }
 
         return Adrenalin.SECONDADRENALIN;
+    }
+
+    private List<Shots> updateMarksToShots(Color color) {
+
+        return this.marks.stream()
+                .filter(x -> {
+                    if (x.getColor().equals(color)) {
+
+                        this.shots.add(x);
+
+                        return false;
+                    }
+
+                    return true;
+                }).collect(Collectors.toList());
     }
 }

@@ -15,18 +15,23 @@ class RoomDamageTest {
     @Test
     void execute() {
 
-        AtomicEffect tester = new RoomDamage(1);
+        AtomicEffect tester = new RoomDamage();
 
         Player player = new Player("player", Color.GRAY);
 
         Room room = new Room(Color.RED);
-        Square square1 = new Square(room, 1);
-        Square square2 = new Square(room, 2);
+
+        Square square1 = new Square(1);
+        Square square2 = new Square(2);
+
+        room.addSquare(square1);
+        room.addSquare(square2);
 
         Player target1 = new Player("target1", Color.GREEN);
         Player target2 = new Player("target2", Color.VIOLET);
 
-        room.setSquaresList(new ArrayList<>(Arrays.asList(square1, square2)));
+        room.addSquare(square1);
+        room.addSquare(square2);
 
         square1.addPlayer(target1);
         square2.addPlayer(target2);
@@ -34,13 +39,13 @@ class RoomDamageTest {
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(room)));
+
+            assertSame(target1.getBridge().getShots().get(0).getColor(), Color.GRAY);
+            assertSame(target2.getBridge().getShots().get(0).getColor(), Color.GRAY);
+            assertSame(player.getBridge().getShots().size(), 0);
         } catch (IllegalArgumentException e) {
             fail();
         }
-
-        assertSame(target1.getBridge().getShots().get(0).getColor(), Color.GRAY);
-        assertSame(target2.getBridge().getShots().get(0).getColor(), Color.GRAY);
-        assertSame(player.getBridge().getShots().size(), 0);
 
         try {
             tester.execute(player, new ArrayList<>(Arrays.asList(square1)));

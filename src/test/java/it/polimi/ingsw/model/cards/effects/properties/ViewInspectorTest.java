@@ -16,16 +16,16 @@ class ViewInspectorTest {
     private boolean throughWalls = true;
     private ViewInspector viewInspector = new ViewInspector();
 
-    private Square one = board.getRoomsList(2).getSquaresList(1);
-    private Square two = board.getRoomsList(0).getSquaresList(2);
+    private Square one = board.getRoom(2).getSquare(1);
+    private Square two = board.getRoom(0).getSquare(2);
 
-    private Square three = board.getRoomsList(2).getSquaresList(0);
-    private Square four = board.getRoomsList(0).getSquaresList(1);
+    private Square three = board.getRoom(2).getSquare(0);
+    private Square four = board.getRoom(0).getSquare(1);
 
-    private Square five = board.getRoomsList(0).getSquaresList(0);
-    private Square six = board.getRoomsList(3).getSquaresList(1);
+    private Square five = board.getRoom(0).getSquare(0);
+    private Square six = board.getRoom(3).getSquare(1);
 
-    private Square seven = board.getRoomsList(1).getSquaresList(1);
+    private Square seven = board.getRoom(1).getSquare(1);
 
     @Test
     void computeDistance() {
@@ -130,4 +130,7 @@ class ViewInspectorTest {
         assertTrue(!viewInspector.targetView(four, seven));
     }
 
+    @Test
+    void sameDirection() {
+    }
 }

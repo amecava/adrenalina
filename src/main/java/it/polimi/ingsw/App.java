@@ -20,16 +20,6 @@ public class App {
         App game = new App();
         List<Player> players = new ArrayList<>();
 
-        Player playerOne = new Player("Jacop", Color.VIOLET);
-        Player playerTwo = new Player("Amedeo", Color.GRAY);
-        Player playerThree = new Player("Federico", Color.GREEN);
-
-        players.add(playerOne);
-        players.add(playerTwo);
-        players.add(playerThree);
-
-        game.presenter = new Presenter();
         game.presenter.buildBoard();
-        game.presenter.setPlayersList(players);
     }
 }

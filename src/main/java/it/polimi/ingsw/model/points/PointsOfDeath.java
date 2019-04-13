@@ -3,17 +3,11 @@ package it.polimi.ingsw.model.points;
 public class PointsOfDeath {
 
     private int value;
-    private boolean used;
+    private boolean used = false;
 
     public PointsOfDeath(int value) {
 
         this.value = value;
-        this.used = false;
-    }
-
-    public int getValue() {
-
-        return this.value;
     }
 
     public boolean isUsed() {
@@ -21,8 +15,15 @@ public class PointsOfDeath {
         return this.used;
     }
 
-    public void setUsed(boolean used) {
+    public void reset() {
 
-        this.used = used;
+        this.used = false;
+    }
+
+    public int getValueSetUsed() {
+
+        this.used = true;
+
+        return this.value;
     }
 }

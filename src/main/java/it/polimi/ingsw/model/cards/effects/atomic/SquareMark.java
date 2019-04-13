@@ -8,13 +8,6 @@ import java.util.stream.Stream;
 
 public class SquareMark implements AtomicEffect {
 
-    private int quantity;
-
-    public SquareMark(int quantity) {
-
-        this.quantity = quantity;
-    }
-
     @Override
     public void execute(Target source, List<Target> targetList) {
 
@@ -28,7 +21,7 @@ public class SquareMark implements AtomicEffect {
                     .filter(x -> x != source);
 
             // Execute the square mark atomic effect
-            target.forEach(x -> x.markPlayer(((Player) source).getPlayerColor(), this.quantity));
+            target.forEach(x -> x.markPlayer(((Player) source).getPlayerColor()));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }

@@ -24,20 +24,27 @@ class DeathsTest {
         Player player4 = new Player(" giulia ", Color.VIOLET);
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 2);
-        pointHandler.setFrenzy(false);
         for (int i = 0; i < 8; i++) {
-            player3.damagePlayer(player2.getPlayerColor(), 1);
+            player3.damagePlayer(player2.getPlayerColor());
         }
-        player3.damagePlayer(player1.getPlayerColor(), 4);
+        for (int i = 0; i < 4; i++) {
+            player3.damagePlayer(player1.getPlayerColor());
+        }
         pointHandler.checkIfDead();
         for (Player player5: playerList){
             System.out.println( ""+player5.getPoints()+ player5.getPlayerColor());
         }
-        player3.damagePlayer(player2.getPlayerColor(), 3);
-        player3.damagePlayer(player1.getPlayerColor(), 2);
-        player3.damagePlayer(player2.getPlayerColor(), 10);
-        player1.damagePlayer(player3.getPlayerColor(), 1);
-        player2.damagePlayer(player3.getPlayerColor(), 1);
+        for (int i = 0; i < 3; i++) {
+            player3.damagePlayer(player2.getPlayerColor());
+        }
+        for (int i = 0; i < 2; i++) {
+            player3.damagePlayer(player1.getPlayerColor());
+        }
+        for (int i = 0; i < 10; i++) {
+            player3.damagePlayer(player2.getPlayerColor());
+        }
+        player1.damagePlayer(player3.getPlayerColor());
+        player2.damagePlayer(player3.getPlayerColor());
         pointHandler.checkIfDead();
         player2.setPoints(-3);
         player3.setPoints(+10);

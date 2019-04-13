@@ -7,6 +7,7 @@ import java.util.List;
 class DeathBridge {
 
     private int kills;
+
     private List<PointsOfDeath> pointsOfDeaths = new ArrayList<>();
 
     DeathBridge() {
@@ -19,34 +20,42 @@ class DeathBridge {
     }
 
     void addKill() {
+
         this.kills++;
     }
 
-    int calculatePoints() {
-
-        int returnValue = 1;
-
-        for (int i = this.kills; i < this.pointsOfDeaths.size(); i++) {
-            if (!(this.pointsOfDeaths.get(i).isUsed())) {
-                this.pointsOfDeaths.get(i).setUsed(true);
-                returnValue = (this.pointsOfDeaths.get(i).getValue());
-
-                break;
-            }
-        }
-
-        return returnValue;
-    }
-
-    void setPointsUsed() {
-        for (int i = this.kills; i < this.pointsOfDeaths.size(); i++) {
-            this.pointsOfDeaths.get(i).setUsed(false);
-        }
-    }
-
     void setFrenzy() {
+
         this.kills = 0;
         this.pointsOfDeaths.clear();
         this.pointsOfDeaths.add(new PointsOfDeath(2));
+    }
+
+    void setPointsUsed() {
+
+        this.pointsOfDeaths.stream()
+                .skip(this.kills)
+                .forEach(PointsOfDeath::reset);
+    }
+
+    int assignPoints() {
+
+        /*
+        return this.pointsOfDeaths.stream()
+                .skip(this.kills)
+                .filter(x -> !x.isUsed())
+                .findFirst()
+                .map(PointsOfDeath::getValueSetUsed)
+                .orElse(1);
+        */
+
+        for (int i = this.kills; i < this.pointsOfDeaths.size(); i++) {
+            if (!(this.pointsOfDeaths.get(i).isUsed())) {
+
+                return this.pointsOfDeaths.get(i).getValueSetUsed();
+            }
+        }
+
+        return 1;
     }
 }

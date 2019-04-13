@@ -65,18 +65,6 @@ public class WeaponCard implements Card {
         return this.id;
     }
 
-    @Override
-    public String getName() {
-
-        return this.name;
-    }
-
-    @Override
-    public Color getColor() {
-
-        return this.reloadCost.get(0).getColor();
-    }
-
     public List<Ammo> getReloadCost() {
 
         return this.reloadCost;
@@ -100,6 +88,18 @@ public class WeaponCard implements Card {
     public String getNotes() {
 
         return this.notes;
+    }
+
+    @Override
+    public String getName() {
+
+        return this.name;
+    }
+
+    @Override
+    public Color getColor() {
+
+        return this.reloadCost.get(0).getColor();
     }
 
     public void reloadWeapon() {
@@ -167,11 +167,12 @@ public class WeaponCard implements Card {
         }
 
         // TODO Check effect cost
-        // TODO Remove effect cost from player
 
         // Execute alternative effect
         this.effectHandler.useEffect(this.alternative, square, target);
         this.effectHandler.updateCardUsageVariables(this.alternative, this);
+
+        // TODO Remove effect cost from player
     }
 
     public void useOptional(int index, Square square, List<Target> target)
@@ -181,7 +182,6 @@ public class WeaponCard implements Card {
         try {
 
             // TODO Check effect cost
-            // TODO Remove effect cost from player
         } catch (IndexOutOfBoundsException e) {
 
             throw new CardException("Optional effect at selected index not present!");
@@ -190,6 +190,8 @@ public class WeaponCard implements Card {
         // Execute optional effect
         this.effectHandler.useEffect(this.optional.get(index), square, target);
         this.effectHandler.updateCardUsageVariables(this.optional.get(index), this);
+
+        // TODO Remove effect cost from player
     }
 
     public static class WeaponCardBuilder {

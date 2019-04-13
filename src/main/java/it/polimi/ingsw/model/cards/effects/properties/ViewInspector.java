@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class ViewInspector {
 
@@ -19,19 +20,19 @@ class ViewInspector {
             return computeCardinalDistance(fromSquare, toSquare, throughWalls);
         }
 
-        return this.distance(fromSquare.getMap(throughWalls), toSquare, throughWalls);
+        return this.recursiveDistance(fromSquare.getMap(throughWalls), toSquare, throughWalls);
 
     }
 
     boolean targetView(Square fromSquare, Square toSquare) {
 
-        if (fromSquare.getMyRoom().equals(toSquare.getMyRoom())) {
+        if (fromSquare.getRoom().equals(toSquare.getRoom())) {
             return true;
         }
 
         for (Direction dir : Direction.values()) {
             if (fromSquare.getConnection(dir) == Connection.DOOR && fromSquare.getAdjacent(dir)
-                    .getMyRoom().getSquaresList().contains(toSquare)) {
+                    .getRoom().getSquaresList().contains(toSquare)) {
 
                 return true;
             }
@@ -43,7 +44,7 @@ class ViewInspector {
     boolean sameDirection(Square fromSquare, List<Target> targetList) {
 
         // TODO
-        
+
         return true;
     }
 
@@ -52,6 +53,7 @@ class ViewInspector {
 
         int count = 0;
         Square square;
+
         for (Direction dir : Direction.values()) {
 
             if ((fromSquare.getConnection(dir) == Connection.SQUARE
@@ -78,36 +80,43 @@ class ViewInspector {
         throw new SquareDistanceException("Target not in cardinal direction!");
     }
 
-    private int distance(Map<Square, Integer> map, Square toSquare,
+    private int recursiveDistance(Map<Square, Integer> map, Square toSquare,
             boolean throughWalls) {
 
+        // Return distance if node found
         if (map.containsKey(toSquare)) {
 
             return map.get(toSquare);
         }
 
+        // If node not found in map search from last known distance
         int distance = map.values().stream()
                 .collect(Collectors.summarizingInt(Integer::intValue)).getMax();
 
+        // Create new HashMap to avoid ConcurrentModificationException
         new HashMap<>(map).entrySet().stream()
                 .filter(x -> x.getValue() >= distance)
-                .forEach(x -> {
+                .forEach(x ->
 
-                    for (Direction dir : Direction.values()) {
+                    // Iterate on all directions
+                    Stream.of(Direction.values()).forEach(y -> {
 
-                        if (((x.getKey().getConnection(dir) == Connection.SQUARE
-                                || x.getKey().getConnection(dir) == Connection.DOOR) || (
-                                throughWalls
-                                        && x.getKey().getConnection(dir) == Connection.WALL))
-                                && !map.containsKey(x.getKey().getAdjacent(dir))) {
+                        // If current movement direction is legal
+                        if (((x.getKey().getConnection(y) == Connection.SQUARE ||
+                                x.getKey().getConnection(y) == Connection.DOOR) ||
+                                (throughWalls && x.getKey().getConnection(y) == Connection.WALL))) {
 
-                            map.put(x.getKey().getAdjacent(dir), x.getValue() + 1);
+                            // Update starting node map
+                            map.putIfAbsent(x.getKey().getAdjacent(y), x.getValue() + 1);
 
+                            // Update visited adjacent nodes
+                            x.getKey().getMap(throughWalls).putIfAbsent(x.getKey().getAdjacent(y), 1);
+                            x.getKey().getAdjacent(y).getMap(throughWalls).putIfAbsent(x.getKey(), 1);
                         }
+                    })
+                );
 
-                    }
-                });
-
-        return this.distance(map, toSquare, throughWalls);
+        // Recursively call recursive distance until node found
+        return this.recursiveDistance(map, toSquare, throughWalls);
     }
 }

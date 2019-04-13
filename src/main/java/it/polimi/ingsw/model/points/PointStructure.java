@@ -13,7 +13,8 @@ public class PointStructure {
     private int lastDamage;
 
     public PointStructure(Player player) {
-        this.player=player;
+
+        this.player = player;
     }
 
     public Player getPlayer() {

@@ -8,13 +8,6 @@ import java.util.stream.Stream;
 
 public class SquareDamage implements AtomicEffect {
 
-    private int quantity;
-
-    public SquareDamage(int quantity) {
-
-        this.quantity = quantity;
-    }
-
     @Override
     public void execute(Target source, List<Target> targetList) {
 
@@ -28,7 +21,7 @@ public class SquareDamage implements AtomicEffect {
                     .filter(x -> x != source);
 
             // Execute the square damage atomic effect
-            target.forEach(x -> x.damagePlayer(((Player) source).getPlayerColor(), this.quantity));
+            target.forEach(x -> x.damagePlayer(((Player) source).getPlayerColor()));
         } catch (ClassCastException e) {
             throw new IllegalArgumentException();
         }
