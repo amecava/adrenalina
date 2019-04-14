@@ -24,7 +24,7 @@ class PlayerMarkTest {
         Player target3 = new Player("target3", Color.YELLOW);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2, target3)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(target1, target2, target3)));
 
             assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
             assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
@@ -37,7 +37,7 @@ class PlayerMarkTest {
         Square square = new Square(1);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(square)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(square)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
@@ -45,7 +45,7 @@ class PlayerMarkTest {
         Room room = new Room(Color.RED);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(room)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(room)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
@@ -53,7 +53,7 @@ class PlayerMarkTest {
         Player target4 = new Player("target4", Color.LIGHTBLUE);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(square, target4)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(square, target4)));
         } catch (IllegalArgumentException e) {
             assertSame(target4.getBridge().getMarks().size(), 0);
         }

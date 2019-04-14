@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cards.effects;
 import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
+import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,9 +197,10 @@ public class Effect {
         this.atomicEffectList.add(atomicEffect);
     }
 
-    public void execute(Target source, List<Target> target) {
+    public void execute(Target source, AtomicTarget target) {
 
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
+
             atomicEffect.execute(source, target);
         }
     }

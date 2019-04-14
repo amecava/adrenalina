@@ -12,7 +12,7 @@
             "maxTargets": 1,
             "targetView": true,
 
-            "atomicEffectList": [["DAMAGE", 2], ["MARK", 1]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE", "MARK"]
         },
         {
             "id": 2,
@@ -28,7 +28,7 @@
             "sameAsFather": [false],
             "targetView": true,
 
-            "atomicEffectList": [["MARK", 1]]
+            "atomicEffectList": ["MARK"]
         },
         {
             "id": 3,
@@ -42,7 +42,7 @@
             "maxTargets": 2,
             "targetView": true,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 4,
@@ -57,7 +57,7 @@
             "maxTargets": 1,
             "sameAsFather": [true],
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 5,
@@ -73,7 +73,7 @@
             "sameAsFather": [true, false],
             "targetView": true,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 6,
@@ -87,7 +87,7 @@
             "maxTargets": 1,
             "targetView": true,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 7,
@@ -105,7 +105,7 @@
             "sameAsFather": [false],
             "seenByActive": true,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 8,
@@ -121,7 +121,7 @@
             "sameAsFather": [false],
             "seenByActive": true,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 9,
@@ -135,7 +135,7 @@
             "maxTargets": 1,
             "targetView": true,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 10,
@@ -150,7 +150,7 @@
             "minDist": 1,
             "maxDist": 2,
 
-            "atomicEffectList": [["MOVE", null]]
+            "atomicEffectList": ["MOVE"]
         },
         {
             "id": 11,
@@ -164,7 +164,7 @@
 
             "sameAsFather": [true],
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 12,
@@ -178,7 +178,7 @@
 
             "minDist": 2,
 
-            "atomicEffectList": [["DAMAGE", 3], ["MARK", 1]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE", "DAMAGE", "MARK"]
         },
         {
             "id": 13,
@@ -189,7 +189,7 @@
 
             "sameAsPlayer": true,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 14,
@@ -202,7 +202,7 @@
 
             "sameAsPlayer": true,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 15,
@@ -217,7 +217,7 @@
     
                 "targetView": true,
     
-                "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
+                "atomicEffectList": ["MOVE", "DAMAGE"]
             },
 
             "maxTargets": 1,
@@ -229,7 +229,7 @@
             "args": 1,
             "name": "in punisher mode",
             "description": "Choose a target 0, 1, or 2 moves away from you. Move the target to your square and deal 3 damage to it.",
-            "effectType": "SQUARE",
+            "effectType": "PLAYER",
 
             "cost": ["RED", "YELLOW"],
 
@@ -238,7 +238,7 @@
 
             "maxDist": 2,
 
-            "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
+            "atomicEffectList": ["MOVE", "DAMAGE", "DAMAGE", "DAMAGE"]
         },
         {
             "id": 17,
@@ -276,7 +276,7 @@
 
             "maxDist": 1,
 
-            "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
+            "atomicEffectList": ["MOVE", "DAMAGE"]
         },
         {
             "id": 19,
@@ -290,7 +290,7 @@
 
             "sameAsPlayer": false,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 20,
@@ -304,7 +304,7 @@
             "minDist": 1,
             "maxDist": 1,
 
-            "atomicEffectList": [["DAMAGE", 1], ["MARK", 1]]
+            "atomicEffectList": ["DAMAGE", "MARK"]
         },
         {
             "id": 21,
@@ -316,7 +316,7 @@
             "maxTargets": 1,
             "targetView": false,
 
-            "atomicEffectList": [["DAMAGE", 3]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE", "DAMAGE"]
         },
         {
             "id": 22,
@@ -331,7 +331,7 @@
 
                 "sameAsFather": [true],
     
-                "atomicEffectList": [["MARK", 1]]
+                "atomicEffectList": ["MARK"]
             },
 
             "maxTargets": 1,
@@ -339,7 +339,7 @@
 
             "minDist": 1,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 23,
@@ -354,7 +354,7 @@
 
                 "sameAsFather": [true],
     
-                "atomicEffectList": [["MARK", 2]]
+                "atomicEffectList": ["MARK", "MARK"]
             },
 
             "maxTargets": 1,
@@ -362,7 +362,7 @@
 
             "minDist": 1,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 24,
@@ -378,7 +378,7 @@
             "cardinal": true,
             "differentSquares": true,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 25,
@@ -394,7 +394,7 @@
                 "maxTargets": 1,
                 "sameAsFather": [true],
     
-                "atomicEffectList": [["MARK", 1]]
+                "atomicEffectList": ["MARK"]
             },
 
             "cost": ["YELLOW", "YELLOW"],
@@ -406,7 +406,7 @@
             "cardinal": true,
             "differentSquares": true,
 
-            "atomicEffectList": [["MARK", 1]]
+            "atomicEffectList": ["MARK"]
         },
         {
             "id": 26,
@@ -419,7 +419,7 @@
                 "id": 26,
                 "effectType": "PLAYER",
     
-                "atomicEffectList": [["MOVE", null], ["DAMAGE", 1]]
+                "atomicEffectList": ["MOVE", "DAMAGE"]
             },
 
             "maxTargets": 1,
@@ -439,7 +439,7 @@
             "maxTargets": 1,
             "targetView": true,
 
-            "atomicEffectList": ["DAMAGE", 1]
+            "atomicEffectList": "DAMAGE"
         },
         {
             "id": 28,
@@ -452,7 +452,7 @@
                 "id": 28,
                 "effectType": "PLAYER",
     
-                "atomicEffectList": [["MOVE", null], ["DAMAGE", 2]]
+                "atomicEffectList": ["MOVE", "DAMAGE", "DAMAGE"]
             },
             "optionalId": [30],
 
@@ -477,7 +477,7 @@
             "minDist": 1,
             "maxDist": 2,
 
-            "atomicEffectList": [["MOVE", null]]
+            "atomicEffectList": ["MOVE"]
         },
         {
             "id": 30,
@@ -492,7 +492,7 @@
     
                 "differentSquares": true,
             
-                "atomicEffectList": [["DAMAGE", 1]]
+                "atomicEffectList": ["DAMAGE"]
             },
         
             "cost": ["YELLOW"],
@@ -512,7 +512,7 @@
             "cardinal": true,
             "throughWalls": true,
 
-            "atomicEffectList": [["DAMAGE", 3]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE", "DAMAGE"]
         },
         {
             "id": 32,
@@ -526,7 +526,7 @@
             "cardinal": true,
             "throughWalls": true,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 33,
@@ -541,7 +541,7 @@
 
             "maxDist": 0,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 34,
@@ -556,7 +556,7 @@
             "minDist": 1,
             "maxDist": 1,
 
-            "atomicEffectList": [["MOVE", null]]
+            "atomicEffectList": ["MOVE"]
         },
         {
             "id": 35,
@@ -573,7 +573,7 @@
 
             "maxDist": 0,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 36,
@@ -585,7 +585,7 @@
             "maxTargets": 1,
             "targetView": true,
 
-            "atomicEffectList": [["DAMAGE", 1], ["MARK", 2]]
+            "atomicEffectList": ["DAMAGE", "MARK", "MARK"]
         },
         {
             "id": 37,
@@ -597,7 +597,7 @@
             "maxTargets": 3,
             "targetView": true,
 
-            "atomicEffectList": [["MARK", 1]]
+            "atomicEffectList": ["MARK"]
         },
         {
             "id": 38,
@@ -610,11 +610,12 @@
                 "id": 38,
                 "effectType": "PLAYER",
     
-                "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
+                "atomicEffectList": ["MOVE", "DAMAGE", "DAMAGE", "DAMAGE"]
             },
 
             "maxTargets": 1,
             "sameAsPlayer": true,
+
 
             "maxDist": 1
         },
@@ -631,7 +632,7 @@
             "maxDist": 1,
             "throughWalls": true,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 40,
@@ -646,7 +647,7 @@
 
                 "sameAsPlayer": true,
             
-                "atomicEffectList": [["MOVE", null]]
+                "atomicEffectList": ["MOVE"]
             },
         
             "maxTargets": 1,
@@ -654,7 +655,7 @@
             "minDist": 1,
             "maxDist": 1,
         
-            "atomicEffectList": [["DAMAGE", 1], ["MARK", 2]]
+            "atomicEffectList": ["DAMAGE", "MARK", "MARK"]
         },
         {
             "id": 41,
@@ -669,7 +670,7 @@
 
                 "sameAsPlayer": true,
             
-                "atomicEffectList": [["MOVE", null]]
+                "atomicEffectList": ["MOVE"]
             },
 
             "cost": ["BLUE"],
@@ -681,7 +682,7 @@
             "cardinal": true,
             "differentSquares": true,
         
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 42,
@@ -696,7 +697,7 @@
             "maxDist": 1,
             "differentSquares": true,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 43,
@@ -707,9 +708,10 @@
 
             "cost": ["YELLOW"],
 
-            "differentSquares": true,
+            "minDist": 1,
+            "maxDist": 1,
 
-            "atomicEffectList": [["DAMAGE", 1]]
+            "atomicEffectList": ["DAMAGE"]
         },
         {
             "id": 44,
@@ -722,7 +724,7 @@
 
             "maxDist": 0,
 
-            "atomicEffectList": [["DAMAGE", 2]]
+            "atomicEffectList": ["DAMAGE", "DAMAGE"]
         },
         {
             "id": 45,
@@ -737,7 +739,7 @@
     
                 "cardinal": true,
     
-                "atomicEffectList": [["MOVE", null], ["DAMAGE", 3]]
+                "atomicEffectList": ["MOVE", "DAMAGE", "DAMAGE", "DAMAGE"]
             },
 
             "cost": ["RED"],

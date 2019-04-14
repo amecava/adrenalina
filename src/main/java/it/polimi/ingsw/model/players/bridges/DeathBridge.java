@@ -40,22 +40,11 @@ class DeathBridge {
 
     int assignPoints() {
 
-        /*
         return this.pointsOfDeaths.stream()
                 .skip(this.kills)
                 .filter(x -> !x.isUsed())
                 .findFirst()
                 .map(PointsOfDeath::getValueSetUsed)
                 .orElse(1);
-        */
-
-        for (int i = this.kills; i < this.pointsOfDeaths.size(); i++) {
-            if (!(this.pointsOfDeaths.get(i).isUsed())) {
-
-                return this.pointsOfDeaths.get(i).getValueSetUsed();
-            }
-        }
-
-        return 1;
     }
 }

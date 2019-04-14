@@ -151,29 +151,17 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public List<Target> sameAsPlayer(boolean square, Player activePlayer, Square activeSquare,
-            List<Target> target) throws SameAsPlayerException {
+    public void sameAsPlayer(Player activePlayer, List<Target> target)
+            throws SameAsPlayerException {
 
         // Same as player flag true
         if (this.effect.getSameAsPlayer()) {
 
-            // The effects doesn't have the square argument
-            if (!square) {
+            // Launch exception if any target on different position of active player
+            if (this.effect.getArgs() == 2 && target.stream().anyMatch(
+                    x -> !x.getCurrentPosition().equals(activePlayer.getCurrentPosition()))) {
 
-                // Move active player types of effects
-                if (this.effect.getEffectType().equals(EffectType.PLAYER)) {
-                    target.add(activePlayer);
-
-                    // Move targets to active player position / Apply effect on active player position
-                } else if (this.effect.getEffectType().equals(EffectType.SQUARE)) {
-                    target.add(0, activeSquare);
-                }
-
-                // Launch exception if any target on different position of active player
-            } else if (target.stream().anyMatch(x -> !x.getCurrentPosition()
-                    .equals(activePlayer.getCurrentPosition()))) {
-
-                throw new SameAsPlayerException("Same as player flag is true!");
+                throw new SameAsPlayerException("Targets on different position of active player!");
             }
 
             // Launch exception if any target on same position of active player
@@ -183,7 +171,5 @@ public class PropertiesAnalyzer {
 
             throw new SameAsPlayerException("Same as player flag is false!");
         }
-
-        return target;
     }
 }

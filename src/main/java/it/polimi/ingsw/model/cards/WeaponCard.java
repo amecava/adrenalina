@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
 import it.polimi.ingsw.model.exceptions.cards.OwnerNotActiveException;
@@ -149,15 +150,15 @@ public class WeaponCard implements Card {
         }
     }
 
-    public void usePrimary(Square square, List<Target> target)
+    public void usePrimary(Square square, AtomicTarget target)
             throws EffectException, PropertiesException {
 
         // Execute primary effect
-        this.effectHandler.useEffect(this.primary, square, target);
+        this.effectHandler.useEffect(this.primary, target);
         this.effectHandler.updateCardUsageVariables(this.primary, this);
     }
 
-    public void useAlternative(Square square, List<Target> target)
+    public void useAlternative(Square square, AtomicTarget target)
             throws CardException, EffectException, PropertiesException {
 
         // Launch exception if alternative effect not present
@@ -169,13 +170,13 @@ public class WeaponCard implements Card {
         // TODO Check effect cost
 
         // Execute alternative effect
-        this.effectHandler.useEffect(this.alternative, square, target);
+        this.effectHandler.useEffect(this.alternative, target);
         this.effectHandler.updateCardUsageVariables(this.alternative, this);
 
         // TODO Remove effect cost from player
     }
 
-    public void useOptional(int index, Square square, List<Target> target)
+    public void useOptional(int index, Square square, AtomicTarget target)
             throws CardException, EffectException, PropertiesException {
 
         // Launch exception if the optional effect at selected index doesn't exists
@@ -188,7 +189,7 @@ public class WeaponCard implements Card {
         }
 
         // Execute optional effect
-        this.effectHandler.useEffect(this.optional.get(index), square, target);
+        this.effectHandler.useEffect(this.optional.get(index), target);
         this.effectHandler.updateCardUsageVariables(this.optional.get(index), this);
 
         // TODO Remove effect cost from player

@@ -30,7 +30,7 @@ class SquareDamageTest {
         square2.addPlayer(player);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(square1, square2)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(square1, square2)));
 
             assertSame(target1.getBridge().getShots().get(0).getColor(), Color.GRAY);
             assertSame(target2.getBridge().getShots().get(0).getColor(), Color.GRAY);
@@ -40,7 +40,7 @@ class SquareDamageTest {
         }
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(target1, target2)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(target1, target2)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
@@ -48,7 +48,7 @@ class SquareDamageTest {
         Room room = new Room(Color.RED);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(room)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(room)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
@@ -56,7 +56,7 @@ class SquareDamageTest {
         Player target4 = new Player("target4", Color.LIGHTBLUE);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(square1, target4)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(square1, target4)));
         } catch (IllegalArgumentException e) {
             assertSame(target4.getBridge().getShots().size(), 0);
         }

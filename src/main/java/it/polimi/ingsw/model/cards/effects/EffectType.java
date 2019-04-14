@@ -5,5 +5,5 @@ public enum EffectType {
     PLAYER,
     SQUARE,
     ROOM,
-    MULTI
+    MOVE
 }

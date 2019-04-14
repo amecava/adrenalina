@@ -26,7 +26,7 @@ class MovePlayerTest {
         square.addPlayer(target);
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(destination, target)));
+            tester.execute(player, new AtomicTarget(destination, Arrays.asList(target)));
 
             assertTrue(destination.getPlayers().contains(target));
             assertEquals(target.getCurrentPosition(), destination);
@@ -35,13 +35,13 @@ class MovePlayerTest {
         }
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(target)));
+            tester.execute(player, new AtomicTarget(Arrays.asList(target)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
-            tester.execute(player, new ArrayList<>(Arrays.asList(destination, square)));
+            tester.execute(player, new AtomicTarget(destination, Arrays.asList(square)));
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }

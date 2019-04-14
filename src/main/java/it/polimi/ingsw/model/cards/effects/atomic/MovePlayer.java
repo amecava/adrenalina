@@ -1,30 +1,32 @@
 package it.polimi.ingsw.model.cards.effects.atomic;
 
 import it.polimi.ingsw.model.cards.Target;
-import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.players.Player;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class MovePlayer implements AtomicEffect {
 
     @Override
-    public void execute(Target source, List<Target> targetList) {
+    public void execute(Target source, AtomicTarget target) {
 
-        Square destination;
-        Stream<Player> target;
+        if (target.getDestination() == null) {
+
+            throw new IllegalArgumentException();
+        }
 
         try {
-            // Get the move destination from the head of the target list
-            destination = (Square) targetList.remove(0);
+            Stream<Player> targetStream;
 
-            // Cast the remaining targets to Player
-            target = targetList.stream()
+            // Cast the targets to Player
+            targetStream = target.getTargetList().stream()
                     .map(x -> (Player) x);
 
             // Execute the move player atomic effect
-            target.forEach(x -> x.movePlayer(destination));
+            targetStream.forEach(x -> x.movePlayer(target.getDestination()));
+
+            // Launch exception if cast fails
         } catch (ClassCastException e) {
+
             throw new IllegalArgumentException();
         }
     }

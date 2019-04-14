@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface AtomicEffect {
 
-    void execute(Target source, List<Target> target);
+    void execute(Target source, AtomicTarget target);
 }
