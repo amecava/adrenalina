@@ -2,10 +2,17 @@ package it.polimi.ingsw.model.cards.effects.atomic;
 
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.players.Player;
 import java.util.stream.Stream;
 
 public class SquareMark implements AtomicEffect {
+
+    @Override
+    public AtomicType getAtomicType() {
+
+        return AtomicType.MARK;
+    }
 
     @Override
     public void execute(Target source, AtomicTarget target) {

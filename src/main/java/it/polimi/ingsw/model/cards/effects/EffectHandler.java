@@ -39,7 +39,7 @@ public class EffectHandler {
         this.inactive.clear();
 
         this.activePlayer = activePlayer;
-        this.activeSquare = activeSquare.getCurrentPosition();
+        this.activeSquare = activePlayer.getCurrentPosition();
     }
 
     public void useEffect(Effect effect, AtomicTarget target)
@@ -96,7 +96,7 @@ public class EffectHandler {
         }
 
         // Activate all optional effects related to the executed effect
-        effect.getOptionalID().forEach(x ->
+        effect.getOptionalId().forEach(x ->
                 card.getOptional().forEach(y -> {
                     if (x == y.getId()) {
                         y.setActivated(true);
@@ -155,7 +155,8 @@ public class EffectHandler {
     private AtomicTarget createTargetForNoArgumentsEffects(Effect effect, AtomicTarget target) {
 
         // Create target list for adjacent types of effect
-        if (effect.getMinDist() == 1 && effect.getMaxDist() == 1) {
+        if (effect.getMinDist() != null && effect.getMinDist() == 1 &&
+                effect.getMaxDist() != null && effect.getMaxDist() == 1) {
 
             this.activeSquare.getAdjacent().forEach(target::appendTarget);
 

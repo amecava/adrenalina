@@ -43,9 +43,32 @@ class ViewInspector {
 
     boolean sameDirection(Square fromSquare, List<Target> targetList) {
 
-        // TODO
+        Square tmpSquare;
+        int seen;
 
-        return true;
+        for (Direction dir : Direction.values()) {
+
+            tmpSquare = fromSquare;
+            seen = 0;
+
+            while (tmpSquare.getAdjacent(dir) != null) {
+
+                tmpSquare = tmpSquare.getAdjacent(dir);
+
+                if (targetList.stream().map(Target::getCurrentPosition)
+                        .collect(Collectors.toList()).contains(tmpSquare)) {
+                    seen++;
+                }
+
+                if (seen == targetList.size()) {
+                    return true;
+                }
+            }
+            if (seen > 0) {
+                return false;
+            }
+        }
+        return false;
     }
 
     private int computeCardinalDistance(Square fromSquare, Square toSquare,

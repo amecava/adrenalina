@@ -2,9 +2,14 @@ package it.polimi.ingsw.model.cards.effects.properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.exceptions.properties.SquareDistanceException;
+import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ViewInspectorTest {
@@ -132,5 +137,33 @@ class ViewInspectorTest {
 
     @Test
     void sameDirection() {
+
+        List<Target> test = new ArrayList<>();
+        test.add(two);
+        test.add(four);
+
+        assertTrue(viewInspector.sameDirection(five, test));
+
+        test.clear();
+        test.add(six);
+        test.add(one);
+
+        assertTrue(viewInspector.sameDirection(three, test));
+
+        test.clear();
+        test.add(four);
+        Player testPlayer = new Player("test", Color.GRAY);
+        testPlayer.setCurrentPosition(six);
+        test.add(testPlayer);
+
+        assertTrue(!viewInspector.sameDirection(seven, test));
+
+        test.clear();
+        test.add(two);
+        testPlayer.setCurrentPosition(four);
+        test.add(testPlayer);
+
+        assertTrue(viewInspector.sameDirection(five, test));
+
     }
 }

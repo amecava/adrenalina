@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.ammo.Ammo;
-import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.JsonObject;
 
 public class WeaponCard implements Card {
 
@@ -81,9 +82,24 @@ public class WeaponCard implements Card {
         this.loaded = loaded;
     }
 
+    public Effect getPrimary() {
+
+        return this.primary;
+    }
+
+    public Effect getAlternative() {
+
+        return this.alternative;
+    }
+
     public List<Effect> getOptional() {
 
         return this.optional;
+    }
+
+    public Effect getOptional(int index) {
+
+        return this.optional.get(index);
     }
 
     public String getNotes() {
@@ -150,7 +166,7 @@ public class WeaponCard implements Card {
         }
     }
 
-    public void usePrimary(Square square, AtomicTarget target)
+    public void usePrimary(AtomicTarget target)
             throws EffectException, PropertiesException {
 
         // Execute primary effect
@@ -158,7 +174,7 @@ public class WeaponCard implements Card {
         this.effectHandler.updateCardUsageVariables(this.primary, this);
     }
 
-    public void useAlternative(Square square, AtomicTarget target)
+    public void useAlternative(AtomicTarget target)
             throws CardException, EffectException, PropertiesException {
 
         // Launch exception if alternative effect not present
@@ -176,7 +192,7 @@ public class WeaponCard implements Card {
         // TODO Remove effect cost from player
     }
 
-    public void useOptional(int index, Square square, AtomicTarget target)
+    public void useOptional(int index, AtomicTarget target)
             throws CardException, EffectException, PropertiesException {
 
         // Launch exception if the optional effect at selected index doesn't exists
@@ -202,7 +218,7 @@ public class WeaponCard implements Card {
         private int id;
 
         private String name;
-        private List<Ammo> reloadCost;
+        private List<Ammo> reloadCost = new ArrayList<>();
         private boolean loaded = true;
 
         private Effect primary;
@@ -212,16 +228,38 @@ public class WeaponCard implements Card {
 
         private String notes;
 
-        public WeaponCardBuilder(EffectHandler effectHandler, int id) {
+        public WeaponCardBuilder(EffectHandler effectHandler) {
 
             this.effectHandler = effectHandler;
 
-            this.id = id;
         }
 
-        // TODO
+        public WeaponCard build(JsonObject jCardObject, List<Effect> effectList) {
 
-        public WeaponCard build() {
+            this.id = jCardObject.getInt("id");
+            this.name = jCardObject.getString("name");
+
+            if (jCardObject.containsKey("reloadCost")) {
+                jCardObject.getJsonArray("reloadCost").forEach(x ->
+                        this.reloadCost.add(new AmmoCube(Color.valueOf(x.toString().substring(1, x.toString().length() - 1))))
+                );
+            }
+
+            this.primary = effectList.get(jCardObject.getInt("primary") - 1);
+
+            if (jCardObject.containsKey("alternative")) {
+                this.alternative = effectList.get(jCardObject.getInt("alternative") - 1);
+            }
+
+            if (jCardObject.containsKey("optional")) {
+                jCardObject.getJsonArray("optional").forEach(x ->
+                        this.optional.add(effectList.get(Integer.parseInt(x.toString()) - 1))
+                );
+            }
+
+            if (jCardObject.containsKey("notes")) {
+                this.notes = jCardObject.getString("notes");
+            }
 
             return new WeaponCard(this);
         }

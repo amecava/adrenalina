@@ -27,6 +27,7 @@ class ActionBridge {
 
     void setCurrentPosition(Square currentPosition) {
 
+        this.oldPosition = this.currentPosition;
         this.currentPosition = currentPosition;
     }
 }

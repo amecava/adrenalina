@@ -1,10 +1,17 @@
 package it.polimi.ingsw.model.cards.effects.atomic;
 
 import it.polimi.ingsw.model.cards.Target;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.players.Player;
 import java.util.stream.Stream;
 
 public class MovePlayer implements AtomicEffect {
+
+    @Override
+    public AtomicType getAtomicType() {
+
+        return AtomicType.MOVE;
+    }
 
     @Override
     public void execute(Target source, AtomicTarget target) {

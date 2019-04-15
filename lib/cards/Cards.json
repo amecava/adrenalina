@@ -90,7 +90,7 @@
             "reloadCost": ["RED"],
             
             "primary": 19,
-            "alternative": 20,
+            "alternative": 20
         },
         {
             "id": 10,

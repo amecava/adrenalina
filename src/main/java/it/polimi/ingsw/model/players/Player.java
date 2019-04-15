@@ -108,9 +108,7 @@ public class Player implements Target {
 
     public void movePlayer(Square destination) {
 
-        this.bridge.setOldPosition(this.bridge.getCurrentPosition());
         this.bridge.getCurrentPosition().removePlayer(this);
-
         destination.addPlayer(this);
     }
 

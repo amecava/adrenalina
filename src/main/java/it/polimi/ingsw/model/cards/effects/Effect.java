@@ -1,11 +1,15 @@
 package it.polimi.ingsw.model.cards.effects;
 
+import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.ammo.Ammo;
+import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
+import it.polimi.ingsw.model.cards.effects.atomic.AtomicType;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.JsonObject;
 
 public class Effect {
 
@@ -18,7 +22,7 @@ public class Effect {
     private boolean used;
 
     private Effect next;
-    private List<Integer> optionalID;
+    private List<Integer> optionalId;
 
     private List<Ammo> cost;
     private Boolean activated;
@@ -48,7 +52,7 @@ public class Effect {
         this.used = builder.used;
 
         this.next = builder.next;
-        this.optionalID = builder.optionalID;
+        this.optionalId = builder.optionalId;
 
         this.cost = builder.cost;
         this.activated = builder.activated;
@@ -108,9 +112,9 @@ public class Effect {
         return this.next;
     }
 
-    public List<Integer> getOptionalID() {
+    public List<Integer> getOptionalId() {
 
-        return this.optionalID;
+        return this.optionalId;
     }
 
     public List<Ammo> getCost() {
@@ -216,13 +220,13 @@ public class Effect {
         private boolean used = false;
 
         private Effect next;
-        private List<Integer> optionalID = new ArrayList<>();
+        private List<Integer> optionalId = new ArrayList<>();
 
-        private List<Ammo> cost;
+        private List<Ammo> cost = new ArrayList<>();
         private Boolean activated;
 
         private Integer maxTargets;
-        private List<Boolean> sameAsFather;
+        private List<Boolean> sameAsFather = new ArrayList<>();
         private boolean sameAsPlayer = false;
         private Boolean targetView;
         private Boolean seenByActive;
@@ -235,14 +239,74 @@ public class Effect {
 
         private List<AtomicEffect> atomicEffectList = new ArrayList<>();
 
-        public EffectBuilder(int id) {
+        public Effect build(JsonObject jEffectObject) {
 
-            this.id = id;
-        }
+            this.id = jEffectObject.getInt("id");
 
-        // TODO
+            if (jEffectObject.containsKey("args")) {
+                this.args = jEffectObject.getInt("args");
+            }
 
-        public Effect build() {
+            if (jEffectObject.containsKey("name")) {
+                this.name = jEffectObject.getString("name");
+            }
+
+            if (jEffectObject.containsKey("description")) {
+                this.description = jEffectObject.getString("description");
+            }
+            this.effectType = EffectType.valueOf(jEffectObject.getString("effectType"));
+
+            if (jEffectObject.containsKey("next")) {
+                this.next = new Effect.EffectBuilder().build(jEffectObject.getJsonObject("next"));
+            }
+
+            if (jEffectObject.containsKey("optionalId")) {
+                jEffectObject.getJsonArray("optionalId")
+                        .forEach(x -> this.optionalId.add(Integer.parseInt(x.toString())));
+            }
+
+            if (jEffectObject.containsKey("cost")) {
+                jEffectObject.getJsonArray("cost")
+                        .forEach(x -> this.cost.add(new AmmoCube(Color.valueOf(
+                                x.toString().substring(1, x.toString().length() - 1)))));
+            }
+
+            if (jEffectObject.containsKey("activated")) {
+                this.activated = jEffectObject.getBoolean("activated");
+            }
+
+            if (jEffectObject.containsKey("maxTargets")) {
+                this.maxTargets = jEffectObject.getInt("maxTargets");
+            }
+
+            if (jEffectObject.containsKey("sameAsFather")) {
+                jEffectObject.getJsonArray("sameAsFather")
+                        .forEach(x -> this.sameAsFather.add(Boolean.valueOf(x.toString())));
+            }
+
+            if (jEffectObject.containsKey("targetView")) {
+                this.targetView = jEffectObject.getBoolean("targetView");
+            }
+
+            if (jEffectObject.containsKey("seenByActive")) {
+                this.seenByActive = jEffectObject.getBoolean("seenByActive");
+            }
+
+            if (jEffectObject.containsKey("minDist")) {
+                this.minDist = jEffectObject.getInt("minDist");
+            }
+
+            if (jEffectObject.containsKey("maxDist")) {
+                this.maxDist = jEffectObject.getInt("maxDist");
+            }
+
+            if (jEffectObject.containsKey("atomicEffectList")) {
+                jEffectObject.getJsonArray("atomicEffectList").forEach(x ->
+                        this.atomicEffectList.add(AtomicType
+                                .valueOf(x.toString().substring(1, x.toString().length() - 1))
+                                .getAtomicEffect(this.effectType)
+                        ));
+            }
 
             return new Effect(this);
         }
