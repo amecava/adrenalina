@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards.effects.atomic;
 
-import it.polimi.ingsw.model.cards.effects.EffectType;
+import it.polimi.ingsw.model.cards.effects.TargetType;
 import java.security.InvalidParameterException;
 
 public enum AtomicType {
@@ -16,11 +16,12 @@ public enum AtomicType {
     private AtomicEffect squareDamage = new SquareDamage();
     private AtomicEffect squareMark = new SquareMark();
 
-    public AtomicEffect getAtomicEffect(EffectType effectType) {
+    public AtomicEffect getAtomicEffect(TargetType targetType) {
 
-        switch (effectType) {
+        switch (targetType) {
 
             case MOVE:
+            case RECOIL:
             case PLAYER:
 
                 if (this.equals(DAMAGE)) {

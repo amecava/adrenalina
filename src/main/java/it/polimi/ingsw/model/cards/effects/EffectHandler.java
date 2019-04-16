@@ -76,10 +76,11 @@ public class EffectHandler {
         this.checkProperties(effect, this.target).execute(this.activePlayer, this.target);
 
         // Update class variables after effect execution
-        this.updateActiveInactiveVariables();
+        this.updateActiveInactiveVariables(effect);
 
         // Execute sequence types of effects
-        if (effect.getNext() != null) {
+        if (effect.getNext() != null && !effect.getNext().getTargetType().equals(TargetType.MOVE)
+                && !effect.getNext().getTargetType().equals(TargetType.RECOIL)) {
 
             this.target = this.createTargetForNoArgumentsEffects(effect.getNext(), target);
             effect.getNext().execute(this.activePlayer, this.target);
@@ -105,12 +106,18 @@ public class EffectHandler {
         );
     }
 
-    private void updateActiveInactiveVariables() {
+    private void updateActiveInactiveVariables(Effect effect) {
 
         // Update active square
         if (this.target.getDestination() != null) {
 
             this.activeSquare = this.target.getDestination();
+        }
+
+        if (effect.isSeenByActive()) {
+
+            this.inactive.addAll(this.active);
+            this.active.clear();
         }
 
         // Move targets already in active list to inactive list and add new targets to active list
@@ -120,7 +127,11 @@ public class EffectHandler {
                     if (this.active.contains(x)) {
                         this.inactive.add(this.active.remove(this.active.indexOf(x)));
                     } else {
-                        this.active.add((Player) x);
+                        try {
+                            this.active.add((Player) x);
+                        } catch (ClassCastException e) {
+                            //
+                        }
                     }
                 });
     }
@@ -133,19 +144,19 @@ public class EffectHandler {
             return this.createTargetForNoArgumentsEffects(effect, target);
         }
 
-        if (target.getArgs() == 1 && effect.getSameAsPlayer()) {
+        if (target.getArgs() == 1 && effect.isSameAsPlayer()) {
 
             // Move active player types of effects
-            if (effect.getEffectType().equals(EffectType.PLAYER)
+            if (effect.getTargetType().equals(TargetType.PLAYER)
                     && target.getDestination() != null) {
 
                 target.appendTarget(this.activePlayer);
 
                 // Move targets to active square / Apply effect on active square
-            } else if (effect.getEffectType().equals(EffectType.SQUARE) || !target.getTargetList()
+            } else if (effect.getTargetType().equals(TargetType.SQUARE) || !target.getTargetList()
                     .isEmpty()) {
 
-                target.setDestination(activeSquare);
+                target.setDestination(this.activeSquare);
             }
         }
 
@@ -163,27 +174,28 @@ public class EffectHandler {
             // Create target list for square effect on old target position types of effects
         } else if (effect.isDifferentSquares()) {
 
-            // Collect all players in the active old positions
-            this.active.stream().flatMap(x -> x.getOldPosition().getPlayers().stream())
-                    .distinct().forEach(target::appendTarget);
+            // Collect all players in the inactive old positions
+            this.inactive.stream().flatMap(x -> x.getOldPosition().getPlayers().stream())
+                    .forEach(target::appendTarget);
 
-            // Remove duplicates from the target list
-            target.setTargetList(target.getTargetList().stream()
-                    .distinct().collect(Collectors.toList()));
+            // Remove duplicates from target list
+            target.setTargetList(
+                    target.getTargetList().stream().distinct().collect(Collectors.toList()));
 
             // Create target list for same as player type of effects
-        } else if (effect.getSameAsPlayer()) {
+        } else if (effect.isSameAsPlayer()) {
 
-            // Move to last target position types of effects
-            if (effect.getEffectType().equals(EffectType.PLAYER)) {
+            // Move to target position types of effects
+            if (effect.getTargetType().equals(TargetType.PLAYER)) {
 
-                target.setDestination(target.getTargetList().get(effect.getMaxTargets() - 1)
-                        .getCurrentPosition());
+                target.setDestination(target.getTargetList().stream().filter(x ->
+                        !x.getCurrentPosition().getAdjacent().contains(this.activeSquare))
+                        .findFirst().orElse(target.getTargetList().get(0)).getCurrentPosition());
 
                 target.setTargetList(Arrays.asList(this.activePlayer));
 
                 // Apply on active square types of effects
-            } else if (effect.getEffectType().equals(EffectType.SQUARE)) {
+            } else if (effect.getTargetType().equals(TargetType.SQUARE)) {
 
                 target.appendTarget(this.activeSquare);
             }
@@ -191,19 +203,19 @@ public class EffectHandler {
             // Create target list for same as father types of effect
         } else if (effect.getSameAsFather().stream().allMatch(Boolean::booleanValue)) {
 
-            if (effect.getEffectType().equals(EffectType.PLAYER)) {
+            if (effect.getTargetType().equals(TargetType.PLAYER)) {
 
                 this.active.forEach(target::appendTarget);
 
                 // Square effect on all current squares of targets
-            } else if (effect.getEffectType().equals(EffectType.SQUARE)
+            } else if (effect.getTargetType().equals(TargetType.SQUARE)
                     && effect.getMaxTargets() == null) {
 
                 target.setTargetList(target.getTargetList().stream().map(Target::getCurrentPosition)
                         .collect(Collectors.toList()));
 
                 // Square effect on limited number of square of targets
-            } else if (effect.getEffectType().equals(EffectType.SQUARE)
+            } else if (effect.getTargetType().equals(TargetType.SQUARE)
                     && effect.getMaxTargets() != null) {
 
                 target.setTargetList(target.getTargetList().subList(0, effect.getMaxTargets()));
@@ -230,8 +242,8 @@ public class EffectHandler {
         this.propertiesAnalyzer.seenByActive(this.active, target.getTargetList());
 
         // Check distance properties (to sublist of target list if destination square appended)
-        this.propertiesAnalyzer.checkDistance(target.getDestination() == null ?
-                this.activeSquare : target.getDestination(), target.getTargetList());
+        this.propertiesAnalyzer.checkDistance(target.getDestination() == null
+                ? this.activeSquare : target.getDestination(), target.getTargetList());
 
         // Check cardinal properties
         this.propertiesAnalyzer.checkCardinal(target.getDestination() == null ?
@@ -241,11 +253,19 @@ public class EffectHandler {
         this.propertiesAnalyzer.sameAsPlayer(this.activePlayer, target.getTargetList());
 
         // Recursively call check properties for move effect types
-        if (effect.getNext() != null && effect.getNext().getEffectType() == EffectType.MOVE) {
+        if (effect.getNext() != null && effect.getNext().getTargetType().equals(TargetType.MOVE)) {
 
             // Destination to target list to check distance and cardinal properties from active square
             return checkProperties(effect.getNext(),
                     new AtomicTarget(Arrays.asList(target.getDestination())));
+        }
+
+        // Recursively call check properties for recoil effect types
+        if (effect.getNext() != null && effect.getNext().getTargetType()
+                .equals(TargetType.RECOIL)) {
+
+            // Remove destination to check distance and cardinal properties from active square
+            return checkProperties(effect.getNext(), new AtomicTarget(target.getTargetList()));
         }
 
         return effect;

@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
 import it.polimi.ingsw.model.exceptions.cards.OwnerNotActiveException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
+import it.polimi.ingsw.model.exceptions.effects.EffectUsedException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -151,7 +152,7 @@ public class WeaponCard implements Card {
         }
     }
 
-    public void useCard() throws CardException {
+    public void activateCard() throws CardException {
 
         // Launch exception if owner of card is not the active player
         if (!this.effectHandler.getActivePlayer().equals(this.owner)) {
@@ -169,18 +170,30 @@ public class WeaponCard implements Card {
     public void usePrimary(AtomicTarget target)
             throws EffectException, PropertiesException {
 
+        // Launch exception if alternative effect used
+        if (this.alternative != null && this.alternative.isUsed()) {
+
+            throw new EffectUsedException("Card not loaded, primary effect used!");
+        }
+
         // Execute primary effect
         this.effectHandler.useEffect(this.primary, target);
         this.effectHandler.updateCardUsageVariables(this.primary, this);
     }
 
     public void useAlternative(AtomicTarget target)
-            throws CardException, EffectException, PropertiesException {
+            throws EffectException, PropertiesException {
 
         // Launch exception if alternative effect not present
         if (this.alternative == null) {
 
-            throw new CardException("Alternative effect not present!");
+            throw new EffectException("Alternative effect not present!");
+        }
+
+        // Launch exception if primary effect used
+        if (this.primary.isUsed()) {
+
+            throw new EffectUsedException("Card not loaded, alternative effect used!");
         }
 
         // TODO Check effect cost
@@ -193,7 +206,7 @@ public class WeaponCard implements Card {
     }
 
     public void useOptional(int index, AtomicTarget target)
-            throws CardException, EffectException, PropertiesException {
+            throws EffectException, PropertiesException {
 
         // Launch exception if the optional effect at selected index doesn't exists
         try {
@@ -201,7 +214,7 @@ public class WeaponCard implements Card {
             // TODO Check effect cost
         } catch (IndexOutOfBoundsException e) {
 
-            throw new CardException("Optional effect at selected index not present!");
+            throw new EffectException("Optional effect at selected index not present!");
         }
 
         // Execute optional effect
@@ -241,7 +254,8 @@ public class WeaponCard implements Card {
 
             if (jCardObject.containsKey("reloadCost")) {
                 jCardObject.getJsonArray("reloadCost").forEach(x ->
-                        this.reloadCost.add(new AmmoCube(Color.valueOf(x.toString().substring(1, x.toString().length() - 1))))
+                        this.reloadCost.add(new AmmoCube(Color.valueOf(
+                                x.toString().substring(1, x.toString().length() - 1))))
                 );
             }
 

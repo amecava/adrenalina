@@ -102,7 +102,6 @@ public class Square implements Target {
     public void addPlayer(Player player) {
 
         this.players.add(player);
-        player.setCurrentPosition(this);
     }
 
     public void removePlayer(Player player) {

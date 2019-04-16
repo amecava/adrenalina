@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.cards.effects.atomic;
 
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.board.rooms.Square;
-import it.polimi.ingsw.model.cards.effects.EffectType;
+import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.stream.Stream;
 
@@ -15,7 +15,7 @@ public class SquareDamage implements AtomicEffect {
     }
 
     @Override
-    public void execute(Target source, AtomicTarget target) {
+    public void execute(Target source, AtomicTarget target) throws EffectTypeException {
 
         try {
             Stream<Player> targetStream;
@@ -31,7 +31,8 @@ public class SquareDamage implements AtomicEffect {
 
             // Launch exception if cast fails
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException();
+
+            throw new EffectTypeException("This is a square type of effect");
         }
     }
 }

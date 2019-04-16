@@ -15,5 +15,4 @@ public class Shots {
 
         return this.color;
     }
-
 }

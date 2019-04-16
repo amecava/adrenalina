@@ -3,10 +3,11 @@ package it.polimi.ingsw.model.cards.effects.atomic;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
-import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -17,32 +18,38 @@ class MovePlayerTest {
 
         AtomicEffect tester = new MovePlayer();
 
+        Board board = new Board.BoardBuilder(0).build();
+
         Player player = new Player("player", Color.GRAY);
         Player target = new Player("target", Color.GREEN);
 
-        Square square = new Square(1);
-        Square destination = new Square(2);
+        target.movePlayer(board.getRoom(0).getSquare(0));
 
-        square.addPlayer(target);
+        assertEquals(target.getCurrentPosition(), board.getRoom(0).getSquare(0));
+        assertTrue(board.getRoom(0).getSquare(0).getPlayers().contains(target));
 
         try {
-            tester.execute(player, new AtomicTarget(destination, Arrays.asList(target)));
+            tester.execute(player,
+                    new AtomicTarget(board.getRoom(3).getSquare(0), Arrays.asList(target)));
 
-            assertTrue(destination.getPlayers().contains(target));
-            assertEquals(target.getCurrentPosition(), destination);
-        } catch (IllegalArgumentException e) {
+            assertTrue(board.getRoom(3).getSquare(0).getPlayers().contains(target));
+            assertEquals(target.getCurrentPosition(), board.getRoom(3).getSquare(0));
+            assertEquals(target.getOldPosition(), board.getRoom(0).getSquare(0));
+
+        } catch (EffectTypeException e) {
             fail();
         }
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(target)));
-        } catch (IllegalArgumentException e) {
+        } catch (EffectTypeException e) {
             assertTrue(true);
         }
 
         try {
-            tester.execute(player, new AtomicTarget(destination, Arrays.asList(square)));
-        } catch (IllegalArgumentException e) {
+            tester.execute(player, new AtomicTarget(board.getRoom(3).getSquare(0),
+                    Arrays.asList(board.getRoom(2).getSquare(0))));
+        } catch (EffectTypeException e) {
             assertTrue(true);
         }
     }

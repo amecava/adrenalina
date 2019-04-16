@@ -3,16 +3,19 @@ package it.polimi.ingsw.model.cards.effects.properties;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.Effect;
-import it.polimi.ingsw.model.cards.effects.EffectType;
+import it.polimi.ingsw.model.cards.effects.TargetType;
 import it.polimi.ingsw.model.exceptions.properties.CardinalException;
+import it.polimi.ingsw.model.exceptions.properties.DuplicateException;
 import it.polimi.ingsw.model.exceptions.properties.MaxTargetsException;
 import it.polimi.ingsw.model.exceptions.properties.SameAsFatherException;
 import it.polimi.ingsw.model.exceptions.properties.SameAsPlayerException;
 import it.polimi.ingsw.model.exceptions.properties.SquareDistanceException;
 import it.polimi.ingsw.model.exceptions.properties.TargetViewException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PropertiesAnalyzer {
 
@@ -25,7 +28,13 @@ public class PropertiesAnalyzer {
         this.effect = effect;
     }
 
-    public void maxTargets(List<Target> target) throws MaxTargetsException {
+    public void maxTargets(List<Target> target) throws DuplicateException, MaxTargetsException {
+
+        // Launch exception if duplicates found
+        if (target.size() != target.stream().distinct().collect(Collectors.toList()).size()) {
+
+            throw new DuplicateException("Too many targets in the target list!");
+        }
 
         // Launch exception if max targets property is violated
         if (this.effect.getMaxTargets() != null &&
@@ -41,19 +50,31 @@ public class PropertiesAnalyzer {
         // If the same as father flag is present
         if (this.effect.getSameAsFather() != null) {
 
-            for (int i = 0; i < this.effect.getSameAsFather().size(); i++) {
+            // Create new List to avoid ConcurrentModificationException
+            List<Target> notFound = new ArrayList<>(target);
 
-                // Launch exception if same as father is true and target not in active list
-                if (this.effect.getSameAsFather(i) && !active.contains(target.get(i))) {
+            try {
+                this.effect.getSameAsFather().forEach(x -> {
 
-                    throw new SameAsFatherException("Targets not in active list!");
+                    // Check if all targets eaten
+                    if (notFound.isEmpty()) {
 
-                    // Launch exception if same as father is false and target in active or inactive list
-                } else if (!this.effect.getSameAsFather(i) && (active.contains(target.get(i)))
-                        || inactive.contains(target.get(i))) {
+                        throw new NullPointerException();
+                    }
 
-                    throw new SameAsFatherException("Targets in active or inactive list!");
-                }
+                    // Remove target if found
+                    notFound.remove(new ArrayList<>(notFound).stream()
+                            .filter(y -> (x && active.contains(y)) || (!x && !active.contains(y)
+                                    && !inactive.contains(y)))
+                            .findFirst()
+                            .orElseThrow(IllegalArgumentException::new));
+
+                });
+            } catch (NullPointerException e) {
+                //
+            } catch (IllegalArgumentException e) {
+
+                throw new SameAsFatherException("Same as father violated!");
             }
         }
     }
@@ -64,17 +85,28 @@ public class PropertiesAnalyzer {
         // If the target view flag is present
         if (this.effect.getTargetView() != null) {
 
-            for (Target target : targetList) {
+            if (!this.effect.getTargetType().equals(TargetType.ROOM)) {
 
-                // Launch exception if target view flag violated
-                if ((this.viewInspector
-                        .targetView(activePlayer.getCurrentPosition(), target.getCurrentPosition())
-                        && !this.effect.getTargetView()) || (!this.viewInspector
-                        .targetView(activePlayer.getCurrentPosition(), target.getCurrentPosition())
-                        && this.effect.getTargetView())) {
+                for (Target target : targetList) {
 
-                    throw new TargetViewException("Target view exception!");
+                    // Launch exception if target view flag violated
+                    if ((this.viewInspector
+                            .targetView(activePlayer.getCurrentPosition(),
+                                    target.getCurrentPosition())
+                            && !this.effect.getTargetView()) || (!this.viewInspector
+                            .targetView(activePlayer.getCurrentPosition(),
+                                    target.getCurrentPosition())
+                            && this.effect.getTargetView())) {
+
+                        throw new TargetViewException("Target view exception!");
+                    }
                 }
+
+                // Launch exception if source can't view the targeted rooms
+            } else if (this.effect.getTargetView() && !this.viewInspector
+                    .roomView(activePlayer.getCurrentPosition(), targetList)) {
+
+                throw new TargetViewException("Room view exception!");
             }
         }
     }
@@ -83,17 +115,14 @@ public class PropertiesAnalyzer {
             throws TargetViewException {
 
         // If the seen by active flag is present
-        if (this.effect.getSeenByActive() != null) {
+        if (this.effect.isSeenByActive()) {
 
             for (Player active : activeList) {
                 for (Target target : targetList) {
 
                     // Launch exception if seen by active flag violated
-                    if ((!this.effect.getSeenByActive() && this.viewInspector
-                            .targetView(active.getCurrentPosition(), target.getCurrentPosition()))
-                            || (this.effect.getSeenByActive() && !this.viewInspector
-                            .targetView(active.getCurrentPosition(),
-                                    target.getCurrentPosition()))) {
+                    if (!this.viewInspector.targetView(active.getCurrentPosition(),
+                            target.getCurrentPosition())) {
 
                         throw new TargetViewException("Target not seen by active!");
                     }
@@ -105,24 +134,28 @@ public class PropertiesAnalyzer {
     public void checkDistance(Square activeSquare, List<Target> targetList)
             throws SquareDistanceException {
 
-        int distance;
+        if (!this.effect.getTargetType().equals(TargetType.ROOM)) {
 
-        for (Target target : targetList) {
+            int distance;
 
-            // Distance between two squares considering cardinal and throughWalls flags
-            distance = this.viewInspector.computeDistance(activeSquare, target.getCurrentPosition(),
-                    this.effect.isCardinal(), this.effect.isThroughWalls());
+            for (Target target : targetList) {
 
-            // Launch exception if the distance is lower than the minDist property
-            if (this.effect.getMinDist() != null && distance < this.effect.getMinDist()) {
+                // Distance between two squares considering cardinal and throughWalls flags
+                distance = this.viewInspector
+                        .computeDistance(activeSquare, target.getCurrentPosition(),
+                                this.effect.isCardinal(), this.effect.isThroughWalls());
 
-                throw new SquareDistanceException("Distance metrics not satisfied!");
-            }
+                // Launch exception if the distance is lower than the minDist property
+                if (this.effect.getMinDist() != null && distance < this.effect.getMinDist()) {
 
-            // Launch exception if the distance is greater than the maxDist property
-            if (this.effect.getMaxDist() != null && distance > this.effect.getMaxDist()) {
+                    throw new SquareDistanceException("Distance metrics not satisfied!");
+                }
 
-                throw new SquareDistanceException("Distance metrics not satisfied!");
+                // Launch exception if the distance is greater than the maxDist property
+                if (this.effect.getMaxDist() != null && distance > this.effect.getMaxDist()) {
+
+                    throw new SquareDistanceException("Distance metrics not satisfied!");
+                }
             }
         }
     }
@@ -134,7 +167,7 @@ public class PropertiesAnalyzer {
         if (this.effect.isCardinal() && !this.viewInspector
                 .sameDirection(activeSquare, targetList)) {
 
-            throw new CardinalException("Targets are not o same cardinal direction!");
+            throw new CardinalException("Targets are not on same cardinal direction!");
         }
 
         // If the different squares flag is true
@@ -155,7 +188,7 @@ public class PropertiesAnalyzer {
             throws SameAsPlayerException {
 
         // Same as player flag true
-        if (this.effect.getSameAsPlayer()) {
+        if (this.effect.isSameAsPlayer()) {
 
             // Launch exception if any target on different position of active player
             if (this.effect.getArgs() == 2 && target.stream().anyMatch(
@@ -166,7 +199,7 @@ public class PropertiesAnalyzer {
 
             // Launch exception if any target on same position of active player
         } else if (target.stream().anyMatch(x -> x.equals(activePlayer)) || (
-                this.effect.getEffectType().equals(EffectType.ROOM) && target.stream()
+                this.effect.getTargetType().equals(TargetType.ROOM) && target.stream()
                         .anyMatch(x -> x.equals(activePlayer.getCurrentPosition().getRoom())))) {
 
             throw new SameAsPlayerException("Same as player flag is false!");

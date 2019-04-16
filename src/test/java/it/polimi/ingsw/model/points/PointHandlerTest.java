@@ -48,8 +48,6 @@ class PointHandlerTest {
         Player player2 = new Player("Amedeo", Color.GREEN);
         Player player3 = new Player("federico", Color.YELLOW);
         Player player4 = new Player("Giulia ", Color.LIGHTBLUE);
-        Player player5 = new Player("Martina ", Color.RED);
-        Player player6 = new Player("Veronica ", Color.BLUE);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);
@@ -74,9 +72,6 @@ class PointHandlerTest {
             player1.damagePlayer(player3.getPlayerColor());
         }
         pointHandler.checkIfDead();
-        for (Player player: playerList){
-            System.out.println("" + player + player.getPoints());
-        }
         assertEquals(player2.getPoints(), 16);
         assertEquals(player3.getPoints(), 10);
         assertEquals(player3.getMarks().size(), 2);
