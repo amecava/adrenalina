@@ -1,7 +1,7 @@
 [
   {
     "move": true,
-    "collect": false,
+    "collect": false, // metti solo true
     "reload": false,
     "shoot": false,
     "effect": {
@@ -12,11 +12,8 @@
       "effectType": "PLAYER",
       "maxTargets": 1,
       "sameAsPlayer": true,
-      "minDist": 1,
       "maxDist": 2,
-      "atomicEffectList": [
-        "MOVE"
-      ]
+      "atomicEffectList": ["MOVE"]
     }
 
   },
