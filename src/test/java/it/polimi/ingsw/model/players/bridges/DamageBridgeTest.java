@@ -14,24 +14,32 @@ class DamageBridgeTest {
 
         damageBridge.appendShot(Color.RED);
 
-        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED)).count(), 1);
-        assertEquals(damageBridge.getShots().stream().filter(x -> !x.getColor().equals(Color.RED)).count(), 0);
+        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED))
+                .count(), 1);
+        assertEquals(damageBridge.getShots().stream().filter(x -> !x.getColor().equals(Color.RED))
+                .count(), 0);
 
         damageBridge.appendShot(Color.BLUE);
 
-        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED)).count(), 1);
-        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.BLUE)).count(), 1);
+        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED))
+                .count(), 1);
+        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.BLUE))
+                .count(), 1);
 
         damageBridge.appendMark(Color.RED);
         damageBridge.appendMark(Color.RED);
 
-        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED)).count(), 1);
-        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.BLUE)).count(), 1);
+        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED))
+                .count(), 1);
+        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.BLUE))
+                .count(), 1);
 
         damageBridge.appendShot(Color.RED);
 
-        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED)).count(), 4);
-        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.BLUE)).count(), 1);
+        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED))
+                .count(), 4);
+        assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.BLUE))
+                .count(), 1);
     }
 
     @Test
@@ -44,14 +52,18 @@ class DamageBridgeTest {
         damageBridge.appendMark(Color.RED);
         damageBridge.appendMark(Color.RED);
 
-        assertEquals(damageBridge.getMarks().stream().filter(x -> x.getColor().equals(Color.RED)).count(), 2);
-        assertEquals(damageBridge.getMarks().stream().filter(x -> !x.getColor().equals(Color.RED)).count(), 0);
+        assertEquals(damageBridge.getMarks().stream().filter(x -> x.getColor().equals(Color.RED))
+                .count(), 2);
+        assertEquals(damageBridge.getMarks().stream().filter(x -> !x.getColor().equals(Color.RED))
+                .count(), 0);
 
         damageBridge.appendMark(Color.RED);
         damageBridge.appendMark(Color.RED);
 
-        assertEquals(damageBridge.getMarks().stream().filter(x -> x.getColor().equals(Color.RED)).count(), 3);
-        assertEquals(damageBridge.getMarks().stream().filter(x -> !x.getColor().equals(Color.RED)).count(), 0);
+        assertEquals(damageBridge.getMarks().stream().filter(x -> x.getColor().equals(Color.RED))
+                .count(), 3);
+        assertEquals(damageBridge.getMarks().stream().filter(x -> !x.getColor().equals(Color.RED))
+                .count(), 0);
     }
 
     @Test

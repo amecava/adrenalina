@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.decks;
 
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
@@ -14,32 +13,31 @@ import javax.json.JsonReader;
 
 public class WeaponDeck {
 
-    private List<WeaponCard> weaponDeck = new ArrayList<>();
+    private List<WeaponCard> deck = new ArrayList<>();
 
     private WeaponDeck(WeaponDeckBuilder builder) {
 
-        this.weaponDeck = builder.weaponDeck;
-
+        this.deck = builder.deck;
     }
 
     public WeaponCard getCard() {
 
-        return weaponDeck.remove(0);
+        return deck.remove(0);
     }
 
     public WeaponCard getCard(int index) {
 
-        return this.weaponDeck.get(index);
+        return this.deck.get(index);
     }
 
     public static class WeaponDeckBuilder {
 
-        private List<WeaponCard> weaponDeck = new ArrayList<>();
+        private List<WeaponCard> deck = new ArrayList<>();
 
         private EffectHandler effectHandler;
         private List<Effect> effectsList = new ArrayList<>();
 
-        public WeaponDeckBuilder(EffectHandler effectHandler){
+        public WeaponDeckBuilder(EffectHandler effectHandler) {
 
             this.effectHandler = effectHandler;
         }
@@ -77,7 +75,7 @@ public class WeaponDeck {
                 JsonArray jCardsArray = cReader.readObject().getJsonArray("cards");
 
                 jCardsArray.forEach(x ->
-                        this.weaponDeck.add(new WeaponCard.WeaponCardBuilder(this.effectHandler)
+                        this.deck.add(new WeaponCard.WeaponCardBuilder(this.effectHandler)
                                 .build(x.asJsonObject(), this.effectsList))
                 );
 

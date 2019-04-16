@@ -153,14 +153,14 @@ class ViewInspectorTest {
         test.clear();
         test.add(four);
         Player testPlayer = new Player("test", Color.GRAY);
-        testPlayer.setCurrentPosition(six);
+        testPlayer.movePlayer(six);
         test.add(testPlayer);
 
         assertTrue(!viewInspector.sameDirection(seven, test));
 
         test.clear();
         test.add(two);
-        testPlayer.setCurrentPosition(four);
+        testPlayer.movePlayer(four);
         test.add(testPlayer);
 
         assertTrue(viewInspector.sameDirection(five, test));

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,16 +33,16 @@ class SquareDamageTest {
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square1, square2)));
 
-            assertSame(target1.getBridge().getShots().get(0).getColor(), Color.GRAY);
-            assertSame(target2.getBridge().getShots().get(0).getColor(), Color.GRAY);
-            assertSame(player.getBridge().getShots().size(), 0);
-        } catch (IllegalArgumentException e) {
+            assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
+            assertSame(target2.getShots().get(0).getColor(), Color.GRAY);
+            assertSame(player.getShots().size(), 0);
+        } catch (EffectTypeException e) {
             fail();
         }
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(target1, target2)));
-        } catch (IllegalArgumentException e) {
+        } catch (EffectTypeException e) {
             assertTrue(true);
         }
 
@@ -49,7 +50,7 @@ class SquareDamageTest {
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(room)));
-        } catch (IllegalArgumentException e) {
+        } catch (EffectTypeException e) {
             assertTrue(true);
         }
 
@@ -57,8 +58,8 @@ class SquareDamageTest {
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square1, target4)));
-        } catch (IllegalArgumentException e) {
-            assertSame(target4.getBridge().getShots().size(), 0);
+        } catch (EffectTypeException e) {
+            assertSame(target4.getShots().size(), 0);
         }
     }
 }

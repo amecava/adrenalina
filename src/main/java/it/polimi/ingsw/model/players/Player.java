@@ -7,8 +7,6 @@ import it.polimi.ingsw.model.players.bridges.Shots;
 import it.polimi.ingsw.model.points.PointStructure;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Target;
-import it.polimi.ingsw.model.exceptions.cards.CardException;
-import it.polimi.ingsw.model.exceptions.cards.MaxCardException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +14,9 @@ public class Player implements Target {
 
     private String playerId;
     private Color playerColor;
+
+    private Square oldPosition;
+    private Square currentPosition;
 
     private Bridge bridge;
     private PointStructure pointStructure;
@@ -40,6 +41,18 @@ public class Player implements Target {
         return this.playerColor;
     }
 
+
+    public Square getOldPosition() {
+
+        return this.oldPosition;
+    }
+
+    @Override
+    public Square getCurrentPosition() {
+
+        return this.currentPosition;
+    }
+
     public Bridge getBridge() {
 
         return this.bridge;
@@ -58,16 +71,6 @@ public class Player implements Target {
     public void setWeaponHand(List<Card> weaponHand) {
 
         this.weaponHand = weaponHand;
-    }
-
-    public void addCardToHand(Card card) throws CardException {
-
-        if (weaponHand.size() < 3) {
-            weaponHand.add(card);
-        } else {
-
-            throw new MaxCardException("You already have 3 cards in your hand!", card);
-        }
     }
 
     public int getPoints() {
@@ -108,8 +111,14 @@ public class Player implements Target {
 
     public void movePlayer(Square destination) {
 
-        this.bridge.getCurrentPosition().removePlayer(this);
-        destination.addPlayer(this);
+        if (this.currentPosition != null) {
+
+            this.oldPosition = this.currentPosition;
+            this.oldPosition.removePlayer(this);
+        }
+
+        this.currentPosition = destination;
+        this.currentPosition.addPlayer(this);
     }
 
     public void damagePlayer(Color color) {
@@ -120,21 +129,5 @@ public class Player implements Target {
     public void markPlayer(Color color) {
 
         this.bridge.appendMark(color);
-    }
-
-    public Square getOldPosition() {
-
-        return this.bridge.getOldPosition();
-    }
-
-    @Override
-    public Square getCurrentPosition() {
-
-        return this.bridge.getCurrentPosition();
-    }
-
-    public void setCurrentPosition(Square currentPosition) {
-
-        this.bridge.setCurrentPosition(currentPosition);
     }
 }

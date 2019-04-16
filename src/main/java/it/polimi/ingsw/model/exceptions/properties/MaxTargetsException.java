@@ -6,5 +6,4 @@ public class MaxTargetsException extends PropertiesException {
 
         super(message);
     }
-
 }

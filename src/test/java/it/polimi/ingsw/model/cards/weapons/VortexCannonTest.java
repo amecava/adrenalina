@@ -31,9 +31,9 @@ public class VortexCannonTest {
 
         AtomicTarget atomicTarget;
 
-        board.getRoom(1).getSquare(1).addPlayer(source);
-        board.getRoom(0).getSquare(2).addPlayer(target1);
-        board.getRoom(3).getSquare(1).addPlayer(target2);
+        source.movePlayer(board.getRoom(1).getSquare(1));
+        target1.movePlayer(board.getRoom(0).getSquare(2));
+        target2.movePlayer(board.getRoom(3).getSquare(1));
 
         WeaponCard tester = weaponDeck.getCard(7);
         tester.setOwner(source);
@@ -43,48 +43,147 @@ public class VortexCannonTest {
         atomicTarget = new AtomicTarget(board.getRoom(1).getSquare(1), Arrays.asList(target1));
 
         try {
-            tester.useCard();
+            tester.activateCard();
+            assertTrue(true);
+        } catch (CardException e) {
+            fail();
+        }
 
+        // Vortex same square as source current position
+        try {
             tester.usePrimary(atomicTarget);
             fail();
-        } catch (CardException | EffectException e){
+        } catch (EffectException e) {
             fail();
-        } catch (PropertiesException e){
+        } catch (PropertiesException e) {
             assertTrue(true);
         }
 
         atomicTarget = new AtomicTarget(board.getRoom(3).getSquare(1), Arrays.asList(target1));
 
+        // Source can't see vortex
         try {
             tester.usePrimary(atomicTarget);
             fail();
-        } catch (EffectException e){
+        } catch (EffectException e) {
             fail();
-        } catch (PropertiesException e){
+        } catch (PropertiesException e) {
             assertTrue(true);
         }
 
         atomicTarget = new AtomicTarget(board.getRoom(1).getSquare(2), Arrays.asList(target2));
 
+        // Target not 0 or 1 move away from vortex
         try {
             tester.usePrimary(atomicTarget);
             fail();
-        } catch (EffectException e){
+        } catch (EffectException e) {
             fail();
-        } catch (PropertiesException e){
+        } catch (PropertiesException e) {
             assertTrue(true);
         }
 
         atomicTarget = new AtomicTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
 
+        // Use primary
         try {
             tester.usePrimary(atomicTarget);
 
-            assertSame(target1.getBridge().getShots().get(0).getColor(), Color.GRAY);
-            assertSame(target1.getBridge().getShots().get(1).getColor(), Color.GRAY);
-            assertEquals(target1.getCurrentPosition(), board.getRoom(0).getSquare(2));
+            assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
+            assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
 
-        } catch (EffectException | PropertiesException e){
+            assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target1));
+            assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
+            assertEquals(target1.getOldPosition(), board.getRoom(0).getSquare(2));
+
+        } catch (EffectException | PropertiesException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void optionalEffect() {
+
+        Board board = new Board.BoardBuilder(0).build();
+
+        Player source = new Player("source", Color.GRAY);
+        Player target1 = new Player("target1", Color.GREEN);
+        Player target2 = new Player("target2", Color.LIGHTBLUE);
+        Player target3 = new Player("target2", Color.RED);
+
+        AtomicTarget atomicTarget;
+
+        source.movePlayer(board.getRoom(1).getSquare(1));
+        target1.movePlayer(board.getRoom(0).getSquare(2));
+        target2.movePlayer(board.getRoom(3).getSquare(0));
+        target3.movePlayer(board.getRoom(3).getSquare(0));
+
+        WeaponCard tester = weaponDeck.getCard(7);
+        tester.setOwner(source);
+
+        effectHandler.setActivePlayer(source);
+
+        atomicTarget = new AtomicTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
+
+        // Use primary
+        try {
+            tester.usePrimary(atomicTarget);
+
+            assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
+            assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
+
+            assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target1));
+            assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
+            assertEquals(target1.getOldPosition(), board.getRoom(0).getSquare(2));
+
+        } catch (EffectException | PropertiesException e) {
+            fail();
+        }
+
+        atomicTarget = new AtomicTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
+
+        // Can't use optional on same target as primary
+        try {
+            tester.useOptional(0, atomicTarget);
+
+            fail();
+        } catch (PropertiesException e) {
+            fail();
+        } catch (EffectException e) {
+            assertTrue(true);
+        }
+
+        atomicTarget = new AtomicTarget(Arrays.asList(target1, target2));
+
+        // Can't use optional on same target as primary
+        try {
+            tester.useOptional(0, atomicTarget);
+
+            fail();
+        } catch (EffectException e) {
+            fail();
+        } catch (PropertiesException e) {
+            assertTrue(true);
+        }
+
+        atomicTarget = new AtomicTarget(Arrays.asList(target2, target3));
+
+        // Use optional 0
+        try {
+            tester.useOptional(0, atomicTarget);
+
+            assertSame(target2.getShots().get(0).getColor(), Color.GRAY);
+            assertSame(target3.getShots().get(0).getColor(), Color.GRAY);
+
+            assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target2));
+            assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target3));
+            assertEquals(target2.getCurrentPosition(), board.getRoom(1).getSquare(2));
+            assertEquals(target3.getCurrentPosition(), board.getRoom(1).getSquare(2));
+
+            assertEquals(target2.getOldPosition(), board.getRoom(3).getSquare(0));
+            assertEquals(target3.getOldPosition(), board.getRoom(3).getSquare(0));
+
+        } catch (EffectException | PropertiesException e) {
             fail();
         }
     }

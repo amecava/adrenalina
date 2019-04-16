@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicType;
+import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.JsonObject;
@@ -17,7 +18,7 @@ public class Effect {
     private int args;
     private String name;
     private String description;
-    private EffectType effectType;
+    private TargetType targetType;
 
     private boolean used;
 
@@ -29,9 +30,9 @@ public class Effect {
 
     private Integer maxTargets;
     private List<Boolean> sameAsFather;
-    private Boolean sameAsPlayer;
+    private boolean sameAsPlayer;
     private Boolean targetView;
-    private Boolean seenByActive;
+    private boolean seenByActive;
 
     private Integer minDist;
     private Integer maxDist;
@@ -47,7 +48,7 @@ public class Effect {
         this.args = builder.args;
         this.name = builder.name;
         this.description = builder.description;
-        this.effectType = builder.effectType;
+        this.targetType = builder.targetType;
 
         this.used = builder.used;
 
@@ -92,9 +93,9 @@ public class Effect {
         return this.description;
     }
 
-    public EffectType getEffectType() {
+    public TargetType getTargetType() {
 
-        return this.effectType;
+        return this.targetType;
     }
 
     public boolean isUsed() {
@@ -147,7 +148,7 @@ public class Effect {
         return this.sameAsFather.get(index);
     }
 
-    public Boolean getSameAsPlayer() {
+    public boolean isSameAsPlayer() {
 
         return this.sameAsPlayer;
     }
@@ -157,7 +158,7 @@ public class Effect {
         return this.targetView;
     }
 
-    public Boolean getSeenByActive() {
+    public boolean isSeenByActive() {
 
         return this.seenByActive;
     }
@@ -201,7 +202,7 @@ public class Effect {
         this.atomicEffectList.add(atomicEffect);
     }
 
-    public void execute(Target source, AtomicTarget target) {
+    public void execute(Target source, AtomicTarget target) throws EffectTypeException {
 
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
 
@@ -215,7 +216,7 @@ public class Effect {
         private int args;
         private String name;
         private String description;
-        private EffectType effectType;
+        private TargetType targetType;
 
         private boolean used = false;
 
@@ -229,7 +230,7 @@ public class Effect {
         private List<Boolean> sameAsFather = new ArrayList<>();
         private boolean sameAsPlayer = false;
         private Boolean targetView;
-        private Boolean seenByActive;
+        private boolean seenByActive = false;
 
         private Integer minDist;
         private Integer maxDist;
@@ -254,7 +255,7 @@ public class Effect {
             if (jEffectObject.containsKey("description")) {
                 this.description = jEffectObject.getString("description");
             }
-            this.effectType = EffectType.valueOf(jEffectObject.getString("effectType"));
+            this.targetType = TargetType.valueOf(jEffectObject.getString("targetType"));
 
             if (jEffectObject.containsKey("next")) {
                 this.next = new Effect.EffectBuilder().build(jEffectObject.getJsonObject("next"));
@@ -284,6 +285,10 @@ public class Effect {
                         .forEach(x -> this.sameAsFather.add(Boolean.valueOf(x.toString())));
             }
 
+            if (jEffectObject.containsKey("sameAsPlayer")) {
+                this.sameAsPlayer = jEffectObject.getBoolean("sameAsPlayer");
+            }
+
             if (jEffectObject.containsKey("targetView")) {
                 this.targetView = jEffectObject.getBoolean("targetView");
             }
@@ -300,11 +305,23 @@ public class Effect {
                 this.maxDist = jEffectObject.getInt("maxDist");
             }
 
+            if (jEffectObject.containsKey("cardinal")) {
+                this.cardinal = jEffectObject.getBoolean("cardinal");
+            }
+
+            if (jEffectObject.containsKey("throughWalls")) {
+                this.throughWalls = jEffectObject.getBoolean("throughWalls");
+            }
+
+            if (jEffectObject.containsKey("differentSquares")) {
+                this.differentSquares = jEffectObject.getBoolean("differentSquares");
+            }
+
             if (jEffectObject.containsKey("atomicEffectList")) {
                 jEffectObject.getJsonArray("atomicEffectList").forEach(x ->
                         this.atomicEffectList.add(AtomicType
                                 .valueOf(x.toString().substring(1, x.toString().length() - 1))
-                                .getAtomicEffect(this.effectType)
+                                .getAtomicEffect(this.targetType)
                         ));
             }
 

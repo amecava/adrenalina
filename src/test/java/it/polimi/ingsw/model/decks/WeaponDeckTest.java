@@ -42,7 +42,8 @@ class WeaponDeckTest {
 
         assertEquals(
                 Arrays.asList(AtomicType.DAMAGE, AtomicType.DAMAGE, AtomicType.MARK),
-                effect.getAtomicEffectList().stream().map(AtomicEffect::getAtomicType).collect(Collectors.toList())
+                effect.getAtomicEffectList().stream().map(AtomicEffect::getAtomicType)
+                        .collect(Collectors.toList())
         );
 
         assertNull(effect.getActivated());

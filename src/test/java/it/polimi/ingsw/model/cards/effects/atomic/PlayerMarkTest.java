@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,19 +27,18 @@ class PlayerMarkTest {
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(target1, target2, target3)));
 
-            assertSame(target1.getBridge().getMarks().get(0).getColor(), Color.GRAY);
-            assertSame(target2.getBridge().getMarks().get(0).getColor(), Color.GRAY);
-            assertSame(target3.getBridge().getMarks().get(0).getColor(), Color.GRAY);
-        } catch (IllegalArgumentException e) {
+            assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target2.getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target3.getMarks().get(0).getColor(), Color.GRAY);
+        } catch (EffectTypeException e) {
             fail();
         }
-
 
         Square square = new Square(1);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square)));
-        } catch (IllegalArgumentException e) {
+        } catch (EffectTypeException e) {
             assertTrue(true);
         }
 
@@ -46,7 +46,7 @@ class PlayerMarkTest {
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(room)));
-        } catch (IllegalArgumentException e) {
+        } catch (EffectTypeException e) {
             assertTrue(true);
         }
 
@@ -54,8 +54,8 @@ class PlayerMarkTest {
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square, target4)));
-        } catch (IllegalArgumentException e) {
-            assertSame(target4.getBridge().getMarks().size(), 0);
+        } catch (EffectTypeException e) {
+            assertSame(target4.getMarks().size(), 0);
         }
     }
 }

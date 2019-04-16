@@ -15,7 +15,7 @@ class PlayerTest {
 
         Player player = new Player("player", Color.GRAY);
 
-        board.getRoom(0).getSquare(0).addPlayer(player);
+        player.movePlayer(board.getRoom(0).getSquare(0));
 
         assertEquals(player.getCurrentPosition(), board.getRoom(0).getSquare(0));
 

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.players.bridges;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.board.rooms.Square;
 import java.util.List;
 
 public class Bridge {
@@ -55,12 +54,12 @@ public class Bridge {
         return this.deathBridge.assignPoints();
     }
 
-    public boolean isKillStreakCount(){
+    public boolean isKillStreakCount() {
 
         return this.damageBridge.isKillStreakCount();
     }
 
-    public void setKillStreakCount(){
+    public void setKillStreakCount() {
 
         this.damageBridge.setKillStreakCount();
     }
@@ -88,25 +87,5 @@ public class Bridge {
     public boolean isDead() {
 
         return this.damageBridge.isDead();
-    }
-
-    public Square getOldPosition() {
-
-        return this.actionBridge.getOldPosition();
-    }
-
-    public void setOldPosition(Square oldPosition) {
-
-        this.actionBridge.setOldPosition(oldPosition);
-    }
-
-    public Square getCurrentPosition() {
-
-        return this.actionBridge.getCurrentPosition();
-    }
-
-    public void setCurrentPosition(Square currentPosition) {
-
-        this.actionBridge.setCurrentPosition(currentPosition);
     }
 }
