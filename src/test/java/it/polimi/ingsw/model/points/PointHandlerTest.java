@@ -38,7 +38,7 @@ class PointHandlerTest {
         );
         assertEquals(player2.getPoints(), 8);
         assertEquals(player3.getPoints(), 7);
-        assertEquals(pointHandler.getWinner().get(0), player2);
+        assertEquals(pointHandler.getWinner().get(0).get(0), player2);
     }
 
     @Test
@@ -92,13 +92,15 @@ class PointHandlerTest {
         playerList.add(player2);
         playerList.add(player3);
         playerList.add(player4);
+        playerList.add(player5);
+        playerList.add(player6);
         PointHandler pointHandler = new PointHandler(playerList, 4);
         player1.setPoints(20);
         player2.setPoints(20);
         player3.setPoints(15);
-        assertTrue(pointHandler.getWinner().contains(player1));
-        assertTrue(pointHandler.getWinner().contains(player2));
-        assertFalse(pointHandler.getWinner().contains(player3));
+        assertTrue(pointHandler.getWinner().get(0).contains(player1));
+        assertTrue(pointHandler.getWinner().get(0).contains(player2));
+        assertFalse(pointHandler.getWinner().get(0).contains(player3));
 
         for (int i = 0; i < 13; i++) {
             player2.damagePlayer(player1.getPlayerColor());
@@ -108,9 +110,21 @@ class PointHandlerTest {
             player1.damagePlayer(player2.getPlayerColor());
         }
         pointHandler.checkIfDead();
-
-        assertTrue(pointHandler.getWinner().contains(player1));
-        assertFalse(pointHandler.getWinner().contains(player2));
-        assertFalse(pointHandler.getWinner().contains(player3));
+        int k=1;
+        for (List<Player>  playerList1 : pointHandler.getWinner()){
+            System.out.println(" player in " + k + "position ");
+            for (Player player: playerList1){
+                System.out.println(player.getPlayerId());
+            }
+            k++;
+        }
+        Boolean check=false;
+        if (check==null || !check)
+            System.out.println(" null is == to flase!");
+        else
+            System.out.println("flase!=null");
+        assertTrue(pointHandler.getWinner().get(0).contains(player1));
+        assertFalse(pointHandler.getWinner().get(0).contains(player2));
+        assertFalse(pointHandler.getWinner().get(0).contains(player3));
     }
 }

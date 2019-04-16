@@ -27,9 +27,11 @@ public class PointStructure {
         return this.numberDamage;
     }
 
-    public void setNumberDamage(int numberDamage) {
+    public PointStructure setNumberDamage(int numberDamage) {
 
         this.numberDamage = numberDamage;
+
+        return this;
     }
 
     public int getFirstDamage() {

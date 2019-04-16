@@ -1,0 +1,26 @@
+[
+  {
+    "move": true,
+    "collect": false,
+    "reload": false,
+    "shoot": false,
+    "effect": {
+      "id": 10,
+      "args": 1,
+      "name": "with phase glide",
+      "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect.",
+      "effectType": "PLAYER",
+      "maxTargets": 1,
+      "sameAsPlayer": true,
+      "minDist": 1,
+      "maxDist": 2,
+      "atomicEffectList": [
+        "MOVE"
+      ]
+    }
+
+  },
+  {
+
+  }
+]
