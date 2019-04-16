@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board.rooms;
 
+import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -13,6 +14,9 @@ public class Square implements Target {
     private int squareId;
     private Room room;
 
+    private boolean spawn;
+    private List<Card> tools;
+
     private Map<Boolean, HashMap<Square, Integer>> map = new HashMap<>();
 
     private Map<Direction, Square> adjacent = new EnumMap<>(Direction.class);
@@ -20,9 +24,12 @@ public class Square implements Target {
 
     private List<Player> players = new ArrayList<>();
 
-    public Square(int squareId) {
+    public Square(int squareId, boolean spawn) {
 
         this.squareId = squareId;
+
+        this.spawn = spawn;
+        this.tools = new ArrayList<>();
 
         this.map.put(true, new HashMap<>());
         this.map.put(false, new HashMap<>());
@@ -31,9 +38,18 @@ public class Square implements Target {
         this.map.get(false).put(this, 0);
     }
 
+    public void addTools(List<Card> tools){
+
+        this.tools = tools;
+    }
+
     public int getSquareId() {
 
         return this.squareId;
+    }
+
+    public boolean isSpawn() {
+        return spawn;
     }
 
     public Room getRoom() {

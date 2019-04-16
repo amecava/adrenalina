@@ -14,7 +14,8 @@ import javax.json.JsonReader;
 
 public class WeaponDeck {
 
-    private List<WeaponCard> weaponDeck = new ArrayList<>();
+    private List<WeaponCard> weaponDeck;
+
 
     private WeaponDeck(WeaponDeckBuilder builder) {
 
@@ -30,6 +31,17 @@ public class WeaponDeck {
     public WeaponCard getCard(int index) {
 
         return this.weaponDeck.get(index);
+    }
+
+    public List<Card> getCardsForSpawnSquares(){
+
+        List<Card> threeCards = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++){
+
+            threeCards.add(this.getCard());
+        }
+        return threeCards;
     }
 
     public static class WeaponDeckBuilder {

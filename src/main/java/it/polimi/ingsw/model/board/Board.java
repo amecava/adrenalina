@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.decks.AmmoTilesDeck;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -20,17 +22,30 @@ import javax.json.JsonValue;
 public class Board {
 
     private List<Room> roomsList;
-    private WeaponDeck weaponDeck;
 
-    private Board(BoardBuilder builder) {
+    private WeaponDeck weaponDeck;
+    private AmmoTilesDeck ammoTilesDeck;
+
+    private Board(BoardBuilder builder, EffectHandler effectHandler) {
 
         this.roomsList = builder.roomsList;
+        this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
     }
 
     public Room getRoom(int index) {
 
         return this.roomsList.get(index);
     }
+
+    public void fill() {
+        this.roomsList.stream().flatMap(x -> x.getSquaresList().stream()).forEach(y -> {
+            if (y.isSpawn()){
+                y.addTools(this.weaponDeck.getCardsForSpawnSquares());
+            }
+
+        });
+    }
+
 
     public void giveWeaponCardToPlayer(Player player) throws CardException {
 
@@ -47,6 +62,7 @@ public class Board {
 
         private static final String SQUARES = "squares";
         private static final String SQUARE_ID = "squareId";
+        private static final String SPAWN = "spawn";
         private static final String ADJACENT = "adjacent";
         private static final String DIRECTION = "direction";
         private static final String CONNECTION = "connection";
@@ -69,7 +85,8 @@ public class Board {
 
                     x.asJsonObject().getJsonArray(SQUARES).forEach(y ->
                             this.roomsList.get(x.asJsonObject().getInt(ROOM_ID))
-                                    .addSquare(new Square(y.asJsonObject().getInt(SQUARE_ID)))
+                                    .addSquare(new Square(y.asJsonObject().getInt(SQUARE_ID),
+                                            y.asJsonObject().getBoolean(SPAWN)))
 
                     );
                 });
@@ -115,9 +132,9 @@ public class Board {
             }
         }
 
-        public Board build() {
+        public Board build(EffectHandler effectHandler) {
 
-            return new Board(this);
+            return new Board(this, effectHandler);
         }
     }
 }

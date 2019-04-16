@@ -10,7 +10,7 @@
                 "squares": [
                     {
                         "squareId": 0,
-
+                        "spawn": false,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -36,7 +36,7 @@
                     },
                     {
                         "squareId": 1,
-
+                        "spawn": false,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -64,7 +64,7 @@
                     },
                     {
                         "squareId": 2,
-
+                        "spawn": true,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -97,7 +97,7 @@
                 "squares": [
                     {
                         "squareId": 0,
-
+                        "spawn": true,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -123,7 +123,7 @@
                     },
                     {
                         "squareId": 1,
-
+                        "spawn": false,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -153,7 +153,7 @@
                     },
                     {
                         "squareId": 2,
-
+                        "spawn": false,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -190,7 +190,7 @@
                 "squares": [
                     {
                         "squareId": 0,
-
+                        "spawn": false,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -216,7 +216,7 @@
                     },
                     {
                         "squareId": 1,
-
+                        "spawn": false,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -251,7 +251,7 @@
                 "squares": [
                     {
                         "squareId": 0,
-
+                        "spawn": false,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
@@ -277,7 +277,7 @@
                     },
                     {
                         "squareId": 1,
-
+                        "spawn": true,
                         "adjacent": [
                             {
                                 "direction": "NORTH",
