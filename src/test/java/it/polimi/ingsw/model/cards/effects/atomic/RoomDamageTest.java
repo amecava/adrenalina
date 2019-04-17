@@ -22,8 +22,8 @@ class RoomDamageTest {
 
         Room room = new Room(Color.RED);
 
-        Square square1 = new Square(1);
-        Square square2 = new Square(2);
+        Square square1 = new Square(1, false);
+        Square square2 = new Square(2, true);
 
         room.addSquare(square1);
         room.addSquare(square2);

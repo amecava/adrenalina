@@ -28,8 +28,8 @@ class RoomTest {
 
         Room room = new Room(Color.RED);
 
-        Square square1 = new Square(0);
-        Square square2 = new Square(1);
+        Square square1 = new Square(0, false);
+        Square square2 = new Square(1, true);
 
         room.addSquare(square1);
         room.addSquare(square2);

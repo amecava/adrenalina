@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.Target;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.properties.SquareDistanceException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -14,7 +15,8 @@ import org.junit.jupiter.api.Test;
 
 class ViewInspectorTest {
 
-    private Board board = new Board.BoardBuilder(0).build();
+    private EffectHandler effectHandler = new EffectHandler();
+    private Board board = new Board.BoardBuilder(0).build(effectHandler);
 
     private int distOne;
     private boolean cardinal = true;

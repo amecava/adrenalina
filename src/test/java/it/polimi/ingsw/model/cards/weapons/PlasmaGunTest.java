@@ -18,12 +18,12 @@ import org.junit.jupiter.api.Test;
 public class PlasmaGunTest {
 
     private EffectHandler effectHandler = new EffectHandler();
-    private WeaponDeck weaponDeck = new WeaponDeck.WeaponDeckBuilder(this.effectHandler).build();
 
     @Test
     void plasmaGun() {
 
-        Board board = new Board.BoardBuilder(0).build();
+        Board board = new Board.BoardBuilder(0).build(effectHandler);
+        WeaponDeck weaponDeck = board.getWeaponDeck();
 
         Player source = new Player("source", Color.GRAY);
         Player target1 = new Player("target1", Color.GREEN);

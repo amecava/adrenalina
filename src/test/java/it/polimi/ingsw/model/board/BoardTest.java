@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import org.junit.jupiter.api.Test;
 
 class BoardTest {
@@ -12,7 +13,7 @@ class BoardTest {
     @Test
     void buildBoard() {
 
-        Board board = new Board.BoardBuilder(0).build();
+        Board board = new Board.BoardBuilder(0).build(new EffectHandler());
 
         assertEquals(board.getRoom(0).getColor(), Color.BLUE);
         assertEquals(board.getRoom(1).getColor(), Color.RED);

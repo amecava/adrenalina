@@ -6,6 +6,8 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.effects.Effect;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.Arrays;
@@ -18,7 +20,8 @@ class MovePlayerTest {
 
         AtomicEffect tester = new MovePlayer();
 
-        Board board = new Board.BoardBuilder(0).build();
+        EffectHandler effectHandler = new EffectHandler();
+        Board board = new Board.BoardBuilder(0).build(effectHandler);
 
         Player player = new Player("player", Color.GRAY);
         Player target = new Player("target", Color.GREEN);

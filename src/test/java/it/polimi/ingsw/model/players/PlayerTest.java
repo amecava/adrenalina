@@ -4,14 +4,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.cards.effects.Effect;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import org.junit.jupiter.api.Test;
 
 class PlayerTest {
 
+    EffectHandler effectHandler = new EffectHandler();
     @Test
     void movePlayer() {
 
-        Board board = new Board.BoardBuilder(0).build();
+        Board board = new Board.BoardBuilder(0).build(effectHandler);
 
         Player player = new Player("player", Color.GRAY);
 

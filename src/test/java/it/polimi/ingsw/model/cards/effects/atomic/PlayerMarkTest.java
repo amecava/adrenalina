@@ -34,7 +34,7 @@ class PlayerMarkTest {
             fail();
         }
 
-        Square square = new Square(1);
+        Square square = new Square(1, false);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square)));

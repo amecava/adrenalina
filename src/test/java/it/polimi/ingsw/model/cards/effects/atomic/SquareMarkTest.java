@@ -20,8 +20,8 @@ class SquareMarkTest {
 
         Player player = new Player("player", Color.GRAY);
 
-        Square square1 = new Square(1);
-        Square square2 = new Square(2);
+        Square square1 = new Square(1, false);
+        Square square2 = new Square(2, true);
 
         Player target1 = new Player("target1", Color.GREEN);
         Player target2 = new Player("target2", Color.VIOLET);

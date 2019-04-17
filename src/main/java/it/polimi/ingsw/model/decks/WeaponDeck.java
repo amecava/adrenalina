@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.decks;
 
+import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
@@ -13,7 +14,7 @@ import javax.json.JsonReader;
 
 public class WeaponDeck {
 
-    private List<WeaponCard> weaponDeck;
+    private List<WeaponCard> deck;
 
 
     private WeaponDeck(WeaponDeckBuilder builder) {

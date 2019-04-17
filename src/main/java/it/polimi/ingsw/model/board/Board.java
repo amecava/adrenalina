@@ -8,6 +8,8 @@ import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.decks.AmmoTilesDeck;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
+import it.polimi.ingsw.model.exceptions.cards.CardException;
+import it.polimi.ingsw.model.players.Player;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,10 +46,9 @@ public class Board {
         });
     }
 
+    public WeaponDeck getWeaponDeck() {
 
-    public void giveWeaponCardToPlayer(Player player) throws CardException {
-
-        player.addCardToHand(weaponDeck.getCard());
+        return this.weaponDeck;
     }
 
     public static class BoardBuilder {

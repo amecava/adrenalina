@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ class PlayerDamageTest {
     void execute() {
 
         AtomicEffect tester = new PlayerDamage();
+
+        EffectHandler effectHandler = new EffectHandler();
 
         Player player = new Player("player", Color.GRAY);
 
@@ -34,7 +37,7 @@ class PlayerDamageTest {
             fail();
         }
 
-        Square square = new Square(1);
+        Square square = new Square(1, false);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square)));
