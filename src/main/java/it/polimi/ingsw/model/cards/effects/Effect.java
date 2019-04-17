@@ -212,6 +212,8 @@ public class Effect {
 
     public static class EffectBuilder {
 
+        private JsonObject jEffectObject;
+
         private int id;
         private int args;
         private String name;
@@ -240,86 +242,91 @@ public class Effect {
 
         private List<AtomicEffect> atomicEffectList = new ArrayList<>();
 
-        public Effect build(JsonObject jEffectObject) {
+        public EffectBuilder(JsonObject jEffectObject) {
 
-            this.id = jEffectObject.getInt("id");
+            this.jEffectObject = jEffectObject;
+        }
 
-            if (jEffectObject.containsKey("args")) {
-                this.args = jEffectObject.getInt("args");
+        public Effect build() {
+
+            this.id = this.jEffectObject.getInt("id");
+
+            if (this.jEffectObject.containsKey("args")) {
+                this.args = this.jEffectObject.getInt("args");
             }
 
-            if (jEffectObject.containsKey("name")) {
-                this.name = jEffectObject.getString("name");
+            if (this.jEffectObject.containsKey("name")) {
+                this.name = this.jEffectObject.getString("name");
             }
 
-            if (jEffectObject.containsKey("description")) {
-                this.description = jEffectObject.getString("description");
+            if (this.jEffectObject.containsKey("description")) {
+                this.description = this.jEffectObject.getString("description");
             }
 
-            this.targetType = TargetType.valueOf(jEffectObject.getString("targetType"));
+            this.targetType = TargetType.valueOf(this.jEffectObject.getString("targetType"));
 
-            if (jEffectObject.containsKey("next")) {
-                this.next = new Effect.EffectBuilder().build(jEffectObject.getJsonObject("next"));
+            if (this.jEffectObject.containsKey("next")) {
+                this.next = new Effect.EffectBuilder(this.jEffectObject.getJsonObject("next")).build();
             }
 
-            if (jEffectObject.containsKey("optionalId")) {
-                jEffectObject.getJsonArray("optionalId")
+            if (this.jEffectObject.containsKey("optionalId")) {
+                this.jEffectObject.getJsonArray("optionalId")
                         .forEach(x -> this.optionalId.add(Integer.parseInt(x.toString())));
             }
 
-            if (jEffectObject.containsKey("cost")) {
-                jEffectObject.getJsonArray("cost")
+            if (this.jEffectObject.containsKey("cost")) {
+                this.jEffectObject.getJsonArray("cost")
                         .forEach(x -> this.cost.add(new AmmoCube(Color.valueOf(
                                 x.toString().substring(1, x.toString().length() - 1)))));
             }
 
-            if (jEffectObject.containsKey("activated")) {
-                this.activated = jEffectObject.getBoolean("activated");
+            if (this.jEffectObject.containsKey("activated")) {
+                this.activated = this.jEffectObject.getBoolean("activated");
             }
 
-            if (jEffectObject.containsKey("maxTargets")) {
-                this.maxTargets = jEffectObject.getInt("maxTargets");
+            if (this.jEffectObject.containsKey("maxTargets")) {
+                this.maxTargets = this.jEffectObject.getInt("maxTargets");
             }
 
-            if (jEffectObject.containsKey("sameAsFather")) {
-                jEffectObject.getJsonArray("sameAsFather")
+            if (this.jEffectObject.containsKey("sameAsFather")) {
+                this.jEffectObject.getJsonArray("sameAsFather")
                         .forEach(x -> this.sameAsFather.add(Boolean.valueOf(x.toString())));
             }
 
-            if (jEffectObject.containsKey("sameAsPlayer")) {
-                this.sameAsPlayer = jEffectObject.getBoolean("sameAsPlayer");
+            if (this.jEffectObject.containsKey("sameAsPlayer")) {
+                this.sameAsPlayer = this.jEffectObject.getBoolean("sameAsPlayer");
             }
 
-            if (jEffectObject.containsKey("targetView")) {
-                this.targetView = jEffectObject.getBoolean("targetView");
+            if (this.jEffectObject.containsKey("targetView")) {
+                this.targetView = this.jEffectObject.getBoolean("targetView");
             }
 
-            if (jEffectObject.containsKey("seenByActive")) {
-                this.seenByActive = jEffectObject.getBoolean("seenByActive");
+            if (this.jEffectObject.containsKey("seenByActive")) {
+                this.seenByActive = this.jEffectObject.getBoolean("seenByActive");
             }
 
-            if (jEffectObject.containsKey("minDist")) {
-                this.minDist = jEffectObject.getInt("minDist");
+            if (this.jEffectObject.containsKey("minDist")) {
+                this.minDist = this.jEffectObject.getInt("minDist");
             }
 
-            if (jEffectObject.containsKey("maxDist")) {
-                this.maxDist = jEffectObject.getInt("maxDist");
+            if (this.jEffectObject.containsKey("maxDist")) {
+                this.maxDist = this.jEffectObject.getInt("maxDist");
             }
 
-            if (jEffectObject.containsKey("cardinal")) {
-                this.cardinal = jEffectObject.getBoolean("cardinal");
+            if (this.jEffectObject.containsKey("cardinal")) {
+                this.cardinal = this.jEffectObject.getBoolean("cardinal");
             }
 
-            if (jEffectObject.containsKey("throughWalls")) {
-                this.throughWalls = jEffectObject.getBoolean("throughWalls");
+            if (this.jEffectObject.containsKey("throughWalls")) {
+                this.throughWalls = this.jEffectObject.getBoolean("throughWalls");
             }
 
-            if (jEffectObject.containsKey("differentSquares")) {
-                this.differentSquares = jEffectObject.getBoolean("differentSquares");
+            if (this.jEffectObject.containsKey("differentSquares")) {
+                this.differentSquares = this.jEffectObject.getBoolean("differentSquares");
             }
 
-            if (jEffectObject.containsKey("atomicEffectList")) {
-                jEffectObject.getJsonArray("atomicEffectList").forEach(x ->
+            if (this.jEffectObject.containsKey("atomicEffectList")) {
+                this.jEffectObject.getJsonArray("atomicEffectList").forEach(x ->
                         this.atomicEffectList.add(AtomicType
                                 .valueOf(x.toString().substring(1, x.toString().length() - 1))
                                 .getAtomicEffect(this.targetType)

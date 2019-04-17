@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.players.bridges;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import java.util.List;
 
 public class Bridge {
@@ -11,11 +12,12 @@ public class Bridge {
 
     private DeathBridge deathBridge = new DeathBridge();
     private DamageBridge damageBridge = new DamageBridge();
-    private ActionBridge actionBridge = new ActionBridge();
+    private ActionBridge actionBridge;
 
-    public Bridge(Color color) {
+    public Bridge(Color color, EffectHandler effectHandler) {
 
         this.color = color;
+        this.actionBridge = new ActionBridge.ActionBridgeBuilder(effectHandler).build();
     }
 
     public Color getColor() {

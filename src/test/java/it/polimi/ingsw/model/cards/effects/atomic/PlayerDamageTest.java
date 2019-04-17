@@ -21,11 +21,11 @@ class PlayerDamageTest {
 
         EffectHandler effectHandler = new EffectHandler();
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRAY, effectHandler);
 
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.VIOLET);
-        Player target3 = new Player("target3", Color.YELLOW);
+        Player target1 = new Player("target1", Color.GREEN, effectHandler);
+        Player target2 = new Player("target2", Color.VIOLET, effectHandler);
+        Player target3 = new Player("target3", Color.YELLOW, effectHandler);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(target1, target2, target3)));
@@ -53,7 +53,7 @@ class PlayerDamageTest {
             assertTrue(true);
         }
 
-        Player target4 = new Player("target4", Color.LIGHTBLUE);
+        Player target4 = new Player("target4", Color.LIGHTBLUE, effectHandler);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square, target4)));

@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class ViewInspectorTest {
 
     private EffectHandler effectHandler = new EffectHandler();
-    private Board board = new Board.BoardBuilder(0).build(effectHandler);
+    Board board = new Board.BoardBuilder(this.effectHandler).build(0);
 
     private int distOne;
     private boolean cardinal = true;
@@ -154,7 +154,7 @@ class ViewInspectorTest {
 
         test.clear();
         test.add(four);
-        Player testPlayer = new Player("test", Color.GRAY);
+        Player testPlayer = new Player("test", Color.GRAY, this.effectHandler);
         testPlayer.movePlayer(six);
         test.add(testPlayer);
 

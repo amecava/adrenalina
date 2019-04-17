@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -13,16 +14,18 @@ import org.junit.jupiter.api.Test;
 
 class PlayerMarkTest {
 
+    private EffectHandler effectHandler = new EffectHandler();
+
     @Test
     void execute() {
 
         AtomicEffect tester = new PlayerMark();
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRAY, this.effectHandler);
 
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.VIOLET);
-        Player target3 = new Player("target3", Color.YELLOW);
+        Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
+        Player target2 = new Player("target2", Color.VIOLET, this.effectHandler);
+        Player target3 = new Player("target3", Color.YELLOW, this.effectHandler);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(target1, target2, target3)));
@@ -50,7 +53,7 @@ class PlayerMarkTest {
             assertTrue(true);
         }
 
-        Player target4 = new Player("target4", Color.LIGHTBLUE);
+        Player target4 = new Player("target4", Color.LIGHTBLUE, this.effectHandler);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(square, target4)));

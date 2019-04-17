@@ -21,10 +21,10 @@ class MovePlayerTest {
         AtomicEffect tester = new MovePlayer();
 
         EffectHandler effectHandler = new EffectHandler();
-        Board board = new Board.BoardBuilder(0).build(effectHandler);
+        Board board = new Board.BoardBuilder(effectHandler).build(0);
 
-        Player player = new Player("player", Color.GRAY);
-        Player target = new Player("target", Color.GREEN);
+        Player player = new Player("player", Color.GRAY, effectHandler);
+        Player target = new Player("target", Color.GREEN, effectHandler);
 
         target.movePlayer(board.getRoom(0).getSquare(0));
 

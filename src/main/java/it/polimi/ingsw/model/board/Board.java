@@ -24,12 +24,10 @@ public class Board {
     private WeaponDeck weaponDeck;
     private AmmoTilesDeck ammoTilesDeck;
 
-    private Board(BoardBuilder builder, EffectHandler effectHandler) {
+    private Board(BoardBuilder builder) {
 
         this.roomsList = builder.roomsList;
-        this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
-        this.ammoTilesDeck = new AmmoTilesDeck.AmmoTilesDeckBuilder().build();
-
+        this.weaponDeck = builder.weaponDeck;
     }
 
 
@@ -62,6 +60,9 @@ public class Board {
 
         private List<Room> roomsList = new ArrayList<>();
 
+        private WeaponDeck weaponDeck;
+        private AmmoTilesDeck ammoTilesDeck;
+
         private static final String ROOMS = "rooms";
         private static final String ROOM_ID = "roomId";
         private static final String ROOM_COLOR = "roomColor";
@@ -73,9 +74,9 @@ public class Board {
         private static final String DIRECTION = "direction";
         private static final String CONNECTION = "connection";
 
-        public BoardBuilder(int boardID) {
+        public BoardBuilder(EffectHandler effectHandler) {
 
-            this.readFromJson(boardID);
+            this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
         }
 
         private void readFromJson(int boardID) {
@@ -85,14 +86,18 @@ public class Board {
                 JsonArray jBoardsArray = reader.readArray();
                 JsonArray jRoomsArray = jBoardsArray.getJsonObject(boardID).getJsonArray(ROOMS);
 
-                jRoomsArray.forEach(x -> {
+                jRoomsArray.stream()
+                    .map(JsonValue::asJsonObject)
+                    .forEach(x -> {
                     this.roomsList.add(new Room(
-                            Color.valueOf(x.asJsonObject().getString(ROOM_COLOR))));
+                            Color.valueOf(x.getString(ROOM_COLOR))));
 
-                    x.asJsonObject().getJsonArray(SQUARES).forEach(y ->
-                            this.roomsList.get(x.asJsonObject().getInt(ROOM_ID))
-                                    .addSquare(new Square(y.asJsonObject().getInt(SQUARE_ID),
-                                            y.asJsonObject().getBoolean(SPAWN)))
+                    x.getJsonArray(SQUARES).stream()
+                            .map(JsonValue::asJsonObject)
+                            .forEach(y ->
+                            this.roomsList.get(x.getInt(ROOM_ID))
+                                    .addSquare(new Square(y.getInt(SQUARE_ID),
+                                            y.getBoolean(SPAWN)))
 
                     );
                 });
@@ -138,9 +143,11 @@ public class Board {
             }
         }
 
-        public Board build(EffectHandler effectHandler) {
+        public Board build(int boardID) {
 
-            return new Board(this, effectHandler);
+            this.readFromJson(boardID);
+
+            return new Board(this);
         }
     }
 }
