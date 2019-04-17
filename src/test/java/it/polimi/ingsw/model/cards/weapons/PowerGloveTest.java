@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -53,7 +54,7 @@ class PowerGloveTest {
 
         // Too many targets
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -65,7 +66,7 @@ class PowerGloveTest {
 
         // Target must be exactly one move away
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -77,7 +78,7 @@ class PowerGloveTest {
 
         // Target must be exactly one move away
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -89,7 +90,7 @@ class PowerGloveTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertEquals(target2.getShots().size(), 1);
             assertEquals(target2.getMarks().size(), 2);
@@ -106,7 +107,7 @@ class PowerGloveTest {
 
         // Card not loaded
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -159,7 +160,7 @@ class PowerGloveTest {
 
         // Target2 is through wall
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -171,7 +172,7 @@ class PowerGloveTest {
 
         // Targets on same square
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -183,7 +184,7 @@ class PowerGloveTest {
 
         // Targets not cardinal
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -195,7 +196,7 @@ class PowerGloveTest {
 
         // Use alternative
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
 
             assertEquals(target3.getShots().size(), 2);
             assertEquals(target6.getShots().size(), 2);
@@ -211,7 +212,7 @@ class PowerGloveTest {
 
         // Card not loaded
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -229,7 +230,7 @@ class PowerGloveTest {
 
         // Use alternative wrong order
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
 
             assertEquals(target3.getShots().size(), 4);
             assertEquals(target6.getShots().size(), 4);

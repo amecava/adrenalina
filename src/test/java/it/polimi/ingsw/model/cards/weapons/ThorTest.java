@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -57,7 +58,7 @@ class ThorTest {
 
         // Source can't see target4
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -69,7 +70,7 @@ class ThorTest {
 
         // Optional not activated
         try {
-            tester.useOptional(1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -81,7 +82,7 @@ class ThorTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertEquals(target1.getShots().size(), 2);
         } catch (EffectException | PropertiesException e) {
@@ -92,7 +93,7 @@ class ThorTest {
 
         // Optional not activated
         try {
-            tester.useOptional(1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -104,7 +105,7 @@ class ThorTest {
 
         // Seen by active violated
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -116,7 +117,7 @@ class ThorTest {
 
         // Use optional 0
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
 
             assertEquals(target2.getShots().size(), 1);
         } catch (EffectException | PropertiesException e) {
@@ -127,7 +128,7 @@ class ThorTest {
 
         // Seen by active violated
         try {
-            tester.useOptional(1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -139,7 +140,7 @@ class ThorTest {
 
         // Use optional 1
         try {
-            tester.useOptional(1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
 
             assertEquals(target3.getShots().size(), 2);
         } catch (EffectException | PropertiesException e) {

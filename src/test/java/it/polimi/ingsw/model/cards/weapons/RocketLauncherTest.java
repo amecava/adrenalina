@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -57,7 +58,7 @@ public class RocketLauncherTest {
 
         // Wrong method call
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -69,7 +70,7 @@ public class RocketLauncherTest {
 
         // Target on same square of source
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -83,7 +84,7 @@ public class RocketLauncherTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target1.getCurrentPosition(), board.getRoom(0).getSquare(1));
@@ -95,7 +96,7 @@ public class RocketLauncherTest {
 
         // Use optional 1
         try {
-            tester.useOptional(1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);
@@ -148,7 +149,7 @@ public class RocketLauncherTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
@@ -160,7 +161,7 @@ public class RocketLauncherTest {
 
         // Use optional 1
         try {
-            tester.useOptional(1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);

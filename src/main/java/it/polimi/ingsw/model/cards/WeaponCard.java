@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
@@ -14,7 +15,9 @@ import it.polimi.ingsw.model.exceptions.effects.EffectUsedException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import javax.json.JsonObject;
 
 public class WeaponCard implements Card {
@@ -28,10 +31,7 @@ public class WeaponCard implements Card {
     private boolean loaded;
     private List<Ammo> reloadCost;
 
-    private Effect primary;
-    private Effect alternative;
-
-    private List<Effect> optional;
+    private EnumMap<EffectType, Effect> map;
 
     private String notes;
 
@@ -45,12 +45,21 @@ public class WeaponCard implements Card {
         this.loaded = builder.loaded;
         this.reloadCost = builder.reloadCost;
 
-        this.primary = builder.primary;
-        this.alternative = builder.alternative;
-
-        this.optional = builder.optional;
+        this.map = builder.map;
 
         this.notes = builder.notes;
+    }
+
+    @Override
+    public String getName() {
+
+        return this.name;
+    }
+
+    @Override
+    public Color getColor() {
+
+        return this.reloadCost.get(0).getColor();
     }
 
     public Player getOwner() {
@@ -68,11 +77,6 @@ public class WeaponCard implements Card {
         return this.id;
     }
 
-    public List<Ammo> getReloadCost() {
-
-        return this.reloadCost;
-    }
-
     public boolean isLoaded() {
 
         return this.loaded;
@@ -83,24 +87,14 @@ public class WeaponCard implements Card {
         this.loaded = loaded;
     }
 
-    public Effect getPrimary() {
+    public List<Ammo> getReloadCost() {
 
-        return this.primary;
+        return this.reloadCost;
     }
 
-    public Effect getAlternative() {
+    public Map<EffectType, Effect> getMap() {
 
-        return this.alternative;
-    }
-
-    public List<Effect> getOptional() {
-
-        return this.optional;
-    }
-
-    public Effect getOptional(int index) {
-
-        return this.optional.get(index);
+        return this.map;
     }
 
     public String getNotes() {
@@ -108,47 +102,52 @@ public class WeaponCard implements Card {
         return this.notes;
     }
 
-    @Override
-    public String getName() {
+    public List<Effect> getOptionalList() {
 
-        return this.name;
-    }
+        List<Effect> optionalList = new ArrayList<>();
 
-    @Override
-    public Color getColor() {
+        if (map.containsKey(EffectType.OPTIONAL1)) {
 
-        return this.reloadCost.get(0).getColor();
+            optionalList.add(map.get(EffectType.OPTIONAL1));
+        }
+
+        if (map.containsKey(EffectType.OPTIONAL2)) {
+
+            optionalList.add(map.get(EffectType.OPTIONAL2));
+        }
+
+        return optionalList;
     }
 
     public void reloadWeapon() {
 
         // If the card is not loaded
         if (!this.loaded) {
+
             // TODO Check reload cost
-            // TODO Remove reload cost from player
+
+            // Set card loaded flag to true
+            this.loaded = true;
 
             // Set primary effect used flag to false
-            this.primary.setUsed(false);
+            this.map.get(EffectType.PRIMARY).setUsed(false);
 
             // Set alternative effect used flag to false if present
-            if (this.alternative != null) {
+            if (this.map.containsKey(EffectType.ALTERNATIVE)) {
 
-                this.alternative.setUsed(false);
+                this.map.get(EffectType.ALTERNATIVE).setUsed(false);
             }
 
-            // Set optional effects used flag to false
-            this.optional.forEach(x ->
-                    x.setUsed(false));
+            // Deactivate optionals if they've been activated and set used flag to false
+            this.getOptionalList().forEach(x -> {
+                x.setUsed(false);
 
-            // Deactivate optionals if they've been activated
-            this.optional.forEach(x -> {
                 if (x.getActivated() != null) {
                     x.setActivated(false);
                 }
             });
 
-            // Set card loaded flag to true
-            this.loaded = true;
+            // TODO Remove reload cost from player
         }
     }
 
@@ -167,61 +166,30 @@ public class WeaponCard implements Card {
         }
     }
 
-    public void usePrimary(AtomicTarget target)
+    public void useCard(EffectType effectType, AtomicTarget target)
             throws EffectException, PropertiesException {
 
-        // Launch exception if alternative effect used
-        if (this.alternative != null && this.alternative.isUsed()) {
+        // Launch exception if selected effect not present in map
+        if (!this.map.containsKey(effectType)) {
 
-            throw new EffectUsedException("Card not loaded, primary effect used!");
+            throw new EffectException("Effect not present!");
         }
 
-        // Execute primary effect
-        this.effectHandler.useEffect(this.primary, target);
-        this.effectHandler.updateCardUsageVariables(this.primary, this);
-    }
+        // Launch exception if card already used and effectType not optional
+        if ((effectType.equals(EffectType.ALTERNATIVE) && this.map.get(EffectType.PRIMARY).isUsed())
+                || (effectType.equals(EffectType.PRIMARY) && map.containsKey(EffectType.ALTERNATIVE)
+                && this.map.get(EffectType.ALTERNATIVE).isUsed())) {
 
-    public void useAlternative(AtomicTarget target)
-            throws EffectException, PropertiesException {
-
-        // Launch exception if alternative effect not present
-        if (this.alternative == null) {
-
-            throw new EffectException("Alternative effect not present!");
+            throw new EffectUsedException("Effect can't be used!");
         }
 
-        // Launch exception if primary effect used
-        if (this.primary.isUsed()) {
+        // TODO check effect cost
 
-            throw new EffectUsedException("Card not loaded, alternative effect used!");
-        }
+        // Execute selected effect
+        this.effectHandler.useEffect(this.map.get(effectType), target);
+        this.effectHandler.updateCardUsageVariables(this.map.get(effectType), this);
 
-        // TODO Check effect cost
-
-        // Execute alternative effect
-        this.effectHandler.useEffect(this.alternative, target);
-        this.effectHandler.updateCardUsageVariables(this.alternative, this);
-
-        // TODO Remove effect cost from player
-    }
-
-    public void useOptional(int index, AtomicTarget target)
-            throws EffectException, PropertiesException {
-
-        // Launch exception if the optional effect at selected index doesn't exists
-        try {
-
-            // TODO Check effect cost
-        } catch (IndexOutOfBoundsException e) {
-
-            throw new EffectException("Optional effect at selected index not present!");
-        }
-
-        // Execute optional effect
-        this.effectHandler.useEffect(this.optional.get(index), target);
-        this.effectHandler.updateCardUsageVariables(this.optional.get(index), this);
-
-        // TODO Remove effect cost from player
+        // TODO remove cost from player
     }
 
     public static class WeaponCardBuilder {
@@ -234,17 +202,13 @@ public class WeaponCard implements Card {
         private List<Ammo> reloadCost = new ArrayList<>();
         private boolean loaded = true;
 
-        private Effect primary;
-        private Effect alternative;
-
-        private List<Effect> optional = new ArrayList<>();
+        private EnumMap<EffectType, Effect> map = new EnumMap<>(EffectType.class);
 
         private String notes;
 
         public WeaponCardBuilder(EffectHandler effectHandler) {
 
             this.effectHandler = effectHandler;
-
         }
 
         public WeaponCard build(JsonObject jCardObject, List<Effect> effectList) {
@@ -259,16 +223,22 @@ public class WeaponCard implements Card {
                 );
             }
 
-            this.primary = effectList.get(jCardObject.getInt("primary") - 1);
+            map.put(EffectType.PRIMARY,
+                    effectList.get(jCardObject.getInt("primary") - 1));
 
             if (jCardObject.containsKey("alternative")) {
-                this.alternative = effectList.get(jCardObject.getInt("alternative") - 1);
+                map.put(EffectType.ALTERNATIVE,
+                        effectList.get(jCardObject.getInt("alternative") - 1));
             }
 
-            if (jCardObject.containsKey("optional")) {
-                jCardObject.getJsonArray("optional").forEach(x ->
-                        this.optional.add(effectList.get(Integer.parseInt(x.toString()) - 1))
-                );
+            if (jCardObject.containsKey("optional1")) {
+                map.put(EffectType.OPTIONAL1,
+                        effectList.get(jCardObject.getInt("optional1") - 1));
+            }
+
+            if (jCardObject.containsKey("optional2")) {
+                map.put(EffectType.OPTIONAL2,
+                        effectList.get(jCardObject.getInt("optional2") - 1));
             }
 
             if (jCardObject.containsKey("notes")) {

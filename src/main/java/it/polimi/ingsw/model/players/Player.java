@@ -41,7 +41,6 @@ public class Player implements Target {
         return this.playerColor;
     }
 
-
     public Square getOldPosition() {
 
         return this.oldPosition;

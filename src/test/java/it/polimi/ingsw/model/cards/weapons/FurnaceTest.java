@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -53,7 +54,7 @@ class FurnaceTest {
 
         // Wrong target type
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -65,7 +66,7 @@ class FurnaceTest {
 
         // Same room as source
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -77,7 +78,7 @@ class FurnaceTest {
 
         // Source can't see room
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -89,7 +90,7 @@ class FurnaceTest {
 
         // Duplicates found
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -101,7 +102,7 @@ class FurnaceTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertEquals(target1.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 1);
@@ -144,7 +145,7 @@ class FurnaceTest {
 
         // Distance property violated
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -157,7 +158,7 @@ class FurnaceTest {
 
         // Duplicate exception
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -169,7 +170,7 @@ class FurnaceTest {
 
         // Use alternative
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertEquals(target2.getShots().size(), 1);
             assertEquals(target3.getShots().size(), 1);

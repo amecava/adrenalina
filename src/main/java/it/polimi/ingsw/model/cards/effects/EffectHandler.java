@@ -98,7 +98,7 @@ public class EffectHandler {
 
         // Activate all optional effects related to the executed effect
         effect.getOptionalId().forEach(x ->
-                card.getOptional().forEach(y -> {
+                card.getOptionalList().forEach(y -> {
                     if (x == y.getId()) {
                         y.setActivated(true);
                     }
@@ -246,8 +246,8 @@ public class EffectHandler {
                 ? this.activeSquare : target.getDestination(), target.getTargetList());
 
         // Check cardinal properties
-        this.propertiesAnalyzer.checkCardinal(target.getDestination() == null ?
-                this.activeSquare : target.getDestination(), target.getTargetList());
+        this.propertiesAnalyzer.checkCardinal(target.getDestination() == null
+                ? this.activeSquare : target.getDestination(), target.getTargetList());
 
         // Check same as player property and update target list if needed
         this.propertiesAnalyzer.sameAsPlayer(this.activePlayer, target.getTargetList());
@@ -256,13 +256,11 @@ public class EffectHandler {
         if (effect.getNext() != null && effect.getNext().getTargetType().equals(TargetType.MOVE)) {
 
             // Destination to target list to check distance and cardinal properties from active square
-            return checkProperties(effect.getNext(),
-                    new AtomicTarget(Arrays.asList(target.getDestination())));
+            return checkProperties(effect.getNext(), new AtomicTarget(Arrays.asList(target.getDestination())));
         }
 
         // Recursively call check properties for recoil effect types
-        if (effect.getNext() != null && effect.getNext().getTargetType()
-                .equals(TargetType.RECOIL)) {
+        if (effect.getNext() != null && effect.getNext().getTargetType().equals(TargetType.RECOIL)) {
 
             // Remove destination to check distance and cardinal properties from active square
             return checkProperties(effect.getNext(), new AtomicTarget(target.getTargetList()));

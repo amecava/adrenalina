@@ -255,6 +255,7 @@ public class Effect {
             if (jEffectObject.containsKey("description")) {
                 this.description = jEffectObject.getString("description");
             }
+
             this.targetType = TargetType.valueOf(jEffectObject.getString("targetType"));
 
             if (jEffectObject.containsKey("next")) {

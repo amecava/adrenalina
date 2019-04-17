@@ -54,16 +54,7 @@ class ActionBridge {
     }
     public void useEffectType(EffectType effectType, AtomicTarget atomicTarget)
             throws PropertiesException, EffectException {
-        switch (effectType){
-            case PRIMARY: this.weaponCard.usePrimary(atomicTarget);
-                break;
-            case ALTERNATIVE: this.weaponCard.useAlternative(atomicTarget);
-                break;
-            case OPTIONAL1: this.weaponCard.useOptional(1, atomicTarget);
-                break;
-            case OPTIONAL2:this.weaponCard.useOptional(2, atomicTarget);
-                break;
-        }
+
     }
 
     public void  reload ( Card card) throws IlligalActionException {

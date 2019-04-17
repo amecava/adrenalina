@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -62,7 +63,7 @@ class LockRifleTest {
 
         // Alternative effect not present
         try {
-            tester.useAlternative(atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -74,7 +75,7 @@ class LockRifleTest {
 
         // Too many targets
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -86,7 +87,7 @@ class LockRifleTest {
 
         // Wrong target type
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -98,7 +99,7 @@ class LockRifleTest {
 
         // Wrong method call
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -110,7 +111,7 @@ class LockRifleTest {
 
         // Source can't see target2
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -122,7 +123,7 @@ class LockRifleTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -169,7 +170,7 @@ class LockRifleTest {
 
         // Optional not activated
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -181,7 +182,7 @@ class LockRifleTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -193,7 +194,7 @@ class LockRifleTest {
 
         // Same as father violated
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -205,7 +206,7 @@ class LockRifleTest {
 
         // Use optional 0
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
 
             assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
 

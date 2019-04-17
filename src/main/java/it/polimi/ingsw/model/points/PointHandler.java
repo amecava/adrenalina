@@ -64,51 +64,38 @@ public class PointHandler {
     }
 
     public List<List<Player>> getWinner() {
-        this.pointStructures.clear();
-        int i=0;
-        int j=0;
-        List<List<Player>> winner = new ArrayList<>();
-        this.pointStructures = this.playerList.stream()
-                .map(x -> x.createPointStructure(this.deaths.getKillStreak()).setNumberDamage(x.getPoints()))
-                .collect(Collectors.toList());
-        this.pointStructures.sort(new PointSorter());
-        while (i<pointStructures.size()){
-             winner.add(new ArrayList<Player>());
-             winner.get(j).add(pointStructures.get(i).getPlayer());
-             i++;
-             if (pointStructures.get(i-1).getLastDamage()==-1){
-                 while (i<pointStructures.size() && pointStructures.get(i).getNumberDamage()==winner.get(j).get(0).getPoints()){
-                     winner.get(j).add(pointStructures.get(i).getPlayer());
-                     i++;
-                 }
-             }
-             j++;
-        }
-        return  winner;
-        /*
-        int j=0;
-        this.pointStructures.clear();
+
+        int i = 0;
+        int j = 0;
         List<List<Player>> winner = new ArrayList<>();
 
         this.pointStructures = this.playerList.stream()
-                .map(x -> x.createPointStructure(this.deaths.getKillStreak()).setNumberDamage(x.getPoints()))
+                .map(x -> x.createPointStructure(this.deaths.getKillStreak())
+                        .setNumberDamage(x.getPoints()))
                 .collect(Collectors.toList());
-        this.pointStructures.sort(new PointSorter());
-        winner.add(new ArrayList<>());
-        winner.get(0).add(pointStructures.get(0).getPlayer());
 
-        for (int i = 0; i < this.pointStructures.size() - 1; i++) {
-            if ((this.pointStructures.get(i).getNumberDamage() == this.pointStructures.get(i + 1).getNumberDamage()
-                    && this.pointStructures.get(i).getLastDamage() == -1)) {
-                winner.get(j).add(this.pointStructures.get(i + 1).getPlayer());
-            } else {
-                j++;
-                winner.add(new ArrayList<>());
-                winner.get(j).add(pointStructures.get(i+1).getPlayer());
+        this.pointStructures.sort(new PointSorter());
+
+        while (i < pointStructures.size()) {
+
+            winner.add(new ArrayList<>());
+            winner.get(j).add(pointStructures.get(i).getPlayer());
+            i++;
+
+            if (pointStructures.get(i - 1).getLastDamage() == -1) {
+
+                while (i < pointStructures.size() && pointStructures
+                        .get(i).getNumberDamage() == winner.get(j).get(0).getPoints()) {
+
+                    winner.get(j).add(pointStructures.get(i).getPlayer());
+                    i++;
+                }
             }
+
+            j++;
         }
+
         return winner;
-        */
     }
 
     private void deathUpdate(Bridge bridge) {
@@ -117,13 +104,11 @@ public class PointHandler {
         boolean foundFirstBlood = false;
         boolean foundLastShot = false;
 
-        pointStructures.clear();
+        this.pointStructures = this.playerList.stream()
+                .map(x -> x.createPointStructure(bridge.getShots()))
+                .collect(Collectors.toList());
 
-        for (Player player : playerList) {
-            pointStructures.add(player.createPointStructure(bridge.getShots()));
-        }
-
-        pointStructures.sort(this.pointSorter);
+        this.pointStructures.sort(this.pointSorter);
 
         for (PointStructure pointStructure : pointStructures) {
             if (pointStructure.getNumberDamage() != 0) {
@@ -146,6 +131,7 @@ public class PointHandler {
                 }
             }
         }
+
         if (!this.deaths.isGameEnded()) {
             deaths.addKill(killShot, foundLastShot);
             if (frenzyRegeneration && !(bridge.isKillStreakCount())) {

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -51,7 +52,7 @@ public class VortexCannonTest {
 
         // Vortex same square as source current position
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -63,7 +64,7 @@ public class VortexCannonTest {
 
         // Source can't see vortex
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -75,7 +76,7 @@ public class VortexCannonTest {
 
         // Target not 0 or 1 move away from vortex
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -87,7 +88,7 @@ public class VortexCannonTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -128,7 +129,7 @@ public class VortexCannonTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -145,7 +146,7 @@ public class VortexCannonTest {
 
         // Can't use optional on same target as primary
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
 
             fail();
         } catch (PropertiesException e) {
@@ -158,7 +159,7 @@ public class VortexCannonTest {
 
         // Can't use optional on same target as primary
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
 
             fail();
         } catch (EffectException e) {
@@ -171,7 +172,7 @@ public class VortexCannonTest {
 
         // Use optional 0
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
 
             assertSame(target2.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target3.getShots().get(0).getColor(), Color.GRAY);

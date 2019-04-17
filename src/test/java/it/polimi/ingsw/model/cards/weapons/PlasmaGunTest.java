@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -49,7 +50,7 @@ public class PlasmaGunTest {
 
         // Source can't see target1
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -61,7 +62,7 @@ public class PlasmaGunTest {
 
         // Move source distance not 1 or 2
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1,  atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -73,7 +74,7 @@ public class PlasmaGunTest {
 
         // Use optional 0
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1,  atomicTarget);
 
             assertEquals(source.getCurrentPosition(), board.getRoom(1).getSquare(2));
             assertEquals(source.getOldPosition(), board.getRoom(3).getSquare(1));
@@ -85,7 +86,7 @@ public class PlasmaGunTest {
 
         // Can't use effect on source
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             fail();
         } catch (EffectException e) {
@@ -99,7 +100,7 @@ public class PlasmaGunTest {
 
         // Use primary
         try {
-            tester.usePrimary(atomicTarget);
+            tester.useCard(EffectType.PRIMARY, atomicTarget);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -112,7 +113,7 @@ public class PlasmaGunTest {
 
         // Optional effect already used
         try {
-            tester.useOptional(0, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL1,  atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -124,7 +125,7 @@ public class PlasmaGunTest {
 
         // Use optional 1
         try {
-            tester.useOptional(1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
 
             assertSame(target1.getShots().get(2).getColor(), Color.GRAY);
             assertSame(target1.getShots().size(), 3);

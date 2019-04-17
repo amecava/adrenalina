@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.cards.WeaponCard;
+import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicType;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
@@ -33,7 +34,7 @@ class WeaponDeckTest {
                 tester.getReloadCost().stream().map(Ammo::getColor).collect(Collectors.toList())
         );
 
-        effect = tester.getPrimary();
+        effect = tester.getMap().get(EffectType.PRIMARY);
 
         assertEquals(
                 Arrays.asList(2),
@@ -48,7 +49,7 @@ class WeaponDeckTest {
 
         assertNull(effect.getActivated());
 
-        effect = tester.getOptional(0);
+        effect = tester.getMap().get(EffectType.OPTIONAL1);
 
         assertEquals(2, effect.getId());
 
