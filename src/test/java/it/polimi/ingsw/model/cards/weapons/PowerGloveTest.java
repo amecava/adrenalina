@@ -23,13 +23,13 @@ class PowerGloveTest {
     @Test
     void primaryEffect() {
 
-        Board board = new Board.BoardBuilder(0).build(effectHandler);
+        Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target3", Color.BLUE);
+        Player source = new Player("source", Color.GRAY, this.effectHandler);
+        Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
+        Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
+        Player target3 = new Player("target3", Color.BLUE, this.effectHandler);
 
         AtomicTarget atomicTarget;
 
@@ -119,16 +119,16 @@ class PowerGloveTest {
     @Test
     void alternativeEffect() {
 
-        Board board = new Board.BoardBuilder(0).build(effectHandler);
+        Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target3", Color.BLUE);
-        Player target4 = new Player("target4", Color.RED);
-        Player target5 = new Player("target5", Color.YELLOW);
-        Player target6 = new Player("target6", Color.WHITE);
+        Player source = new Player("source", Color.GRAY, this.effectHandler);
+        Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
+        Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
+        Player target3 = new Player("target3", Color.BLUE, this.effectHandler);
+        Player target4 = new Player("target4", Color.RED, this.effectHandler);
+        Player target5 = new Player("target5", Color.YELLOW, this.effectHandler);
+        Player target6 = new Player("target6", Color.WHITE, this.effectHandler);
 
         AtomicTarget atomicTarget;
 

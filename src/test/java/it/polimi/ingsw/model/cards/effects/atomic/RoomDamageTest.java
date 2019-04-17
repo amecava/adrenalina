@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -13,12 +14,14 @@ import org.junit.jupiter.api.Test;
 
 class RoomDamageTest {
 
+    private EffectHandler effectHandler = new EffectHandler();
+
     @Test
     void execute() {
 
         AtomicEffect tester = new RoomDamage();
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRAY, this.effectHandler);
 
         Room room = new Room(Color.RED);
 
@@ -28,8 +31,8 @@ class RoomDamageTest {
         room.addSquare(square1);
         room.addSquare(square2);
 
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.VIOLET);
+        Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
+        Player target2 = new Player("target2", Color.VIOLET, this.effectHandler);
 
         room.addSquare(square1);
         room.addSquare(square2);
@@ -60,7 +63,7 @@ class RoomDamageTest {
             assertTrue(true);
         }
 
-        Player target4 = new Player("target4", Color.LIGHTBLUE);
+        Player target4 = new Player("target4", Color.LIGHTBLUE, this.effectHandler);
 
         try {
             tester.execute(player, new AtomicTarget(Arrays.asList(room, target4)));

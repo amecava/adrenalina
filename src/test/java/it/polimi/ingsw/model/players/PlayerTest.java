@@ -11,12 +11,13 @@ import org.junit.jupiter.api.Test;
 class PlayerTest {
 
     EffectHandler effectHandler = new EffectHandler();
+
     @Test
     void movePlayer() {
 
-        Board board = new Board.BoardBuilder(0).build(effectHandler);
+        Board board = new Board.BoardBuilder(this.effectHandler).build(0);
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRAY, this.effectHandler);
 
         player.movePlayer(board.getRoom(0).getSquare(0));
 

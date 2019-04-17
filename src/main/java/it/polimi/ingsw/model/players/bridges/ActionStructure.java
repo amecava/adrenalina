@@ -3,18 +3,27 @@ package it.polimi.ingsw.model.players.bridges;
 import it.polimi.ingsw.model.cards.effects.Effect;
 
 public class ActionStructure {
-    private Boolean moove;
+    private Boolean move;
     private Boolean collect;
     private Boolean reload;
     private Boolean shoot;
     private  Effect effect;
+    private int id;
 
-    public Boolean getMoove() {
-        return moove;
+    public int getId() {
+        return id;
     }
 
-    public void setMoove(Boolean moove) {
-        this.moove = moove;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Boolean getMove() {
+        return move;
+    }
+
+    public void setMove(Boolean move) {
+        this.move = move;
     }
 
     public Effect getEffect() {
@@ -56,8 +65,8 @@ public class ActionStructure {
     }
     public void endAction(int limit, boolean change){
         int i=0;
-        if (this.getMoove()!=null )
-            this.moove=change;
+        if (this.getMove()!=null )
+            this.move =change;
         i++;
         if  (i==limit)
             return;

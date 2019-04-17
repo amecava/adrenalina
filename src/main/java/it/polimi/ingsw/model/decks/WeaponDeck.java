@@ -71,8 +71,7 @@ public class WeaponDeck {
                 JsonArray jEffectsArray = eReader.readObject().getJsonArray("effects");
 
                 jEffectsArray.forEach(x ->
-                        this.effectsList.add(new Effect.EffectBuilder()
-                                .build(x.asJsonObject()))
+                        this.effectsList.add(new Effect.EffectBuilder(x.asJsonObject()).build())
                 );
 
             } catch (IOException e) {

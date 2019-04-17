@@ -23,11 +23,11 @@ public class PlasmaGunTest {
     @Test
     void plasmaGun() {
 
-        Board board = new Board.BoardBuilder(0).build(effectHandler);
+        Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
+        Player source = new Player("source", Color.GRAY, this.effectHandler);
+        Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
 
         AtomicTarget atomicTarget;
 

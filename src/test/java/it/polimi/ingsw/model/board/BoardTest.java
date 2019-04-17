@@ -13,7 +13,7 @@ class BoardTest {
     @Test
     void buildBoard() {
 
-        Board board = new Board.BoardBuilder(0).build(new EffectHandler());
+        Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
 
         assertEquals(board.getRoom(0).getColor(), Color.BLUE);
         assertEquals(board.getRoom(1).getColor(), Color.RED);

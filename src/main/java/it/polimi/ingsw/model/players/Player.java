@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.players;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.players.bridges.Bridge;
 import it.polimi.ingsw.model.players.bridges.Shots;
 import it.polimi.ingsw.model.points.PointStructure;
@@ -23,11 +24,11 @@ public class Player implements Target {
 
     private List<Card> weaponHand = new ArrayList<>();
 
-    public Player(String playerId, Color playerColor) {
+    public Player(String playerId, Color playerColor, EffectHandler effectHandler) {
 
         this.playerId = playerId;
         this.playerColor = playerColor;
-        this.bridge = new Bridge(playerColor);
+        this.bridge = new Bridge(playerColor, effectHandler);
         this.pointStructure = new PointStructure(this);
     }
 

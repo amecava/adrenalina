@@ -19,7 +19,7 @@ public class GameHandler {
 
     public void setBoard(int boardID) {
 
-        this.board = new Board.BoardBuilder(boardID).build(effectHandler);
+        this.board = new Board.BoardBuilder(this.effectHandler).build(boardID);
         this.board.fill();
     }
 
