@@ -27,6 +27,7 @@ public class WeaponDeck {
         return deck.remove(0);
     }
 
+    // useful for tests
     public WeaponCard getCard(int index) {
 
         return this.deck.get(index);

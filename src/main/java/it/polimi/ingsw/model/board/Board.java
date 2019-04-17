@@ -8,8 +8,6 @@ import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.decks.AmmoTilesDeck;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
-import it.polimi.ingsw.model.exceptions.cards.CardException;
-import it.polimi.ingsw.model.players.Player;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +28,10 @@ public class Board {
 
         this.roomsList = builder.roomsList;
         this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
+        this.ammoTilesDeck = new AmmoTilesDeck.AmmoTilesDeckBuilder().build();
+
     }
+
 
     public Room getRoom(int index) {
 
@@ -39,13 +40,19 @@ public class Board {
 
     public void fill() {
         this.roomsList.stream().flatMap(x -> x.getSquaresList().stream()).forEach(y -> {
-            if (y.isSpawn()){
-                y.addTools(this.weaponDeck.getCardsForSpawnSquares());
+
+            if (y.isSpawn()) {
+
+                for (int i = 0; i < 3; i++) {
+                    y.addTool(this.weaponDeck.getCard());
+                }
             }
+            y.addTool(this.ammoTilesDeck.getTile());
 
         });
     }
 
+    // useful for tests
     public WeaponDeck getWeaponDeck() {
 
         return this.weaponDeck;

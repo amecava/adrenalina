@@ -62,6 +62,16 @@ public class WeaponCard implements Card {
         return this.reloadCost.get(0).getColor();
     }
 
+    @Override
+    public List<Color> getAmmoCubesList() {
+        throw new UnsupportedOperationException("This is a WeaponCard card, not an AmmoTile card");
+    }
+
+    @Override
+    public boolean isPowerUpCard() {
+        throw new UnsupportedOperationException("This is a WeaponCard card, not an AmmoTile card");
+    }
+
     public Player getOwner() {
 
         return this.owner;

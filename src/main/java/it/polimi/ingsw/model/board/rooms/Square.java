@@ -38,9 +38,9 @@ public class Square implements Target {
         this.map.get(false).put(this, 0);
     }
 
-    public void addTools(List<Card> tools){
+    public void addTool(Card tool){
 
-        this.tools = tools;
+        this.tools.add(tool);
     }
 
     public int getSquareId() {

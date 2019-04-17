@@ -1,0 +1,146 @@
+[
+    {
+        "cubes": ["YELLOW", "RED"],      
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "BLUE"],            
+        "powerUp": true
+    },
+    {
+        "cubes": ["BLUE", "BLUE"],          
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "RED", "YELLOW"],           
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "RED", "RED"],     
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "BLUE"],            
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "RED"],      
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "RED", "RED"],     
+        "powerUp": false
+    },
+    {
+        "cubes": ["BLUE", "RED"],           
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "BLUE", "BLUE"],            
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "YELLOW"],          
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "RED", "YELLOW"],           
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "BLUE", "BLUE"],            
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "BLUE"],            
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "YELLOW", "BLUE"],          
+        "powerUp": false
+    },
+    {
+        "cubes": ["BLUE", "BLUE"],          
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "RED"],      
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "BLUE", "BLUE"],            
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "YELLOW", "BLUE"],          
+        "powerUp": false
+    },
+    {
+        "cubes": ["RED", "RED"],            
+        "powerUp": true
+    },
+    {
+        "cubes": ["RED", "RED", "BLUE"],            
+        "powerUp": false
+    },
+    {
+        "cubes": ["BLUE", "RED", "BLUE"],           
+        "powerUp": false
+    },
+    {
+        "cubes": ["BLUE", "RED"],           
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "RED", "RED"],     
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "RED", "YELLOW"],           
+        "powerUp": false
+    },
+    {
+        "cubes": ["BLUE", "RED", "BLUE"],           
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "YELLOW"],          
+        "powerUp": true
+    },
+    {
+        "cubes": ["RED", "RED", "BLUE"],             
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "RED"],      
+        "powerUp": true
+    },
+    {
+        "cubes": ["RED", "RED"],            
+        "powerUp": true
+    },
+    {
+        "cubes": ["BLUE", "RED", "BLUE"],           
+        "powerUp": false
+    },
+    {
+        "cubes": ["BLUE", "RED"],           
+        "powerUp": true
+    },
+    {
+        "cubes": ["RED", "RED", "BLUE"],            
+        "powerUp": false
+    },
+    {
+        "cubes": ["YELLOW", "BLUE"],            
+        "powerUp": true
+    },
+    {
+        "cubes": ["YELLOW", "YELLOW", "BLUE"],          
+        "powerUp": false
+    }, 
+    {
+        "cubes": ["BLUE", "RED"],           
+        "powerUp": true
+    }
+]

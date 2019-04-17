@@ -110,19 +110,20 @@ class PointHandlerTest {
             player1.damagePlayer(player2.getPlayerColor());
         }
         pointHandler.checkIfDead();
-        int k=1;
-        for (List<Player>  playerList1 : pointHandler.getWinner()){
+        int k = 1;
+        for (List<Player> playerList1 : pointHandler.getWinner()) {
             System.out.println(" player in " + k + "position ");
-            for (Player player: playerList1){
+            for (Player player : playerList1) {
                 System.out.println(player.getPlayerId());
             }
             k++;
         }
-        Boolean check=false;
-        if (check==null || !check)
+        Boolean check = false;
+        if (check == null || !check) {
             System.out.println(" null is == to flase!");
-        else
+        } else {
             System.out.println("flase!=null");
+        }
         assertTrue(pointHandler.getWinner().get(0).contains(player1));
         assertFalse(pointHandler.getWinner().get(0).contains(player2));
         assertFalse(pointHandler.getWinner().get(0).contains(player3));
