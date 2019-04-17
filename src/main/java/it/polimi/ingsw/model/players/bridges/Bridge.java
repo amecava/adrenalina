@@ -77,6 +77,8 @@ public class Bridge {
     public void appendShot(Color color) {
 
         this.damageBridge.appendShot(color);
+
+        this.actionBridge.setAdrenalin(this.damageBridge.checkAdrenalin());
     }
 
     public void appendMark(Color color) {
