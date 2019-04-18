@@ -33,72 +33,78 @@ class ActionBridge {
     private ActionBridge(ActionBridgeBuilder builder) {
 
         this.weaponCard = builder.weaponCard;
-        this.adrenalin=builder.adrenalin;
-        this.actionStructureList=builder.actionStructureList;
-        this.nonUsableActions=builder.nonUsableActions;
-        this.returnList=builder.returnList;
-        this.currentAction=builder.currentAction;
-        this.effectHandler=builder.effectHandler;
-
-        // crei tutte le azioni possibili
-        // dopo di che setto le azioni che puoi fare in base al tuo stato di adrenalina!!
+        this.adrenalin = builder.adrenalin;
+        this.actionStructureList = builder.actionStructureList;
+        this.nonUsableActions = builder.nonUsableActions;
+        this.returnList = builder.returnList;
+        this.currentAction = builder.currentAction;
+        this.effectHandler = builder.effectHandler;
         this.changePossibleActions();
     }
-    public List<ActionStructure> getActionStructureList(){
+
+    public List<ActionStructure> getActionStructureList() {
         returnList.clear();
         returnList.addAll(actionStructureList);
-        return  returnList;
+        return returnList;
     }
-    public void setEffectHandler (EffectHandler effectHandler){
-        this.effectHandler=effectHandler;
+
+    public void setEffectHandler(EffectHandler effectHandler) {
+        this.effectHandler = effectHandler;
     }
-    public void selectAction ( int number ) throws IlligalActionException {
-        if ( number <= actionStructureList.size()){
-            currentAction=actionStructureList.get(number);
+
+    public void selectAction(int number) throws IlligalActionException {
+        if (number <= actionStructureList.size()) {
+            currentAction = actionStructureList.get(number);
+        } else {
+            throw new IlligalActionException(
+                    "non valid number of action  please insert a number from 0 to "
+                            + actionStructureList.size());
         }
-        else throw  new IlligalActionException("non valid number of action  please insert a number from 0 to " + actionStructureList.size());
     }
 
     public void activateCard(WeaponCard weaponCard) throws CardException, IlligalActionException {
-        if ( currentAction.isShoot()==null || !currentAction.isShoot() ){
+        if (currentAction.isShoot() == null || !currentAction.isShoot()) {
             throw new IlligalActionException(" you can't shoot");
         }
         weaponCard.activateCard();
         this.weaponCard = weaponCard;
         this.currentAction.endAction(4, false);
     }
+
     public void useCard(EffectType effectType, AtomicTarget atomicTarget)
             throws PropertiesException, EffectException {
-      // this.weaponCard.useCard(effectType, atomicTarget);
+        this.weaponCard.useCard(effectType, atomicTarget);
     }
 
-    public void  reload ( Card card) throws IlligalActionException {
-        if (this.currentAction.isReload()==null ||  !this.currentAction.isReload()){
+    public void reload(Card card) throws IlligalActionException {
+        if (this.currentAction.isReload() == null || !this.currentAction.isReload()) {
             throw new IlligalActionException(" you can't reload!!");
-        }
-        else {
-           // card.reload();
-            this.currentAction.endAction(3, false );
+        } else {
+            // card.reload();
+            this.currentAction.endAction(3, false);
         }
     }
-    public void  collect () throws IlligalActionException{
-        if (this.currentAction.isCollect()==null || !this.currentAction.isCollect()){
-            throw  new IlligalActionException(" you can't collect from square!!! ");
+
+    public void collect() throws IlligalActionException {
+        if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
+            throw new IlligalActionException(" you can't collect from square!!! ");
         }
-        this.currentAction.endAction(2, false );
+        this.currentAction.endAction(2, false);
         //this.effectHandler.getActivePlayer().collect();
     }
-    public void moove ( AtomicTarget atomicTarget) throws  IlligalActionException, EffectException, PropertiesException {
-        if (this.currentAction.getMove()==null || !this.currentAction.getMove() ){
+
+    public void moove(AtomicTarget atomicTarget)
+            throws IlligalActionException, EffectException, PropertiesException {
+        if (this.currentAction.getMove() == null || !this.currentAction.getMove()) {
             throw new IlligalActionException(" you can't move yourself right now!!!");
         }
         effectHandler.useEffect(this.currentAction.getEffect(), atomicTarget);
         this.currentAction.setEffectAsUsed();
-        this.currentAction.endAction(1, false );
+        this.currentAction.endAction(1, false);
     }
 
     public void endFirstAction() {
-       this.currentAction.endAction(4, true);
+        this.currentAction.endAction(4, true);
     }
 
 
@@ -115,12 +121,43 @@ class ActionBridge {
     private void changePossibleActions() {
         switch (this.adrenalin) {
             case NORMAL:
+                this.actionStructureList.clear();
+                this.actionStructureList.add(this.findAction(1));
+                this.actionStructureList.add(this.findAction(2));
+                this.actionStructureList.add(this.findAction(3));
                 break;
             case FIRSTADRENALIN:
+                this.actionStructureList
+                        .set(this.actionStructureList.indexOf(this.findAction(2)),
+                                this.findAction(4));
                 break;
             case SECONDADRENALIN:
+                if (this.actionStructureList.indexOf(this.findAction(2))!=-1) {
+                    this.actionStructureList
+                            .set(this.actionStructureList.indexOf(this.findAction(2)),
+                                    this.findAction(4));
+                }
+                this.actionStructureList
+                        .set(this.actionStructureList.indexOf(this.findAction(3)),
+                                this.findAction(5));
+                break;
+            case FIRSTFRENZY:
+                this.actionStructureList.clear();
+                this.actionStructureList.add(this.findAction(6));
+                this.actionStructureList.add(this.findAction(7));
+                this.actionStructureList.add(this.findAction(8));
+                break;
+            case SECONDFRENZY:
+                this.actionStructureList.clear();
+                this.actionStructureList.add(this.findAction(9));
+                this.actionStructureList.add(this.findAction(10));
                 break;
         }
+
+    }
+
+    public ActionStructure findAction(int id) {
+        return this.nonUsableActions.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
     }
 
     public static class ActionBridgeBuilder {

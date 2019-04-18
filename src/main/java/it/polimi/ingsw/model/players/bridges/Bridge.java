@@ -61,6 +61,10 @@ public class Bridge {
         return this.damageBridge.isKillStreakCount();
     }
 
+    public ActionBridge getActionBridge() {
+        return actionBridge;
+    }
+
     public void setKillStreakCount() {
 
         this.damageBridge.setKillStreakCount();
@@ -76,16 +80,25 @@ public class Bridge {
         return this.damageBridge.getMarks();
     }
 
+    public DamageBridge getDamageBridge() {
+        return damageBridge;
+    }
+
     public void appendShot(Color color) {
-
         this.damageBridge.appendShot(color);
+    }
 
-        this.actionBridge.setAdrenalin(this.damageBridge.checkAdrenalin());
+    public Adrenalin checkAdrenalin() {
+        return this.damageBridge.checkAdrenalin();
     }
 
     public void appendMark(Color color) {
 
         this.damageBridge.appendMark(color);
+    }
+
+    public void setAdrenalin(Adrenalin adrenalin) {
+        this.actionBridge.setAdrenalin(adrenalin);
     }
 
     public boolean isDead() {
