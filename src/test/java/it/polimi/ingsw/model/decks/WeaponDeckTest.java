@@ -31,7 +31,7 @@ class WeaponDeckTest {
         assertEquals(1, tester.getId());
         assertEquals(
                 Arrays.asList(Color.BLUE, Color.BLUE),
-                tester.getReloadCost().stream().map(Ammo::getColor).collect(Collectors.toList())
+                tester.getReloadCost()
         );
 
         effect = tester.getMap().get(EffectType.PRIMARY);
@@ -49,7 +49,7 @@ class WeaponDeckTest {
 
         assertNull(effect.getActivated());
 
-        effect = tester.getMap().get(EffectType.OPTIONAL1);
+        effect = tester.getMap().get(EffectType.OPTIONAL_1);
 
         assertEquals(2, effect.getId());
 

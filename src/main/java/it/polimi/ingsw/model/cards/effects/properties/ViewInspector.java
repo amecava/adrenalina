@@ -118,7 +118,7 @@ class ViewInspector {
     private int computeCardinalDistance(Square fromSquare, Square toSquare,
             boolean throughWalls) throws SquareDistanceException {
 
-        int count = 0;
+        int count;
         Square square;
 
         // Compute cardinal distance

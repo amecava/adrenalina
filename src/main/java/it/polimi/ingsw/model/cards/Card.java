@@ -5,12 +5,9 @@ import java.util.List;
 
 public interface Card {
 
+    CardType getCardType();
+
     String getName();
 
     Color getColor();
-
-    List<Color> getAmmoCubesList();
-
-    boolean isPowerUpCard();
-
 }

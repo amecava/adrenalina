@@ -96,7 +96,7 @@ public class RocketLauncherTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);
@@ -161,7 +161,7 @@ public class RocketLauncherTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);

@@ -170,7 +170,7 @@ class LockRifleTest {
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -194,7 +194,7 @@ class LockRifleTest {
 
         // Same as father violated
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -206,7 +206,7 @@ class LockRifleTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
 
             assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
 

@@ -62,7 +62,7 @@ public class PlasmaGunTest {
 
         // Move source distance not 1 or 2
         try {
-            tester.useCard(EffectType.OPTIONAL1,  atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1,  atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -74,7 +74,7 @@ public class PlasmaGunTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL1,  atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1,  atomicTarget);
 
             assertEquals(source.getCurrentPosition(), board.getRoom(1).getSquare(2));
             assertEquals(source.getOldPosition(), board.getRoom(3).getSquare(1));
@@ -113,7 +113,7 @@ public class PlasmaGunTest {
 
         // Optional effect already used
         try {
-            tester.useCard(EffectType.OPTIONAL1,  atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1,  atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -125,7 +125,7 @@ public class PlasmaGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertSame(target1.getShots().get(2).getColor(), Color.GRAY);
             assertSame(target1.getShots().size(), 3);

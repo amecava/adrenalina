@@ -70,7 +70,7 @@ class ThorTest {
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -93,7 +93,7 @@ class ThorTest {
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -105,7 +105,7 @@ class ThorTest {
 
         // Seen by active violated
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -117,7 +117,7 @@ class ThorTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
 
             assertEquals(target2.getShots().size(), 1);
         } catch (EffectException | PropertiesException e) {
@@ -128,7 +128,7 @@ class ThorTest {
 
         // Seen by active violated
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -140,7 +140,7 @@ class ThorTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertEquals(target3.getShots().size(), 2);
         } catch (EffectException | PropertiesException e) {

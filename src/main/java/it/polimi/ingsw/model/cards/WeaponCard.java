@@ -29,7 +29,7 @@ public class WeaponCard implements Card {
 
     private String name;
     private boolean loaded;
-    private List<Ammo> reloadCost;
+    private List<Color> reloadCost;
 
     private EnumMap<EffectType, Effect> map;
 
@@ -51,6 +51,12 @@ public class WeaponCard implements Card {
     }
 
     @Override
+    public CardType getCardType() {
+
+        return CardType.WEAPON;
+    }
+
+    @Override
     public String getName() {
 
         return this.name;
@@ -59,17 +65,7 @@ public class WeaponCard implements Card {
     @Override
     public Color getColor() {
 
-        return this.reloadCost.get(0).getColor();
-    }
-
-    @Override
-    public List<Color> getAmmoCubesList() {
-        throw new UnsupportedOperationException("This is a WeaponCard card, not an AmmoTile card");
-    }
-
-    @Override
-    public boolean isPowerUpCard() {
-        throw new UnsupportedOperationException("This is a WeaponCard card, not an AmmoTile card");
+        return this.reloadCost.get(0);
     }
 
     public Player getOwner() {
@@ -97,7 +93,7 @@ public class WeaponCard implements Card {
         this.loaded = loaded;
     }
 
-    public List<Ammo> getReloadCost() {
+    public List<Color> getReloadCost() {
 
         return this.reloadCost;
     }
@@ -116,14 +112,14 @@ public class WeaponCard implements Card {
 
         List<Effect> optionalList = new ArrayList<>();
 
-        if (map.containsKey(EffectType.OPTIONAL1)) {
+        if (map.containsKey(EffectType.OPTIONAL_1)) {
 
-            optionalList.add(map.get(EffectType.OPTIONAL1));
+            optionalList.add(map.get(EffectType.OPTIONAL_1));
         }
 
-        if (map.containsKey(EffectType.OPTIONAL2)) {
+        if (map.containsKey(EffectType.OPTIONAL_2)) {
 
-            optionalList.add(map.get(EffectType.OPTIONAL2));
+            optionalList.add(map.get(EffectType.OPTIONAL_2));
         }
 
         return optionalList;
@@ -209,7 +205,7 @@ public class WeaponCard implements Card {
         private int id;
 
         private String name;
-        private List<Ammo> reloadCost = new ArrayList<>();
+        private List<Color> reloadCost = new ArrayList<>();
         private boolean loaded = true;
 
         private EnumMap<EffectType, Effect> map = new EnumMap<>(EffectType.class);
@@ -228,8 +224,8 @@ public class WeaponCard implements Card {
 
             if (jCardObject.containsKey("reloadCost")) {
                 jCardObject.getJsonArray("reloadCost").forEach(x ->
-                        this.reloadCost.add(new AmmoCube(Color.valueOf(
-                                x.toString().substring(1, x.toString().length() - 1))))
+                        this.reloadCost.add(Color.valueOf(
+                                x.toString().substring(1, x.toString().length() - 1)))
                 );
             }
 
@@ -242,12 +238,12 @@ public class WeaponCard implements Card {
             }
 
             if (jCardObject.containsKey("optional1")) {
-                map.put(EffectType.OPTIONAL1,
+                map.put(EffectType.OPTIONAL_1,
                         effectList.get(jCardObject.getInt("optional1") - 1));
             }
 
             if (jCardObject.containsKey("optional2")) {
-                map.put(EffectType.OPTIONAL2,
+                map.put(EffectType.OPTIONAL_2,
                         effectList.get(jCardObject.getInt("optional2") - 1));
             }
 

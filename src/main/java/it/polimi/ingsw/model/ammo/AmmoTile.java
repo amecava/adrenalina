@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.ammo;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.CardType;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.JsonObject;
@@ -9,34 +10,38 @@ import javax.json.JsonObject;
 public class AmmoTile implements Card {
 
     List<Color> ammoCubesList;
-    boolean powerUpCard;
 
     private AmmoTile(AmmoTileBuilder builder) {
 
         this.ammoCubesList = builder.ammoCubes;
-        this.powerUpCard = builder.powerUpCard;
+    }
+
+    @Override
+    public CardType getCardType() {
+
+        return CardType.AMMO_TILE;
     }
 
     @Override
     public String getName() {
+
         throw new UnsupportedOperationException("This is an AmmoTile, it doesn't have a name");
     }
 
     @Override
     public Color getColor() {
+
         throw new UnsupportedOperationException("This is an AmmoTile, it doesn't have a color");
     }
 
-    @Override
     public List<Color> getAmmoCubesList() {
 
         return this.ammoCubesList;
     }
 
-    @Override
-    public boolean isPowerUpCard() {
+    public boolean hasPowerUpCard() {
 
-        return this.powerUpCard;
+        return this.ammoCubesList.size() != 3;
     }
 
     public static class AmmoTileBuilder {
@@ -48,8 +53,6 @@ public class AmmoTile implements Card {
 
             jTileObject.getJsonArray("cubes").forEach(x -> this.ammoCubes
                     .add(Color.valueOf(x.toString().substring(1, x.toString().length() - 1))));
-
-            this.powerUpCard = jTileObject.getBoolean("powerUp");
 
         }
 

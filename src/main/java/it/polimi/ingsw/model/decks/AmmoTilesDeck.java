@@ -25,7 +25,7 @@ public class AmmoTilesDeck {
         return this.ammoTilesList.remove(0);
     }
 
-    public Card getTile(int i){
+    public AmmoTile getTile(int i){
 
         return this.ammoTilesList.remove(i);
     }

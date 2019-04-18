@@ -146,7 +146,7 @@ public class VortexCannonTest {
 
         // Can't use optional on same target as primary
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
 
             fail();
         } catch (PropertiesException e) {
@@ -159,7 +159,7 @@ public class VortexCannonTest {
 
         // Can't use optional on same target as primary
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
 
             fail();
         } catch (EffectException e) {
@@ -172,7 +172,7 @@ public class VortexCannonTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
 
             assertSame(target2.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target3.getShots().get(0).getColor(), Color.GRAY);

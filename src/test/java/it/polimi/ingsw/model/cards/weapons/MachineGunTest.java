@@ -68,7 +68,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -80,7 +80,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertEquals(target3.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 2);
@@ -137,7 +137,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -149,7 +149,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertEquals(target3.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 2);
@@ -206,7 +206,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -218,7 +218,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertEquals(target3.getShots().size(), 0);
             assertEquals(target2.getShots().size(), 2);
@@ -275,7 +275,7 @@ class MachineGunTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL1,  atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1,  atomicTarget);
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target2.getShots().size(), 1);
@@ -287,7 +287,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -299,7 +299,7 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target2.getShots().size(), 2);

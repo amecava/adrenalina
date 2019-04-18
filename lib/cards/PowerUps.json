@@ -1,0 +1,62 @@
+[
+    {
+        "name": "MIRINO",
+        "color": "RED",
+        "effect": {
+        
+            "args": 1,           
+            "targetType": "PLAYER",
+
+            "cost": "FREE",
+
+            "sameAsFather": [true],
+            "atomicEffectList": ["DAMAGE"]
+        }
+    }, 
+    {
+        "name": "RAGGIO CINETICO",
+        "color": "RED",
+        "effect": {
+            
+            "args": 2,
+            "targetType": "PLAYER",
+
+            "maxTargets": 1,
+
+            "minDist": 1,
+            "maxDist": 2,
+            "cardinal": true,
+
+            "atomicEffectList": ["MOVE"]
+        }
+    }, 
+    {
+        "name": "GRANATA VENOM",
+        "color": "RED",
+        "effect": {
+        
+            "args": 0,           
+            "targetType": "PLAYER",
+
+            "targetView": true,
+
+            "atomicEffectList": ["DAMAGE"]
+        }
+
+    }, 
+    {
+        "name": "TELETRASPORTO",
+        "color": "RED",
+        "effect": {
+            
+            "args": 1,
+            "targetType": "PLAYER",
+
+            "maxTargets": 1,
+            "sameAsPlayer": true,
+
+            "atomicEffectList": ["MOVE"]
+        }
+
+    }
+]

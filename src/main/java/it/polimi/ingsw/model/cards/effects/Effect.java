@@ -25,7 +25,7 @@ public class Effect {
     private Effect next;
     private List<Integer> optionalId;
 
-    private List<Ammo> cost;
+    private List<Color> cost;
     private Boolean activated;
 
     private Integer maxTargets;
@@ -118,7 +118,7 @@ public class Effect {
         return this.optionalId;
     }
 
-    public List<Ammo> getCost() {
+    public List<Color> getCost() {
 
         return this.cost;
     }
@@ -225,7 +225,7 @@ public class Effect {
         private Effect next;
         private List<Integer> optionalId = new ArrayList<>();
 
-        private List<Ammo> cost = new ArrayList<>();
+        private List<Color> cost = new ArrayList<>();
         private Boolean activated;
 
         private Integer maxTargets;
@@ -276,8 +276,8 @@ public class Effect {
 
             if (this.jEffectObject.containsKey("cost")) {
                 this.jEffectObject.getJsonArray("cost")
-                        .forEach(x -> this.cost.add(new AmmoCube(Color.valueOf(
-                                x.toString().substring(1, x.toString().length() - 1)))));
+                        .forEach(x -> this.cost.add(Color.valueOf(
+                                x.toString().substring(1, x.toString().length() - 1))));
             }
 
             if (this.jEffectObject.containsKey("activated")) {

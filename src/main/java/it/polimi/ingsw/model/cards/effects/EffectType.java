@@ -4,6 +4,6 @@ public enum EffectType {
 
     PRIMARY,
     ALTERNATIVE,
-    OPTIONAL1,
-    OPTIONAL2
+    OPTIONAL_1,
+    OPTIONAL_2
 }

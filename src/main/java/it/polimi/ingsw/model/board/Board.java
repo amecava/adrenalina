@@ -27,7 +27,9 @@ public class Board {
     private Board(BoardBuilder builder) {
 
         this.roomsList = builder.roomsList;
+
         this.weaponDeck = builder.weaponDeck;
+        this.ammoTilesDeck = builder.ammoTilesDeck;
     }
 
 
@@ -44,8 +46,10 @@ public class Board {
                 for (int i = 0; i < 3; i++) {
                     y.addTool(this.weaponDeck.getCard());
                 }
+            } else{
+
+                y.addTool(this.ammoTilesDeck.getTile());
             }
-            y.addTool(this.ammoTilesDeck.getTile());
 
         });
     }
@@ -77,6 +81,7 @@ public class Board {
         public BoardBuilder(EffectHandler effectHandler) {
 
             this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
+            this.ammoTilesDeck = new AmmoTilesDeck.AmmoTilesDeckBuilder().build();
         }
 
         private void readFromJson(int boardID) {
