@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.model.exceptions.cards.FullHandException;
 import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
@@ -104,9 +106,16 @@ public class Player implements Target {
         return this.pointStructure;
     }
 
-    public Card getWeaponCard(int index) {
+    public Card removeCardFromHand(int cardId) throws CardNotFoundException {
 
-        return this.weaponHand.get(index);
+        if (this.weaponHand.stream().map(x -> (WeaponCard) x).anyMatch(y -> y.getId() == cardId)) {
+            return this.weaponHand.remove(this.weaponHand.indexOf(
+                    this.weaponHand.stream().map(x -> (WeaponCard) x)
+                            .filter(y -> y.getId() == cardId)
+                            .findAny().get()));
+        } else {
+            throw new CardNotFoundException("You don't have the card you selected!");
+        }
     }
 
     public void setWeaponHand(List<Card> weaponHand) {
@@ -220,6 +229,8 @@ public class Player implements Target {
         }
     }
 
+    // this method needs to be called only after a FullHand exception gets thrown, or after checking
+    // player's cards - it assumes that the player already discarded playerCard
     public void collect(Card playerCard, int squareCardId)
             throws SquareTypeException, EmptySquareException {
 
@@ -227,15 +238,12 @@ public class Player implements Target {
 
             throw new SquareTypeException("You're not in a spawn square, wrong method call");
 
-        } else if (this.weaponHand.size() == 3) {
-
-            this.weaponHand.add(this.currentPosition.collectWeaponCard(playerCard, squareCardId));
-
         } else {
 
-            throw new SquareTypeException(
-                    "You're in a spawn square, but your hand is not full, wrong method call");
+            this.weaponHand.add(this.currentPosition.collectWeaponCard(playerCard, squareCardId));
         }
+
+
     }
 
 }

@@ -7,8 +7,10 @@ import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.model.exceptions.cards.FullHandException;
 import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
@@ -239,9 +241,60 @@ class PlayerTest {
         } catch (SquareTypeException | FullHandException e) {
 
             fail();
-        } catch ( EmptySquareException e) {
+        } catch (EmptySquareException e) {
 
             assertTrue(true);
+        }
+
+    }
+
+    @Test
+    void collectFromSpawn2() {
+
+        Board board = new Board.BoardBuilder(this.effectHandler).build(0);
+        board.fill();
+
+        Player player = new Player("player", Color.GRAY, this.effectHandler);
+
+
+        try {
+
+            player.movePlayer(board.getRoom(0).getSquare(2));
+
+            player.setWeaponHand(board.getWeaponDeck().getCardsForSpawnSquares());
+
+            player.collect(player.removeCardFromHand(15), 2);
+
+            fail();
+
+        } catch (SquareTypeException | EmptySquareException e) {
+
+            fail();
+
+        } catch (CardNotFoundException e) {
+
+            assertTrue(true);
+        }
+
+
+        try {
+
+            player.movePlayer(board.getRoom(0).getSquare(2));
+
+            player.setWeaponHand(board.getWeaponDeck().getCardsForSpawnSquares());
+
+            player.collect(player.removeCardFromHand(15), 3);
+
+            assertTrue(player.getWeaponHand().stream().map(x -> (WeaponCard)x).anyMatch(y -> y.getId() == 3));
+            assertTrue(player.getCurrentPosition().getTools().stream().map(x -> (WeaponCard)x).anyMatch(y -> y.getId() == 15));
+
+        } catch (SquareTypeException | EmptySquareException e) {
+
+            fail();
+
+        } catch (CardNotFoundException e) {
+
+            fail();
         }
 
     }

@@ -68,13 +68,13 @@ public class Square implements Target {
     public Card collectWeaponCard(Card playerCard, int squareCardId) throws EmptySquareException {
 
         if (this.tools.stream().map(x -> (WeaponCard) x)
-                .anyMatch(y -> y.getId() == ((WeaponCard)playerCard).getId())) {
+                .anyMatch(y -> y.getId() == squareCardId)) {
 
             this.tools.add(playerCard);
 
             return this.tools.remove(this.tools.indexOf(
                     this.tools.stream().map(x -> (WeaponCard) x)
-                            .filter(y -> y.getId() == ((WeaponCard)playerCard).getId()).findAny().get()));
+                            .filter(y -> y.getId() == squareCardId).findAny().get()));
 
         } else {
             throw new EmptySquareException("The card you selected is not in this square");
@@ -84,6 +84,11 @@ public class Square implements Target {
     public int getSquareId() {
 
         return this.squareId;
+    }
+
+    public List<Card> getTools() {
+
+        return this.tools;
     }
 
     public boolean isSpawn() {
