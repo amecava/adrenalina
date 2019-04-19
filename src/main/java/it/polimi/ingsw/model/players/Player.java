@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.model.exceptions.cards.FullHandException;
 import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
@@ -19,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player implements Target {
-
+    private boolean endOfGame;
+    private boolean firstPlayer;
     private String playerId;
     private Color playerColor;
-
     private Square oldPosition;
     private Square currentPosition;
 
@@ -39,6 +40,7 @@ public class Player implements Target {
         this.playerColor = playerColor;
         this.bridge = new Bridge(playerColor, effectHandler);
         this.pointStructure = new PointStructure(this);
+        this.endOfGame=false;
 
         for (int i = 0; i < 3; i++) {
 
@@ -172,8 +174,14 @@ public class Player implements Target {
     }
 
     public void damagePlayer(Color color) {
-
         this.bridge.appendShot(color);
+        if (!endOfGame)
+            this.bridge.setAdrenalin(this.bridge.checkAdrenalin());
+    }
+    public void frenzyActions(){
+        this.bridge.setAdrenalin(Adrenalin.FIRSTFRENZY);
+        this.endOfGame=true;
+
     }
 
     public void markPlayer(Color color) {

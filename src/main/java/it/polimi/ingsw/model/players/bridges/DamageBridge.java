@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 class DamageBridge {
 
     private boolean killStreakCount = false;
-
     private List<Shots> shots = new ArrayList<>();
     private List<Shots> marks = new ArrayList<>();
 
@@ -61,8 +60,7 @@ class DamageBridge {
         return this.shots.size() >= 11;
     }
 
-    Adrenalin checkAdrenalin() {
-
+     public Adrenalin checkAdrenalin() {
         if (this.shots.size() <= 2) {
             return Adrenalin.NORMAL;
         }

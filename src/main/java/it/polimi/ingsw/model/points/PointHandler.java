@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.points;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Deaths;
+import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.players.bridges.Bridge;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.model.players.bridges.Shots;
@@ -53,11 +54,9 @@ public class PointHandler {
                 this.playerList.forEach(x -> this.deathUpdate(x.getBridge()));
                 this.deathUpdate(this.deaths);
             } else {
-
-                this.playerList.stream()
-                        .filter(x -> x.getShots().isEmpty())
+                this.playerList.stream().forEach(x-> x.frenzyActions());//frenzy actions should be changed in base of player order
+                this.playerList.stream().filter(x -> x.getShots().isEmpty())
                         .forEach(Player::setFrenzy);
-
                 this.frenzyRegeneration = true;
             }
         }
@@ -118,7 +117,7 @@ public class PointHandler {
                     pointStructure.getPlayer().setPoints(1);
                     foundFirstBlood = true;
                 }
-                if (!this.deaths.isGameEnded()) {
+                if (!bridge.getColor().equals(Color.EOG) && bridge.isDead()) {
                     if (!foundLastShot && pointStructure.getLastDamage() == 12) {
                         pointStructure.getPlayer().markPlayer(bridge.getColor());
                         foundLastShot = true;
@@ -131,8 +130,7 @@ public class PointHandler {
                 }
             }
         }
-
-        if (!this.deaths.isGameEnded()) {
+        if (!bridge.getColor().equals(Color.EOG) && bridge.isDead() ) {
             deaths.addKill(killShot, foundLastShot);
             if (frenzyRegeneration && !(bridge.isKillStreakCount())) {
                 bridge.setFrenzy();
@@ -140,6 +138,10 @@ public class PointHandler {
             } else {
                 bridge.setPointsUsed();
                 bridge.addKill();
+                if (!frenzyRegeneration)
+                    bridge.setAdrenalin(Adrenalin.NORMAL);
+                else
+                    bridge.setAdrenalin(Adrenalin.FIRSTADRENALIN);// or secondfrenzy adrenalin
 
             }
         }

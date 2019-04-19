@@ -4,5 +4,7 @@ public enum Adrenalin {
 
     NORMAL,
     FIRSTADRENALIN,
-    SECONDADRENALIN
+    SECONDADRENALIN,
+    FIRSTFRENZY,
+    SECONDFRENZY
 }
