@@ -64,6 +64,9 @@ public class Bridge {
     public ActionBridge getActionBridge() {
         return actionBridge;
     }
+    public Adrenalin getAdrenalin(){
+        return  this.damageBridge.checkAdrenalin();
+    }
 
     public void setKillStreakCount() {
 

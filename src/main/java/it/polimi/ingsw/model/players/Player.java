@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player implements Target {
+
     private boolean endOfGame;
     private boolean firstPlayer;
     private String playerId;
@@ -40,21 +41,17 @@ public class Player implements Target {
         this.playerColor = playerColor;
         this.bridge = new Bridge(playerColor, effectHandler);
         this.pointStructure = new PointStructure(this);
-        this.endOfGame=false;
+        this.endOfGame = false;
 
-        for (int i = 0; i < 3; i++) {
+        this.ammoCubesList.add(new AmmoCube(Color.RED, false));
+        this.ammoCubesList.add(new AmmoCube(Color.BLUE, false));
+        this.ammoCubesList.add(new AmmoCube(Color.YELLOW, false));
 
-            if (i == 0) {
+        for (int i = 0; i < 2; i++) {
 
-                this.ammoCubesList.add(new AmmoCube(Color.RED, false));
-                this.ammoCubesList.add(new AmmoCube(Color.BLUE, false));
-                this.ammoCubesList.add(new AmmoCube(Color.YELLOW, false));
-            } else {
-
-                this.ammoCubesList.add(new AmmoCube(Color.RED, true));
-                this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
-                this.ammoCubesList.add(new AmmoCube(Color.YELLOW, true));
-            }
+            this.ammoCubesList.add(new AmmoCube(Color.RED, true));
+            this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
+            this.ammoCubesList.add(new AmmoCube(Color.YELLOW, true));
         }
     }
 
@@ -161,6 +158,10 @@ public class Player implements Target {
         return this.bridge.isDead();
     }
 
+    public Adrenalin getAdrenalin() {
+        return this.bridge.checkAdrenalin();
+    }
+
     public void movePlayer(Square destination) {
 
         if (this.currentPosition != null) {
@@ -173,14 +174,19 @@ public class Player implements Target {
         this.currentPosition.addPlayer(this);
     }
 
+    public void controlAdrenalin() {
+        if (!endOfGame) {
+            this.bridge.setAdrenalin(this.bridge.checkAdrenalin());
+        }
+    }
+
     public void damagePlayer(Color color) {
         this.bridge.appendShot(color);
-        if (!endOfGame)
-            this.bridge.setAdrenalin(this.bridge.checkAdrenalin());
     }
-    public void frenzyActions(){
+
+    public void frenzyActions() {
         this.bridge.setAdrenalin(Adrenalin.FIRSTFRENZY);
-        this.endOfGame=true;
+        this.endOfGame = true;
 
     }
 
@@ -232,13 +238,13 @@ public class Player implements Target {
             throw new FullHandException("You already have three cards, wrong method call");
 
         } else {
-
             this.weaponHand.add(this.currentPosition.collectWeaponCard(cardId));
         }
     }
 
     // this method needs to be called only after a FullHand exception gets thrown, or after checking
     // player's cards - it assumes that the player already discarded playerCard
+    //good code
     public void collect(Card playerCard, int squareCardId)
             throws SquareTypeException, EmptySquareException {
 
@@ -247,10 +253,8 @@ public class Player implements Target {
             throw new SquareTypeException("You're not in a spawn square, wrong method call");
 
         } else {
-
             this.weaponHand.add(this.currentPosition.collectWeaponCard(playerCard, squareCardId));
         }
-
 
     }
 

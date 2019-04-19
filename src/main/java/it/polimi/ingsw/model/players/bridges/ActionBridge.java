@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.players.bridges;
 
+import it.polimi.ingsw.model.ammo.AmmoCube;
+import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
@@ -8,6 +10,10 @@ import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.exceptions.IlligalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
+import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
+import it.polimi.ingsw.model.exceptions.cards.FullHandException;
+import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import java.io.FileReader;
@@ -85,14 +91,33 @@ class ActionBridge {
         }
     }
 
-    public void collect() throws IlligalActionException {
+    public AmmoTile collectAmmo() throws IlligalActionException, SquareTypeException, EmptySquareException {
         if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
-            throw new IlligalActionException(" you can't collect from square!!! ");
+            throw new IlligalActionException(" you can't collect from square with the chosen action!!!");
         }
+        AmmoTile ammoTile=this.effectHandler.getActivePlayer().collect();// turn handler must put it back in the deck at the end of the turn
         this.currentAction.endAction(2, false);
-        //this.effectHandler.getActivePlayer().collect();
+        return ammoTile;
     }
 
+    public void collectweapon (int cardId )
+            throws IlligalActionException, EmptySquareException, SquareTypeException, FullHandException {
+        if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
+            throw new IlligalActionException(" you can't collect from square with the chosen action!!!");
+        }
+        this.effectHandler.getActivePlayer().collect(cardId);
+        this.currentAction.endAction(2, false);
+    }
+
+    public void collectAndDiscard ( int discardCardId, int collectCard )
+            throws IlligalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
+        if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
+            throw new IlligalActionException(" you can't collect from square with the chosen action!!!");
+        }
+        Card playerCard=this.effectHandler.getActivePlayer().removeCardFromHand(discardCardId);
+        this.effectHandler.getActivePlayer().collect(playerCard, collectCard);
+        this.currentAction.endAction(2, false);
+    }
     public void moove(AtomicTarget atomicTarget)
             throws IlligalActionException, EffectException, PropertiesException {
         if (this.currentAction.getMove() == null || !this.currentAction.getMove()) {

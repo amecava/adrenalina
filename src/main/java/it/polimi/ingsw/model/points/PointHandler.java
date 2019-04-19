@@ -43,14 +43,14 @@ public class PointHandler {
     }
 
     public void checkIfDead() {
-
-        this.playerList.stream()
-                .filter(Player::isDead)
-                .forEach(x -> this.deathUpdate(x.getBridge()));
-
+        for (Player player : playerList){
+            if (player.isDead())
+                this.deathUpdate(player.getBridge());
+            else
+                player.controlAdrenalin();
+        }
         if (deaths.isGameEnded()) {
             if (!frenzyEnabled) {
-
                 this.playerList.forEach(x -> this.deathUpdate(x.getBridge()));
                 this.deathUpdate(this.deaths);
             } else {
