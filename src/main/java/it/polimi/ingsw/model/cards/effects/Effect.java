@@ -1,13 +1,9 @@
 package it.polimi.ingsw.model.cards.effects;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.ammo.Ammo;
-import it.polimi.ingsw.model.ammo.AmmoCube;
-import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicType;
-import it.polimi.ingsw.model.exceptions.effects.EffectTypeException;
+import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.JsonObject;
@@ -202,7 +198,7 @@ public class Effect {
         this.atomicEffectList.add(atomicEffect);
     }
 
-    public void execute(Target source, AtomicTarget target) throws EffectTypeException {
+    public void execute(Player source, EffectTarget target) {
 
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
 
@@ -329,7 +325,7 @@ public class Effect {
                 this.jEffectObject.getJsonArray("atomicEffectList").forEach(x ->
                         this.atomicEffectList.add(AtomicType
                                 .valueOf(x.toString().substring(1, x.toString().length() - 1))
-                                .getAtomicEffect(this.targetType)
+                                .getAtomicEffect()
                         ));
             }
 

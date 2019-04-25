@@ -268,7 +268,7 @@
             "args": 1,
             "name": "with black hole",
             "description": "Choose up to 2 other targets on the vortex or 1 move away from it. Move them onto the vortex and give them each 1 damage.",
-            "targetType": "SQUARE",
+            "targetType": "PLAYER",
 
             "next": {
                 "id": 18,

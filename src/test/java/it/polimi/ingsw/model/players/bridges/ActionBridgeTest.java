@@ -23,23 +23,23 @@ class ActionBridgeTest {
         playerList.add(player3);
         PointHandler pointHandler = new PointHandler(playerList, 4);
         for ( int i=0 ; i<2; i++){
-            player1.damagePlayer(player2.getPlayerColor());
-            player3.damagePlayer(player2.getPlayerColor());
+            player1.damagePlayer(player2.getColor());
+            player3.damagePlayer(player2.getColor());
         }
         pointHandler.checkIfDead();
         assertTrue(player1.getAdrenalin()==Adrenalin.NORMAL);
         for (int i=0; i<3; i++){
-            player1.damagePlayer(player2.getPlayerColor());
-            player3.damagePlayer(player2.getPlayerColor());
+            player1.damagePlayer(player2.getColor());
+            player3.damagePlayer(player2.getColor());
         }
         pointHandler.checkIfDead();
         assertTrue(player1.getAdrenalin()==Adrenalin.FIRSTADRENALIN);
         assertTrue(player3.getAdrenalin()==Adrenalin.FIRSTADRENALIN);
         for (int i=0; i<5; i++){
-            player1.damagePlayer(player2.getPlayerColor());
-            player3.damagePlayer(player2.getPlayerColor());
+            player1.damagePlayer(player2.getColor());
+            player3.damagePlayer(player2.getColor());
         }
-        player3.damagePlayer(player1.getPlayerColor());
+        player3.damagePlayer(player1.getColor());
         pointHandler.checkIfDead();
         assertTrue(player1.getAdrenalin()==Adrenalin.SECONDADRENALIN);
         assertTrue(player3.getAdrenalin()==Adrenalin.NORMAL);

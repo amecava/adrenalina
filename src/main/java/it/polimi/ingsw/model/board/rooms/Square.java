@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.WeaponCard;
+import it.polimi.ingsw.model.cards.effects.TargetType;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.Map;
 
 public class Square implements Target {
 
-    //TODO check if squareId is actually useful
     private int squareId;
     private Room room;
 
@@ -42,57 +42,21 @@ public class Square implements Target {
         this.map.get(false).put(this, 0);
     }
 
-    public void addTool(Card tool) {
+    @Override
+    public TargetType getTargetType() {
 
-        this.tools.add(tool);
+        return TargetType.SQUARE;
     }
 
-    public Card collectAmmoTile() {
+    @Override
+    public Square getCurrentPosition() {
 
-        return this.tools.isEmpty() ? null : this.tools.remove(0);
-    }
-
-    public Card collectWeaponCard(int id) throws EmptySquareException {
-
-        if (this.tools.stream().map(x -> (WeaponCard) x)
-                .anyMatch(y -> y.getId() == id)) {
-
-            return this.tools.remove(this.tools.indexOf(
-                    this.tools.stream().map(x -> (WeaponCard) x)
-                            .filter(y -> y.getId() == id).findAny().get()));
-        } else {
-            throw new EmptySquareException("The card you selected is not in this square");
-        }
-    }
-
-    public Card collectWeaponCard(Card playerCard, int squareCardId) throws EmptySquareException {
-
-        if (this.tools.stream().map(x -> (WeaponCard) x)
-                .anyMatch(y -> y.getId() == squareCardId)) {
-
-            this.tools.add(playerCard);
-
-            return this.tools.remove(this.tools.indexOf(
-                    this.tools.stream().map(x -> (WeaponCard) x)
-                            .filter(y -> y.getId() == squareCardId).findAny().get()));
-
-        } else {
-            throw new EmptySquareException("The card you selected is not in this square");
-        }
+        return this;
     }
 
     public int getSquareId() {
 
         return this.squareId;
-    }
-
-    public List<Card> getTools() {
-
-        return this.tools;
-    }
-
-    public boolean isSpawn() {
-        return spawn;
     }
 
     public Room getRoom() {
@@ -103,6 +67,16 @@ public class Square implements Target {
     public void setRoom(Room room) {
 
         this.room = room;
+    }
+
+    public boolean isSpawn() {
+
+        return this.spawn;
+    }
+
+    public List<Card> getTools() {
+
+        return this.tools;
     }
 
     public List<Square> getAdjacent() {
@@ -152,9 +126,48 @@ public class Square implements Target {
         this.players.remove(player);
     }
 
-    @Override
-    public Square getCurrentPosition() {
+    public void addTool(Card tool) {
 
-        return this;
+        this.tools.add(tool);
+    }
+
+    public AmmoTile collectAmmoTile() throws EmptySquareException {
+
+        if (!this.tools.isEmpty()) {
+
+            return (AmmoTile) this.tools.remove(0);
+        }
+
+        throw new EmptySquareException("You already collected everything in this square!");
+    }
+
+    public Card collectWeaponCard(int id) throws EmptySquareException {
+
+        if (this.tools.stream().map(x -> (WeaponCard) x)
+                .anyMatch(y -> y.getId() == id)) {
+
+            return this.tools.remove(this.tools.indexOf(
+                    this.tools.stream().map(x -> (WeaponCard) x)
+                            .filter(y -> y.getId() == id).findAny().get()));
+        }
+
+        throw new EmptySquareException("The card you selected is not in this square");
+
+    }
+
+    public Card collectWeaponCard(WeaponCard playerCard, int squareCardId) throws EmptySquareException {
+
+        if (this.tools.stream().map(x -> (WeaponCard) x)
+                .anyMatch(y -> y.getId() == squareCardId)) {
+
+            this.tools.add(playerCard);
+
+            return this.tools.remove(this.tools.indexOf(
+                    this.tools.stream().map(x -> (WeaponCard) x)
+                            .filter(y -> y.getId() == squareCardId).findAny().get()));
+
+        }
+
+        throw new EmptySquareException("The card you selected is not in this square");
     }
 }

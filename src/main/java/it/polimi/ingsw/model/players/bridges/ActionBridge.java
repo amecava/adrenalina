@@ -1,13 +1,12 @@
 package it.polimi.ingsw.model.players.bridges;
 
-import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.exceptions.IlligalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
@@ -77,9 +76,9 @@ class ActionBridge {
         this.currentAction.endAction(4, false);
     }
 
-    public void useCard(EffectType effectType, AtomicTarget atomicTarget)
+    public void useCard(EffectType effectType, EffectTarget effectTarget)
             throws PropertiesException, EffectException {
-        this.weaponCard.useCard(effectType, atomicTarget);
+        this.weaponCard.useCard(effectType, effectTarget);
     }
 
     public void reload(Card card) throws IlligalActionException {
@@ -114,16 +113,15 @@ class ActionBridge {
         if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
             throw new IlligalActionException(" you can't collect from square with the chosen action!!!");
         }
-        Card playerCard=this.effectHandler.getActivePlayer().removeCardFromHand(discardCardId);
-        this.effectHandler.getActivePlayer().collect(playerCard, collectCard);
+        this.effectHandler.getActivePlayer().collect(discardCardId, collectCard);
         this.currentAction.endAction(2, false);
     }
-    public void moove(AtomicTarget atomicTarget)
+    public void moove(EffectTarget effectTarget)
             throws IlligalActionException, EffectException, PropertiesException {
         if (this.currentAction.getMove() == null || !this.currentAction.getMove()) {
             throw new IlligalActionException(" you can't move yourself right now!!!");
         }
-        effectHandler.useEffect(this.currentAction.getEffect(), atomicTarget);
+        effectHandler.useEffect(this.currentAction.getEffect(), effectTarget);
         this.currentAction.setEffectAsUsed();
         this.currentAction.endAction(1, false);
     }

@@ -263,7 +263,7 @@ class PlayerTest {
 
             player.setWeaponHand(board.getWeaponDeck().getCardsForSpawnSquares());
 
-            player.collect(player.removeCardFromHand(15), 2);
+            player.collect(15, 2);
 
             fail();
 
@@ -283,7 +283,7 @@ class PlayerTest {
 
             player.setWeaponHand(board.getWeaponDeck().getCardsForSpawnSquares());
 
-            player.collect(player.removeCardFromHand(15), 3);
+            player.collect(15, 3);
 
             assertTrue(player.getWeaponHand().stream().map(x -> (WeaponCard)x).anyMatch(y -> y.getId() == 3));
             assertTrue(player.getCurrentPosition().getTools().stream().map(x -> (WeaponCard)x).anyMatch(y -> y.getId() == 15));

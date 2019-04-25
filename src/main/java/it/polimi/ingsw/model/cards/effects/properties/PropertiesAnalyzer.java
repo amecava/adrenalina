@@ -44,7 +44,7 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public void sameAsFather(List<Player> active, List<Player> inactive,
+    public void sameAsFather(List<Target> active, List<Target> inactive,
             List<Target> target) throws SameAsFatherException {
 
         // If the same as father flag is present
@@ -111,13 +111,13 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public void seenByActive(List<Player> activeList, List<Target> targetList)
+    public void seenByActive(List<Target> activeList, List<Target> targetList)
             throws TargetViewException {
 
         // If the seen by active flag is present
         if (this.effect.isSeenByActive()) {
 
-            for (Player active : activeList) {
+            for (Target active : activeList) {
                 for (Target target : targetList) {
 
                     // Launch exception if seen by active flag violated

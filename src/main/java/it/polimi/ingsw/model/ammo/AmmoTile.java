@@ -9,7 +9,7 @@ import javax.json.JsonObject;
 
 public class AmmoTile implements Card {
 
-    List<Color> ammoCubesList;
+    private List<Color> ammoCubesList;
 
     private AmmoTile(AmmoTileBuilder builder) {
 

@@ -1,12 +1,10 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.ammo.Ammo;
-import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
 import it.polimi.ingsw.model.exceptions.cards.OwnerNotActiveException;
@@ -172,7 +170,7 @@ public class WeaponCard implements Card {
         }
     }
 
-    public void useCard(EffectType effectType, AtomicTarget target)
+    public void useCard(EffectType effectType, EffectTarget target)
             throws EffectException, PropertiesException {
 
         // Launch exception if selected effect not present in map

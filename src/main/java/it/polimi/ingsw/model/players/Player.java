@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.TargetType;
 import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
@@ -17,12 +18,14 @@ import it.polimi.ingsw.model.points.PointStructure;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Target;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Player implements Target {
 
     private boolean endOfGame;
     private boolean firstPlayer;
+
     private String playerId;
     private Color playerColor;
     private Square oldPosition;
@@ -31,9 +34,8 @@ public class Player implements Target {
     private Bridge bridge;
     private PointStructure pointStructure;
 
-    private List<AmmoCube> ammoCubesList = new ArrayList<>();
-
     private List<Card> weaponHand = new ArrayList<>();
+    private List<AmmoCube> ammoCubesList = new ArrayList<>();
 
     public Player(String playerId, Color playerColor, EffectHandler effectHandler) {
 
@@ -55,12 +57,30 @@ public class Player implements Target {
         }
     }
 
+    @Override
+    public TargetType getTargetType() {
+
+        return TargetType.PLAYER;
+    }
+
+    @Override
+    public Square getCurrentPosition() {
+
+        return this.currentPosition;
+    }
+
+    @Override
+    public List<Player> getPlayers() {
+
+        return Arrays.asList(this);
+    }
+
     public String getPlayerId() {
 
         return this.playerId;
     }
 
-    public Color getPlayerColor() {
+    public Color getColor() {
 
         return this.playerColor;
     }
@@ -70,56 +90,34 @@ public class Player implements Target {
         return this.oldPosition;
     }
 
-    @Override
-    public Square getCurrentPosition() {
-
-        return this.currentPosition;
-    }
-
     public Bridge getBridge() {
 
         return this.bridge;
     }
-
-
-    // useful for tests
-    public List<AmmoCube> getAmmoCubesList() {
-
-        return this.ammoCubesList;
-    }
-
-    //useful for tests
-    public List<Card> getWeaponHand() {
-        return this.weaponHand;
-    }
-
-    //useful for tests
-    public void clearHand() {
-
-        this.weaponHand.clear();
-    }
-
 
     public PointStructure getPointStructure() {
 
         return this.pointStructure;
     }
 
-    public Card removeCardFromHand(int cardId) throws CardNotFoundException {
+    public List<Card> getWeaponHand() {
 
-        if (this.weaponHand.stream().map(x -> (WeaponCard) x).anyMatch(y -> y.getId() == cardId)) {
-            return this.weaponHand.remove(this.weaponHand.indexOf(
-                    this.weaponHand.stream().map(x -> (WeaponCard) x)
-                            .filter(y -> y.getId() == cardId)
-                            .findAny().get()));
-        } else {
-            throw new CardNotFoundException("You don't have the card you selected!");
-        }
+        return this.weaponHand;
     }
 
     public void setWeaponHand(List<Card> weaponHand) {
 
         this.weaponHand = weaponHand;
+    }
+
+    public List<AmmoCube> getAmmoCubesList() {
+
+        return this.ammoCubesList;
+    }
+
+    public void clearHand() {
+
+        this.weaponHand.clear();
     }
 
     public int getPoints() {
@@ -159,6 +157,7 @@ public class Player implements Target {
     }
 
     public Adrenalin getAdrenalin() {
+
         return this.bridge.checkAdrenalin();
     }
 
@@ -174,20 +173,9 @@ public class Player implements Target {
         this.currentPosition.addPlayer(this);
     }
 
-    public void controlAdrenalin() {
-        if (!endOfGame) {
-            this.bridge.setAdrenalin(this.bridge.checkAdrenalin());
-        }
-    }
-
     public void damagePlayer(Color color) {
+
         this.bridge.appendShot(color);
-    }
-
-    public void frenzyActions() {
-        this.bridge.setAdrenalin(Adrenalin.FIRSTFRENZY);
-        this.endOfGame = true;
-
     }
 
     public void markPlayer(Color color) {
@@ -195,35 +183,42 @@ public class Player implements Target {
         this.bridge.appendMark(color);
     }
 
+    public void controlAdrenalin() {
+
+        if (!endOfGame) {
+            this.bridge.setAdrenalin(this.bridge.checkAdrenalin());
+        }
+    }
+
+    public void frenzyActions() {
+
+        this.bridge.setAdrenalin(Adrenalin.FIRSTFRENZY);
+        this.endOfGame = true;
+    }
+
     // this method returns an AmmoTile because the Square.collectAmmoTile method removes the
     // item collected from the square, and at the end of the turn the board must be refreshed,
     // so the AmmoTile collected has to be placed in the AmmoTilesDeck by the gameHandler
     public AmmoTile collect() throws SquareTypeException, EmptySquareException {
 
-        Card tmpTile;
+        AmmoTile tmpTile;
 
         if (!this.currentPosition.isSpawn()) {
 
             tmpTile = this.currentPosition.collectAmmoTile();
 
-            if (tmpTile != null) {
-
-                // set used player's ammo cubes to not used
-                ((AmmoTile) tmpTile).getAmmoCubesList().forEach(x ->
-                        this.ammoCubesList.stream().filter(AmmoCube::isUsed)
-                                .filter(y -> y.getColor().equals(x))
-                                .findFirst().ifPresent(z -> z.setUsed(false)));
-            } else {
-                throw new EmptySquareException("You already collected everything in this square!");
-            }
+            // set used player's ammo cubes to not used
+            tmpTile.getAmmoCubesList().forEach(x ->
+                    this.ammoCubesList.stream().filter(AmmoCube::isUsed)
+                            .filter(y -> y.getColor().equals(x))
+                            .findFirst().ifPresent(z -> z.setUsed(false)));
 
             //TODO add the powerUp to player's hand if the tile allows it
 
-        } else {
-            throw new SquareTypeException("You're in a spawn square, wrong method call");
+            return tmpTile;
         }
 
-        return (AmmoTile) tmpTile;
+        throw new SquareTypeException("You're in a spawn square, wrong method call");
     }
 
     public void collect(int cardId)
@@ -232,30 +227,33 @@ public class Player implements Target {
         if (!this.currentPosition.isSpawn()) {
 
             throw new SquareTypeException("You're not in a spawn square, wrong method call");
+        }
 
-        } else if (this.weaponHand.size() == 3) {
+        if (this.weaponHand.size() == 3) {
 
             throw new FullHandException("You already have three cards, wrong method call");
-
-        } else {
-            this.weaponHand.add(this.currentPosition.collectWeaponCard(cardId));
         }
+
+        this.weaponHand.add(this.currentPosition.collectWeaponCard(cardId));
     }
 
     // this method needs to be called only after a FullHand exception gets thrown, or after checking
     // player's cards - it assumes that the player already discarded playerCard
     //good code
-    public void collect(Card playerCard, int squareCardId)
-            throws SquareTypeException, EmptySquareException {
+    public void collect(int playerCardId, int squareCardId)
+            throws SquareTypeException, EmptySquareException, CardNotFoundException {
 
         if (!this.currentPosition.isSpawn()) {
 
             throw new SquareTypeException("You're not in a spawn square, wrong method call");
-
-        } else {
-            this.weaponHand.add(this.currentPosition.collectWeaponCard(playerCard, squareCardId));
         }
 
+        this.weaponHand.add(this.currentPosition.collectWeaponCard(
+                this.weaponHand.stream()
+                        .map(x -> (WeaponCard) x)
+                        .filter(x -> x.getId() == playerCardId)
+                        .findAny()
+                        .orElseThrow(() -> new CardNotFoundException("You don't have that card!")),
+                squareCardId));
     }
-
 }

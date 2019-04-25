@@ -26,23 +26,23 @@ class DeathsTest {
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 2);
         for (int i = 0; i < 8; i++) {
-            player3.damagePlayer(player2.getPlayerColor());
+            player3.damagePlayer(player2.getColor());
         }
         for (int i = 0; i < 4; i++) {
-            player3.damagePlayer(player1.getPlayerColor());
+            player3.damagePlayer(player1.getColor());
         }
         pointHandler.checkIfDead();
         for (int i = 0; i < 3; i++) {
-            player3.damagePlayer(player2.getPlayerColor());
+            player3.damagePlayer(player2.getColor());
         }
         for (int i = 0; i < 2; i++) {
-            player3.damagePlayer(player1.getPlayerColor());
+            player3.damagePlayer(player1.getColor());
         }
         for (int i = 0; i < 10; i++) {
-            player3.damagePlayer(player2.getPlayerColor());
+            player3.damagePlayer(player2.getColor());
         }
-        player1.damagePlayer(player3.getPlayerColor());
-        player2.damagePlayer(player3.getPlayerColor());
+        player1.damagePlayer(player3.getColor());
+        player2.damagePlayer(player3.getColor());
         pointHandler.checkIfDead();
         player2.setPoints(-3);
         player3.setPoints(+10);

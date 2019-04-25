@@ -1,33 +1,33 @@
-package it.polimi.ingsw.model.cards.effects.atomic;
+package it.polimi.ingsw.model.cards.effects;
 
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.Target;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AtomicTarget {
+public class EffectTarget {
 
     private Square destination;
 
     private List<Target> targetList;
 
-    public AtomicTarget() {
+    public EffectTarget() {
 
         this.targetList = new ArrayList<>();
     }
 
-    public AtomicTarget(Square destination) {
+    public EffectTarget(Square destination) {
 
         this.destination = destination;
         this.targetList = new ArrayList<>();
     }
 
-    public AtomicTarget(List<Target> targetList) {
+    public EffectTarget(List<Target> targetList) {
 
         this.targetList = targetList;
     }
 
-    public AtomicTarget(Square destination, List<Target> targetList) {
+    public EffectTarget(Square destination, List<Target> targetList) {
 
         this.destination = destination;
         this.targetList = targetList;

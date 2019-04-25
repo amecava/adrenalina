@@ -25,19 +25,19 @@ class PointHandlerTest {
         playerList.add(player3);
         PointHandler pointHandler = new PointHandler(playerList, 4);
         for (int i = 0; i < 5; i++) {
-            player1.markPlayer(player2.getPlayerColor());
-            player1.damagePlayer(player3.getPlayerColor());
+            player1.markPlayer(player2.getColor());
+            player1.damagePlayer(player3.getColor());
         }
-        player1.damagePlayer(player2.getPlayerColor());
-        player1.damagePlayer(player2.getPlayerColor());
-        player1.damagePlayer(player2.getPlayerColor());
-        player1.damagePlayer(player2.getPlayerColor());
+        player1.damagePlayer(player2.getColor());
+        player1.damagePlayer(player2.getColor());
+        player1.damagePlayer(player2.getColor());
+        player1.damagePlayer(player2.getColor());
         pointHandler.checkIfDead();
 
         assertEquals(player2.getMarks().size(), 1);
         assertEquals(
                 player2.getMarks().get(0).getColor(),
-                player1.getPlayerColor()
+                player1.getColor()
         );
         assertEquals(player2.getPoints(), 8);
         assertEquals(player3.getPoints(), 7);
@@ -58,21 +58,21 @@ class PointHandlerTest {
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 4);
         for (int i = 0; i < 5; i++) {
-            player1.markPlayer(player2.getPlayerColor());
-            player1.markPlayer(player3.getPlayerColor());
+            player1.markPlayer(player2.getColor());
+            player1.markPlayer(player3.getColor());
         }
         for (int i = 0; i < 4; i++) {
-            player1.damagePlayer(player2.getPlayerColor());
+            player1.damagePlayer(player2.getColor());
         }
-        player1.damagePlayer(player4.getPlayerColor());
-        player1.damagePlayer(player3.getPlayerColor());
-        player1.damagePlayer(player3.getPlayerColor());
+        player1.damagePlayer(player4.getColor());
+        player1.damagePlayer(player3.getColor());
+        player1.damagePlayer(player3.getColor());
         player1.markPlayer(Color.LIGHTBLUE);
         player1.markPlayer(Color.LIGHTBLUE);
         pointHandler.checkIfDead();
         for (int i = 0; i < 6; i++) {
-            player1.damagePlayer(player2.getPlayerColor());
-            player1.damagePlayer(player3.getPlayerColor());
+            player1.damagePlayer(player2.getColor());
+            player1.damagePlayer(player3.getColor());
         }
         pointHandler.checkIfDead();
         assertEquals(player2.getPoints(), 16);
@@ -105,11 +105,11 @@ class PointHandlerTest {
         assertFalse(pointHandler.getWinner().get(0).contains(player3));
 
         for (int i = 0; i < 13; i++) {
-            player2.damagePlayer(player1.getPlayerColor());
+            player2.damagePlayer(player1.getColor());
         }
         pointHandler.checkIfDead();
         for (int i = 0; i < 12; i++) {
-            player1.damagePlayer(player2.getPlayerColor());
+            player1.damagePlayer(player2.getColor());
         }
         pointHandler.checkIfDead();
         int k = 1;
@@ -143,18 +143,18 @@ class PointHandlerTest {
         playerList.add(player6);
         PointHandler pointHandler = new PointHandler(playerList, 3);
         for (int i=1; i<=12; i++){
-            player2.damagePlayer(player1.getPlayerColor());
-            player3.damagePlayer(player1.getPlayerColor());
+            player2.damagePlayer(player1.getColor());
+            player3.damagePlayer(player1.getColor());
         }
         pointHandler.checkIfDead();
-        player1.damagePlayer(player2.getPlayerColor());
-        player1.damagePlayer(player3.getPlayerColor());
+        player1.damagePlayer(player2.getColor());
+        player1.damagePlayer(player3.getColor());
         assertTrue(player1.getShots().size()==4);
         for (int i=0; i<11; i++){
-            player5.damagePlayer(player4.getPlayerColor());
-            player6.damagePlayer(player4.getPlayerColor());
+            player5.damagePlayer(player4.getColor());
+            player6.damagePlayer(player4.getColor());
         }
-        player1.damagePlayer(player4.getPlayerColor());
+        player1.damagePlayer(player4.getColor());
         pointHandler.checkIfDead();
         assertEquals(9, player2.getPoints());
         assertEquals(6, player3.getPoints());

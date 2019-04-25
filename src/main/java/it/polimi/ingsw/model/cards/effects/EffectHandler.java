@@ -3,13 +3,13 @@ package it.polimi.ingsw.model.cards.effects;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.WeaponCard;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
 import it.polimi.ingsw.model.exceptions.effects.EffectCallException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.effects.EffectNotActivatedException;
 import it.polimi.ingsw.model.exceptions.effects.EffectUsedException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.cards.effects.properties.PropertiesAnalyzer;
+import it.polimi.ingsw.model.exceptions.properties.TargetTypeException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,10 +21,10 @@ public class EffectHandler {
     private Player activePlayer;
     private Square activeSquare;
 
-    private AtomicTarget target;
+    private EffectTarget target;
 
-    private List<Player> active = new ArrayList<>();
-    private List<Player> inactive = new ArrayList<>();
+    private List<Target> active = new ArrayList<>();
+    private List<Target> inactive = new ArrayList<>();
 
     private PropertiesAnalyzer propertiesAnalyzer = new PropertiesAnalyzer();
 
@@ -42,7 +42,7 @@ public class EffectHandler {
         this.activeSquare = activePlayer.getCurrentPosition();
     }
 
-    public void useEffect(Effect effect, AtomicTarget target)
+    public void useEffect(Effect effect, EffectTarget target)
             throws EffectException, PropertiesException {
 
         // Launch exception if atomic target is null
@@ -67,6 +67,13 @@ public class EffectHandler {
         if (effect.getArgs() != target.getArgs()) {
 
             throw new EffectCallException("Wrong number of arguments to method call!");
+        }
+
+        // Launch exception if wrong target type
+        if (target.getTargetList().stream().anyMatch(x ->
+                x.getTargetType() != effect.getTargetType())) {
+
+            throw new TargetTypeException("Wrong target type!");
         }
 
         // Create properties related target list
@@ -127,16 +134,12 @@ public class EffectHandler {
                     if (this.active.contains(x)) {
                         this.inactive.add(this.active.remove(this.active.indexOf(x)));
                     } else {
-                        try {
-                            this.active.add((Player) x);
-                        } catch (ClassCastException e) {
-                            //
-                        }
+                        this.active.add(x);
                     }
                 });
     }
 
-    private AtomicTarget createPropertiesRelatedTarget(Effect effect, AtomicTarget target) {
+    private EffectTarget createPropertiesRelatedTarget(Effect effect, EffectTarget target) {
 
         // Create target if no user interaction needed
         if (target.getArgs() == 0) {
@@ -163,7 +166,7 @@ public class EffectHandler {
         return target;
     }
 
-    private AtomicTarget createTargetForNoArgumentsEffects(Effect effect, AtomicTarget target) {
+    private EffectTarget createTargetForNoArgumentsEffects(Effect effect, EffectTarget target) {
 
         // Create target list for adjacent types of effect
         if (effect.getMinDist() != null && effect.getMinDist() == 1 &&
@@ -175,7 +178,7 @@ public class EffectHandler {
         } else if (effect.isDifferentSquares()) {
 
             // Collect all players in the inactive old positions
-            this.inactive.stream().flatMap(x -> x.getOldPosition().getPlayers().stream())
+            this.inactive.stream().flatMap(x -> ((Player) x).getOldPosition().getPlayers().stream())
                     .forEach(target::appendTarget);
 
             // Remove duplicates from target list
@@ -225,7 +228,7 @@ public class EffectHandler {
         return target;
     }
 
-    private Effect checkProperties(Effect effect, AtomicTarget target) throws PropertiesException {
+    private Effect checkProperties(Effect effect, EffectTarget target) throws PropertiesException {
 
         this.propertiesAnalyzer.setEffect(effect);
 
@@ -256,14 +259,16 @@ public class EffectHandler {
         if (effect.getNext() != null && effect.getNext().getTargetType().equals(TargetType.MOVE)) {
 
             // Destination to target list to check distance and cardinal properties from active square
-            return checkProperties(effect.getNext(), new AtomicTarget(Arrays.asList(target.getDestination())));
+            return checkProperties(effect.getNext(),
+                    new EffectTarget(Arrays.asList(target.getDestination())));
         }
 
         // Recursively call check properties for recoil effect types
-        if (effect.getNext() != null && effect.getNext().getTargetType().equals(TargetType.RECOIL)) {
+        if (effect.getNext() != null && effect.getNext().getTargetType()
+                .equals(TargetType.RECOIL)) {
 
             // Remove destination to check distance and cardinal properties from active square
-            return checkProperties(effect.getNext(), new AtomicTarget(target.getTargetList()));
+            return checkProperties(effect.getNext(), new EffectTarget(target.getTargetList()));
         }
 
         return effect;

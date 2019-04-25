@@ -61,7 +61,7 @@ public class PointStructure {
 
         for (int i = 0; i < shots.size(); i++) {
 
-            if (shots.get(i).getColor().equals(this.player.getPlayerColor())) {
+            if (shots.get(i).getColor().equals(this.player.getColor())) {
                 this.numberDamage++;
                 this.lastDamage = i + 1;
 

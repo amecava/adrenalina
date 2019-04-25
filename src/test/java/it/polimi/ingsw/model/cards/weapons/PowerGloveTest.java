@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
@@ -31,7 +31,7 @@ class PowerGloveTest {
         Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
         Player target3 = new Player("target3", Color.BLUE, this.effectHandler);
 
-        AtomicTarget atomicTarget;
+        EffectTarget effectTarget;
 
         source.movePlayer(board.getRoom(0).getSquare(0));
         target1.movePlayer(board.getRoom(0).getSquare(0));
@@ -50,11 +50,11 @@ class PowerGloveTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1, target2));
+        effectTarget = new EffectTarget(Arrays.asList(target1, target2));
 
         // Too many targets
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -62,11 +62,11 @@ class PowerGloveTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1));
+        effectTarget = new EffectTarget(Arrays.asList(target1));
 
         // Target must be exactly one move away
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -74,11 +74,11 @@ class PowerGloveTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target3));
+        effectTarget = new EffectTarget(Arrays.asList(target3));
 
         // Target must be exactly one move away
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -86,11 +86,11 @@ class PowerGloveTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target2));
+        effectTarget = new EffectTarget(Arrays.asList(target2));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
 
             assertEquals(target2.getShots().size(), 1);
             assertEquals(target2.getMarks().size(), 2);
@@ -103,11 +103,11 @@ class PowerGloveTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1));
+        effectTarget = new EffectTarget(Arrays.asList(target1));
 
         // Card not loaded
         try {
-            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -130,7 +130,7 @@ class PowerGloveTest {
         Player target5 = new Player("target5", Color.YELLOW, this.effectHandler);
         Player target6 = new Player("target6", Color.WHITE, this.effectHandler);
 
-        AtomicTarget atomicTarget;
+        EffectTarget effectTarget;
 
         source.movePlayer(board.getRoom(0).getSquare(2));
 
@@ -156,11 +156,11 @@ class PowerGloveTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1, target2));
+        effectTarget = new EffectTarget(Arrays.asList(target1, target2));
 
         // Target2 is through wall
         try {
-            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -168,11 +168,11 @@ class PowerGloveTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target3, target4));
+        effectTarget = new EffectTarget(Arrays.asList(target3, target4));
 
         // Targets on same square
         try {
-            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -180,11 +180,11 @@ class PowerGloveTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1, target5));
+        effectTarget = new EffectTarget(Arrays.asList(target1, target5));
 
         // Targets not cardinal
         try {
-            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -192,11 +192,11 @@ class PowerGloveTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target3, target6));
+        effectTarget = new EffectTarget(Arrays.asList(target3, target6));
 
         // Use alternative
         try {
-            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
 
             assertEquals(target3.getShots().size(), 2);
             assertEquals(target6.getShots().size(), 2);
@@ -208,11 +208,11 @@ class PowerGloveTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1));
+        effectTarget = new EffectTarget(Arrays.asList(target1));
 
         // Card not loaded
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -226,11 +226,11 @@ class PowerGloveTest {
 
         source.movePlayer(board.getRoom(0).getSquare(2));
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target6, target3));
+        effectTarget = new EffectTarget(Arrays.asList(target6, target3));
 
         // Use alternative wrong order
         try {
-            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
 
             assertEquals(target3.getShots().size(), 4);
             assertEquals(target6.getShots().size(), 4);

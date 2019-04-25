@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
@@ -31,7 +31,7 @@ class LockRifleTest {
         Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
         Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
 
-        AtomicTarget atomicTarget;
+        EffectTarget effectTarget;
 
         source.movePlayer(board.getRoom(0).getSquare(0));
         target1.movePlayer(board.getRoom(1).getSquare(2));
@@ -59,11 +59,11 @@ class LockRifleTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1, target2));
+        effectTarget = new EffectTarget(Arrays.asList(target1, target2));
 
         // Alternative effect not present
         try {
-            tester.useCard(EffectType.ALTERNATIVE, atomicTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -71,11 +71,11 @@ class LockRifleTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1, target2));
+        effectTarget = new EffectTarget(Arrays.asList(target1, target2));
 
         // Too many targets
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -83,23 +83,23 @@ class LockRifleTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(board.getRoom(0).getSquare(0)));
+        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(0).getSquare(0)));
 
         // Wrong target type
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
-            fail();
-        } catch (PropertiesException e) {
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
+            fail();
+        } catch (PropertiesException e) {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget();
+        effectTarget = new EffectTarget();
 
         // Wrong method call
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -107,11 +107,11 @@ class LockRifleTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target2));
+        effectTarget = new EffectTarget(Arrays.asList(target2));
 
         // Source can't see target2
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -119,11 +119,11 @@ class LockRifleTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1));
+        effectTarget = new EffectTarget(Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -148,7 +148,7 @@ class LockRifleTest {
         Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
         Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
 
-        AtomicTarget atomicTarget;
+        EffectTarget effectTarget;
 
         source.movePlayer(board.getRoom(0).getSquare(0));
         target1.movePlayer(board.getRoom(1).getSquare(2));
@@ -159,7 +159,7 @@ class LockRifleTest {
 
         effectHandler.setActivePlayer(source);
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target2));
+        effectTarget = new EffectTarget(Arrays.asList(target2));
 
         try {
             tester.activateCard();
@@ -170,7 +170,7 @@ class LockRifleTest {
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -178,11 +178,11 @@ class LockRifleTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1));
+        effectTarget = new EffectTarget(Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -194,7 +194,7 @@ class LockRifleTest {
 
         // Same as father violated
         try {
-            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -202,11 +202,11 @@ class LockRifleTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target2));
+        effectTarget = new EffectTarget(Arrays.asList(target2));
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
 
             assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
 

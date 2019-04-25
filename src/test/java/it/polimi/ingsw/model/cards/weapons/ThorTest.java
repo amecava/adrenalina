@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
@@ -33,7 +33,7 @@ class ThorTest {
         Player target4 = new Player("target4", Color.RED, this.effectHandler);
         Player target5 = new Player("target5", Color.YELLOW, this.effectHandler);
 
-        AtomicTarget atomicTarget;
+        EffectTarget effectTarget;
 
         source.movePlayer(board.getRoom(0).getSquare(1));
         target1.movePlayer(board.getRoom(0).getSquare(2));
@@ -54,11 +54,11 @@ class ThorTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target4));
+        effectTarget = new EffectTarget(Arrays.asList(target4));
 
         // Source can't see target4
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -66,11 +66,11 @@ class ThorTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target4));
+        effectTarget = new EffectTarget(Arrays.asList(target4));
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -78,22 +78,22 @@ class ThorTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1));
+        effectTarget = new EffectTarget(Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
 
             assertEquals(target1.getShots().size(), 2);
         } catch (EffectException | PropertiesException e) {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target4));
+        effectTarget = new EffectTarget(Arrays.asList(target4));
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -101,11 +101,11 @@ class ThorTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target3));
+        effectTarget = new EffectTarget(Arrays.asList(target3));
 
         // Seen by active violated
         try {
-            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -113,22 +113,22 @@ class ThorTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target2));
+        effectTarget = new EffectTarget(Arrays.asList(target2));
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
 
             assertEquals(target2.getShots().size(), 1);
         } catch (EffectException | PropertiesException e) {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target5));
+        effectTarget = new EffectTarget(Arrays.asList(target5));
 
         // Seen by active violated
         try {
-            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -136,11 +136,11 @@ class ThorTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target3));
+        effectTarget = new EffectTarget(Arrays.asList(target3));
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, effectTarget);
 
             assertEquals(target3.getShots().size(), 2);
         } catch (EffectException | PropertiesException e) {

@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
@@ -33,7 +33,7 @@ public class RocketLauncherTest {
         Player target4 = new Player("target2", Color.BLUE, this.effectHandler);
         Player target5 = new Player("target2", Color.YELLOW, this.effectHandler);
 
-        AtomicTarget atomicTarget;
+        EffectTarget effectTarget;
 
         source.movePlayer(board.getRoom(0).getSquare(0));
         target1.movePlayer(board.getRoom(0).getSquare(0));
@@ -54,11 +54,11 @@ public class RocketLauncherTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(Arrays.asList(target1));
+        effectTarget = new EffectTarget(Arrays.asList(target1));
 
         // Wrong method call
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -66,11 +66,11 @@ public class RocketLauncherTest {
             assertTrue(true);
         }
 
-        atomicTarget = new AtomicTarget(board.getRoom(0).getSquare(1), Arrays.asList(target1));
+        effectTarget = new EffectTarget(board.getRoom(0).getSquare(1), Arrays.asList(target1));
 
         // Target on same square of source
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
             fail();
         } catch (EffectException e) {
             fail();
@@ -80,11 +80,11 @@ public class RocketLauncherTest {
 
         target1.movePlayer(board.getRoom(0).getSquare(1));
 
-        atomicTarget = new AtomicTarget(board.getRoom(0).getSquare(1), Arrays.asList(target1));
+        effectTarget = new EffectTarget(board.getRoom(0).getSquare(1), Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target1.getCurrentPosition(), board.getRoom(0).getSquare(1));
@@ -92,11 +92,11 @@ public class RocketLauncherTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget();
+        effectTarget = new EffectTarget();
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, effectTarget);
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);
@@ -124,7 +124,7 @@ public class RocketLauncherTest {
         Player target4 = new Player("target2", Color.BLUE, this.effectHandler);
         Player target5 = new Player("target2", Color.YELLOW, this.effectHandler);
 
-        AtomicTarget atomicTarget;
+        EffectTarget effectTarget;
 
         source.movePlayer(board.getRoom(0).getSquare(1));
         target1.movePlayer(board.getRoom(0).getSquare(2));
@@ -145,11 +145,11 @@ public class RocketLauncherTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
+        effectTarget = new EffectTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, atomicTarget);
+            tester.useCard(EffectType.PRIMARY, effectTarget);
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
@@ -157,11 +157,11 @@ public class RocketLauncherTest {
             fail();
         }
 
-        atomicTarget = new AtomicTarget();
+        effectTarget = new EffectTarget();
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, atomicTarget);
+            tester.useCard(EffectType.OPTIONAL_2, effectTarget);
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);

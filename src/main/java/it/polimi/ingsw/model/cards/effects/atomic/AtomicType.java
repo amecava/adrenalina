@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.cards.effects.atomic;
 
-import it.polimi.ingsw.model.cards.effects.TargetType;
 import java.security.InvalidParameterException;
 
 public enum AtomicType {
@@ -9,60 +8,25 @@ public enum AtomicType {
     MARK,
     MOVE;
 
-    private AtomicEffect movePlayer = new MovePlayer();
-    private AtomicEffect playerDamage = new PlayerDamage();
-    private AtomicEffect playerMark = new PlayerMark();
-    private AtomicEffect roomDamage = new RoomDamage();
-    private AtomicEffect squareDamage = new SquareDamage();
-    private AtomicEffect squareMark = new SquareMark();
+    private AtomicEffect movePlayer = new AtomicMove();
+    private AtomicEffect playerDamage = new AtomicDamage();
+    private AtomicEffect playerMark = new AtomicMark();
 
-    public AtomicEffect getAtomicEffect(TargetType targetType) {
+    public AtomicEffect getAtomicEffect() {
 
-        switch (targetType) {
+        if (this.equals(DAMAGE)) {
 
-            case MOVE:
-            case RECOIL:
-            case PLAYER:
+            return this.playerDamage;
+        }
 
-                if (this.equals(DAMAGE)) {
+        if (this.equals(MARK)) {
 
-                    return this.playerDamage;
-                }
+            return this.playerMark;
+        }
 
-                if (this.equals(MARK)) {
+        if (this.equals(MOVE)) {
 
-                    return this.playerMark;
-                }
-
-                if (this.equals(MOVE)) {
-
-                    return this.movePlayer;
-                }
-
-                throw new InvalidParameterException();
-
-            case SQUARE:
-
-                if (this.equals(DAMAGE)) {
-
-                    return this.squareDamage;
-                }
-
-                if (this.equals(MARK)) {
-
-                    return this.squareMark;
-                }
-
-                throw new InvalidParameterException();
-
-            case ROOM:
-
-                if (this.equals(DAMAGE)) {
-
-                    return this.roomDamage;
-                }
-
-                throw new InvalidParameterException();
+            return this.movePlayer;
         }
 
         throw new InvalidParameterException();

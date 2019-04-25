@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.atomic.AtomicTarget;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import java.util.EnumMap;
@@ -46,7 +46,7 @@ public class PowerUpCard implements Card {
 
     }
 
-    public void useCard(EffectType effectType, AtomicTarget target)
+    public void useCard(EffectType effectType, EffectTarget target)
             throws EffectException, PropertiesException {
 
         // Launch exception if selected effect not present in map

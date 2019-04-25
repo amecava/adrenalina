@@ -121,11 +121,11 @@ public class PointHandler {
                     if (!foundLastShot && pointStructure.getLastDamage() == 12) {
                         pointStructure.getPlayer().markPlayer(bridge.getColor());
                         foundLastShot = true;
-                        killShot = pointStructure.getPlayer().getPlayerColor();
+                        killShot = pointStructure.getPlayer().getColor();
                     }
 
                     if (!foundLastShot && pointStructure.getLastDamage() == 11) {
-                        killShot = pointStructure.getPlayer().getPlayerColor();
+                        killShot = pointStructure.getPlayer().getColor();
                     }
                 }
             }
