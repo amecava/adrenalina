@@ -6,8 +6,15 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.cards.effects.TargetType;
+import it.polimi.ingsw.model.cards.effects.EffectType;
+import it.polimi.ingsw.model.exceptions.IllegalActionException;
+import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.model.exceptions.effects.EffectException;
+import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
+import it.polimi.ingsw.model.players.bridges.ActionStructure;
 import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.model.exceptions.cards.FullHandException;
@@ -44,6 +51,7 @@ public class Player implements Target {
         this.bridge = new Bridge(playerColor, effectHandler);
         this.pointStructure = new PointStructure(this);
         this.endOfGame = false;
+        this.firstPlayer=false;
 
         this.ammoCubesList.add(new AmmoCube(Color.RED, false));
         this.ammoCubesList.add(new AmmoCube(Color.BLUE, false));
@@ -61,12 +69,6 @@ public class Player implements Target {
     public TargetType getTargetType() {
 
         return TargetType.PLAYER;
-    }
-
-    @Override
-    public Square getCurrentPosition() {
-
-        return this.currentPosition;
     }
 
     @Override
@@ -90,6 +92,20 @@ public class Player implements Target {
         return this.oldPosition;
     }
 
+    @Override
+    public Square getCurrentPosition() {
+
+        return this.currentPosition;
+    }
+
+    public boolean isFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public void setFirstPlayer(boolean firstPlayer) {
+        this.firstPlayer = firstPlayer;
+    }
+
     public Bridge getBridge() {
 
         return this.bridge;
@@ -106,7 +122,6 @@ public class Player implements Target {
     }
 
     public void setWeaponHand(List<Card> weaponHand) {
-
         this.weaponHand = weaponHand;
     }
 
@@ -186,15 +201,19 @@ public class Player implements Target {
     public void controlAdrenalin() {
 
         if (!endOfGame) {
-            this.bridge.setAdrenalin(this.bridge.checkAdrenalin());
+            this.setAdrenalin(this.bridge.checkAdrenalin());
         }
     }
 
-    public void frenzyActions() {
+    public void setAdrenalin(Adrenalin adrenalin) {
+        this.bridge.setAdrenalin(adrenalin);
+    }
 
-        this.bridge.setAdrenalin(Adrenalin.FIRSTFRENZY);
+
+    public void frenzyActions() {
         this.endOfGame = true;
     }
+
 
     // this method returns an AmmoTile because the Square.collectAmmoTile method removes the
     // item collected from the square, and at the end of the turn the board must be refreshed,
@@ -256,4 +275,52 @@ public class Player implements Target {
                         .orElseThrow(() -> new CardNotFoundException("You don't have that card!")),
                 squareCardId));
     }
+
+    // all this methods are for action bridge moves
+    public void selectAction(int actionId) throws IllegalActionException {
+        this.bridge.getActionBridge().selectAction(actionId);
+    }
+
+    public void activateCard(WeaponCard weaponCard) throws CardException, IllegalActionException {
+        this.bridge.getActionBridge().activateCard(weaponCard);
+    }
+
+    public void useCard(EffectType effectType, EffectTarget effectTarget)
+            throws PropertiesException, EffectException {
+        this.bridge.getActionBridge().useCard(effectType, effectTarget);
+    }
+
+    public void reload(Card weaponCard) throws IllegalActionException {
+        this.bridge.getActionBridge().reload(weaponCard);
+    }
+
+    public AmmoTile collectAmmo()
+            throws IllegalActionException, SquareTypeException, EmptySquareException {
+        return this.bridge.getActionBridge().collectAmmo();
+    }
+
+    public void collectWeapon(int cardId)
+            throws IllegalActionException, EmptySquareException, SquareTypeException, FullHandException {
+        this.bridge.getActionBridge().collectWeapon(cardId);
+    }
+
+    public void collectAndDiscard(int discardCard, int getCard)
+            throws IllegalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
+        this.bridge.getActionBridge().collectAndDiscard(discardCard, getCard);
+    }
+
+    public void move(EffectTarget effectTarget)
+            throws IllegalActionException, EffectException, PropertiesException {
+        this.bridge.getActionBridge().move(effectTarget);
+    }
+
+    public void endFirstAction() {
+        this.bridge.getActionBridge().endAction();
+    }
+
+    public ActionStructure getCurrentAction() {
+        return this.bridge.getActionBridge().getCurrentAction();
+    }
+
+
 }

@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectTarget;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.exceptions.IlligalActionException;
+import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
@@ -24,7 +24,7 @@ import javax.json.JsonArray;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
-class ActionBridge {
+public class ActionBridge {
 
     private WeaponCard weaponCard;
     private Adrenalin adrenalin;
@@ -57,19 +57,23 @@ class ActionBridge {
         this.effectHandler = effectHandler;
     }
 
-    public void selectAction(int number) throws IlligalActionException {
+    public void selectAction(int number) throws IllegalActionException {
         if (number <= actionStructureList.size()) {
             currentAction = actionStructureList.get(number);
         } else {
-            throw new IlligalActionException(
+            throw new IllegalActionException(
                     "non valid number of action  please insert a number from 0 to "
                             + actionStructureList.size());
         }
     }
 
-    public void activateCard(WeaponCard weaponCard) throws CardException, IlligalActionException {
+    public ActionStructure getCurrentAction() {
+        return currentAction;
+    }
+
+    public void activateCard(WeaponCard weaponCard) throws CardException, IllegalActionException {
         if (currentAction.isShoot() == null || !currentAction.isShoot()) {
-            throw new IlligalActionException(" you can't shoot");
+            throw new IllegalActionException(" you can't shoot");
         }
         weaponCard.activateCard();
         this.weaponCard = weaponCard;
@@ -81,57 +85,68 @@ class ActionBridge {
         this.weaponCard.useCard(effectType, effectTarget);
     }
 
-    public void reload(Card card) throws IlligalActionException {
+    public void reload(Card card) throws IllegalActionException {
         if (this.currentAction.isReload() == null || !this.currentAction.isReload()) {
-            throw new IlligalActionException(" you can't reload!!");
+            throw new IllegalActionException(" you can't reload!!");
         } else {
             // card.reload();
             this.currentAction.endAction(3, false);
         }
     }
 
-    public AmmoTile collectAmmo() throws IlligalActionException, SquareTypeException, EmptySquareException {
+    public AmmoTile collectAmmo()
+            throws IllegalActionException, SquareTypeException, EmptySquareException {
         if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
-            throw new IlligalActionException(" you can't collect from square with the chosen action!!!");
+            throw new IllegalActionException(
+                    " you can't collect from square with the chosen action!!!");
         }
-        AmmoTile ammoTile=this.effectHandler.getActivePlayer().collect();// turn handler must put it back in the deck at the end of the turn
+        AmmoTile ammoTile = this.effectHandler.getActivePlayer()
+                .collect();// turn handler must put it back in the deck at the end of the turn
         this.currentAction.endAction(2, false);
         return ammoTile;
     }
 
-    public void collectweapon (int cardId )
-            throws IlligalActionException, EmptySquareException, SquareTypeException, FullHandException {
+    public void collectWeapon(int cardId)
+            throws IllegalActionException, EmptySquareException, SquareTypeException, FullHandException {
         if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
-            throw new IlligalActionException(" you can't collect from square with the chosen action!!!");
+            throw new IllegalActionException(
+                    " you can't collect from square with the chosen action!!!");
         }
         this.effectHandler.getActivePlayer().collect(cardId);
         this.currentAction.endAction(2, false);
     }
 
-    public void collectAndDiscard ( int discardCardId, int collectCard )
-            throws IlligalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
+    public void collectAndDiscard(int discardCardId, int collectCard)
+            throws IllegalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
         if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
-            throw new IlligalActionException(" you can't collect from square with the chosen action!!!");
+            throw new IllegalActionException(
+                    " you can't collect from square with the chosen action!!!");
         }
         this.effectHandler.getActivePlayer().collect(discardCardId, collectCard);
         this.currentAction.endAction(2, false);
     }
-    public void moove(EffectTarget effectTarget)
-            throws IlligalActionException, EffectException, PropertiesException {
+
+    public void move(EffectTarget effectTarget)
+            throws IllegalActionException, EffectException, PropertiesException {
         if (this.currentAction.getMove() == null || !this.currentAction.getMove()) {
-            throw new IlligalActionException(" you can't move yourself right now!!!");
+            throw new IllegalActionException(" you can't move yourself right now!!!");
         }
         effectHandler.useEffect(this.currentAction.getEffect(), effectTarget);
         this.currentAction.setEffectAsUsed();
         this.currentAction.endAction(1, false);
     }
 
-    public void endFirstAction() {
-        this.currentAction.endAction(4, true);
+    public void endAction() {
+        this.weaponCard = null;
+        if (this.currentAction != null) {
+            this.currentAction.endAction(4, true);
+            this.currentAction = null;
+        }
     }
 
 
-    public void setAdrenalin(Adrenalin adrenalin) {// at the start of every turn the turnHandler will set the right adrenalin
+    public void setAdrenalin(
+            Adrenalin adrenalin) {// at the start of every turn the turnHandler will set the right adrenalin
 
         if (!this.adrenalin.equals(adrenalin)) {
 
@@ -155,7 +170,7 @@ class ActionBridge {
                                 this.findAction(4));
                 break;
             case SECONDADRENALIN:
-                if (this.actionStructureList.indexOf(this.findAction(2))!=-1) {
+                if (this.actionStructureList.indexOf(this.findAction(2)) != -1) {
                     this.actionStructureList
                             .set(this.actionStructureList.indexOf(this.findAction(2)),
                                     this.findAction(4));
@@ -199,6 +214,7 @@ class ActionBridge {
 
         public ActionBridge build() {
             this.readActionsFromJason();
+            this.currentAction = null;
             return new ActionBridge(this);
         }
 

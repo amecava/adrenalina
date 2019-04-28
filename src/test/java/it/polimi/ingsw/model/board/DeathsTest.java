@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.exceptions.endGameException.EndGameException;
+import it.polimi.ingsw.model.exceptions.endGameException.FrenzyRegenerationException;
 import it.polimi.ingsw.model.points.PointHandler;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -31,7 +33,14 @@ class DeathsTest {
         for (int i = 0; i < 4; i++) {
             player3.damagePlayer(player1.getColor());
         }
-        pointHandler.checkIfDead();
+        try {
+            pointHandler.checkIfDead();
+
+        } catch (FrenzyRegenerationException e) {
+           // e.printStackTrace();
+        } catch (EndGameException e) {
+           // e.printStackTrace();
+        }
         for (int i = 0; i < 3; i++) {
             player3.damagePlayer(player2.getColor());
         }
@@ -43,7 +52,14 @@ class DeathsTest {
         }
         player1.damagePlayer(player3.getColor());
         player2.damagePlayer(player3.getColor());
-        pointHandler.checkIfDead();
+        try {
+            pointHandler.checkIfDead();
+        } catch (FrenzyRegenerationException e) {
+           // e.printStackTrace();
+        } catch (EndGameException e) {
+           // e.printStackTrace();
+            System.out.println("end Game!!!");
+        }
         player2.setPoints(-3);
         player3.setPoints(+10);
         player4.setPoints(+28);

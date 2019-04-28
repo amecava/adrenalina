@@ -2,9 +2,11 @@ package it.polimi.ingsw.model.decks;
 
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -17,17 +19,21 @@ public class AmmoTilesDeck {
     private AmmoTilesDeck(AmmoTilesDeckBuilder builder){
 
         this.ammoTilesList = builder.ammoTilesList;
+        //Collections.shuffle(this.ammoTilesList);
     }
 
-    // useful for tests
-    public Card getTile(){
-
+    public Card getTile() throws IllegalActionException {
+        if (this.ammoTilesList.isEmpty())
+            throw new IllegalActionException("Ammo Tile Deck is empty");
         return this.ammoTilesList.remove(0);
     }
+    // useful for tests
 
     public AmmoTile getTile(int i){
-
         return this.ammoTilesList.remove(i);
+    }
+    public void pushAmmoTile(AmmoTile ammoTile){
+        this.ammoTilesList.add(ammoTile);
     }
 
     public static class AmmoTilesDeckBuilder{

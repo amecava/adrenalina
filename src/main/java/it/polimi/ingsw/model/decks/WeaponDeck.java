@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,10 +21,12 @@ public class WeaponDeck {
     private WeaponDeck(WeaponDeckBuilder builder) {
 
         this.deck = builder.deck;
+        //Collections.shuffle(This.deck);
     }
 
-    public WeaponCard getCard() {
-
+    public WeaponCard getCard() throws IllegalActionException {
+        if (deck.isEmpty())
+            throw new IllegalActionException(" weapon deck is empty!!!");
         return deck.remove(0);
     }
 
@@ -39,7 +42,11 @@ public class WeaponDeck {
 
         for (int i = 0; i < 3; i++){
 
-            threeCards.add(this.getCard());
+            try {
+                threeCards.add(this.getCard());
+            } catch (IllegalActionException e) {
+                e.printStackTrace();
+            }
         }
         return threeCards;
     }

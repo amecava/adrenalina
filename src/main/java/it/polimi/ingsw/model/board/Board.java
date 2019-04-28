@@ -1,13 +1,16 @@
 package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.decks.AmmoTilesDeck;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
+import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,11 +47,19 @@ public class Board {
             if (y.isSpawn()) {
 
                 for (int i = 0; i < 3; i++) {
-                    y.addTool(this.weaponDeck.getCard());
+                    try {
+                        y.addTool(this.weaponDeck.getCard());
+                    } catch (IllegalActionException e) {
+                        e.printStackTrace();
+                    }
                 }
-            } else{
+            } else {
 
-                y.addTool(this.ammoTilesDeck.getTile());
+                try {
+                    y.addTool(this.ammoTilesDeck.getTile());
+                } catch (IllegalActionException e) {
+                    e.printStackTrace();
+                }
             }
 
         });
@@ -92,20 +103,20 @@ public class Board {
                 JsonArray jRoomsArray = jBoardsArray.getJsonObject(boardID).getJsonArray(ROOMS);
 
                 jRoomsArray.stream()
-                    .map(JsonValue::asJsonObject)
-                    .forEach(x -> {
-                    this.roomsList.add(new Room(
-                            Color.valueOf(x.getString(ROOM_COLOR))));
+                        .map(JsonValue::asJsonObject)
+                        .forEach(x -> {
+                            this.roomsList.add(new Room(
+                                    Color.valueOf(x.getString(ROOM_COLOR))));
 
-                    x.getJsonArray(SQUARES).stream()
-                            .map(JsonValue::asJsonObject)
-                            .forEach(y ->
-                            this.roomsList.get(x.getInt(ROOM_ID))
-                                    .addSquare(new Square(y.getInt(SQUARE_ID),
-                                            y.getBoolean(SPAWN)))
+                            x.getJsonArray(SQUARES).stream()
+                                    .map(JsonValue::asJsonObject)
+                                    .forEach(y ->
+                                            this.roomsList.get(x.getInt(ROOM_ID))
+                                                    .addSquare(new Square(y.getInt(SQUARE_ID),
+                                                            y.getBoolean(SPAWN)))
 
-                    );
-                });
+                                    );
+                        });
 
                 this.connectSquares(jRoomsArray);
 
@@ -154,5 +165,25 @@ public class Board {
 
             return new Board(this);
         }
+    }
+
+    public AmmoTile getAmmoTile() {
+        {
+            try {
+                return (AmmoTile) this.ammoTilesDeck.getTile();
+            } catch (IllegalActionException e) {
+                throw new NullPointerException();
+            }
+        }
+    }
+    public WeaponCard getWeaponCard () {
+        try {
+            return this.weaponDeck.getCard();
+        } catch (IllegalActionException e) {
+            throw new NullPointerException();
+        }
+    }
+    public void pushAmmoTile (AmmoTile ammoTile){
+            this.ammoTilesDeck.pushAmmoTile(ammoTile);
     }
 }

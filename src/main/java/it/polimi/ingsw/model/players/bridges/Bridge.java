@@ -62,7 +62,7 @@ public class Bridge {
     }
 
     public ActionBridge getActionBridge() {
-        return actionBridge;
+        return this.actionBridge;
     }
     public Adrenalin getAdrenalin(){
         return  this.damageBridge.checkAdrenalin();

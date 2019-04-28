@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.points;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.board.Deaths;
+import it.polimi.ingsw.model.exceptions.endGameException.EndGameException;
+import it.polimi.ingsw.model.exceptions.endGameException.FrenzyRegenerationException;
 import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.players.bridges.Bridge;
 import it.polimi.ingsw.model.players.Player;
@@ -42,7 +44,11 @@ public class PointHandler {
         return this.deaths.isGameEnded();
     }
 
-    public void checkIfDead() {
+    public List<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void checkIfDead() throws FrenzyRegenerationException, EndGameException {
         for (Player player : playerList){
             if (player.isDead())
                 this.deathUpdate(player.getBridge());
@@ -53,11 +59,17 @@ public class PointHandler {
             if (!frenzyEnabled) {
                 this.playerList.forEach(x -> this.deathUpdate(x.getBridge()));
                 this.deathUpdate(this.deaths);
+                throw new EndGameException(" game ended with no frenzy actions!!", this.getWinner());
+
             } else {
-                this.playerList.stream().forEach(x-> x.frenzyActions());//frenzy actions should be changed in base of player order
-                this.playerList.stream().filter(x -> x.getShots().isEmpty())
-                        .forEach(Player::setFrenzy);
-                this.frenzyRegeneration = true;
+                if (!frenzyRegeneration) {
+                    this.playerList.stream().forEach(
+                            x -> x.frenzyActions());//frenzy actions should be changed in base of player order
+                    this.playerList.stream().filter(x -> x.getShots().isEmpty())
+                            .forEach(Player::setFrenzy);
+                    this.frenzyRegeneration = true;
+                }
+                throw new FrenzyRegenerationException(" Frenzy time!!!! ");
             }
         }
     }
@@ -140,8 +152,6 @@ public class PointHandler {
                 bridge.addKill();
                 if (!frenzyRegeneration)
                     bridge.setAdrenalin(Adrenalin.NORMAL);
-                else
-                    bridge.setAdrenalin(Adrenalin.FIRSTADRENALIN);// or secondfrenzy adrenalin
 
             }
         }

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -18,7 +19,9 @@ public class PowerUpDeck {
     private PowerUpDeck(PowerUpDeckBuilder builder) {
 
         this.deck = builder.deck;
+       // Collections.shuffle(this.deck);
     }
+
 
 
     public static class PowerUpDeckBuilder {
