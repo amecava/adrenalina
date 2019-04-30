@@ -1,5 +1,20 @@
 [
   {
+    "id": 0,
+    "collect": true,
+    "effect": {
+      "id": 0,
+      "args": 1,
+      "targetType": "PLAYER",
+      "maxTargets": 1,
+      "sameAsPlayer": true,
+      "maxDist": 3,
+      "atomicEffectList": [
+        "MOVE"
+      ]
+    }
+  },
+  {
     "id" : 1,
     "move": true,
     "effect": {

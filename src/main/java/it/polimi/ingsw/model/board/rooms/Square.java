@@ -155,11 +155,13 @@ public class Square implements Target {
 
     }
 
-    public Card collectWeaponCard(WeaponCard playerCard, int squareCardId) throws EmptySquareException {
+    public Card collectWeaponCard(WeaponCard playerCard, int squareCardId)
+            throws EmptySquareException {
 
         if (this.tools.stream().map(x -> (WeaponCard) x)
                 .anyMatch(y -> y.getId() == squareCardId)) {
 
+            playerCard.setOwner(null);
             this.tools.add(playerCard);
 
             return this.tools.remove(this.tools.indexOf(

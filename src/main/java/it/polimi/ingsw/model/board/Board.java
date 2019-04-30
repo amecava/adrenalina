@@ -70,6 +70,40 @@ public class Board {
 
         return this.weaponDeck;
     }
+    private void fillWithAmmoTile(Square destination) {
+        {
+            try {
+                destination.addTool(this.ammoTilesDeck.getTile());
+            } catch (IllegalActionException e) {
+                System.out.println("deck is full");
+            }
+        }
+    }
+
+    private  void fillWithAmmoCard(Square destination) {
+        try {
+            destination.addTool(this.weaponDeck.getCard());
+        } catch (IllegalActionException e) {
+            System.out.println("deck is empty ");
+        }
+    }
+
+    public void pushAmmoTile(AmmoTile ammoTile) {
+        this.ammoTilesDeck.pushAmmoTile(ammoTile);
+    }
+
+    public void endOfTurnFill() {
+        for (Room room : roomsList) {
+            for (Square square : room.getSquaresList()) {
+                if (square.isSpawn() && square.getTools().size() < 3) {
+                    this.fillWithAmmoCard(square);
+                } else if (!square.isSpawn() && square.getTools().isEmpty()) {
+                    this.fillWithAmmoTile(square);
+                }
+            }
+        }
+
+    }
 
     public static class BoardBuilder {
 
@@ -167,23 +201,4 @@ public class Board {
         }
     }
 
-    public AmmoTile getAmmoTile() {
-        {
-            try {
-                return (AmmoTile) this.ammoTilesDeck.getTile();
-            } catch (IllegalActionException e) {
-                throw new NullPointerException();
-            }
-        }
-    }
-    public WeaponCard getWeaponCard () {
-        try {
-            return this.weaponDeck.getCard();
-        } catch (IllegalActionException e) {
-            throw new NullPointerException();
-        }
-    }
-    public void pushAmmoTile (AmmoTile ammoTile){
-            this.ammoTilesDeck.pushAmmoTile(ammoTile);
-    }
 }

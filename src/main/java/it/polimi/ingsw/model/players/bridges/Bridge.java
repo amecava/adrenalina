@@ -14,10 +14,10 @@ public class Bridge {
     private DamageBridge damageBridge = new DamageBridge();
     private ActionBridge actionBridge;
 
-    public Bridge(Color color, EffectHandler effectHandler) {
+    public Bridge(Color color) {
 
         this.color = color;
-        this.actionBridge = new ActionBridge.ActionBridgeBuilder(effectHandler).build();
+        this.actionBridge = new ActionBridge.ActionBridgeBuilder().build();
     }
 
     public Color getColor() {

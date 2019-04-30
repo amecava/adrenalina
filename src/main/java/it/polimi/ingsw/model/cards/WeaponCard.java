@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
 import it.polimi.ingsw.model.exceptions.cards.OwnerNotActiveException;
@@ -122,14 +124,10 @@ public class WeaponCard implements Card {
 
         return optionalList;
     }
-
-    public void reloadWeapon() {
+    public void reloadWeapon( List<PowerUpCard>  ammoList  ) throws IllegalActionException {
 
         // If the card is not loaded
         if (!this.loaded) {
-
-            // TODO Check reload cost
-
             // Set card loaded flag to true
             this.loaded = true;
 
@@ -151,7 +149,6 @@ public class WeaponCard implements Card {
                 }
             });
 
-            // TODO Remove reload cost from player
         }
     }
 

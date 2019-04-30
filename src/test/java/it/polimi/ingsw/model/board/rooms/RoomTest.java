@@ -35,9 +35,9 @@ class RoomTest {
         room.addSquare(square1);
         room.addSquare(square2);
 
-        Player player1 = new Player("jacopo", Color.BLUE, effectHandler);
-        Player player2 = new Player("Amedeo", Color.GREEN, effectHandler);
-        Player player3 = new Player("federico", Color.YELLOW, effectHandler);
+        Player player1 = new Player("jacopo", Color.BLUE);
+        Player player2 = new Player("Amedeo", Color.GREEN);
+        Player player3 = new Player("federico", Color.YELLOW);
 
         assertTrue(room.getPlayers().isEmpty());
 

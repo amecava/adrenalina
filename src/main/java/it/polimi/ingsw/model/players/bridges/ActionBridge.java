@@ -1,20 +1,8 @@
 package it.polimi.ingsw.model.players.bridges;
 
-import it.polimi.ingsw.model.ammo.AmmoTile;
-import it.polimi.ingsw.model.cards.Card;
-import it.polimi.ingsw.model.cards.WeaponCard;
+
 import it.polimi.ingsw.model.cards.effects.Effect;
-import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
-import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.exceptions.IllegalActionException;
-import it.polimi.ingsw.model.exceptions.cards.CardException;
-import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
-import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
-import it.polimi.ingsw.model.exceptions.cards.FullHandException;
-import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
-import it.polimi.ingsw.model.exceptions.effects.EffectException;
-import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,24 +14,19 @@ import javax.json.JsonValue;
 
 public class ActionBridge {
 
-    private WeaponCard weaponCard;
     private Adrenalin adrenalin;
     private List<ActionStructure> actionStructureList;
     private List<ActionStructure> nonUsableActions;
     private List<ActionStructure> returnList;
     private ActionStructure currentAction;
-    private EffectHandler effectHandler;
 
 
     private ActionBridge(ActionBridgeBuilder builder) {
-
-        this.weaponCard = builder.weaponCard;
         this.adrenalin = builder.adrenalin;
         this.actionStructureList = builder.actionStructureList;
         this.nonUsableActions = builder.nonUsableActions;
         this.returnList = builder.returnList;
         this.currentAction = builder.currentAction;
-        this.effectHandler = builder.effectHandler;
         this.changePossibleActions();
     }
 
@@ -53,16 +36,12 @@ public class ActionBridge {
         return returnList;
     }
 
-    public void setEffectHandler(EffectHandler effectHandler) {
-        this.effectHandler = effectHandler;
-    }
-
     public void selectAction(int number) throws IllegalActionException {
-        if (number <= actionStructureList.size()) {
+        if (number < actionStructureList.size()) {
             currentAction = actionStructureList.get(number);
         } else {
             throw new IllegalActionException(
-                    "non valid number of action  please insert a number from 0 to "
+                    "non valid number of action  please insert a number from 1 to "
                             + actionStructureList.size());
         }
     }
@@ -71,73 +50,8 @@ public class ActionBridge {
         return currentAction;
     }
 
-    public void activateCard(WeaponCard weaponCard) throws CardException, IllegalActionException {
-        if (currentAction.isShoot() == null || !currentAction.isShoot()) {
-            throw new IllegalActionException(" you can't shoot");
-        }
-        weaponCard.activateCard();
-        this.weaponCard = weaponCard;
-        this.currentAction.endAction(4, false);
-    }
-
-    public void useCard(EffectType effectType, EffectTarget effectTarget)
-            throws PropertiesException, EffectException {
-        this.weaponCard.useCard(effectType, effectTarget);
-    }
-
-    public void reload(Card card) throws IllegalActionException {
-        if (this.currentAction.isReload() == null || !this.currentAction.isReload()) {
-            throw new IllegalActionException(" you can't reload!!");
-        } else {
-            // card.reload();
-            this.currentAction.endAction(3, false);
-        }
-    }
-
-    public AmmoTile collectAmmo()
-            throws IllegalActionException, SquareTypeException, EmptySquareException {
-        if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
-            throw new IllegalActionException(
-                    " you can't collect from square with the chosen action!!!");
-        }
-        AmmoTile ammoTile = this.effectHandler.getActivePlayer()
-                .collect();// turn handler must put it back in the deck at the end of the turn
-        this.currentAction.endAction(2, false);
-        return ammoTile;
-    }
-
-    public void collectWeapon(int cardId)
-            throws IllegalActionException, EmptySquareException, SquareTypeException, FullHandException {
-        if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
-            throw new IllegalActionException(
-                    " you can't collect from square with the chosen action!!!");
-        }
-        this.effectHandler.getActivePlayer().collect(cardId);
-        this.currentAction.endAction(2, false);
-    }
-
-    public void collectAndDiscard(int discardCardId, int collectCard)
-            throws IllegalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
-        if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
-            throw new IllegalActionException(
-                    " you can't collect from square with the chosen action!!!");
-        }
-        this.effectHandler.getActivePlayer().collect(discardCardId, collectCard);
-        this.currentAction.endAction(2, false);
-    }
-
-    public void move(EffectTarget effectTarget)
-            throws IllegalActionException, EffectException, PropertiesException {
-        if (this.currentAction.getMove() == null || !this.currentAction.getMove()) {
-            throw new IllegalActionException(" you can't move yourself right now!!!");
-        }
-        effectHandler.useEffect(this.currentAction.getEffect(), effectTarget);
-        this.currentAction.setEffectAsUsed();
-        this.currentAction.endAction(1, false);
-    }
 
     public void endAction() {
-        this.weaponCard = null;
         if (this.currentAction != null) {
             this.currentAction.endAction(4, true);
             this.currentAction = null;
@@ -163,6 +77,7 @@ public class ActionBridge {
                 this.actionStructureList.add(this.findAction(1));
                 this.actionStructureList.add(this.findAction(2));
                 this.actionStructureList.add(this.findAction(3));
+                this.actionStructureList.add(this.findAction(0));
                 break;
             case FIRSTADRENALIN:
                 this.actionStructureList
@@ -194,23 +109,18 @@ public class ActionBridge {
 
     }
 
-    public ActionStructure findAction(int id) {
+    public  ActionStructure findAction(int id) {
         return this.nonUsableActions.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
     }
 
     public static class ActionBridgeBuilder {
 
-        private WeaponCard weaponCard;
         private Adrenalin adrenalin = Adrenalin.NORMAL;
         private List<ActionStructure> actionStructureList = new ArrayList<>();
         private List<ActionStructure> nonUsableActions = new ArrayList<>();
         private List<ActionStructure> returnList = new ArrayList<>();
         private ActionStructure currentAction;
-        private EffectHandler effectHandler;
 
-        public ActionBridgeBuilder(EffectHandler effectHandler) {
-            this.effectHandler = effectHandler;
-        }
 
         public ActionBridge build() {
             this.readActionsFromJason();
@@ -218,7 +128,7 @@ public class ActionBridge {
             return new ActionBridge(this);
         }
 
-        public void readActionsFromJason() {
+        private void readActionsFromJason() {
 
             try (JsonReader reader = Json
                     .createReader(new FileReader("lib/actions/PlayerActions.json"))) {

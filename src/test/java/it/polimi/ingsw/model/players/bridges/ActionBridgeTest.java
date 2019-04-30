@@ -16,9 +16,9 @@ class ActionBridgeTest {
     EffectHandler effectHandler=new EffectHandler();
     @Test
     void ActionTest(){
-        Player player1 = new Player("jacopo", Color.BLUE, this.effectHandler);
-        Player player2 = new Player("Amedeo", Color.GREEN, this.effectHandler);
-        Player player3 = new Player("federico", Color.YELLOW, this.effectHandler);
+        Player player1 = new Player("jacopo", Color.BLUE);
+        Player player2 = new Player("Amedeo", Color.GREEN);
+        Player player3 = new Player("federico", Color.YELLOW);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);

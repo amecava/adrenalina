@@ -26,8 +26,8 @@ public class PlasmaGunTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY, this.effectHandler);
-        Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
+        Player source = new Player("source", Color.GRAY);
+        Player target1 = new Player("target1", Color.GREEN);
 
         EffectTarget effectTarget;
 
