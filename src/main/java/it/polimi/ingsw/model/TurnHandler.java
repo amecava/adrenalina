@@ -4,7 +4,8 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -31,7 +32,7 @@ public class TurnHandler {
     private List<Player> playerList;
     private PointHandler pointHandler;
     private int remainingActions;
-
+    private EffectHandler effectHandler;
 
     public TurnHandler(Board board,
             PointHandler pointHandler) {
@@ -52,43 +53,59 @@ public class TurnHandler {
     }
 
     private void frenzyRound() throws EndGameException {
+
         if (!this.frenzy) {
+
             this.frenzy = true;
             Player tempPlayer = this.playerList.get(this.getNextPlayer(this.activePlayer));
+
             while (!tempPlayer.isFirstPlayer()) {
+
                 tempPlayer.setAdrenalin(Adrenalin.FIRSTFRENZY);
                 tempPlayer = this.playerList.get(this.getNextPlayer(tempPlayer));
             }
+
             while (tempPlayer != this.activePlayer) {
+
                 tempPlayer.setAdrenalin(Adrenalin.SECONDFRENZY);
                 tempPlayer = playerList.get(this.getNextPlayer(tempPlayer));
             }
+
             this.setActivePlayer(playerList.get(this.getNextPlayer(this.activePlayer)));
             this.firstFrenzyPlayer = activePlayer;
         } else {
+
             if (playerList.get(this.getNextPlayer(this.activePlayer)) == firstFrenzyPlayer) {
+
                 throw new EndGameException("end game!!!!", pointHandler.getWinner());
             }
             this.setActivePlayer(playerList.get(this.getNextPlayer(this.activePlayer)));
         }
         if (this.activePlayer.getAdrenalin().equals(Adrenalin.FIRSTFRENZY)) {
+
             this.remainingActions = 2;
         } else {
+
             this.remainingActions = 1;
         }
     }
 
     private int getNextPlayer(Player activePlayer) {
+
         int nextPlayer = playerList.indexOf(activePlayer) + 1;
+
         if (nextPlayer == playerList.size()) {
+
             nextPlayer = 0;
         }
+
         return nextPlayer;
     }
 
-    // presenter needs to catch the end of game exception and block everything !!!
-    //endOfTurn called by the presenter!!!!
-    public  void endOfTurn() throws EndGameException { //should be protected but for testing we use public!!
+    // presenter needs to catch the end of game exception and block everything !!!!!!!!!!!!!!!!!!!!!
+    //endOfTurn called by the presenter!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void endOfTurn()
+            throws EndGameException { //should be protected but for testing we use public!!
         this.endAction();
         try {
             pointHandler.checkIfDead();
@@ -99,6 +116,7 @@ public class TurnHandler {
         this.setActivePlayer(playerList.get(this.getNextPlayer(this.activePlayer)));
         this.remainingActions = 2;
     }
+
     public void endofTurnWithReload(WeaponCard weaponCard)
             throws EndGameException, IllegalActionException {
         this.activePlayer.reload(weaponCard);
@@ -118,7 +136,7 @@ public class TurnHandler {
     //for all possible actions the presenter must see if the player that is  calling turnHandler is the activePlayer
     public void selectAction(int actionId) throws IllegalActionException {
         if (remainingActions > 0) {
-            this.activePlayer.selectAction(actionId-1);
+            this.activePlayer.selectAction(actionId - 1);
             this.remainingActions--;
         } else {
             throw new IllegalActionException(
@@ -134,12 +152,12 @@ public class TurnHandler {
         this.activePlayer.activateCard(weaponCard);
     }
 
-    public void useCard(EffectType effectType, EffectTarget effectTarget)
+    public void useCard(EffectType effectType, EffectArgument effectArgument)
             throws PropertiesException, EffectException, IllegalActionException {
         if (this.activePlayer.getCurrentAction() == null) {
             throw new IllegalActionException(" please select the action you would like to use!!!");
         }
-        this.activePlayer.useCard(effectType, effectTarget);
+        this.activePlayer.useCard(effectType, effectArgument);
     }
 
     public void reload(Card weaponCard) throws IllegalActionException {
@@ -177,19 +195,19 @@ public class TurnHandler {
     }
 
     public void collectAndDiscard(int discardCard, int getCard)
-            throws IllegalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
+            throws IllegalActionException, CardException {
         if (this.activePlayer.getCurrentAction() == null) {
             throw new IllegalActionException(" please select the action you would like to use!!!");
         }
         this.activePlayer.collectAndDiscard(discardCard, getCard);
     }
 
-    public void move(EffectTarget effectTarget)
+    public void move(EffectArgument effectArgument)
             throws IllegalActionException, EffectException, PropertiesException {
         if (this.activePlayer.getCurrentAction() == null) {
             throw new IllegalActionException(" please select the action you would like to use!!!");
         }
-        this.activePlayer.move(effectTarget);
+        this.activePlayer.move(effectArgument);
     }
 
     public void endAction() {

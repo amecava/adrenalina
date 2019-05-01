@@ -21,7 +21,7 @@ public class EffectHandler {
     private Player activePlayer;
     private Square activeSquare;
 
-    private EffectTarget target;
+    private EffectArgument target;
 
     private List<Target> active = new ArrayList<>();
     private List<Target> inactive = new ArrayList<>();
@@ -42,7 +42,17 @@ public class EffectHandler {
         this.activeSquare = activePlayer.getCurrentPosition();
     }
 
-    public void useEffect(Effect effect, EffectTarget target)
+    public List<Target> getInactive() {
+
+        return this.inactive;
+    }
+
+    public List<Target> getActive(){
+
+        return this.inactive;
+    }
+
+    public void useEffect(Effect effect, EffectArgument target)
             throws EffectException, PropertiesException {
 
         // Launch exception if atomic target is null
@@ -139,7 +149,7 @@ public class EffectHandler {
                 });
     }
 
-    private EffectTarget createPropertiesRelatedTarget(Effect effect, EffectTarget target) {
+    private EffectArgument createPropertiesRelatedTarget(Effect effect, EffectArgument target) {
 
         // Create target if no user interaction needed
         if (target.getArgs() == 0) {
@@ -166,7 +176,7 @@ public class EffectHandler {
         return target;
     }
 
-    private EffectTarget createTargetForNoArgumentsEffects(Effect effect, EffectTarget target) {
+    private EffectArgument createTargetForNoArgumentsEffects(Effect effect, EffectArgument target) {
 
         // Create target list for adjacent types of effect
         if (effect.getMinDist() != null && effect.getMinDist() == 1 &&
@@ -228,7 +238,7 @@ public class EffectHandler {
         return target;
     }
 
-    private Effect checkProperties(Effect effect, EffectTarget target) throws PropertiesException {
+    private Effect checkProperties(Effect effect, EffectArgument target) throws PropertiesException {
 
         this.propertiesAnalyzer.setEffect(effect);
 
@@ -260,7 +270,7 @@ public class EffectHandler {
 
             // Destination to target list to check distance and cardinal properties from active square
             return checkProperties(effect.getNext(),
-                    new EffectTarget(Arrays.asList(target.getDestination())));
+                    new EffectArgument(Arrays.asList(target.getDestination())));
         }
 
         // Recursively call check properties for recoil effect types
@@ -268,7 +278,7 @@ public class EffectHandler {
                 .equals(TargetType.RECOIL)) {
 
             // Remove destination to check distance and cardinal properties from active square
-            return checkProperties(effect.getNext(), new EffectTarget(target.getTargetList()));
+            return checkProperties(effect.getNext(), new EffectArgument(target.getTargetList()));
         }
 
         return effect;

@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
@@ -30,7 +30,7 @@ public class VortexCannonTest {
         Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
         Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
 
-        EffectTarget effectTarget;
+        EffectArgument effectArgument;
 
         source.movePlayer(board.getRoom(1).getSquare(1));
         target1.movePlayer(board.getRoom(0).getSquare(2));
@@ -41,7 +41,7 @@ public class VortexCannonTest {
 
         effectHandler.setActivePlayer(source);
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(1), Arrays.asList(target1));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(1), Arrays.asList(target1));
 
         try {
             tester.activateCard();
@@ -52,7 +52,7 @@ public class VortexCannonTest {
 
         // Vortex same square as source current position
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -60,11 +60,11 @@ public class VortexCannonTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(board.getRoom(3).getSquare(1), Arrays.asList(target1));
+        effectArgument = new EffectArgument(board.getRoom(3).getSquare(1), Arrays.asList(target1));
 
         // Source can't see vortex
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -72,11 +72,11 @@ public class VortexCannonTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(2), Arrays.asList(target2));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(2), Arrays.asList(target2));
 
         // Target not 0 or 1 move away from vortex
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -84,11 +84,11 @@ public class VortexCannonTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(2), Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -113,7 +113,7 @@ public class VortexCannonTest {
         Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
         Player target3 = new Player("target2", Color.RED, this.effectHandler);
 
-        EffectTarget effectTarget;
+        EffectArgument effectArgument;
 
         source.movePlayer(board.getRoom(1).getSquare(1));
         target1.movePlayer(board.getRoom(0).getSquare(2));
@@ -125,11 +125,11 @@ public class VortexCannonTest {
 
         effectHandler.setActivePlayer(source);
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(2), Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -142,11 +142,11 @@ public class VortexCannonTest {
             fail();
         }
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(2), Arrays.asList(target1));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(2), Arrays.asList(target1));
 
         // Can't use optional on same target as primary
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
 
             fail();
         } catch (PropertiesException e) {
@@ -155,11 +155,11 @@ public class VortexCannonTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(target1, target2));
+        effectArgument = new EffectArgument(Arrays.asList(target1, target2));
 
         // Can't use optional on same target as primary
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
 
             fail();
         } catch (EffectException e) {
@@ -168,11 +168,11 @@ public class VortexCannonTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(target2, target3));
+        effectArgument = new EffectArgument(Arrays.asList(target2, target3));
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
 
             assertSame(target2.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target3.getShots().get(0).getColor(), Color.GRAY);

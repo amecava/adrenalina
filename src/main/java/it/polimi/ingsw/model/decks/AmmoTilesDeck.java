@@ -32,6 +32,7 @@ public class AmmoTilesDeck {
     public AmmoTile getTile(int i){
         return this.ammoTilesList.remove(i);
     }
+
     public void pushAmmoTile(AmmoTile ammoTile){
         this.ammoTilesList.add(ammoTile);
     }

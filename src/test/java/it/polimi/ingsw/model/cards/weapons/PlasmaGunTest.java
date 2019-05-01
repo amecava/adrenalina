@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
@@ -29,7 +29,7 @@ public class PlasmaGunTest {
         Player source = new Player("source", Color.GRAY, this.effectHandler);
         Player target1 = new Player("target1", Color.GREEN, this.effectHandler);
 
-        EffectTarget effectTarget;
+        EffectArgument effectArgument;
 
         source.movePlayer(board.getRoom(3).getSquare(1));
         target1.movePlayer(board.getRoom(0).getSquare(0));
@@ -46,11 +46,11 @@ public class PlasmaGunTest {
             fail();
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(target1));
+        effectArgument = new EffectArgument(Arrays.asList(target1));
 
         // Source can't see target1
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -58,11 +58,11 @@ public class PlasmaGunTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(1));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(1));
 
         // Move source distance not 1 or 2
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -70,11 +70,11 @@ public class PlasmaGunTest {
             assertEquals(source.getCurrentPosition(), board.getRoom(3).getSquare(1));
         }
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(2));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(2));
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
 
             assertEquals(source.getCurrentPosition(), board.getRoom(1).getSquare(2));
             assertEquals(source.getOldPosition(), board.getRoom(3).getSquare(1));
@@ -82,11 +82,11 @@ public class PlasmaGunTest {
             fail();
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(source));
+        effectArgument = new EffectArgument(Arrays.asList(source));
 
         // Can't use effect on source
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
 
             fail();
         } catch (EffectException e) {
@@ -96,11 +96,11 @@ public class PlasmaGunTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(target1));
+        effectArgument = new EffectArgument(Arrays.asList(target1));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -109,11 +109,11 @@ public class PlasmaGunTest {
             fail();
         }
 
-        effectTarget = new EffectTarget(board.getRoom(1).getSquare(1));
+        effectArgument = new EffectArgument(board.getRoom(1).getSquare(1));
 
         // Optional effect already used
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectTarget);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
             fail();
         } catch (PropertiesException e) {
             fail();
@@ -121,11 +121,11 @@ public class PlasmaGunTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget();
+        effectArgument = new EffectArgument();
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectTarget);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
 
             assertSame(target1.getShots().get(2).getColor(), Color.GRAY);
             assertSame(target1.getShots().size(), 3);

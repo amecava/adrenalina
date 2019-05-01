@@ -10,5 +10,5 @@ public enum Color {
     RED,
     BLUE,
     WHITE,
-    EOG
+    ANY
 }

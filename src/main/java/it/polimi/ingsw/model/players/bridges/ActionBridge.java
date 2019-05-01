@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
@@ -80,9 +80,9 @@ public class ActionBridge {
         this.currentAction.endAction(4, false);
     }
 
-    public void useCard(EffectType effectType, EffectTarget effectTarget)
+    public void useCard(EffectType effectType, EffectArgument effectArgument)
             throws PropertiesException, EffectException {
-        this.weaponCard.useCard(effectType, effectTarget);
+        this.weaponCard.useCard(effectType, effectArgument);
     }
 
     public void reload(Card card) throws IllegalActionException {
@@ -117,7 +117,7 @@ public class ActionBridge {
     }
 
     public void collectAndDiscard(int discardCardId, int collectCard)
-            throws IllegalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
+            throws IllegalActionException, CardException {
         if (this.currentAction.isCollect() == null || !this.currentAction.isCollect()) {
             throw new IllegalActionException(
                     " you can't collect from square with the chosen action!!!");
@@ -126,12 +126,12 @@ public class ActionBridge {
         this.currentAction.endAction(2, false);
     }
 
-    public void move(EffectTarget effectTarget)
+    public void move(EffectArgument effectArgument)
             throws IllegalActionException, EffectException, PropertiesException {
         if (this.currentAction.getMove() == null || !this.currentAction.getMove()) {
             throw new IllegalActionException(" you can't move yourself right now!!!");
         }
-        effectHandler.useEffect(this.currentAction.getEffect(), effectTarget);
+        effectHandler.useEffect(this.currentAction.getEffect(), effectArgument);
         this.currentAction.setEffectAsUsed();
         this.currentAction.endAction(1, false);
     }

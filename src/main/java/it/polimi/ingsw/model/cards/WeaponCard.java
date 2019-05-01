@@ -1,12 +1,14 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
+import it.polimi.ingsw.model.exceptions.cards.CostException;
 import it.polimi.ingsw.model.exceptions.cards.OwnerNotActiveException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.effects.EffectUsedException;
@@ -123,12 +125,14 @@ public class WeaponCard implements Card {
         return optionalList;
     }
 
-    public void reloadWeapon() {
+    public void reloadWeapon(List<PowerUpCard> ammoList) throws CostException {
+
+        List<Color> costCopy = new ArrayList<>(this.reloadCost);
 
         // If the card is not loaded
         if (!this.loaded) {
 
-            // TODO Check reload cost
+            this.checkCost(ammoList, costCopy);
 
             // Set card loaded flag to true
             this.loaded = true;
@@ -151,7 +155,45 @@ public class WeaponCard implements Card {
                 }
             });
 
-            // TODO Remove reload cost from player
+            costCopy.forEach(x -> {
+                this.owner.getAmmoCubesList().stream()
+                        .filter(y -> y.getColor().equals(x) && !y.isUsed())
+                        .findFirst().get()
+                        .setUsed(true);
+            });
+        }
+    }
+
+    private void checkCost(List<PowerUpCard> ammoList, List<Color> costCopy) throws CostException {
+
+        try {
+
+            ammoList.stream()
+                    .map(PowerUpCard::getColor)
+                    .forEach(x -> {
+
+                        if (costCopy.contains(x)) {
+
+                            costCopy.remove(x);
+
+                        } else {
+                            throw new IllegalArgumentException("Illegal Argument");
+                        }
+                    });
+
+            costCopy.stream()
+                    .distinct()
+                    .forEach(x -> {
+                        if (costCopy.stream().filter(y -> y.equals(x)).count() > this.owner
+                                .getAmmoCubesList().stream().map(
+                                        AmmoCube::getColor).filter(y -> y.equals(x)).count()) {
+                            throw new IllegalArgumentException("Illegal Argument");
+                        }
+                    });
+
+        } catch (IllegalArgumentException e) {
+
+            throw new CostException("You can't pay with that powerUp");
         }
     }
 
@@ -170,7 +212,7 @@ public class WeaponCard implements Card {
         }
     }
 
-    public void useCard(EffectType effectType, EffectTarget target)
+    public void useCard(EffectType effectType, EffectArgument target)
             throws EffectException, PropertiesException {
 
         // Launch exception if selected effect not present in map

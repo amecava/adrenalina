@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.model.cards.effects.TargetType;
 import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.exceptions.IllegalActionException;
@@ -51,7 +51,7 @@ public class Player implements Target {
         this.bridge = new Bridge(playerColor, effectHandler);
         this.pointStructure = new PointStructure(this);
         this.endOfGame = false;
-        this.firstPlayer=false;
+        this.firstPlayer = false;
 
         this.ammoCubesList.add(new AmmoCube(Color.RED, false));
         this.ammoCubesList.add(new AmmoCube(Color.BLUE, false));
@@ -260,11 +260,16 @@ public class Player implements Target {
     // player's cards - it assumes that the player already discarded playerCard
     //good code
     public void collect(int playerCardId, int squareCardId)
-            throws SquareTypeException, EmptySquareException, CardNotFoundException {
+            throws CardException {
 
         if (!this.currentPosition.isSpawn()) {
 
             throw new SquareTypeException("You're not in a spawn square, wrong method call");
+        }
+
+        if (this.weaponHand.size() != 3) {
+
+            throw new FullHandException("You already have three cards, wrong method call");
         }
 
         this.weaponHand.add(this.currentPosition.collectWeaponCard(
@@ -285,9 +290,9 @@ public class Player implements Target {
         this.bridge.getActionBridge().activateCard(weaponCard);
     }
 
-    public void useCard(EffectType effectType, EffectTarget effectTarget)
+    public void useCard(EffectType effectType, EffectArgument effectArgument)
             throws PropertiesException, EffectException {
-        this.bridge.getActionBridge().useCard(effectType, effectTarget);
+        this.bridge.getActionBridge().useCard(effectType, effectArgument);
     }
 
     public void reload(Card weaponCard) throws IllegalActionException {
@@ -305,13 +310,13 @@ public class Player implements Target {
     }
 
     public void collectAndDiscard(int discardCard, int getCard)
-            throws IllegalActionException, SquareTypeException, EmptySquareException, CardNotFoundException {
+            throws IllegalActionException, CardException {
         this.bridge.getActionBridge().collectAndDiscard(discardCard, getCard);
     }
 
-    public void move(EffectTarget effectTarget)
+    public void move(EffectArgument effectArgument)
             throws IllegalActionException, EffectException, PropertiesException {
-        this.bridge.getActionBridge().move(effectTarget);
+        this.bridge.getActionBridge().move(effectArgument);
     }
 
     public void endFirstAction() {

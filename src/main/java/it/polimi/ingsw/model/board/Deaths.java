@@ -11,7 +11,7 @@ public class Deaths extends Bridge {
 
     public Deaths(int maxNumberOfDeaths) {
 
-        super(Color.EOG, null);
+        super(Color.ANY, null);
         this.maxNumberOfDeaths = maxNumberOfDeaths;
         this.setKillStreakCount();
     }

@@ -198,7 +198,7 @@ public class Effect {
         this.atomicEffectList.add(atomicEffect);
     }
 
-    public void execute(Player source, EffectTarget target) {
+    public void execute(Player source, EffectArgument target) {
 
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
 

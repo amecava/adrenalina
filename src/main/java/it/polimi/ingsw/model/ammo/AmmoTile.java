@@ -47,7 +47,6 @@ public class AmmoTile implements Card {
     public static class AmmoTileBuilder {
 
         List<Color> ammoCubes = new ArrayList<>();
-        boolean powerUpCard;
 
         public AmmoTileBuilder(JsonObject jTileObject) {
 

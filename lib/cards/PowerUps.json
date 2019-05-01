@@ -2,60 +2,90 @@
     {
         "name": "MIRINO",
         "color": "RED",
+
         "effect": {
-        
-            "args": 1,           
-            "targetType": "PLAYER",
-
+            "args": 1, 
             "cost": "FREE",
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
 
-            "sameAsFather": [true],
-            "atomicEffectList": ["DAMAGE"]
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
         }
     }, 
     {
         "name": "RAGGIO CINETICO",
         "color": "RED",
+        
         "effect": {
-            
             "args": 2,
-            "targetType": "PLAYER",
+            
+            "sameAsPlayer": false,
 
-            "maxTargets": 1,
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
 
-            "minDist": 1,
-            "maxDist": 2,
-            "cardinal": true,
+                "maxTargets": 1,
 
-            "atomicEffectList": ["MOVE"]
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
         }
     }, 
     {
         "name": "GRANATA VENOM",
         "color": "RED",
+
         "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": false,
+
+            "next": {
         
-            "args": 0,           
-            "targetType": "PLAYER",
-
-            "targetView": true,
-
-            "atomicEffectList": ["DAMAGE"]
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+                "targetView": true,
+    
+                "atomicEffectList": ["DAMAGE"]
+            }
         }
 
     }, 
     {
         "name": "TELETRASPORTO",
         "color": "RED",
+
         "effect": {
-            
             "args": 1,
-            "targetType": "PLAYER",
 
-            "maxTargets": 1,
-            "sameAsPlayer": true,
+            "sameAsPlayer": false,
 
-            "atomicEffectList": ["MOVE"]
+            "next": {
+
+                "args": 1,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
         }
 
     }

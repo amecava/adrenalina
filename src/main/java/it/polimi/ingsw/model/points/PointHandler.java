@@ -111,7 +111,7 @@ public class PointHandler {
 
     private void deathUpdate(Bridge bridge) {
 
-        Color killShot = Color.EOG;
+        Color killShot = Color.ANY;
         boolean foundFirstBlood = false;
         boolean foundLastShot = false;
 
@@ -129,7 +129,7 @@ public class PointHandler {
                     pointStructure.getPlayer().setPoints(1);
                     foundFirstBlood = true;
                 }
-                if (!bridge.getColor().equals(Color.EOG) && bridge.isDead()) {
+                if (!bridge.getColor().equals(Color.ANY) && bridge.isDead()) {
                     if (!foundLastShot && pointStructure.getLastDamage() == 12) {
                         pointStructure.getPlayer().markPlayer(bridge.getColor());
                         foundLastShot = true;
@@ -142,7 +142,7 @@ public class PointHandler {
                 }
             }
         }
-        if (!bridge.getColor().equals(Color.EOG) && bridge.isDead() ) {
+        if (!bridge.getColor().equals(Color.ANY) && bridge.isDead() ) {
             deaths.addKill(killShot, foundLastShot);
             if (frenzyRegeneration && !(bridge.isKillStreakCount())) {
                 bridge.setFrenzy();

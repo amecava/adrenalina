@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.cards.effects.EffectTarget;
+import it.polimi.ingsw.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
@@ -31,7 +31,7 @@ class FurnaceTest {
         Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
         Player target3 = new Player("target3", Color.BLUE, this.effectHandler);
 
-        EffectTarget effectTarget;
+        EffectArgument effectArgument;
 
         source.movePlayer(board.getRoom(0).getSquare(0));
         target1.movePlayer(board.getRoom(1).getSquare(1));
@@ -50,11 +50,11 @@ class FurnaceTest {
             fail();
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(1).getSquare(2)));
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(1).getSquare(2)));
 
         // Wrong target type
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -62,11 +62,11 @@ class FurnaceTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(0)));
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(0)));
 
         // Same room as source
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -74,11 +74,11 @@ class FurnaceTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(3)));
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(3)));
 
         // Source can't see room
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -86,11 +86,11 @@ class FurnaceTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(1), board.getRoom(1)));
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(1), board.getRoom(1)));
 
         // Duplicates found
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -98,11 +98,11 @@ class FurnaceTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(1)));
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(1)));
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
 
             assertEquals(target1.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 1);
@@ -122,7 +122,7 @@ class FurnaceTest {
         Player target2 = new Player("target2", Color.LIGHTBLUE, this.effectHandler);
         Player target3 = new Player("target3", Color.BLUE, this.effectHandler);
 
-        EffectTarget effectTarget;
+        EffectArgument effectArgument;
 
         source.movePlayer(board.getRoom(0).getSquare(0));
         target1.movePlayer(board.getRoom(0).getSquare(0));
@@ -141,11 +141,11 @@ class FurnaceTest {
             fail();
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(0).getSquare(0)));
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(0).getSquare(0)));
 
         // Distance property violated
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -153,12 +153,12 @@ class FurnaceTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(0).getSquare(1),
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(0).getSquare(1),
                 board.getRoom(0).getSquare(1)));
 
         // Duplicate exception
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectTarget);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
             fail();
         } catch (EffectException e) {
             fail();
@@ -166,11 +166,11 @@ class FurnaceTest {
             assertTrue(true);
         }
 
-        effectTarget = new EffectTarget(Arrays.asList(board.getRoom(0).getSquare(1)));
+        effectArgument = new EffectArgument(Arrays.asList(board.getRoom(0).getSquare(1)));
 
         // Use alternative
         try {
-            tester.useCard(EffectType.PRIMARY, effectTarget);
+            tester.useCard(EffectType.PRIMARY, effectArgument);
 
             assertEquals(target2.getShots().size(), 1);
             assertEquals(target3.getShots().size(), 1);
