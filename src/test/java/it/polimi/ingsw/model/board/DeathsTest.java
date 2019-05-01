@@ -18,13 +18,13 @@ class DeathsTest {
     void endGame() {
         EffectHandler effectHandler = new EffectHandler();
         List<Player> playerList = new ArrayList<>();
-        Player player1 = new Player("Jacopo", Color.BLUE, effectHandler);
+        Player player1 = new Player("Jacopo", Color.BLUE);
         playerList.add(player1);
-        Player player2 = new Player("Federico", Color.YELLOW, effectHandler);
+        Player player2 = new Player("Federico", Color.YELLOW);
         playerList.add(player2);
-        Player player3 = new Player("Amedeo", Color.GREEN, effectHandler);
+        Player player3 = new Player("Amedeo", Color.GREEN);
         playerList.add(player3);
-        Player player4 = new Player(" giulia ", Color.VIOLET, effectHandler);
+        Player player4 = new Player(" giulia ", Color.VIOLET);
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 2);
         for (int i = 0; i < 8; i++) {

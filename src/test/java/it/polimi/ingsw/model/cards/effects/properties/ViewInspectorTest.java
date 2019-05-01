@@ -154,7 +154,7 @@ class ViewInspectorTest {
 
         test.clear();
         test.add(four);
-        Player testPlayer = new Player("test", Color.GRAY, this.effectHandler);
+        Player testPlayer = new Player("test", Color.GRAY);
         testPlayer.movePlayer(six);
         test.add(testPlayer);
 

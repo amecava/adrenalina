@@ -23,10 +23,10 @@ class TurnHandlerTest {
 
     @Test
     void CorrectEndOfTurn() {
-        Player player1 = new Player("jacopo", Color.VIOLET, this.effectHandler);
-        Player player2 = new Player("Amedeo", Color.GREEN, this.effectHandler);
-        Player player3 = new Player("federico", Color.YELLOW, this.effectHandler);
-        Player player4 = new Player("Giulia ", Color.LIGHTBLUE, this.effectHandler);
+        Player player1 = new Player("jacopo", Color.VIOLET);
+        Player player2 = new Player("Amedeo", Color.GREEN);
+        Player player3 = new Player("federico", Color.YELLOW);
+        Player player4 = new Player("Giulia ", Color.LIGHTBLUE);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);
@@ -34,7 +34,7 @@ class TurnHandlerTest {
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 3);
         Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
-        TurnHandler turnHandler = new TurnHandler(board, pointHandler);
+        TurnHandler turnHandler = new TurnHandler(board, pointHandler, effectHandler);
         pointHandler.enableFrenzy();
         try {
             turnHandler.startGame(playerList.get(0));
@@ -60,18 +60,6 @@ class TurnHandlerTest {
             turnHandler.selectAction(3);
         } catch (IllegalActionException e) {
            // e.printStackTrace();
-        }
-        try {
-            turnHandler.collectWeapon(5);
-        } catch (IllegalActionException e) {
-            assertTrue(true);
-           // e.printStackTrace();
-        } catch (EmptySquareException e) {
-            e.printStackTrace();
-        } catch (SquareTypeException e) {
-           // e.printStackTrace();
-        } catch (FullHandException e) {
-            //e.printStackTrace();
         }
         for (int i = 0; i < 11; i++) {
             player1.damagePlayer(player4.getColor());

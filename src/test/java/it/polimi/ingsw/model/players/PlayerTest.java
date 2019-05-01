@@ -10,6 +10,8 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.exceptions.IllegalActionException;
+import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.model.exceptions.cards.FullHandException;
@@ -27,7 +29,7 @@ class PlayerTest {
 
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
 
-        Player player = new Player("player", Color.GRAY, this.effectHandler);
+        Player player = new Player("player", Color.GRAY);
 
         player.movePlayer(board.getRoom(0).getSquare(0));
 
@@ -50,7 +52,7 @@ class PlayerTest {
 
         Card tester;
 
-        Player player = new Player("player", Color.GRAY, this.effectHandler);
+        Player player = new Player("player", Color.GRAY);
 
         player.movePlayer(board.getRoom(1).getSquare(2));
 
@@ -70,6 +72,8 @@ class PlayerTest {
 
         } catch (SquareTypeException | EmptySquareException e) {
             fail();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         player.movePlayer(board.getRoom(0).getSquare(1));
@@ -90,6 +94,8 @@ class PlayerTest {
 
         } catch (SquareTypeException | EmptySquareException e) {
             fail();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         player.movePlayer(board.getRoom(0).getSquare(0));
@@ -110,6 +116,8 @@ class PlayerTest {
 
         } catch (SquareTypeException | EmptySquareException e) {
             fail();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         //tests that if you already collected everything in the square the right exception gets thrown
@@ -125,6 +133,8 @@ class PlayerTest {
         } catch (SquareTypeException e) {
 
             fail();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         //tests the correct behaviour of the method if the player is in a spawn square
@@ -139,6 +149,8 @@ class PlayerTest {
             assertTrue(true);
         } catch (EmptySquareException e) {
             fail();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
 
@@ -150,7 +162,7 @@ class PlayerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         board.fill();
 
-        Player player = new Player("player", Color.GRAY, this.effectHandler);
+        Player player = new Player("player", Color.GRAY);
 
         player.movePlayer(board.getRoom(0).getSquare(2));
 
@@ -168,6 +180,10 @@ class PlayerTest {
         } catch (EmptySquareException e) {
 
             assertTrue(true);
+        } catch (CardException e) {
+            e.printStackTrace();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         // wrong method call from square
@@ -184,6 +200,10 @@ class PlayerTest {
         } catch (SquareTypeException e) {
 
             assertTrue(true);
+        } catch (CardException e) {
+            e.printStackTrace();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         // hand is full
@@ -203,6 +223,10 @@ class PlayerTest {
         } catch (FullHandException e) {
 
             assertTrue(true);
+        } catch (CardException e) {
+            e.printStackTrace();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         // card added to hand
@@ -217,6 +241,10 @@ class PlayerTest {
             assertEquals("LOCK RIFLE", player.getWeaponHand().get(0).getName());
         } catch (SquareTypeException | FullHandException | EmptySquareException e) {
             fail();
+        } catch (CardException e) {
+            e.printStackTrace();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
         // empty square, no more weapon cards
@@ -244,6 +272,10 @@ class PlayerTest {
         } catch (EmptySquareException e) {
 
             assertTrue(true);
+        } catch (CardException e) {
+            e.printStackTrace();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
     }
@@ -254,7 +286,7 @@ class PlayerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         board.fill();
 
-        Player player = new Player("player", Color.GRAY, this.effectHandler);
+        Player player = new Player("player", Color.GRAY);
 
 
         try {
@@ -274,8 +306,9 @@ class PlayerTest {
         } catch (CardNotFoundException e) {
 
             assertTrue(true);
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
-
 
         try {
 
@@ -295,6 +328,8 @@ class PlayerTest {
         } catch (CardNotFoundException e) {
 
             fail();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
 
     }
