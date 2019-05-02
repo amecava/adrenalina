@@ -5,9 +5,11 @@ import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
+import it.polimi.ingsw.model.cards.PowerUpCard;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.decks.AmmoTilesDeck;
+import it.polimi.ingsw.model.decks.PowerUpDeck;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
 import it.polimi.ingsw.model.exceptions.IllegalActionException;
@@ -26,6 +28,7 @@ public class Board {
 
     private WeaponDeck weaponDeck;
     private AmmoTilesDeck ammoTilesDeck;
+    private PowerUpDeck powerUpDeck;
 
     private Board(BoardBuilder builder) {
 
@@ -33,6 +36,7 @@ public class Board {
 
         this.weaponDeck = builder.weaponDeck;
         this.ammoTilesDeck = builder.ammoTilesDeck;
+        this.powerUpDeck = builder.powerUpDeck;
     }
 
 
@@ -47,19 +51,13 @@ public class Board {
             if (y.isSpawn()) {
 
                 for (int i = 0; i < 3; i++) {
-                    try {
-                        y.addTool(this.weaponDeck.getCard());
-                    } catch (IllegalActionException e) {
-                        e.printStackTrace();
-                    }
+
+                    y.addTool(this.weaponDeck.getCard());
                 }
             } else {
 
-                try {
-                    y.addTool(this.ammoTilesDeck.getTile());
-                } catch (IllegalActionException e) {
-                    e.printStackTrace();
-                }
+                y.addTool(this.ammoTilesDeck.getTile());
+
             }
 
         });
@@ -70,22 +68,16 @@ public class Board {
 
         return this.weaponDeck;
     }
-    private void fillWithAmmoTile(Square destination) {
-        {
-            try {
-                destination.addTool(this.ammoTilesDeck.getTile());
-            } catch (IllegalActionException e) {
-                System.out.println("deck is full");
-            }
-        }
+
+    //useful for tests
+    public PowerUpDeck getPowerUpDeck() {
+
+        return this.powerUpDeck;
     }
 
-    private  void fillWithAmmoCard(Square destination) {
-        try {
-            destination.addTool(this.weaponDeck.getCard());
-        } catch (IllegalActionException e) {
-            System.out.println("deck is empty ");
-        }
+    public PowerUpCard getPowerUp() {
+
+        return this.powerUpDeck.getCard();
     }
 
     public void pushAmmoTile(AmmoTile ammoTile) {
@@ -93,12 +85,18 @@ public class Board {
     }
 
     public void endOfTurnFill() {
+
         for (Room room : roomsList) {
+
             for (Square square : room.getSquaresList()) {
-                if (square.isSpawn() && square.getTools().size() < 3) {
-                    this.fillWithAmmoCard(square);
+
+                if (square.isSpawn() && square.getTools().size() < 3 && !this.weaponDeck.getDeck()
+                        .isEmpty()) {
+
+                    square.addTool(this.weaponDeck.getCard());
                 } else if (!square.isSpawn() && square.getTools().isEmpty()) {
-                    this.fillWithAmmoTile(square);
+
+                    square.addTool(this.ammoTilesDeck.getTile());
                 }
             }
         }
@@ -111,6 +109,7 @@ public class Board {
 
         private WeaponDeck weaponDeck;
         private AmmoTilesDeck ammoTilesDeck;
+        private PowerUpDeck powerUpDeck;
 
         private static final String ROOMS = "rooms";
         private static final String ROOM_ID = "roomId";
@@ -127,6 +126,7 @@ public class Board {
 
             this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
             this.ammoTilesDeck = new AmmoTilesDeck.AmmoTilesDeckBuilder().build();
+            this.powerUpDeck = new PowerUpDeck.PowerUpDeckBuilder(effectHandler).build();
         }
 
         private void readFromJson(int boardID) {

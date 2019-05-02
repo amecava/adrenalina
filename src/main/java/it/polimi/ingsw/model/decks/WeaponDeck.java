@@ -24,10 +24,14 @@ public class WeaponDeck {
         //Collections.shuffle(This.deck);
     }
 
-    public WeaponCard getCard() throws IllegalActionException {
-        if (deck.isEmpty())
-            throw new IllegalActionException(" weapon deck is empty!!!");
+    public WeaponCard getCard() {
+
         return deck.remove(0);
+    }
+
+    public List<WeaponCard> getDeck() {
+
+        return this.deck;
     }
 
     // useful for tests
@@ -36,20 +40,19 @@ public class WeaponDeck {
         return this.deck.get(index);
     }
 
-    public List<Card> getCardsForSpawnSquares(){
+    //useful for tests
+    public List<Card> getCardsForSpawnSquares() {
 
         List<Card> threeCards = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
 
-            try {
-                threeCards.add(this.getCard());
-            } catch (IllegalActionException e) {
-                e.printStackTrace();
-            }
+            threeCards.add(this.getCard());
         }
         return threeCards;
     }
+
+    /* -------------------------- BUILDER -------------------------- */
 
     public static class WeaponDeckBuilder {
 
@@ -74,7 +77,8 @@ public class WeaponDeck {
 
         private void readEffectsFromJson() {
 
-            try (JsonReader eReader = Json.createReader(new FileReader("lib/cards/Effects.json"))) {
+            try (JsonReader eReader = Json
+                    .createReader(new FileReader("lib/cards/Effects.json"))) {
 
                 JsonArray jEffectsArray = eReader.readObject().getJsonArray("effects");
 
@@ -90,7 +94,8 @@ public class WeaponDeck {
 
         private void readCardsFromJson() {
 
-            try (JsonReader cReader = Json.createReader(new FileReader("lib/cards/Cards.json"))) {
+            try (JsonReader cReader = Json
+                    .createReader(new FileReader("lib/cards/Cards.json"))) {
 
                 JsonArray jCardsArray = cReader.readObject().getJsonArray("cards");
 

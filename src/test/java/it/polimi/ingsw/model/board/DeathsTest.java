@@ -28,10 +28,10 @@ class DeathsTest {
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 2);
         for (int i = 0; i < 8; i++) {
-            player3.damagePlayer(player2.getColor());
+            player3.damagePlayer(player2.getColor(), true);
         }
         for (int i = 0; i < 4; i++) {
-            player3.damagePlayer(player1.getColor());
+            player3.damagePlayer(player1.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
@@ -42,16 +42,16 @@ class DeathsTest {
            // e.printStackTrace();
         }
         for (int i = 0; i < 3; i++) {
-            player3.damagePlayer(player2.getColor());
+            player3.damagePlayer(player2.getColor(), true);
         }
         for (int i = 0; i < 2; i++) {
-            player3.damagePlayer(player1.getColor());
+            player3.damagePlayer(player1.getColor(), true);
         }
         for (int i = 0; i < 10; i++) {
-            player3.damagePlayer(player2.getColor());
+            player3.damagePlayer(player2.getColor(), true);
         }
-        player1.damagePlayer(player3.getColor());
-        player2.damagePlayer(player3.getColor());
+        player1.damagePlayer(player3.getColor(), true);
+        player2.damagePlayer(player3.getColor(), true);
         try {
             pointHandler.checkIfDead();
         } catch (FrenzyRegenerationException e) {

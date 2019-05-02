@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.ammo.Ammo;
+import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectArgument;
@@ -30,12 +31,14 @@ public class PowerUpCard implements Card, Ammo {
 
     @Override
     public String getName() {
-        return null;
+
+        return this.name;
     }
 
     @Override
     public Color getColor() {
-        return null;
+
+        return this.color;
     }
 
     private PowerUpCard(PowerUpCardBuilder builder) {
@@ -47,6 +50,11 @@ public class PowerUpCard implements Card, Ammo {
 
         this.effect = builder.effect;
 
+    }
+
+    public Player getOwner() {
+
+        return this.owner;
     }
 
     public void setOwner(Player owner) {
@@ -68,31 +76,34 @@ public class PowerUpCard implements Card, Ammo {
             throw new EffectCallException("Wrong method call!");
         }
 
-        if (!this.effect.getSameAsFather(0) && this.owner
+        target.setCheckMarks(false);
+
+        if (!this.effect.isSameAsPlayer() && this.owner
                 .equals(this.effectHandler.getActivePlayer())) {
 
             this.effectHandler.useEffect(this.effect.getNext(), target);
 
-        } else if (effect.getSameAsFather(0) && this.effectHandler.getActive().contains(this.owner) && (
-                this.effectHandler.getActive().contains(this.owner)
+        } else if (effect.isSameAsPlayer() &&
+                (this.effectHandler.getActive().contains(this.owner)
                         || effectHandler.getInactive().contains(this.owner))) {
 
             Player tmPlayer = effectHandler.getActivePlayer();
-
             target.appendTarget(tmPlayer);
-
-            this.effectHandler.setActivePlayer(this.owner);
+            this.effectHandler.setTmpActivePlayer(this.owner);
 
             this.effectHandler.useEffect(this.effect.getNext(), target);
 
-            this.effectHandler.setActivePlayer(tmPlayer);
+            this.effectHandler.setTmpActivePlayer(tmPlayer);
             this.effectHandler.getActive().remove(tmPlayer);
+
+        } else {
+
+            throw new CardNotLoadedException("You can't use a power up right now!");
         }
 
-        throw new CardNotLoadedException("You can't use a power up right now!");
     }
 
-    public Ammo useCard(EffectArgument target, Ammo ammo)
+    public void useCard(EffectArgument target, AmmoCube ammoCube)
             throws EffectException, PropertiesException, CardNotLoadedException {
 
         // Launch exception if wrong method call
@@ -101,21 +112,24 @@ public class PowerUpCard implements Card, Ammo {
             throw new EffectCallException("Wrong number of arguments to method call!");
         }
 
-        if (ammo == null || this.effect.getCost().isEmpty()) {
+        if (color == null || this.effect.getCost().isEmpty()) {
 
             throw new EffectCallException("Wrong method call!");
         }
 
-        if (!effect.getSameAsFather(0) && this.owner
-                .equals(effectHandler.getActivePlayer())) {
+        target.setCheckMarks(false);
 
+        if (!effect.isSameAsPlayer() && this.owner
+                .equals(effectHandler.getActivePlayer())) {
 
             this.effectHandler.useEffect(this.effect.getNext(), target);
 
-            return ammo;
+            ammoCube.setUsed(true);
+        } else {
+
+            throw new CardNotLoadedException("You can't use a power up right now!");
         }
 
-        throw new CardNotLoadedException("You can't use a power up right now!");
     }
 
     public static class PowerUpCardBuilder {
@@ -137,7 +151,6 @@ public class PowerUpCard implements Card, Ammo {
             this.name = jsonObject.getString("name");
             this.color = Color.valueOf(jsonObject.getString("color"));
             this.effect = new Effect.EffectBuilder(jsonObject.getJsonObject("effect")).build();
-            //TODO finish Json
 
             return new PowerUpCard(this);
         }

@@ -28,12 +28,12 @@ class PointHandlerTest {
         PointHandler pointHandler = new PointHandler(playerList, 4);
         for (int i = 0; i < 5; i++) {
             player1.markPlayer(player2.getColor());
-            player1.damagePlayer(player3.getColor());
+            player1.damagePlayer(player3.getColor(), true);
         }
-        player1.damagePlayer(player2.getColor());
-        player1.damagePlayer(player2.getColor());
-        player1.damagePlayer(player2.getColor());
-        player1.damagePlayer(player2.getColor());
+        player1.damagePlayer(player2.getColor(), true);
+        player1.damagePlayer(player2.getColor(), true);
+        player1.damagePlayer(player2.getColor(), true);
+        player1.damagePlayer(player2.getColor(), true);
         try {
             pointHandler.checkIfDead();
         } catch (FrenzyRegenerationException e) {
@@ -70,11 +70,11 @@ class PointHandlerTest {
             player1.markPlayer(player3.getColor());
         }
         for (int i = 0; i < 4; i++) {
-            player1.damagePlayer(player2.getColor());
+            player1.damagePlayer(player2.getColor(), true);
         }
-        player1.damagePlayer(player4.getColor());
-        player1.damagePlayer(player3.getColor());
-        player1.damagePlayer(player3.getColor());
+        player1.damagePlayer(player4.getColor(), true);
+        player1.damagePlayer(player3.getColor(), true);
+        player1.damagePlayer(player3.getColor(), true);
         player1.markPlayer(Color.LIGHTBLUE);
         player1.markPlayer(Color.LIGHTBLUE);
         try {
@@ -85,8 +85,8 @@ class PointHandlerTest {
             e.printStackTrace();
         }
         for (int i = 0; i < 6; i++) {
-            player1.damagePlayer(player2.getColor());
-            player1.damagePlayer(player3.getColor());
+            player1.damagePlayer(player2.getColor(), true);
+            player1.damagePlayer(player3.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
@@ -125,7 +125,7 @@ class PointHandlerTest {
         assertFalse(pointHandler.getWinner().get(0).contains(player3));
 
         for (int i = 0; i < 13; i++) {
-            player2.damagePlayer(player1.getColor());
+            player2.damagePlayer(player1.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
@@ -135,7 +135,7 @@ class PointHandlerTest {
             e.printStackTrace();
         }
         for (int i = 0; i < 12; i++) {
-            player1.damagePlayer(player2.getColor());
+            player1.damagePlayer(player2.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
@@ -175,8 +175,8 @@ class PointHandlerTest {
         playerList.add(player6);
         PointHandler pointHandler = new PointHandler(playerList, 3);
         for (int i=1; i<=12; i++){
-            player2.damagePlayer(player1.getColor());
-            player3.damagePlayer(player1.getColor());
+            player2.damagePlayer(player1.getColor(), true);
+            player3.damagePlayer(player1.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
@@ -185,14 +185,14 @@ class PointHandlerTest {
         } catch (EndGameException e) {
             e.printStackTrace();
         }
-        player1.damagePlayer(player2.getColor());
-        player1.damagePlayer(player3.getColor());
+        player1.damagePlayer(player2.getColor(), true);
+        player1.damagePlayer(player3.getColor(), true);
         assertTrue(player1.getShots().size()==4);
         for (int i=0; i<11; i++){
-            player5.damagePlayer(player4.getColor());
-            player6.damagePlayer(player4.getColor());
+            player5.damagePlayer(player4.getColor(), true);
+            player6.damagePlayer(player4.getColor(), true);
         }
-        player1.damagePlayer(player4.getColor());
+        player1.damagePlayer(player4.getColor(), true);
         try {
             pointHandler.checkIfDead();
         } catch (FrenzyRegenerationException e) {

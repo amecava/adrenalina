@@ -42,6 +42,12 @@ public class EffectHandler {
         this.activeSquare = activePlayer.getCurrentPosition();
     }
 
+    public void setTmpActivePlayer(Player activePlayer) {
+
+        this.activePlayer = activePlayer;
+        this.activeSquare = activePlayer.getCurrentPosition();
+    }
+
     public List<Target> getInactive() {
 
         return this.inactive;
@@ -49,7 +55,7 @@ public class EffectHandler {
 
     public List<Target> getActive(){
 
-        return this.inactive;
+        return this.active;
     }
 
     public void useEffect(Effect effect, EffectArgument target)

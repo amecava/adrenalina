@@ -87,8 +87,8 @@ public class Bridge {
         return damageBridge;
     }
 
-    public void appendShot(Color color) {
-        this.damageBridge.appendShot(color);
+    public void appendShot(Color color, boolean checkMarks) {
+        this.damageBridge.appendShot(color, checkMarks);
     }
 
     public Adrenalin checkAdrenalin() {

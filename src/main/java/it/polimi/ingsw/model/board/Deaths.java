@@ -11,7 +11,7 @@ public class Deaths extends Bridge {
 
     public Deaths(int maxNumberOfDeaths) {
 
-        super(Color.ANY, null);
+        super(Color.ANY);
         this.maxNumberOfDeaths = maxNumberOfDeaths;
         this.setKillStreakCount();
     }
@@ -25,10 +25,10 @@ public class Deaths extends Bridge {
 
         if (infer) {
             this.maxNumberOfDeaths++;
-            this.appendShot(color);
+            this.appendShot(color, true);
         }
 
-        this.appendShot(color);
+        this.appendShot(color, true);
     }
 
     public boolean isGameEnded() {

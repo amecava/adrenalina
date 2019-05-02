@@ -45,6 +45,7 @@ public class Player implements Target {
 
     private List<Card> weaponHand = new ArrayList<>();
     private List<AmmoCube> ammoCubesList = new ArrayList<>();
+    private List<PowerUpCard> powerUpsList = new ArrayList<>();
 
     public Player(String playerId, Color playerColor) {
 
@@ -106,6 +107,18 @@ public class Player implements Target {
 
     public void setFirstPlayer(boolean firstPlayer) {
         this.firstPlayer = firstPlayer;
+    }
+
+    //useful for tests
+    public void addPowerUp(PowerUpCard powerUp) {
+
+        powerUp.setOwner(this);
+        this.powerUpsList.add(powerUp);
+    }
+
+    public List<PowerUpCard> getPowerUpsList() {
+
+        return this.powerUpsList;
     }
 
     public Bridge getBridge() {
@@ -190,9 +203,9 @@ public class Player implements Target {
         this.currentPosition.addPlayer(this);
     }
 
-    public void damagePlayer(Color color) {
+    public void damagePlayer(Color color, boolean checkMarks) {
 
-        this.bridge.appendShot(color);
+        this.bridge.appendShot(color, checkMarks);
     }
 
     public void markPlayer(Color color) {
@@ -216,26 +229,36 @@ public class Player implements Target {
         this.endOfGame = true;
     }
 
-
     // this method returns an AmmoTile because the Square.collectAmmoTile method removes the
     // item collected from the square, and at the end of the turn the board must be refreshed,
     // so the AmmoTile collected has to be placed in the AmmoTilesDeck by the presenter!!
 
 
-    private void  checkIfCollect() throws IllegalActionException {
+    private void checkIfCollect() throws IllegalActionException {
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null
                 || !this.getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException(" you can't collect from square in this  chosen action!!!");
+            throw new IllegalActionException(
+                    " you can't collect from square in this  chosen action!!!");
         }
     }
 
+    //TODO: copy (and fix) the next comment after calling this method
+    /*
+
+    if (tmpTile.getAmmoCubesList().stream().count()  == 2) {
+                player.addPowerUp(board.getPowerUp());
+            }
+
+     */
     public AmmoTile collect()
             throws SquareTypeException, EmptySquareException, IllegalActionException {
+
         this.checkIfCollect();
+
         if (!this.currentPosition.isSpawn()) {
-            AmmoTile tmpTile;
-            tmpTile = this.currentPosition.collectAmmoTile();
+
+            AmmoTile tmpTile = this.currentPosition.collectAmmoTile();
 
             // set used player's ammo cubes to not used
             tmpTile.getAmmoCubesList().forEach(x ->
@@ -243,15 +266,16 @@ public class Player implements Target {
                             .filter(y -> y.getColor().equals(x))
                             .findFirst().ifPresent(z -> z.setUsed(false)));
 
-            //TODO add the powerUp to player's hand if the tile allows it
             this.getCurrentAction().endAction(2, false);
+
             return tmpTile;
         }
         throw new SquareTypeException("You're in a spawn square, wrong method call");
     }
 
     public void collect(int cardId)
-            throws  IllegalActionException, CardException {
+            throws IllegalActionException, CardException {
+
         this.checkIfCollect();
 
         if (!this.currentPosition.isSpawn()) {
@@ -263,8 +287,11 @@ public class Player implements Target {
 
             throw new FullHandException("You already have three cards, wrong method call");
         }
+
         this.weaponHand.add((this.currentPosition.collectWeaponCard(cardId)));
-        ((WeaponCard)this.weaponHand.get(this.weaponHand.size()-1)).setOwner(this);
+
+        ((WeaponCard) this.weaponHand.get(this.weaponHand.size() - 1)).setOwner(this);
+
         this.getCurrentAction().endAction(2, false);
     }
 
@@ -275,8 +302,10 @@ public class Player implements Target {
     //setting the owner for the new card and deleting the owner from discard card
     /////are done in the square method collect(int, int)
     public void collect(int playerCardId, int squareCardId)
-            throws SquareTypeException, EmptySquareException, CardNotFoundException, IllegalActionException {
+            throws CardException, IllegalActionException {
+
         this.checkIfCollect();
+
         if (!this.currentPosition.isSpawn()) {
 
             throw new SquareTypeException("You're not in a spawn square, wrong method call");
@@ -294,80 +323,112 @@ public class Player implements Target {
                         .findAny()
                         .orElseThrow(() -> new CardNotFoundException("You don't have that card!")),
                 squareCardId));
-        ((WeaponCard)this.weaponHand.get(this.weaponHand.size()-1)).setOwner(this);
+
+        ((WeaponCard) this.weaponHand.get(this.weaponHand.size() - 1)).setOwner(this);
+
         this.getCurrentAction().endAction(2, false);
     }
 
-    // all this methods are for action bridge moves
+    // all these methods are for action bridge moves
     public void selectAction(int actionId) throws IllegalActionException {
+
         this.bridge.getActionBridge().selectAction(actionId);
     }
 
     public void activateCard(int cardId) throws CardException, IllegalActionException {
+
         if (this.getCurrentAction() == null) {
+
             throw new IllegalActionException(" please select the action you would like to use!!!");
         }
+
         if (this.getCurrentAction().isShoot() == null || !this.getCurrentAction().isShoot()) {
+
             throw new IllegalActionException(" you can't shoot in this action");
         }
+
         WeaponCard weaponCard = this.weaponHand.stream()
                 .map(x -> (WeaponCard) x)
                 .filter(x -> x.getId() == cardId)
                 .findAny()
                 .orElseThrow(() -> new CardNotFoundException("You don't have that card!"));
+
         weaponCard.activateCard();
+
         this.currentWeaponCard = weaponCard;
+
         this.getCurrentAction().endAction(4, false);
     }
 
-    public void useCard(EffectType effectType, EffectTarget effectTarget)
+    public void useCard(EffectType effectType, EffectArgument effectTarget)
             throws PropertiesException, EffectException, IllegalActionException {
+
         if (this.getCurrentAction() == null) {
+
             throw new IllegalActionException(" please select the action you would like to use!!!");
         }
+
         if (this.currentWeaponCard == null) {
+
             throw new IllegalActionException(
                     "please activate the card before using it by writing activate card with the cardId!!");
         }
+
         this.currentWeaponCard.useCard(effectType, effectTarget);
     }
 
-    public void reload(int cardId, List<PowerUpCard> ammoList) throws IllegalActionException, CardNotFoundException {
+    public void reload(int cardId, List<PowerUpCard> ammoList)
+            throws IllegalActionException, CardException {
+
         if (this.getCurrentAction() == null) {
+
             throw new IllegalActionException(" please select the action you would like to use!!!");
         }
+
         WeaponCard tempWeaponCard = this.weaponHand.stream()
                 .map(x -> (WeaponCard) x)
                 .filter(x -> x.getId() == cardId)
                 .findAny()
                 .orElseThrow(() -> new CardNotFoundException("You don't have that card!"));
+
         if (this.getCurrentAction().isReload() == null || !this.getCurrentAction().isReload()) {
+
             throw new IllegalActionException(" you can't reload in this action!!");
         } else {
+
             tempWeaponCard.reloadWeapon(ammoList);
+
             this.getCurrentAction().endAction(2, false);
         }
     }
 
-    public void move(EffectTarget effectTarget, EffectHandler effectHandler)
+    public void move(EffectArgument effectTarget, EffectHandler effectHandler)
             throws IllegalActionException, EffectException, PropertiesException {
+
         if (this.getCurrentAction() == null) {
+
             throw new IllegalActionException(" please select the action you would like to use!!!");
         }
+
         if (this.getCurrentAction().getMove() == null || !this.getCurrentAction().getMove()) {
+
             throw new IllegalActionException(" you can't move yourself right now!!!");
         }
+
         effectHandler.useEffect(this.getCurrentAction().getEffect(), effectTarget);
+
         this.getCurrentAction().setEffectAsUsed();
         this.getCurrentAction().endAction(1, false);
     }
 
     public void endAction() {
+
         this.currentWeaponCard = null;
         this.bridge.getActionBridge().endAction();
     }
 
     public ActionStructure getCurrentAction() {
+
         return this.bridge.getActionBridge().getCurrentAction();
     }
 }

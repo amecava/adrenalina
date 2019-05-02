@@ -25,8 +25,8 @@ class ActionBridgeTest {
         playerList.add(player3);
         PointHandler pointHandler = new PointHandler(playerList, 4);
         for ( int i=0 ; i<2; i++){
-            player1.damagePlayer(player2.getColor());
-            player3.damagePlayer(player2.getColor());
+            player1.damagePlayer(player2.getColor(), true);
+            player3.damagePlayer(player2.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
@@ -37,8 +37,8 @@ class ActionBridgeTest {
         }
         assertTrue(player1.getAdrenalin()==Adrenalin.NORMAL);
         for (int i=0; i<3; i++){
-            player1.damagePlayer(player2.getColor());
-            player3.damagePlayer(player2.getColor());
+            player1.damagePlayer(player2.getColor(), true);
+            player3.damagePlayer(player2.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
@@ -50,10 +50,10 @@ class ActionBridgeTest {
         assertTrue(player1.getAdrenalin()==Adrenalin.FIRSTADRENALIN);
         assertTrue(player3.getAdrenalin()==Adrenalin.FIRSTADRENALIN);
         for (int i=0; i<5; i++){
-            player1.damagePlayer(player2.getColor());
-            player3.damagePlayer(player2.getColor());
+            player1.damagePlayer(player2.getColor(), true);
+            player3.damagePlayer(player2.getColor(), true);
         }
-        player3.damagePlayer(player1.getColor());
+        player3.damagePlayer(player1.getColor(), true);
         try {
             pointHandler.checkIfDead();
         } catch (FrenzyRegenerationException e) {

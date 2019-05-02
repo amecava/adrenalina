@@ -22,13 +22,12 @@ public class AmmoTilesDeck {
         //Collections.shuffle(this.ammoTilesList);
     }
 
-    public Card getTile() throws IllegalActionException {
-        if (this.ammoTilesList.isEmpty())
-            throw new IllegalActionException("Ammo Tile Deck is empty");
+    public Card getTile() {
+
         return this.ammoTilesList.remove(0);
     }
-    // useful for tests
 
+    // useful for tests
     public AmmoTile getTile(int i){
         return this.ammoTilesList.remove(i);
     }
@@ -36,6 +35,8 @@ public class AmmoTilesDeck {
     public void pushAmmoTile(AmmoTile ammoTile){
         this.ammoTilesList.add(ammoTile);
     }
+
+    /* -------------------------- BUILDER -------------------------- */
 
     public static class AmmoTilesDeckBuilder{
 

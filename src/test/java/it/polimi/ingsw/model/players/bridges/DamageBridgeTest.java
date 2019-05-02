@@ -12,14 +12,14 @@ class DamageBridgeTest {
 
         DamageBridge damageBridge = new DamageBridge();
 
-        damageBridge.appendShot(Color.RED);
+        damageBridge.appendShot(Color.RED, true);
 
         assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED))
                 .count(), 1);
         assertEquals(damageBridge.getShots().stream().filter(x -> !x.getColor().equals(Color.RED))
                 .count(), 0);
 
-        damageBridge.appendShot(Color.BLUE);
+        damageBridge.appendShot(Color.BLUE, true);
 
         assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED))
                 .count(), 1);
@@ -34,7 +34,7 @@ class DamageBridgeTest {
         assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.BLUE))
                 .count(), 1);
 
-        damageBridge.appendShot(Color.RED);
+        damageBridge.appendShot(Color.RED, true);
 
         assertEquals(damageBridge.getShots().stream().filter(x -> x.getColor().equals(Color.RED))
                 .count(), 4);
@@ -72,7 +72,7 @@ class DamageBridgeTest {
         DamageBridge damageBridge = new DamageBridge();
 
         for (int i = 0; i < 11; i++) {
-            damageBridge.appendShot(Color.RED);
+            damageBridge.appendShot(Color.RED, true);
         }
 
         assertTrue(damageBridge.isDead());
@@ -83,18 +83,18 @@ class DamageBridgeTest {
 
         DamageBridge damageBridge = new DamageBridge();
 
-        damageBridge.appendShot(Color.RED);
+        damageBridge.appendShot(Color.RED, true);
 
         assertEquals(damageBridge.checkAdrenalin(), Adrenalin.NORMAL);
 
         for (int i = 0; i < 3; i++) {
-            damageBridge.appendShot(Color.RED);
+            damageBridge.appendShot(Color.RED, true);
         }
 
         assertEquals(damageBridge.checkAdrenalin(), Adrenalin.FIRSTADRENALIN);
 
         for (int i = 0; i < 4; i++) {
-            damageBridge.appendShot(Color.RED);
+            damageBridge.appendShot(Color.RED, true);
         }
 
         assertEquals(damageBridge.checkAdrenalin(), Adrenalin.SECONDADRENALIN);

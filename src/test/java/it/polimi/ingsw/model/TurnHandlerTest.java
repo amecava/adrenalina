@@ -62,9 +62,9 @@ class TurnHandlerTest {
            // e.printStackTrace();
         }
         for (int i = 0; i < 11; i++) {
-            player1.damagePlayer(player4.getColor());
-            player2.damagePlayer(player4.getColor());
-            player3.damagePlayer(player4.getColor());
+            player1.damagePlayer(player4.getColor(), true);
+            player2.damagePlayer(player4.getColor(), true);
+            player3.damagePlayer(player4.getColor(), true);
         }
         try {
             turnHandler.endOfTurn();

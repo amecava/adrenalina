@@ -16,6 +16,6 @@ public class AtomicDamage implements AtomicEffect {
 
         target.getTargetList().stream()
                 .flatMap(x -> x.getPlayers().stream())
-                .forEach(x -> x.damagePlayer(source.getColor()));
+                .forEach(x -> x.damagePlayer(source.getColor(), target.getcheckMarks()));
     }
 }

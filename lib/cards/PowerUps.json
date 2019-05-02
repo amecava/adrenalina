@@ -5,7 +5,7 @@
 
         "effect": {
             "args": 1, 
-            "cost": "FREE",
+            "cost": ["ANY"],
             
             "sameAsPlayer": false,
             
@@ -21,6 +21,50 @@
             }
         }
     }, 
+    {
+        "name": "MIRINO",
+        "color": "BLUE",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ANY"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
+    {
+        "name": "MIRINO",
+        "color": "YELLOW",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ANY"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
     {
         "name": "RAGGIO CINETICO",
         "color": "RED",
@@ -45,29 +89,429 @@
         }
     }, 
     {
+        "name": "RAGGIO CINETICO",
+        "color": "BLUE",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
+        "name": "RAGGIO CINETICO",
+        "color": "YELLOW",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
         "name": "GRANATA VENOM",
         "color": "RED",
 
         "effect": {
             "args": 0,   
 
-            "sameAsPlayer": false,
+            "sameAsPlayer": true,
 
             "next": {
         
                 "args": 1,           
                 "targetType": "PLAYER",
     
-                "targetView": true,
     
-                "atomicEffectList": ["DAMAGE"]
+                "atomicEffectList": ["MARK"]
             }
         }
 
     }, 
     {
+        "name": "GRANATA VENOM",
+        "color": "BLUE",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
+        "name": "GRANATA VENOM",
+        "color": "YELLOW",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
         "name": "TELETRASPORTO",
         "color": "RED",
+
+        "effect": {
+            "args": 1,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 1,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    }, 
+    {
+        "name": "TELETRASPORTO",
+        "color": "BLUE",
+
+        "effect": {
+            "args": 1,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 1,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    },
+    {
+        "name": "TELETRASPORTO",
+        "color": "YELLOW",
+
+        "effect": {
+            "args": 1,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 1,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    },
+    {
+        "name": "MIRINO",
+        "color": "RED",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ANY"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    }, 
+    {
+        "name": "MIRINO",
+        "color": "BLUE",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ANY"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
+    {
+        "name": "MIRINO",
+        "color": "YELLOW",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ANY"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
+    {
+        "name": "RAGGIO CINETICO",
+        "color": "RED",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    }, 
+    {
+        "name": "RAGGIO CINETICO",
+        "color": "BLUE",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
+        "name": "RAGGIO CINETICO",
+        "color": "YELLOW",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
+        "name": "GRANATA VENOM",
+        "color": "RED",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    }, 
+    {
+        "name": "GRANATA VENOM",
+        "color": "BLUE",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
+        "name": "GRANATA VENOM",
+        "color": "YELLOW",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
+        "name": "TELETRASPORTO",
+        "color": "RED",
+
+        "effect": {
+            "args": 1,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 1,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    }, 
+    {
+        "name": "TELETRASPORTO",
+        "color": "BLUE",
+
+        "effect": {
+            "args": 1,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 1,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    },
+    {
+        "name": "TELETRASPORTO",
+        "color": "YELLOW",
 
         "effect": {
             "args": 1,

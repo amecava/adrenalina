@@ -37,14 +37,17 @@ class DamageBridge {
         this.shots.clear();
     }
 
-    void appendShot(Color color) {
+    void appendShot(Color color, boolean checkMarks) {
 
         if (this.shots.size() < 12) {
 
             this.shots.add(new Shots(color));
         }
 
-        this.marks = this.updateMarksToShots(color);
+        if (checkMarks) {
+
+            this.marks = this.updateMarksToShots(color);
+        }
     }
 
     void appendMark(Color color) {

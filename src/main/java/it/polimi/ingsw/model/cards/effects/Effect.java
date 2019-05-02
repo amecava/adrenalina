@@ -139,6 +139,7 @@ public class Effect {
         return this.sameAsFather;
     }
 
+
     public Boolean getSameAsFather(int index) {
 
         return this.sameAsFather.get(index);
@@ -245,7 +246,9 @@ public class Effect {
 
         public Effect build() {
 
-            this.id = this.jEffectObject.getInt("id");
+            if (this.jEffectObject.containsKey("id")) {
+                this.id = this.jEffectObject.getInt("id");
+            }
 
             if (this.jEffectObject.containsKey("args")) {
                 this.args = this.jEffectObject.getInt("args");
@@ -259,7 +262,9 @@ public class Effect {
                 this.description = this.jEffectObject.getString("description");
             }
 
-            this.targetType = TargetType.valueOf(this.jEffectObject.getString("targetType"));
+            if (this.jEffectObject.containsKey("targetType")) {
+                this.targetType = TargetType.valueOf(this.jEffectObject.getString("targetType"));
+            }
 
             if (this.jEffectObject.containsKey("next")) {
                 this.next = new Effect.EffectBuilder(this.jEffectObject.getJsonObject("next")).build();

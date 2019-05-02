@@ -44,6 +44,8 @@ class PlayerTest {
         assertFalse(board.getRoom(0).getSquare(0).getPlayers().contains(player));
     }
 
+    //Every test is temporarily not completely reliable due to a change in the "collect" action implementation,
+    // it will be updated as soon as we finish the final implementation
     @Test
     void collectFromNotSpawn() {
 
@@ -73,7 +75,7 @@ class PlayerTest {
         } catch (SquareTypeException | EmptySquareException e) {
             fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         player.movePlayer(board.getRoom(0).getSquare(1));
@@ -95,7 +97,7 @@ class PlayerTest {
         } catch (SquareTypeException | EmptySquareException e) {
             fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         player.movePlayer(board.getRoom(0).getSquare(0));
@@ -117,7 +119,7 @@ class PlayerTest {
         } catch (SquareTypeException | EmptySquareException e) {
             fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         //tests that if you already collected everything in the square the right exception gets thrown
@@ -134,7 +136,7 @@ class PlayerTest {
 
             fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         //tests the correct behaviour of the method if the player is in a spawn square
@@ -150,7 +152,7 @@ class PlayerTest {
         } catch (EmptySquareException e) {
             fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
 
@@ -183,7 +185,7 @@ class PlayerTest {
         } catch (CardException e) {
             e.printStackTrace();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         // wrong method call from square
@@ -203,7 +205,7 @@ class PlayerTest {
         } catch (CardException e) {
             e.printStackTrace();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         // hand is full
@@ -224,9 +226,9 @@ class PlayerTest {
 
             assertTrue(true);
         } catch (CardException e) {
-            e.printStackTrace();
+            fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         // card added to hand
@@ -242,9 +244,9 @@ class PlayerTest {
         } catch (SquareTypeException | FullHandException | EmptySquareException e) {
             fail();
         } catch (CardException e) {
-            e.printStackTrace();
+            fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         // empty square, no more weapon cards
@@ -273,9 +275,9 @@ class PlayerTest {
 
             assertTrue(true);
         } catch (CardException e) {
-            e.printStackTrace();
+            fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
     }
@@ -287,7 +289,6 @@ class PlayerTest {
         board.fill();
 
         Player player = new Player("player", Color.GRAY);
-
 
         try {
 
@@ -303,11 +304,10 @@ class PlayerTest {
 
             fail();
 
-        } catch (CardNotFoundException e) {
-
-            assertTrue(true);
+        } catch (CardException e) {
+            fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
 
         try {
@@ -318,19 +318,21 @@ class PlayerTest {
 
             player.collect(15, 3);
 
-            assertTrue(player.getWeaponHand().stream().map(x -> (WeaponCard)x).anyMatch(y -> y.getId() == 3));
-            assertTrue(player.getCurrentPosition().getTools().stream().map(x -> (WeaponCard)x).anyMatch(y -> y.getId() == 15));
+            assertTrue(player.getWeaponHand().stream().map(x -> (WeaponCard) x)
+                    .anyMatch(y -> y.getId() == 3));
+            assertTrue(player.getCurrentPosition().getTools().stream().map(x -> (WeaponCard) x)
+                    .anyMatch(y -> y.getId() == 15));
 
         } catch (SquareTypeException | EmptySquareException e) {
 
             fail();
 
-        } catch (CardNotFoundException e) {
-
+        } catch (CardException e) {
             fail();
         } catch (IllegalActionException e) {
-            e.printStackTrace();
+            assertTrue(true);
         }
+
 
     }
 }

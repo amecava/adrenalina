@@ -14,6 +14,8 @@ public class EffectArgument {
 
     private List<PowerUpCard> ammoList = new ArrayList<>();
 
+    private boolean checkMarks = true;
+
     public EffectArgument() {
 
         this.targetList = new ArrayList<>();
@@ -34,6 +36,16 @@ public class EffectArgument {
 
         this.destination = destination;
         this.targetList = targetList;
+    }
+
+    public boolean getcheckMarks() {
+
+        return this.checkMarks;
+    }
+
+    public void setCheckMarks(boolean checkMarks) {
+
+        this.checkMarks = checkMarks;
     }
 
     public Square getDestination() {

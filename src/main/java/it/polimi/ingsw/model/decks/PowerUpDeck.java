@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
@@ -14,19 +15,30 @@ import javax.json.JsonReader;
 
 public class PowerUpDeck {
 
-    List<Card> deck;
+    List<PowerUpCard> deck;
 
     private PowerUpDeck(PowerUpDeckBuilder builder) {
 
         this.deck = builder.deck;
-       // Collections.shuffle(this.deck);
+        // Collections.shuffle(this.deck);
     }
 
+    //useful for tests
+    public List<PowerUpCard> getDeck() {
 
+        return this.deck;
+    }
+
+    public PowerUpCard getCard(){
+
+        return this.deck.remove(0);
+    }
+
+    /* -------------------------- BUILDER -------------------------- */
 
     public static class PowerUpDeckBuilder {
 
-        List<Card> deck;
+        List<PowerUpCard> deck = new ArrayList<>();
         EffectHandler effectHandler;
 
 
@@ -52,6 +64,7 @@ public class PowerUpDeck {
                 JsonArray jEffectsArray = pReader.readArray();
 
                 jEffectsArray.forEach(x ->
+
                         this.deck.add(new PowerUpCard.PowerUpCardBuilder(effectHandler)
                                 .build(x.asJsonObject()))
                 );

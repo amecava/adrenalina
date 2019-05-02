@@ -42,6 +42,7 @@ public class TurnHandler {
     }
 
     private void setActivePlayer(Player activePlayer) {
+
         this.activePlayer = activePlayer;
         this.effectHandler.setActivePlayer(activePlayer);
     }
@@ -51,6 +52,7 @@ public class TurnHandler {
         if (!this.frenzy) {
 
             this.frenzy = true;
+
             Player tempPlayer = this.playerList.get(this.getNextPlayer(this.activePlayer));
 
             while (!tempPlayer.isFirstPlayer()) {
@@ -100,23 +102,33 @@ public class TurnHandler {
     //endOfTurn called by the presenter!!!!
     public void endOfTurn()
             throws EndGameException { //should be protected but for testing we use public!!
+
         this.endAction();
         this.board.endOfTurnFill();
+
         try {
+
             pointHandler.checkIfDead();
         } catch (FrenzyRegenerationException e) {
+
             this.frenzyRound();
+
             return;
         }
+
         this.setActivePlayer(playerList.get(this.getNextPlayer(this.activePlayer)));
+
         this.remainingActions = 2;
     }
 
     public void startGame(Player firstPlayer) throws IllegalAccessException {
+
         if (!gameStarted) {
+
             gameStarted = true;
             firstPlayer.setFirstPlayer(true);
             this.setActivePlayer(firstPlayer);
+
         } else {
             throw new IllegalAccessException("game already started!");
         }
@@ -124,18 +136,24 @@ public class TurnHandler {
 
     //for all possible actions the presenter must see if the player that is  calling turnHandler is the activePlayer
     public void selectAction(int actionId) throws IllegalActionException {
-        if (remainingActions > 0 || actionId==4) {//actionId=4 means reload!!
+
+        if (remainingActions > 0 || actionId == 4) {//actionId=4 means reload!!
+
             this.activePlayer.selectAction(actionId - 1);
-            if (actionId==4)
-                this.remainingActions=0;
-            else
+
+            if (actionId == 4) {
+
+                this.remainingActions = 0;
+            } else {
+
                 this.remainingActions--;
+            }
 
         } else {
             throw new IllegalActionException(
-                    "no remaining actions, please type end of turn."
+                    "No remaining actions, please type 'end of turn'."
                             + "If you want to reload before finishing the turn please type end action "
-                            + "followed  by  reload with the guns you would like to reload! ");
+                            + "followed by reload with the guns you would like to reload! ");
         }
     }
 
