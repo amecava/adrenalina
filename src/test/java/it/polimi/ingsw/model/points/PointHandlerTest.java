@@ -36,6 +36,7 @@ class PointHandlerTest {
         player1.damagePlayer(player2.getColor(), true);
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -79,6 +80,7 @@ class PointHandlerTest {
         player1.markPlayer(Color.LIGHTBLUE);
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -90,6 +92,7 @@ class PointHandlerTest {
         }
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -129,6 +132,7 @@ class PointHandlerTest {
         }
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -139,6 +143,7 @@ class PointHandlerTest {
         }
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -180,6 +185,7 @@ class PointHandlerTest {
         }
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -195,6 +201,7 @@ class PointHandlerTest {
         player1.damagePlayer(player4.getColor(), true);
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -210,7 +217,7 @@ class PointHandlerTest {
         assertTrue(pointHandler.getWinner().get(3).contains(player3) && pointHandler.getWinner().get(3).size()==1);
         assertTrue(pointHandler.getWinner().get(1).contains(player1) && pointHandler.getWinner().get(1).size()==1);
         assertEquals(5, player1.getShots().size());
-        assertEquals(6, pointHandler.getDeaths().size());
+        assertEquals(6, pointHandler.getDeaths().getShots().size());
 
     }
 

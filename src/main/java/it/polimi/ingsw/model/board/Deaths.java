@@ -17,7 +17,6 @@ public class Deaths extends Bridge {
     }
 
     public List<Shots> getKillStreak() {
-
         return this.getShots();
     }
 

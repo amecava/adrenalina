@@ -35,7 +35,7 @@ class DeathsTest {
         }
         try {
             pointHandler.checkIfDead();
-
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
            // e.printStackTrace();
         } catch (EndGameException e) {
@@ -54,6 +54,7 @@ class DeathsTest {
         player2.damagePlayer(player3.getColor(), true);
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
            // e.printStackTrace();
         } catch (EndGameException e) {

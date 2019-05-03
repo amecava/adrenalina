@@ -30,6 +30,7 @@ class ActionBridgeTest {
         }
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -42,6 +43,7 @@ class ActionBridgeTest {
         }
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {
@@ -56,6 +58,7 @@ class ActionBridgeTest {
         player3.damagePlayer(player1.getColor(), true);
         try {
             pointHandler.checkIfDead();
+            pointHandler.countKills();
         } catch (FrenzyRegenerationException e) {
             e.printStackTrace();
         } catch (EndGameException e) {

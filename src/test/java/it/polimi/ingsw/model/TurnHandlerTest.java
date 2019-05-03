@@ -3,12 +3,8 @@ package it.polimi.ingsw.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.IllegalActionException;
-import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
-import it.polimi.ingsw.model.exceptions.cards.FullHandException;
-import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
 import it.polimi.ingsw.model.exceptions.endGameException.EndGameException;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.model.points.PointHandler;
@@ -38,21 +34,60 @@ class TurnHandlerTest {
         pointHandler.enableFrenzy();
         try {
             turnHandler.startGame(playerList.get(0));
-        } catch (IllegalAccessException e) {
+        } catch (IllegalActionException e) {
             fail();
+        }
+        for(Player player : playerList){
+            assertTrue(player.getPowerUpsList().size()==2);
         }
         try {
             turnHandler.startGame(playerList.get(0));
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalActionException e) {
             assertTrue(true);
-            //e.printStackTrace();
+        }
+        try {
+            turnHandler.selectAction(3);
+        } catch (IllegalActionException e) {
+            assertTrue(true);
+        }
+        try {
+            turnHandler.spawn(player1.getPowerUpsList().get(0), player1);
+        } catch (IllegalActionException e) {
+            fail();
         }
         for (Player player : playerList) {
-            assertTrue(player == turnHandler.getActivePlayer());
-            try {
-                turnHandler.endOfTurn();
-            } catch (EndGameException e) {
-               // e.printStackTrace();
+            if (player != player1) {
+                assertTrue(player == turnHandler.getActivePlayer());
+                try {
+                    turnHandler.endOfTurn();
+                } catch (EndGameException e) {
+                    // e.printStackTrace();
+                } catch (IllegalActionException e) {
+                    try {
+                        turnHandler.spawn(player.getPowerUpsList().get(0), player);
+                        assertTrue(player.getCurrentPosition()!=null);
+                    } catch (IllegalActionException e1) {
+                        e1.printStackTrace();
+                        fail();
+                    }
+                    try {
+                        turnHandler.endOfTurn();
+                    } catch (EndGameException e1) {
+                        fail();
+                    } catch (IllegalActionException e1) {
+                        fail();
+                    }
+                }
+            }
+            else{
+                try {
+                    turnHandler.endOfTurn();
+                } catch (EndGameException e) {
+                    fail();
+                } catch (IllegalActionException e) {
+                    fail();
+                }
             }
         }
 
@@ -71,7 +106,28 @@ class TurnHandlerTest {
         } catch (EndGameException e) {
             fail();
            // e.printStackTrace();
+        } catch (IllegalActionException e) {
+            assertTrue(true);
         }
+        try {
+            turnHandler.spawn(player1.getPowerUpsList().get(0), player1);
+            turnHandler.spawn(player2.getPowerUpsList().get(0), player2);
+            turnHandler.spawn(player3.getPowerUpsList().get(0), player3);
+            assertTrue(player1.getCurrentPosition()!=null);
+            assertTrue(player2.getCurrentPosition()!=null);
+            assertTrue(player3.getCurrentPosition()!=null);
+        } catch (IllegalActionException e) {
+            fail();
+        }
+        try {
+            turnHandler.endOfTurn();
+        } catch (EndGameException e) {
+            fail();
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
+            fail();
+        }
+
         for (int i = 1; i < playerList.size()-1; i++) {
             assertTrue(turnHandler.getActivePlayer() == playerList.get(i));
             try {
@@ -80,16 +136,18 @@ class TurnHandlerTest {
             catch (EndGameException e){
                 fail();
                 //e.printStackTrace();
+            } catch (IllegalActionException e) {
+                fail();
             }
 
 
         }
         try{turnHandler.endOfTurn();}
         catch (EndGameException e){
-            System.out.println("game ended !!!");
-           // System.out.println(e);
-            assertTrue(true);
+           fail();
 
+        } catch (IllegalActionException e) {
+            e.printStackTrace();
         }
         try{turnHandler.endOfTurn();}
         catch (EndGameException e){
@@ -97,6 +155,8 @@ class TurnHandlerTest {
             // System.out.println(e);
             assertTrue(true);
 
+        } catch (IllegalActionException e) {
+            fail();
         }
 
 

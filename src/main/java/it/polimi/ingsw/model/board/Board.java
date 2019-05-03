@@ -38,6 +38,9 @@ public class Board {
         this.ammoTilesDeck = builder.ammoTilesDeck;
         this.powerUpDeck = builder.powerUpDeck;
     }
+    public List<Room> getRoomsList (){
+        return this.roomsList;
+    }
 
 
     public Room getRoom(int index) {

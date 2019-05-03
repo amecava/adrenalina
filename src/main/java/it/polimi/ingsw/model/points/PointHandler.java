@@ -29,9 +29,8 @@ public class PointHandler {
         this.deaths = new Deaths(numberOfDeaths);
     }
 
-    public List<Shots> getDeaths() {
-
-        return this.deaths.getKillStreak();
+    public Bridge  getDeaths() {
+        return this.deaths;
     }
 
     public void enableFrenzy() {
@@ -48,28 +47,12 @@ public class PointHandler {
         return playerList;
     }
 
-    public void checkIfDead() throws FrenzyRegenerationException, EndGameException {
-        for (Player player : playerList){
-            if (player.isDead())
+    public void checkIfDead() {
+        for (Player player : playerList) {
+            if (player.isDead()) {
                 this.deathUpdate(player.getBridge());
-            else
-                player.controlAdrenalin();
-        }
-        if (deaths.isGameEnded()) {
-            if (!frenzyEnabled) {
-                this.playerList.forEach(x -> this.deathUpdate(x.getBridge()));
-                this.deathUpdate(this.deaths);
-                throw new EndGameException(" game ended with no frenzy actions!!", this.getWinner());
-
             } else {
-                if (!frenzyRegeneration) {
-                    this.playerList.stream().forEach(
-                            x -> x.frenzyActions());//frenzy actions should be changed in base of player order
-                    this.playerList.stream().filter(x -> x.getShots().isEmpty())
-                            .forEach(Player::setFrenzy);
-                    this.frenzyRegeneration = true;
-                }
-                throw new FrenzyRegenerationException(" Frenzy time!!!! ");
+                player.controlAdrenalin();
             }
         }
     }
@@ -109,12 +92,10 @@ public class PointHandler {
         return winner;
     }
 
-    private void deathUpdate(Bridge bridge) {
-
-        Color killShot = Color.ANY;
+    //gives correct points to different players!!
+    public  void deathUpdate(Bridge bridge) {
         boolean foundFirstBlood = false;
-        boolean foundLastShot = false;
-
+        boolean foundLastBlood = false;
         this.pointStructures = this.playerList.stream()
                 .map(x -> x.createPointStructure(bridge.getShots()))
                 .collect(Collectors.toList());
@@ -129,31 +110,62 @@ public class PointHandler {
                     pointStructure.getPlayer().setPoints(1);
                     foundFirstBlood = true;
                 }
-                if (!bridge.getColor().equals(Color.ANY) && bridge.isDead()) {
-                    if (!foundLastShot && pointStructure.getLastDamage() == 12) {
-                        pointStructure.getPlayer().markPlayer(bridge.getColor());
-                        foundLastShot = true;
-                        killShot = pointStructure.getPlayer().getColor();
-                    }
+                if (!foundLastBlood && pointStructure.getLastDamage() == 12
+                        && bridge.getColor() != Color.ANY){
+                    pointStructure.getPlayer().markPlayer(bridge.getColor());
+                    foundLastBlood=true;
+                }
+            }
+        }
 
-                    if (!foundLastShot && pointStructure.getLastDamage() == 11) {
-                        killShot = pointStructure.getPlayer().getColor();
+    }
+
+    public void countKills() throws EndGameException, FrenzyRegenerationException {
+        boolean foundLastShot;
+        Color killShot = Color.ANY;
+        for (Player player : playerList) {
+            if (!player.getBridge().getColor().equals(Color.ANY) && player.isDead()) {
+
+                killShot = player.getShots().get(player.getShots().size() - 1).getColor();
+                foundLastShot = player.getShots().size() >= 12;
+                deaths.addKill(killShot, foundLastShot);
+                if (frenzyRegeneration && !(player.getBridge().isKillStreakCount())) {
+                    player.getBridge().setFrenzy();
+                    player.getBridge().setKillStreakCount();
+                } else {
+                    player.getBridge().setPointsUsed();
+                    player.getBridge().addKill();
+                    if (!frenzyRegeneration) {
+                        player.getBridge().setAdrenalin(Adrenalin.NORMAL);
                     }
                 }
             }
         }
-        if (!bridge.getColor().equals(Color.ANY) && bridge.isDead() ) {
-            deaths.addKill(killShot, foundLastShot);
-            if (frenzyRegeneration && !(bridge.isKillStreakCount())) {
-                bridge.setFrenzy();
-                bridge.setKillStreakCount();
-            } else {
-                bridge.setPointsUsed();
-                bridge.addKill();
-                if (!frenzyRegeneration)
-                    bridge.setAdrenalin(Adrenalin.NORMAL);
+        this.checkEndGame();
+    }
 
+    private void checkEndGame() throws EndGameException, FrenzyRegenerationException {
+        if (deaths.isGameEnded()) {
+            if (!frenzyEnabled) {
+                this.endGame();
+            } else {
+                if (!frenzyRegeneration) {
+                    this.playerList.stream().forEach(
+                            x -> x.frenzyActions());//sets end game true so that adrenalin doesn't change !!
+                    this.playerList.stream().filter(x -> x.getShots().isEmpty())
+                            .forEach(
+                                    Player::setFrenzy); // filps the damage bridge and the possible actions!!!
+                    this.frenzyRegeneration = true;
+                }
+                throw new FrenzyRegenerationException(" Frenzy time!!!! ");
             }
         }
     }
+    public void endGame() throws EndGameException {
+        this.playerList.forEach(x -> this.deathUpdate(x.getBridge()));
+        this.deathUpdate(this.deaths);
+        throw new EndGameException(" game ended with no frenzy actions!!",
+                this.getWinner());
+    }
+
 }

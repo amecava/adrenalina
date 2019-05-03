@@ -109,11 +109,9 @@ public class Player implements Target {
         this.firstPlayer = firstPlayer;
     }
 
-    //useful for tests
-    public void addPowerUp(PowerUpCard powerUp) {
-
-        powerUp.setOwner(this);
+    public void addPowerUp(PowerUpCard powerUp)  {
         this.powerUpsList.add(powerUp);
+        powerUp.setOwner(this);
     }
 
     public List<PowerUpCard> getPowerUpsList() {
@@ -229,6 +227,14 @@ public class Player implements Target {
         this.endOfGame = true;
     }
 
+
+    public void playerOfBoard(PowerUpCard powerUpCard) {
+        this.addPowerUp(powerUpCard);
+        this.currentPosition.getPlayers().remove(this);
+        this.currentPosition = null;
+        this.oldPosition = null;
+    }
+
     // this method returns an AmmoTile because the Square.collectAmmoTile method removes the
     // item collected from the square, and at the end of the turn the board must be refreshed,
     // so the AmmoTile collected has to be placed in the AmmoTilesDeck by the presenter!!
@@ -251,6 +257,7 @@ public class Player implements Target {
             }
 
      */
+    // presenter should take tile see if there is a powerup and then pushcard!!
     public AmmoTile collect()
             throws SquareTypeException, EmptySquareException, IllegalActionException {
 
@@ -323,9 +330,7 @@ public class Player implements Target {
                         .findAny()
                         .orElseThrow(() -> new CardNotFoundException("You don't have that card!")),
                 squareCardId));
-
         ((WeaponCard) this.weaponHand.get(this.weaponHand.size() - 1)).setOwner(this);
-
         this.getCurrentAction().endAction(2, false);
     }
 
@@ -346,7 +351,9 @@ public class Player implements Target {
 
             throw new IllegalActionException(" you can't shoot in this action");
         }
-
+        if (this.getCurrentPosition() == null) {
+            throw new IllegalActionException(" please select a spawn square!!");
+        }
         WeaponCard weaponCard = this.weaponHand.stream()
                 .map(x -> (WeaponCard) x)
                 .filter(x -> x.getId() == cardId)
@@ -431,4 +438,5 @@ public class Player implements Target {
 
         return this.bridge.getActionBridge().getCurrentAction();
     }
+
 }
