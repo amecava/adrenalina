@@ -1,17 +1,11 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.board.rooms.Room;
-import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.PowerUpCard;
-import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.cards.effects.EffectArgument;
-import it.polimi.ingsw.model.cards.effects.EffectType;
-import it.polimi.ingsw.model.exceptions.IllegalActionException;
-import it.polimi.ingsw.model.exceptions.cards.FullHandException;
-import it.polimi.ingsw.model.exceptions.endGameException.EndGameException;
-import it.polimi.ingsw.model.exceptions.endGameException.FrenzyRegenerationException;
+import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
+import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
+import it.polimi.ingsw.model.exceptions.jacop.FrenzyRegenerationException;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.points.PointHandler;
@@ -26,7 +20,6 @@ public class TurnHandler {
     private Player firstFrenzyPlayer;
     private List<Player> playerList;
     private PointHandler pointHandler;
-    private int remainingActions;
     private EffectHandler effectHandler;
     private int turnNumber;
     private boolean canRespawn;
@@ -39,7 +32,6 @@ public class TurnHandler {
         this.playerList = pointHandler.getPlayerList();
         this.frenzy = false;
         this.gameStarted = false;
-        this.remainingActions = 2;
         this.effectHandler = effectHandler;
         this.turnNumber = 1;
         this.canRespawn = false;
@@ -90,10 +82,10 @@ public class TurnHandler {
         }
         if (this.activePlayer.getAdrenalin().equals(Adrenalin.FIRSTFRENZY)) {
 
-            this.remainingActions = 2;
+            this.activePlayer.setRemainingActions(2);
         } else {
 
-            this.remainingActions = 1;
+            this.activePlayer.setRemainingActions(1);
         }
     }
 
@@ -112,16 +104,19 @@ public class TurnHandler {
     // presenter needs to catch the end of game exception and block everything !!!
     //endOfTurn called by the presenter!!!!
     public void endOfTurn() throws EndGameException, IllegalActionException {
-        this.endAction();
-        this.remainingActions = 0;
+        this.activePlayer.endAction();
+        this.activePlayer.setRemainingActions(0);
         this.playerList.stream().filter(x -> x.isDead() && !canRespawn)
-                .forEach(x -> x.playerOfBoard(this.board.getPowerUp()));
+                .forEach(x -> {
+                    x.removePlayerFromBoard();
+                    x.addPowerUp(this.board.getPowerUp());
+                });
         this.canRespawn = true;
         if (!this.canFinishTurn()) {
             throw new IllegalActionException(" please wait for all players to spawn back!!");
         }
         this.canRespawn=false;
-        this.board.endOfTurnFill();
+        this.board.fillBoard();
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
@@ -133,7 +128,7 @@ public class TurnHandler {
         }
 
         this.setActivePlayer(playerList.get(this.getNextPlayer(this.activePlayer)));
-        this.remainingActions = 2;
+        this.activePlayer.setRemainingActions(2);
         this.turnNumber++;
     }
 
@@ -177,43 +172,13 @@ public class TurnHandler {
         else throw new IllegalActionException(" game already started!!");
     }
 
-    //for all possible actions the presenter must see if the player that is  calling turnHandler is the activePlayer
-    public void selectAction(int actionId) throws IllegalActionException {
-
-        if (activePlayer.getCurrentPosition() != null) {
-
-            if (remainingActions > 0 || actionId == 4) {//actionId=4 means reload!!
-
-                this.activePlayer.selectAction(actionId - 1);
-                if (actionId == 4) {
-                    this.remainingActions = 0;
-                } else {
-
-                    this.remainingActions--;
-                }
-
-            } else {
-                throw new IllegalActionException(
-                        "No remaining actions, please type 'end of turn'."
-                                + "If you want to reload before finishing the turn please type end action "
-                                + "followed by reload with the guns you would like to reload! ");
-            }
-        } else {
-            throw new IllegalActionException(" please spawn before any action!!! ");
-        }
-    }
-
-    private void endAction() {
-        this.activePlayer.endAction();
-    }
-
     //presenter needs to check if the active player is really calling spawn!!!!
     public  void spawn(PowerUpCard powerUpCard, Player player) throws IllegalActionException {
         if ((this.turnNumber <=playerList.size() && player == this.activePlayer) || (this.canRespawn && player
                 .isDead())) {
             powerUpCard.setOwner(null);
             player.getPowerUpsList().remove(powerUpCard);
-            this.board.getPowerUpDeck().getDeck().add(powerUpCard);
+            this.board.getPowerUpDeck().addPowerUpCard(powerUpCard);
             player.movePlayer(this.board.getRoomsList().stream()
                     .filter(x -> x.getColor().equals(powerUpCard.getColor()))
                     .flatMap(x -> x.getSquaresList().stream()).filter(x -> x.isSpawn())

@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.decks;
 
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.cards.Card;
-import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,12 +13,12 @@ import javax.json.JsonReader;
 
 public class AmmoTilesDeck {
 
-    List<AmmoTile> ammoTilesList;
+    private List<AmmoTile> ammoTilesList;
 
-    private AmmoTilesDeck(AmmoTilesDeckBuilder builder){
+    private AmmoTilesDeck(AmmoTilesDeckBuilder builder) {
 
         this.ammoTilesList = builder.ammoTilesList;
-        //Collections.shuffle(this.ammoTilesList);
+        Collections.shuffle(this.ammoTilesList);
     }
 
     public Card getTile() {
@@ -27,34 +26,29 @@ public class AmmoTilesDeck {
         return this.ammoTilesList.remove(0);
     }
 
-    // useful for tests
-    public AmmoTile getTile(int i){
-        return this.ammoTilesList.remove(i);
-    }
+    public static class AmmoTilesDeckBuilder {
 
-    public void pushAmmoTile(AmmoTile ammoTile){
-        this.ammoTilesList.add(ammoTile);
-    }
+        private PowerUpDeck powerUpDeck;
 
-    /* -------------------------- BUILDER -------------------------- */
+        private List<AmmoTile> ammoTilesList = new ArrayList<>();
 
-    public static class AmmoTilesDeckBuilder{
+        public AmmoTilesDeckBuilder(PowerUpDeck powerUpDeck) {
 
-        List<AmmoTile> ammoTilesList = new ArrayList<>();
-
-        public AmmoTilesDeckBuilder(){
+            this.powerUpDeck = powerUpDeck;
 
             this.readTilesFromJson();
         }
 
         private void readTilesFromJson() {
 
-            try (JsonReader tReader = Json.createReader(new FileReader("lib/cards/AmmoTiles.json"))) {
+            try (JsonReader tReader = Json
+                    .createReader(new FileReader("lib/cards/AmmoTiles.json"))) {
 
                 JsonArray jTilesArray = tReader.readArray();
 
                 jTilesArray.forEach(x ->
-                        this.ammoTilesList.add(new AmmoTile.AmmoTileBuilder(x.asJsonObject()).build())
+                        this.ammoTilesList
+                                .add(new AmmoTile.AmmoTileBuilder(x.asJsonObject(), this.powerUpDeck).build())
                 );
 
             } catch (IOException e) {
@@ -63,7 +57,7 @@ public class AmmoTilesDeck {
             }
         }
 
-        public AmmoTilesDeck build(){
+        public AmmoTilesDeck build() {
 
             return new AmmoTilesDeck(this);
         }

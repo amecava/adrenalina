@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ class MachineGunTest {
         target3.movePlayer(board.getRoom(1).getSquare(2));
         target4.movePlayer(board.getRoom(1).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(1);
+        WeaponCard tester = weaponDeck.getCard(2);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -56,11 +57,11 @@ class MachineGunTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -68,9 +69,9 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -80,11 +81,11 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertEquals(target3.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 2);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }
@@ -109,7 +110,7 @@ class MachineGunTest {
         target3.movePlayer(board.getRoom(1).getSquare(2));
         target4.movePlayer(board.getRoom(1).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(1);
+        WeaponCard tester = weaponDeck.getCard(2);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -125,11 +126,11 @@ class MachineGunTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -137,9 +138,9 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -149,11 +150,11 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertEquals(target3.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 2);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }
@@ -178,7 +179,7 @@ class MachineGunTest {
         target3.movePlayer(board.getRoom(1).getSquare(2));
         target4.movePlayer(board.getRoom(1).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(1);
+        WeaponCard tester = weaponDeck.getCard(2);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -194,11 +195,11 @@ class MachineGunTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -206,9 +207,9 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -218,11 +219,11 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertEquals(target3.getShots().size(), 0);
             assertEquals(target2.getShots().size(), 2);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }
@@ -247,7 +248,7 @@ class MachineGunTest {
         target3.movePlayer(board.getRoom(1).getSquare(2));
         target4.movePlayer(board.getRoom(1).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(1);
+        WeaponCard tester = weaponDeck.getCard(2);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -263,11 +264,11 @@ class MachineGunTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -275,11 +276,11 @@ class MachineGunTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target2.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -287,9 +288,9 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -299,12 +300,12 @@ class MachineGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target2.getShots().size(), 2);
             assertEquals(target3.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }

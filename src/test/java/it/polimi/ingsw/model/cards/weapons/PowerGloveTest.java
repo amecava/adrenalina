@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.exceptions.cards.CostException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ class PowerGloveTest {
         target2.movePlayer(board.getRoom(0).getSquare(1));
         target3.movePlayer(board.getRoom(0).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(18);
+        WeaponCard tester = weaponDeck.getCard(19);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -55,9 +56,9 @@ class PowerGloveTest {
 
         // Too many targets
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -67,9 +68,9 @@ class PowerGloveTest {
 
         // Target must be exactly one move away
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -79,9 +80,9 @@ class PowerGloveTest {
 
         // Target must be exactly one move away
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -91,7 +92,7 @@ class PowerGloveTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target2.getShots().size(), 1);
             assertEquals(target2.getMarks().size(), 2);
@@ -100,7 +101,7 @@ class PowerGloveTest {
 
             assertEquals(source.getCurrentPosition(), board.getRoom(0).getSquare(1));
             assertEquals(source.getOldPosition(), board.getRoom(0).getSquare(0));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -108,9 +109,9 @@ class PowerGloveTest {
 
         // Card not loaded
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -145,7 +146,7 @@ class PowerGloveTest {
 
         target6.movePlayer(board.getRoom(0).getSquare(0));
 
-        WeaponCard tester = weaponDeck.getCard(18);
+        WeaponCard tester = weaponDeck.getCard(19);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -161,9 +162,9 @@ class PowerGloveTest {
 
         // Target2 is through wall
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -173,9 +174,9 @@ class PowerGloveTest {
 
         // Targets on same square
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -185,9 +186,9 @@ class PowerGloveTest {
 
         // Targets not cardinal
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -197,7 +198,7 @@ class PowerGloveTest {
 
         // Use alternative
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
 
             assertEquals(target3.getShots().size(), 2);
             assertEquals(target6.getShots().size(), 2);
@@ -205,7 +206,7 @@ class PowerGloveTest {
             assertEquals(source.getCurrentPosition(), board.getRoom(0).getSquare(0));
             assertEquals(target3.getCurrentPosition(), board.getRoom(0).getSquare(1));
             assertEquals(target6.getCurrentPosition(), board.getRoom(0).getSquare(0));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -213,22 +214,24 @@ class PowerGloveTest {
 
         // Card not loaded
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
         }
 
+        tester.getOwner().getAmmoCubesList().forEach(x -> x.setUsed(false));
+
         try {
 
-            tester.reloadWeapon(Arrays.asList());
-        } catch (CostException e) {
-            //
-        }
+            tester.reloadWeapon(new ArrayList<>());
 
-        assertTrue(tester.isLoaded());
+            assertTrue(tester.isLoaded());
+        } catch (CostException e) {
+            fail();
+        }
 
         source.movePlayer(board.getRoom(0).getSquare(2));
 
@@ -236,13 +239,13 @@ class PowerGloveTest {
 
         // Use alternative wrong order
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
 
             assertEquals(target3.getShots().size(), 4);
             assertEquals(target6.getShots().size(), 4);
 
             assertEquals(source.getCurrentPosition(), board.getRoom(0).getSquare(0));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }

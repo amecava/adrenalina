@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.endGameException.EndGameException;
-import it.polimi.ingsw.model.exceptions.endGameException.FrenzyRegenerationException;
+import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
+import it.polimi.ingsw.model.exceptions.jacop.FrenzyRegenerationException;
 import it.polimi.ingsw.model.points.PointHandler;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -59,7 +59,6 @@ class DeathsTest {
            // e.printStackTrace();
         } catch (EndGameException e) {
            // e.printStackTrace();
-            System.out.println("end Game!!!");
         }
         player2.setPoints(-3);
         player3.setPoints(+10);

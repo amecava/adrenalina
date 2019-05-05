@@ -3,16 +3,20 @@ package it.polimi.ingsw.model.ammo;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.CardType;
+import it.polimi.ingsw.model.cards.PowerUpCard;
+import it.polimi.ingsw.model.decks.PowerUpDeck;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.JsonObject;
 
 public class AmmoTile implements Card {
 
+    private PowerUpDeck powerUpDeck;
     private List<Color> ammoCubesList;
 
     private AmmoTile(AmmoTileBuilder builder) {
 
+        this.powerUpDeck = builder.powerUpDeck;
         this.ammoCubesList = builder.ammoCubes;
     }
 
@@ -41,14 +45,22 @@ public class AmmoTile implements Card {
 
     public boolean hasPowerUpCard() {
 
-        return this.ammoCubesList.size() != 3;
+        return this.ammoCubesList.size() != 3 && !this.powerUpDeck.getDeck().isEmpty();
+    }
+
+    public PowerUpCard getPowerUpCard() {
+
+        return this.powerUpDeck.getPowerUpCard();
     }
 
     public static class AmmoTileBuilder {
 
-        List<Color> ammoCubes = new ArrayList<>();
+        private PowerUpDeck powerUpDeck;
+        private List<Color> ammoCubes = new ArrayList<>();
 
-        public AmmoTileBuilder(JsonObject jTileObject) {
+        public AmmoTileBuilder(JsonObject jTileObject, PowerUpDeck powerUpDeck) {
+
+            this.powerUpDeck = powerUpDeck;
 
             jTileObject.getJsonArray("cubes").forEach(x -> this.ammoCubes
                     .add(Color.valueOf(x.toString().substring(1, x.toString().length() - 1))));

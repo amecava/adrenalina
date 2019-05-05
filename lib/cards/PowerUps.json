@@ -5,7 +5,7 @@
 
         "effect": {
             "args": 1, 
-            "cost": ["ANY"],
+            "cost": ["ALL"],
             
             "sameAsPlayer": false,
             
@@ -27,7 +27,7 @@
 
         "effect": {
             "args": 1, 
-            "cost": ["ANY"],
+            "cost": ["ALL"],
             
             "sameAsPlayer": false,
             
@@ -49,7 +49,7 @@
 
         "effect": {
             "args": 1, 
-            "cost": ["ANY"],
+            "cost": ["ALL"],
             
             "sameAsPlayer": false,
             
@@ -272,7 +272,7 @@
 
         "effect": {
             "args": 1, 
-            "cost": ["ANY"],
+            "cost": ["ALL"],
             
             "sameAsPlayer": false,
             
@@ -294,7 +294,7 @@
 
         "effect": {
             "args": 1, 
-            "cost": ["ANY"],
+            "cost": ["ALL"],
             
             "sameAsPlayer": false,
             
@@ -316,7 +316,7 @@
 
         "effect": {
             "args": 1, 
-            "cost": ["ANY"],
+            "cost": ["ALL"],
             
             "sameAsPlayer": false,
             

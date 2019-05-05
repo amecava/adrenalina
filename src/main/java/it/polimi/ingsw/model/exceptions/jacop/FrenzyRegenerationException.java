@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.exceptions.endGameException;
+package it.polimi.ingsw.model.exceptions.jacop;
 
 public class FrenzyRegenerationException extends Throwable {
     String description;

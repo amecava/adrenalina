@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.exceptions;
+package it.polimi.ingsw.model.exceptions.jacop;
 
 public class IllegalActionException extends Exception{
     private String string;

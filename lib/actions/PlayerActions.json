@@ -1,147 +1,183 @@
 [
   {
     "id": 0,
-    "collect": true,
-    "effect": {
-      "id": 0,
-      "args": 1,
-      "targetType": "PLAYER",
-      "maxTargets": 1,
-      "sameAsPlayer": true,
-      "maxDist": 3,
-      "atomicEffectList": [
-        "MOVE"
-      ]
-    }
+
+    "reload": true
   },
   {
     "id" : 1,
+
     "move": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 3,
+
       "atomicEffectList": ["MOVE"]
     }
 
   },
   {
     "id": 2,
+
     "move": true,
     "collect" : true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 1,
+
       "atomicEffectList": ["MOVE"]
     }
   },
   {
     "id": 3,
+
     "shoot": true
   },
   {
     "id": 4,
+
     "move": true,
     "collect": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 2,
+
       "atomicEffectList": ["MOVE"]
     }
   },
   {
     "id": 5,
+
     "move": true,
     "shoot": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 1,
+
       "atomicEffectList": ["MOVE"]
     }
   },
   {
     "id": 6,
+
     "move": true,
     "reload" : true,
     "shoot": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 1,
+
       "atomicEffectList": ["MOVE"]
     }
   },
   {
     "id": 7,
+
     "move": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 4,
+
       "atomicEffectList": ["MOVE"]
     }
   },
   {
     "id": 8,
+
     "move": true,
     "collect": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 2,
+
       "atomicEffectList": ["MOVE"]
     }
   },
   {
     "id": 9,
+
     "move": true,
     "reload": true,
     "shoot": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 2,
+
       "atomicEffectList": ["MOVE"]
     }
   },
   {
     "id": 10,
+
     "move": true,
     "collect": true,
+
     "effect": {
       "id": 0,
       "args": 1,
       "targetType": "PLAYER",
+
       "maxTargets": 1,
       "sameAsPlayer": true,
+
       "maxDist": 3,
+      
       "atomicEffectList": ["MOVE"]
     }
   }

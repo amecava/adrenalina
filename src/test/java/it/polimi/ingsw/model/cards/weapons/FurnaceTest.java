@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,7 @@ class FurnaceTest {
         target2.movePlayer(board.getRoom(1).getSquare(2));
         target3.movePlayer(board.getRoom(1).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(8);
+        WeaponCard tester = weaponDeck.getCard(9);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -54,9 +55,9 @@ class FurnaceTest {
 
         // Wrong target type
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -66,9 +67,9 @@ class FurnaceTest {
 
         // Same room as source
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -78,9 +79,9 @@ class FurnaceTest {
 
         // Source can't see room
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -90,9 +91,9 @@ class FurnaceTest {
 
         // Duplicates found
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -102,12 +103,12 @@ class FurnaceTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 1);
             assertEquals(target2.getShots().size(), 1);
             assertEquals(target3.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }
@@ -129,7 +130,7 @@ class FurnaceTest {
         target2.movePlayer(board.getRoom(0).getSquare(1));
         target3.movePlayer(board.getRoom(0).getSquare(1));
 
-        WeaponCard tester = weaponDeck.getCard(8);
+        WeaponCard tester = weaponDeck.getCard(9);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -145,9 +146,9 @@ class FurnaceTest {
 
         // Distance property violated
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -158,9 +159,9 @@ class FurnaceTest {
 
         // Duplicate exception
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -170,13 +171,13 @@ class FurnaceTest {
 
         // Use alternative
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target2.getShots().size(), 1);
             assertEquals(target3.getShots().size(), 1);
             assertEquals(target2.getMarks().size(), 1);
             assertEquals(target3.getMarks().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }

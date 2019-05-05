@@ -19,6 +19,7 @@ public class PowerUpCard implements Card, Ammo {
 
     private String name;
     private Color color;
+
     private Player owner;
 
     private Effect effect;
@@ -52,11 +53,6 @@ public class PowerUpCard implements Card, Ammo {
 
     }
 
-    public Player getOwner() {
-
-        return this.owner;
-    }
-
     public void setOwner(Player owner) {
 
         this.owner = owner;
@@ -76,7 +72,7 @@ public class PowerUpCard implements Card, Ammo {
             throw new EffectCallException("Wrong method call!");
         }
 
-        target.setCheckMarks(false);
+        target.setWeaponCard(false);
 
         if (!this.effect.isSameAsPlayer() && this.owner
                 .equals(this.effectHandler.getActivePlayer())) {
@@ -89,11 +85,11 @@ public class PowerUpCard implements Card, Ammo {
 
             Player tmPlayer = effectHandler.getActivePlayer();
             target.appendTarget(tmPlayer);
-            this.effectHandler.setTmpActivePlayer(this.owner);
+            this.effectHandler.setActivePlayer(this.owner);
 
             this.effectHandler.useEffect(this.effect.getNext(), target);
 
-            this.effectHandler.setTmpActivePlayer(tmPlayer);
+            this.effectHandler.setActivePlayer(tmPlayer);
             this.effectHandler.getActive().remove(tmPlayer);
 
         } else {
@@ -117,19 +113,17 @@ public class PowerUpCard implements Card, Ammo {
             throw new EffectCallException("Wrong method call!");
         }
 
-        target.setCheckMarks(false);
-
-        if (!effect.isSameAsPlayer() && this.owner
+        if (effect.isSameAsPlayer() || !this.owner
                 .equals(effectHandler.getActivePlayer())) {
-
-            this.effectHandler.useEffect(this.effect.getNext(), target);
-
-            ammoCube.setUsed(true);
-        } else {
 
             throw new CardNotLoadedException("You can't use a power up right now!");
         }
 
+        target.setWeaponCard(false);
+
+        this.effectHandler.useEffect(this.effect.getNext(), target);
+
+        ammoCube.setUsed(true);
     }
 
     public static class PowerUpCardBuilder {
@@ -150,6 +144,7 @@ public class PowerUpCard implements Card, Ammo {
 
             this.name = jsonObject.getString("name");
             this.color = Color.valueOf(jsonObject.getString("color"));
+
             this.effect = new Effect.EffectBuilder(jsonObject.getJsonObject("effect")).build();
 
             return new PowerUpCard(this);

@@ -1,18 +1,15 @@
 package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.cards.PowerUpCard;
-import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.decks.AmmoTilesDeck;
 import it.polimi.ingsw.model.decks.PowerUpDeck;
 import it.polimi.ingsw.model.decks.WeaponDeck;
 import it.polimi.ingsw.model.board.rooms.Room;
-import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +35,9 @@ public class Board {
         this.ammoTilesDeck = builder.ammoTilesDeck;
         this.powerUpDeck = builder.powerUpDeck;
     }
-    public List<Room> getRoomsList (){
+
+    public List<Room> getRoomsList() {
+
         return this.roomsList;
     }
 
@@ -48,31 +47,11 @@ public class Board {
         return this.roomsList.get(index);
     }
 
-    public void fill() {
-        this.roomsList.stream().flatMap(x -> x.getSquaresList().stream()).forEach(y -> {
-
-            if (y.isSpawn()) {
-
-                for (int i = 0; i < 3; i++) {
-
-                    y.addTool(this.weaponDeck.getCard());
-                }
-            } else {
-
-                y.addTool(this.ammoTilesDeck.getTile());
-
-            }
-
-        });
-    }
-
-    // useful for tests
     public WeaponDeck getWeaponDeck() {
 
         return this.weaponDeck;
     }
 
-    //useful for tests
     public PowerUpDeck getPowerUpDeck() {
 
         return this.powerUpDeck;
@@ -80,30 +59,23 @@ public class Board {
 
     public PowerUpCard getPowerUp() {
 
-        return this.powerUpDeck.getCard();
+        return this.powerUpDeck.getPowerUpCard();
     }
 
-    public void pushAmmoTile(AmmoTile ammoTile) {
-        this.ammoTilesDeck.pushAmmoTile(ammoTile);
-    }
+    public void fillBoard() {
 
-    public void endOfTurnFill() {
+        this.roomsList.stream()
+                .flatMap(x -> x.getSquaresList().stream())
+                .forEach(x -> {
+                    if (x.isSpawn()) {
+                        while (x.getTools().size() < 3) {
+                            x.addTool(this.weaponDeck.getCard());
+                        }
+                    } else if (x.getTools().isEmpty()) {
 
-        for (Room room : roomsList) {
-
-            for (Square square : room.getSquaresList()) {
-
-                if (square.isSpawn() && square.getTools().size() < 3 && !this.weaponDeck.getDeck()
-                        .isEmpty()) {
-
-                    square.addTool(this.weaponDeck.getCard());
-                } else if (!square.isSpawn() && square.getTools().isEmpty()) {
-
-                    square.addTool(this.ammoTilesDeck.getTile());
-                }
-            }
-        }
-
+                        x.addTool(this.ammoTilesDeck.getTile());
+                    }
+                });
     }
 
     public static class BoardBuilder {
@@ -111,8 +83,8 @@ public class Board {
         private List<Room> roomsList = new ArrayList<>();
 
         private WeaponDeck weaponDeck;
-        private AmmoTilesDeck ammoTilesDeck;
         private PowerUpDeck powerUpDeck;
+        private AmmoTilesDeck ammoTilesDeck;
 
         private static final String ROOMS = "rooms";
         private static final String ROOM_ID = "roomId";
@@ -128,8 +100,8 @@ public class Board {
         public BoardBuilder(EffectHandler effectHandler) {
 
             this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
-            this.ammoTilesDeck = new AmmoTilesDeck.AmmoTilesDeckBuilder().build();
             this.powerUpDeck = new PowerUpDeck.PowerUpDeckBuilder(effectHandler).build();
+            this.ammoTilesDeck = new AmmoTilesDeck.AmmoTilesDeckBuilder(this.powerUpDeck).build();
         }
 
         private void readFromJson(int boardID) {

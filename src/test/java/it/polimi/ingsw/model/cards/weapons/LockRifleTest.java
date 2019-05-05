@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +38,7 @@ class LockRifleTest {
         target1.movePlayer(board.getRoom(1).getSquare(2));
         target2.movePlayer(board.getRoom(3).getSquare(1));
 
-        WeaponCard tester = weaponDeck.getCard(0);
+        WeaponCard tester = weaponDeck.getCard(1);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(target1);
@@ -63,9 +64,9 @@ class LockRifleTest {
 
         // Alternative effect not present
         try {
-            tester.useCard(EffectType.ALTERNATIVE, effectArgument);
+            tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -75,9 +76,9 @@ class LockRifleTest {
 
         // Too many targets
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -87,9 +88,9 @@ class LockRifleTest {
 
         // Wrong target type
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -99,9 +100,9 @@ class LockRifleTest {
 
         // Wrong method call
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -111,9 +112,9 @@ class LockRifleTest {
 
         // Source can't see target2
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -123,7 +124,7 @@ class LockRifleTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
@@ -132,7 +133,7 @@ class LockRifleTest {
             assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
             assertSame(target1.getMarks().size(), 1);
 
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -154,7 +155,7 @@ class LockRifleTest {
         target1.movePlayer(board.getRoom(1).getSquare(2));
         target2.movePlayer(board.getRoom(0).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(0);
+        WeaponCard tester = weaponDeck.getCard(1);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -170,9 +171,9 @@ class LockRifleTest {
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -182,21 +183,21 @@ class LockRifleTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
             assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
 
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
         // Same as father violated
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -206,11 +207,11 @@ class LockRifleTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
 
             assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
 
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }

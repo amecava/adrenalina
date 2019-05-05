@@ -1,13 +1,12 @@
 package it.polimi.ingsw.model.decks;
 
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -21,7 +20,7 @@ public class WeaponDeck {
     private WeaponDeck(WeaponDeckBuilder builder) {
 
         this.deck = builder.deck;
-        //Collections.shuffle(This.deck);
+        Collections.shuffle(this.deck);
     }
 
     public WeaponCard getCard() {
@@ -29,30 +28,17 @@ public class WeaponDeck {
         return deck.remove(0);
     }
 
-    public List<WeaponCard> getDeck() {
+    public WeaponCard getCard(int id) {
 
-        return this.deck;
+        return this.deck.stream()
+                .filter(x -> x.getId() == id)
+                .findFirst().orElseThrow(NullPointerException::new);
     }
 
-    // useful for tests
-    public WeaponCard getCard(int index) {
+    public boolean isEmpty() {
 
-        return this.deck.get(index);
+        return this.deck.isEmpty();
     }
-
-    //useful for tests
-    public List<Card> getCardsForSpawnSquares() {
-
-        List<Card> threeCards = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-
-            threeCards.add(this.getCard());
-        }
-        return threeCards;
-    }
-
-    /* -------------------------- BUILDER -------------------------- */
 
     public static class WeaponDeckBuilder {
 
@@ -78,7 +64,7 @@ public class WeaponDeck {
         private void readEffectsFromJson() {
 
             try (JsonReader eReader = Json
-                    .createReader(new FileReader("lib/cards/Effects.json"))) {
+                    .createReader(new FileReader("lib/effects/Effects.json"))) {
 
                 JsonArray jEffectsArray = eReader.readObject().getJsonArray("effects");
 
@@ -95,7 +81,7 @@ public class WeaponDeck {
         private void readCardsFromJson() {
 
             try (JsonReader cReader = Json
-                    .createReader(new FileReader("lib/cards/Cards.json"))) {
+                    .createReader(new FileReader("lib/cards/WeaponCards.json"))) {
 
                 JsonArray jCardsArray = cReader.readObject().getJsonArray("cards");
 

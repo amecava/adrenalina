@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.cards.effects;
 
-import it.polimi.ingsw.model.ammo.Ammo;
 import it.polimi.ingsw.model.board.rooms.Square;
-import it.polimi.ingsw.model.cards.PowerUpCard;
 import it.polimi.ingsw.model.cards.Target;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +10,7 @@ public class EffectArgument {
     private Square destination;
     private List<Target> targetList;
 
-    private List<PowerUpCard> ammoList = new ArrayList<>();
-
-    private boolean checkMarks = true;
+    private boolean weaponCard = true;
 
     public EffectArgument() {
 
@@ -38,16 +34,6 @@ public class EffectArgument {
         this.targetList = targetList;
     }
 
-    public boolean getcheckMarks() {
-
-        return this.checkMarks;
-    }
-
-    public void setCheckMarks(boolean checkMarks) {
-
-        this.checkMarks = checkMarks;
-    }
-
     public Square getDestination() {
 
         return this.destination;
@@ -68,19 +54,19 @@ public class EffectArgument {
         this.targetList = targetList;
     }
 
-    public List<PowerUpCard> getAmmoList() {
-
-        return this.ammoList;
-    }
-
-    public void appendAmmo(PowerUpCard ammo) {
-
-        this.ammoList.add(ammo);
-    }
-
     public void appendTarget(Target target) {
 
         this.targetList.add(target);
+    }
+
+    public boolean isWeaponCard() {
+
+        return this.weaponCard;
+    }
+
+    public void setWeaponCard(boolean weaponCard) {
+
+        this.weaponCard = weaponCard;
     }
 
     public int getArgs() {

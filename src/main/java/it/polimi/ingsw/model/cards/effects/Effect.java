@@ -190,15 +190,6 @@ public class Effect {
         return this.atomicEffectList;
     }
 
-    public void appendAtomicEffect(AtomicEffect atomicEffect) {
-
-        if (atomicEffect == null) {
-            throw new NullPointerException();
-        }
-
-        this.atomicEffectList.add(atomicEffect);
-    }
-
     public void execute(Player source, EffectArgument target) {
 
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
@@ -267,7 +258,8 @@ public class Effect {
             }
 
             if (this.jEffectObject.containsKey("next")) {
-                this.next = new Effect.EffectBuilder(this.jEffectObject.getJsonObject("next")).build();
+                this.next = new Effect.EffectBuilder(this.jEffectObject.getJsonObject("next"))
+                        .build();
             }
 
             if (this.jEffectObject.containsKey("optionalId")) {

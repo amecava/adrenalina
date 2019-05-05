@@ -26,7 +26,7 @@ class WeaponDeckTest {
 
         //LOCK RIFLE:
 
-        tester = weaponDeck.getCard(0);
+        tester = weaponDeck.getCard(1);
 
         assertEquals(1, tester.getId());
         assertEquals(

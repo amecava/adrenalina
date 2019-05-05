@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.IllegalActionException;
-import it.polimi.ingsw.model.exceptions.endGameException.EndGameException;
+import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
+import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.model.points.PointHandler;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ class TurnHandlerTest {
             assertTrue(true);
         }
         try {
-            turnHandler.selectAction(3);
+            turnHandler.getActivePlayer().selectAction(3);
         } catch (IllegalActionException e) {
             assertTrue(true);
         }
@@ -92,7 +92,7 @@ class TurnHandlerTest {
         }
 
         try {
-            turnHandler.selectAction(3);
+            turnHandler.getActivePlayer().selectAction(3);
         } catch (IllegalActionException e) {
            // e.printStackTrace();
         }
@@ -151,8 +151,6 @@ class TurnHandlerTest {
         }
         try{turnHandler.endOfTurn();}
         catch (EndGameException e){
-            System.out.println("game ended !!!");
-            // System.out.println(e);
             assertTrue(true);
 
         } catch (IllegalActionException e) {

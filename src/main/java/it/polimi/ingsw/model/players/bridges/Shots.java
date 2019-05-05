@@ -6,7 +6,7 @@ public class Shots {
 
     private Color color;
 
-    public Shots(Color color) {
+    Shots(Color color) {
 
         this.color = color;
     }

@@ -11,12 +11,14 @@ public class Deaths extends Bridge {
 
     public Deaths(int maxNumberOfDeaths) {
 
-        super(Color.ANY);
+        super(Color.ALL);
+
         this.maxNumberOfDeaths = maxNumberOfDeaths;
         this.setKillStreakCount();
     }
 
     public List<Shots> getKillStreak() {
+
         return this.getShots();
     }
 

@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ public class PlasmaGunTest {
         source.movePlayer(board.getRoom(3).getSquare(1));
         target1.movePlayer(board.getRoom(0).getSquare(0));
 
-        WeaponCard tester = weaponDeck.getCard(3);
+        WeaponCard tester = weaponDeck.getCard(4);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -50,9 +51,9 @@ public class PlasmaGunTest {
 
         // Source can't see target1
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -62,9 +63,9 @@ public class PlasmaGunTest {
 
         // Move source distance not 1 or 2
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertEquals(source.getCurrentPosition(), board.getRoom(3).getSquare(1));
@@ -74,11 +75,11 @@ public class PlasmaGunTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
 
             assertEquals(source.getCurrentPosition(), board.getRoom(1).getSquare(2));
             assertEquals(source.getOldPosition(), board.getRoom(3).getSquare(1));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -86,10 +87,10 @@ public class PlasmaGunTest {
 
         // Can't use effect on source
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             e.printStackTrace();
             fail();
         } catch (PropertiesException e) {
@@ -100,12 +101,12 @@ public class PlasmaGunTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
             assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
             assertSame(target1.getShots().size(), 2);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -113,9 +114,9 @@ public class PlasmaGunTest {
 
         // Optional effect already used
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -125,11 +126,11 @@ public class PlasmaGunTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertSame(target1.getShots().get(2).getColor(), Color.GRAY);
             assertSame(target1.getShots().size(), 3);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
     }

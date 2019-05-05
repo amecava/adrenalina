@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ class ThorTest {
         target4.movePlayer(board.getRoom(2).getSquare(0));
         target5.movePlayer(board.getRoom(3).getSquare(0));
 
-        WeaponCard tester = weaponDeck.getCard(2);
+        WeaponCard tester = weaponDeck.getCard(3);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -58,9 +59,9 @@ class ThorTest {
 
         // Source can't see target4
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -70,9 +71,9 @@ class ThorTest {
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -82,10 +83,10 @@ class ThorTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 2);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -93,9 +94,9 @@ class ThorTest {
 
         // Optional not activated
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -105,9 +106,9 @@ class ThorTest {
 
         // Seen by active violated
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -117,20 +118,22 @@ class ThorTest {
 
         // Use optional 0
         try {
-            tester.useCard(EffectType.OPTIONAL_1, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
 
             assertEquals(target2.getShots().size(), 1);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
         effectArgument = new EffectArgument(Arrays.asList(target5));
 
+        tester.getOwner().getAmmoCubesList().forEach(x -> x.setUsed(false));
+
         // Seen by active violated
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -138,12 +141,12 @@ class ThorTest {
 
         effectArgument = new EffectArgument(Arrays.asList(target3));
 
-        // Use optional 1
+        // Use optional 2
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertEquals(target3.getShots().size(), 2);
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             e.printStackTrace();
             fail();
         }

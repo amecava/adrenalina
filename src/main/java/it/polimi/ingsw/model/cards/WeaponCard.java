@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.EffectArgument;
-import it.polimi.ingsw.model.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.cards.CardNotLoadedException;
 import it.polimi.ingsw.model.exceptions.cards.CostException;
@@ -126,14 +125,14 @@ public class WeaponCard implements Card {
         return optionalList;
     }
 
-    public void reloadWeapon(List<PowerUpCard> ammoList) throws CostException {
-
-        List<Color> costCopy = new ArrayList<>(this.reloadCost);
+    public void reloadWeapon(List<PowerUpCard> powerUpCardList) throws CostException {
 
         // If the card is not loaded
         if (!this.loaded) {
 
-            this.checkCost(ammoList, costCopy);
+            List<Color> costCopy = new ArrayList<>(this.reloadCost);
+
+            this.checkCost(costCopy, powerUpCardList);
 
             // Set card loaded flag to true
             this.loaded = true;
@@ -165,7 +164,60 @@ public class WeaponCard implements Card {
         }
     }
 
-    private void checkCost(List<PowerUpCard> ammoList, List<Color> costCopy) throws CostException {
+    public WeaponCard activateCard() throws CardException {
+
+        // Launch exception if owner of card is not the active player
+        if (!this.effectHandler.getActivePlayer().equals(this.owner)) {
+
+            throw new OwnerNotActiveException("Can't use this card right now!");
+        }
+
+        // Launch exception if the card is not loaded
+        if (!this.loaded) {
+
+            throw new CardNotLoadedException("Weapon not loaded!");
+        }
+
+        this.effectHandler.getActive().clear();
+        this.effectHandler.getActive().clear();
+
+        return this;
+    }
+
+    public void useCard(EffectType effectType, EffectArgument target, List<PowerUpCard> powerUpCardList)
+            throws EffectException, PropertiesException, CardException {
+
+        // Launch exception if selected effect not present in map
+        if (!this.map.containsKey(effectType)) {
+
+            throw new EffectException("Effect not present!");
+        }
+
+        // Launch exception if card already used and effectType not optional
+        if ((effectType.equals(EffectType.ALTERNATIVE) && this.map.get(EffectType.PRIMARY).isUsed())
+                || (effectType.equals(EffectType.PRIMARY) && map.containsKey(EffectType.ALTERNATIVE)
+                && this.map.get(EffectType.ALTERNATIVE).isUsed())) {
+
+            throw new EffectUsedException("Effect can't be used!");
+        }
+
+        List<Color> costCopy = new ArrayList<>(this.map.get(effectType).getCost());
+
+        this.checkCost(costCopy, powerUpCardList);
+
+        // Execute selected effect
+        this.effectHandler.useEffect(this.map.get(effectType), target);
+        this.effectHandler.updateCardUsageVariables(this.map.get(effectType), this);
+
+        costCopy.forEach(x -> {
+            this.owner.getAmmoCubesList().stream()
+                    .filter(y -> y.getColor().equals(x) && !y.isUsed())
+                    .findFirst().get()
+                    .setUsed(true);
+        });
+    }
+
+    private void checkCost(List<Color> costCopy, List<PowerUpCard> ammoList) throws CostException {
 
         try {
 
@@ -186,7 +238,7 @@ public class WeaponCard implements Card {
                     .distinct()
                     .forEach(x -> {
                         if (costCopy.stream().filter(y -> y.equals(x)).count() > this.owner
-                                .getAmmoCubesList().stream().map(
+                                .getAmmoCubesList().stream().filter(y -> !y.isUsed()).map(
                                         AmmoCube::getColor).filter(y -> y.equals(x)).count()) {
                             throw new IllegalArgumentException("Illegal Argument");
                         }
@@ -194,49 +246,8 @@ public class WeaponCard implements Card {
 
         } catch (IllegalArgumentException e) {
 
-            throw new CostException("You can't pay with that powerUp");
+            throw new CostException("Cost exception");
         }
-    }
-
-    public void activateCard() throws CardException {
-
-        // Launch exception if owner of card is not the active player
-        if (!this.effectHandler.getActivePlayer().equals(this.owner)) {
-
-            throw new OwnerNotActiveException("Can't use this card right now!");
-        }
-
-        // Launch exception if the card is not loaded
-        if (!this.loaded) {
-
-            throw new CardNotLoadedException("Weapon not loaded!");
-        }
-    }
-
-    public void useCard(EffectType effectType, EffectArgument target)
-            throws EffectException, PropertiesException {
-
-        // Launch exception if selected effect not present in map
-        if (!this.map.containsKey(effectType)) {
-
-            throw new EffectException("Effect not present!");
-        }
-
-        // Launch exception if card already used and effectType not optional
-        if ((effectType.equals(EffectType.ALTERNATIVE) && this.map.get(EffectType.PRIMARY).isUsed())
-                || (effectType.equals(EffectType.PRIMARY) && map.containsKey(EffectType.ALTERNATIVE)
-                && this.map.get(EffectType.ALTERNATIVE).isUsed())) {
-
-            throw new EffectUsedException("Effect can't be used!");
-        }
-
-        // TODO check effect cost
-
-        // Execute selected effect
-        this.effectHandler.useEffect(this.map.get(effectType), target);
-        this.effectHandler.updateCardUsageVariables(this.map.get(effectType), this);
-
-        // TODO remove cost from player
     }
 
     public static class WeaponCardBuilder {

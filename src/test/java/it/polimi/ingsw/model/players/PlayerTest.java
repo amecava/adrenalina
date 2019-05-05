@@ -3,20 +3,16 @@ package it.polimi.ingsw.model.players;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.WeaponCard;
-import it.polimi.ingsw.model.cards.effects.Effect;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.IllegalActionException;
+import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.model.exceptions.cards.CardException;
-import it.polimi.ingsw.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.model.exceptions.cards.FullHandException;
 import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +46,7 @@ class PlayerTest {
     void collectFromNotSpawn() {
 
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
-        board.fill();
+        board.fillBoard();
 
         Card tester;
 
@@ -162,7 +158,7 @@ class PlayerTest {
     void collectFromSpawn() {
 
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
-        board.fill();
+        board.fillBoard();
 
         Player player = new Player("player", Color.GRAY);
 
@@ -213,7 +209,9 @@ class PlayerTest {
 
             player.movePlayer(board.getRoom(0).getSquare(2));
 
-            player.setWeaponHand(board.getWeaponDeck().getCardsForSpawnSquares());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
 
             player.collect(2);
 
@@ -234,13 +232,13 @@ class PlayerTest {
         // card added to hand
         try {
 
-            player.clearHand();
+            player.getWeaponCardList().clear();
 
             player.movePlayer(board.getRoom(0).getSquare(2));
 
             player.collect(1);
 
-            assertEquals("LOCK RIFLE", player.getWeaponHand().get(0).getName());
+            assertEquals("LOCK RIFLE", player.getWeaponCardList().get(0).getName());
         } catch (SquareTypeException | FullHandException | EmptySquareException e) {
             fail();
         } catch (CardException e) {
@@ -256,13 +254,13 @@ class PlayerTest {
 
             player.collect(2);
 
-            assertEquals("MACHINE GUN", player.getWeaponHand().get(1).getName());
+            assertEquals("MACHINE GUN", player.getWeaponCardList().get(1).getName());
 
             player.collect(3);
 
-            assertEquals("T.H.O.R.", player.getWeaponHand().get(2).getName());
+            assertEquals("T.H.O.R.", player.getWeaponCardList().get(2).getName());
 
-            player.clearHand();
+            player.getWeaponCardList().clear();
 
             player.collect(4);
 
@@ -286,7 +284,7 @@ class PlayerTest {
     void collectFromSpawn2() {
 
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
-        board.fill();
+        board.fillBoard();
 
         Player player = new Player("player", Color.GRAY);
 
@@ -294,7 +292,9 @@ class PlayerTest {
 
             player.movePlayer(board.getRoom(0).getSquare(2));
 
-            player.setWeaponHand(board.getWeaponDeck().getCardsForSpawnSquares());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
 
             player.collect(15, 2);
 
@@ -314,11 +314,13 @@ class PlayerTest {
 
             player.movePlayer(board.getRoom(0).getSquare(2));
 
-            player.setWeaponHand(board.getWeaponDeck().getCardsForSpawnSquares());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
+            player.addWeaponCard(board.getWeaponDeck().getCard());
 
             player.collect(15, 3);
 
-            assertTrue(player.getWeaponHand().stream().map(x -> (WeaponCard) x)
+            assertTrue(player.getWeaponCardList().stream().map(x -> (WeaponCard) x)
                     .anyMatch(y -> y.getId() == 3));
             assertTrue(player.getCurrentPosition().getTools().stream().map(x -> (WeaponCard) x)
                     .anyMatch(y -> y.getId() == 15));

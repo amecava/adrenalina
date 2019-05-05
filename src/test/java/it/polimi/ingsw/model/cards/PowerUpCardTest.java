@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +37,7 @@ class PowerUpCardTest {
         target1.movePlayer(board.getRoom(1).getSquare(2));
         target2.movePlayer(board.getRoom(3).getSquare(1));
 
-        WeaponCard tester = weaponDeck.getCard(0);
+        WeaponCard tester = weaponDeck.getCard(1);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(target1);
@@ -55,7 +56,7 @@ class PowerUpCardTest {
         // Use primary
         try {
 
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             target1.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATA VENOM")).findAny().get());
 

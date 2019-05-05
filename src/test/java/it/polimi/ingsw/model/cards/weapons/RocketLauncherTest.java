@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.exceptions.cards.CardException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ public class RocketLauncherTest {
         target4.movePlayer(board.getRoom(0).getSquare(2));
         target5.movePlayer(board.getRoom(0).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(13);
+        WeaponCard tester = weaponDeck.getCard(14);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -58,9 +59,9 @@ public class RocketLauncherTest {
 
         // Wrong method call
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException e) {
+        } catch (PropertiesException | CardException e) {
             fail();
         } catch (EffectException e) {
             assertTrue(true);
@@ -70,9 +71,9 @@ public class RocketLauncherTest {
 
         // Target on same square of source
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (EffectException e) {
+        } catch (EffectException | CardException e) {
             fail();
         } catch (PropertiesException e) {
             assertTrue(true);
@@ -84,11 +85,11 @@ public class RocketLauncherTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target1.getCurrentPosition(), board.getRoom(0).getSquare(1));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -96,7 +97,7 @@ public class RocketLauncherTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);
@@ -105,7 +106,7 @@ public class RocketLauncherTest {
             assertEquals(target5.getShots().size(), 0);
 
             assertEquals(target1.getCurrentPosition(), board.getRoom(0).getSquare(1));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             e.printStackTrace();
             fail();
         }
@@ -133,7 +134,7 @@ public class RocketLauncherTest {
         target4.movePlayer(board.getRoom(1).getSquare(2));
         target5.movePlayer(board.getRoom(1).getSquare(2));
 
-        WeaponCard tester = weaponDeck.getCard(13);
+        WeaponCard tester = weaponDeck.getCard(14);
         tester.setOwner(source);
 
         effectHandler.setActivePlayer(source);
@@ -149,11 +150,11 @@ public class RocketLauncherTest {
 
         // Use primary
         try {
-            tester.useCard(EffectType.PRIMARY, effectArgument);
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 2);
             assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             fail();
         }
 
@@ -161,7 +162,7 @@ public class RocketLauncherTest {
 
         // Use optional 1
         try {
-            tester.useCard(EffectType.OPTIONAL_2, effectArgument);
+            tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
             assertEquals(target1.getShots().size(), 3);
             assertEquals(target2.getShots().size(), 1);
@@ -170,7 +171,7 @@ public class RocketLauncherTest {
             assertEquals(target5.getShots().size(), 0);
 
             assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
-        } catch (EffectException | PropertiesException e) {
+        } catch (EffectException | PropertiesException | CardException e) {
             e.printStackTrace();
             fail();
         }

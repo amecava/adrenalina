@@ -35,27 +35,18 @@ public class EffectHandler {
 
     public void setActivePlayer(Player activePlayer) {
 
-        this.active.clear();
-        this.inactive.clear();
-
         this.activePlayer = activePlayer;
         this.activeSquare = activePlayer.getCurrentPosition();
     }
 
-    public void setTmpActivePlayer(Player activePlayer) {
+    public List<Target> getActive() {
 
-        this.activePlayer = activePlayer;
-        this.activeSquare = activePlayer.getCurrentPosition();
+        return this.active;
     }
 
     public List<Target> getInactive() {
 
         return this.inactive;
-    }
-
-    public List<Target> getActive(){
-
-        return this.active;
     }
 
     public void useEffect(Effect effect, EffectArgument target)
@@ -131,28 +122,32 @@ public class EffectHandler {
 
     private void updateActiveInactiveVariables(Effect effect) {
 
-        // Update active square
-        if (this.target.getDestination() != null) {
+        // If it's not a power up effect
+        if (this.target.isWeaponCard()) {
 
-            this.activeSquare = this.target.getDestination();
+            // Update active square
+            if (this.target.getDestination() != null) {
+
+                this.activeSquare = this.target.getDestination();
+            }
+
+            if (effect.isSeenByActive()) {
+
+                this.inactive.addAll(this.active);
+                this.active.clear();
+            }
+
+            // Move targets already in active list to inactive list and add new targets to active list
+            this.target.getTargetList().stream()
+                    .filter(x -> x != this.activePlayer)
+                    .forEach(x -> {
+                        if (this.active.contains(x)) {
+                            this.inactive.add(this.active.remove(this.active.indexOf(x)));
+                        } else {
+                            this.active.add(x);
+                        }
+                    });
         }
-
-        if (effect.isSeenByActive()) {
-
-            this.inactive.addAll(this.active);
-            this.active.clear();
-        }
-
-        // Move targets already in active list to inactive list and add new targets to active list
-        this.target.getTargetList().stream()
-                .filter(x -> x != this.activePlayer)
-                .forEach(x -> {
-                    if (this.active.contains(x)) {
-                        this.inactive.add(this.active.remove(this.active.indexOf(x)));
-                    } else {
-                        this.active.add(x);
-                    }
-                });
     }
 
     private EffectArgument createPropertiesRelatedTarget(Effect effect, EffectArgument target) {
@@ -244,7 +239,8 @@ public class EffectHandler {
         return target;
     }
 
-    private Effect checkProperties(Effect effect, EffectArgument target) throws PropertiesException {
+    private Effect checkProperties(Effect effect, EffectArgument target)
+            throws PropertiesException {
 
         this.propertiesAnalyzer.setEffect(effect);
 

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.exceptions.endGameException;
+package it.polimi.ingsw.model.exceptions.jacop;
 
 import it.polimi.ingsw.model.players.Player;
 import java.util.List;

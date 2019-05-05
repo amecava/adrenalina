@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.endGameException.EndGameException;
-import it.polimi.ingsw.model.exceptions.endGameException.FrenzyRegenerationException;
+import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
+import it.polimi.ingsw.model.exceptions.jacop.FrenzyRegenerationException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,14 +149,6 @@ class PointHandlerTest {
         } catch (EndGameException e) {
             e.printStackTrace();
         }
-        int k = 1;
-        for (List<Player> playerList1 : pointHandler.getWinner()) {
-            System.out.println(" player in " + k + "position ");
-            for (Player player : playerList1) {
-                System.out.println(player.getPlayerId());
-            }
-            k++;
-        }
         assertTrue(pointHandler.getWinner().get(0).contains(player1));
         assertFalse(pointHandler.getWinner().get(0).contains(player2));
         assertFalse(pointHandler.getWinner().get(0).contains(player3));
@@ -206,7 +198,6 @@ class PointHandlerTest {
             e.printStackTrace();
         } catch (EndGameException e) {
 
-            System.out.println("end game!!");
         }
         assertEquals(9, player2.getPoints());
         assertEquals(6, player3.getPoints());

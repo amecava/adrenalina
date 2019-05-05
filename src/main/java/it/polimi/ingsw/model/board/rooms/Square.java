@@ -143,33 +143,27 @@ public class Square implements Target {
 
     public Card collectWeaponCard(int id) throws EmptySquareException {
 
-        if (this.tools.stream().map(x -> (WeaponCard) x)
-                .anyMatch(y -> y.getId() == id)) {
-
-            return this.tools.remove(this.tools.indexOf(
-                    this.tools.stream().map(x -> (WeaponCard) x)
-                            .filter(y -> y.getId() == id).findAny().get()));
-        }
-
-        throw new EmptySquareException("The card you selected is not in this square");
-
+        return this.tools.remove(this.tools.indexOf(
+                this.tools.stream()
+                        .map(x -> (WeaponCard) x)
+                        .filter(y -> y.getId() == id)
+                        .findAny().orElseThrow(() ->
+                        new EmptySquareException("The card you selected is not in this square"))));
     }
 
     public Card collectWeaponCard(WeaponCard playerCard, int squareCardId)
             throws EmptySquareException {
 
-        if (this.tools.stream().map(x -> (WeaponCard) x)
-                .anyMatch(y -> y.getId() == squareCardId)) {
+        int index = this.tools.indexOf(
+                this.tools.stream()
+                        .map(x -> (WeaponCard) x)
+                        .filter(y -> y.getId() == squareCardId)
+                        .findAny().orElseThrow(() ->
+                        new EmptySquareException("The card you selected is not in this square")));
 
-            playerCard.setOwner(null);
-            this.tools.add(playerCard);
+        playerCard.setOwner(null);
+        this.tools.add(playerCard);
 
-            return this.tools.remove(this.tools.indexOf(
-                    this.tools.stream().map(x -> (WeaponCard) x)
-                            .filter(y -> y.getId() == squareCardId).findAny().get()));
-
-        }
-
-        throw new EmptySquareException("The card you selected is not in this square");
+        return this.tools.remove(index);
     }
 }

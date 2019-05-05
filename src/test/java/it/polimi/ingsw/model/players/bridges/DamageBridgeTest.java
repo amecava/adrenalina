@@ -85,18 +85,18 @@ class DamageBridgeTest {
 
         damageBridge.appendShot(Color.RED, true);
 
-        assertEquals(damageBridge.checkAdrenalin(), Adrenalin.NORMAL);
+        assertEquals(damageBridge.getAdrenalin(), Adrenalin.NORMAL);
 
         for (int i = 0; i < 3; i++) {
             damageBridge.appendShot(Color.RED, true);
         }
 
-        assertEquals(damageBridge.checkAdrenalin(), Adrenalin.FIRSTADRENALIN);
+        assertEquals(damageBridge.getAdrenalin(), Adrenalin.FIRSTADRENALIN);
 
         for (int i = 0; i < 4; i++) {
             damageBridge.appendShot(Color.RED, true);
         }
 
-        assertEquals(damageBridge.checkAdrenalin(), Adrenalin.SECONDADRENALIN);
+        assertEquals(damageBridge.getAdrenalin(), Adrenalin.SECONDADRENALIN);
     }
 }

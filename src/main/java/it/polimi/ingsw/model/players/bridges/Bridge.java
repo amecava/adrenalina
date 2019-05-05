@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model.players.bridges;
 
 import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.cards.WeaponCard;
+import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
 import java.util.List;
 
 public class Bridge {
@@ -12,12 +13,11 @@ public class Bridge {
 
     private DeathBridge deathBridge = new DeathBridge();
     private DamageBridge damageBridge = new DamageBridge();
-    private ActionBridge actionBridge;
+    private ActionBridge actionBridge = new ActionBridge.ActionBridgeBuilder().build();
 
     public Bridge(Color color) {
 
         this.color = color;
-        this.actionBridge = new ActionBridge.ActionBridgeBuilder().build();
     }
 
     public Color getColor() {
@@ -61,13 +61,6 @@ public class Bridge {
         return this.damageBridge.isKillStreakCount();
     }
 
-    public ActionBridge getActionBridge() {
-        return this.actionBridge;
-    }
-    public Adrenalin getAdrenalin(){
-        return  this.damageBridge.checkAdrenalin();
-    }
-
     public void setKillStreakCount() {
 
         this.damageBridge.setKillStreakCount();
@@ -83,16 +76,9 @@ public class Bridge {
         return this.damageBridge.getMarks();
     }
 
-    public DamageBridge getDamageBridge() {
-        return damageBridge;
-    }
-
     public void appendShot(Color color, boolean checkMarks) {
-        this.damageBridge.appendShot(color, checkMarks);
-    }
 
-    public Adrenalin checkAdrenalin() {
-        return this.damageBridge.checkAdrenalin();
+        this.damageBridge.appendShot(color, checkMarks);
     }
 
     public void appendMark(Color color) {
@@ -100,12 +86,73 @@ public class Bridge {
         this.damageBridge.appendMark(color);
     }
 
-    public void setAdrenalin(Adrenalin adrenalin) {
-        this.actionBridge.setAdrenalin(adrenalin);
-    }
-
     public boolean isDead() {
 
         return this.damageBridge.isDead();
+    }
+
+    public Adrenalin getAdrenalin() {
+
+        return this.damageBridge.getAdrenalin();
+    }
+
+    public void setAdrenalin(Adrenalin adrenalin) {
+
+        this.actionBridge.setAdrenalin(adrenalin);
+    }
+
+    public ActionStructure getCurrentAction() {
+
+        return this.actionBridge.getCurrentAction();
+    }
+
+    public boolean isFirstPlayer() {
+
+        return this.actionBridge.isFirstPlayer();
+    }
+
+    public void setFirstPlayer(boolean firstPlayer) {
+
+        this.actionBridge.setFirstPlayer(firstPlayer);
+    }
+
+    public boolean isFrenzyActions() {
+
+        return this.actionBridge.isFrenzyActions();
+    }
+
+    public void setFrenzyActions(boolean frenzyActions) {
+
+        this.actionBridge.setFrenzyActions(frenzyActions);
+    }
+
+    public int getRemainingActions() {
+
+        return this.actionBridge.getRemainingActions();
+    }
+
+    public void setRemainingActions(int remainingActions) {
+
+        this.actionBridge.setRemainingActions(remainingActions);
+    }
+
+    public WeaponCard getCurrentWeaponCard() {
+
+        return this.actionBridge.getCurrentWeaponCard();
+    }
+
+    public void setCurrentWeaponCard(WeaponCard weaponCard) {
+
+        this.actionBridge.setCurrentWeaponCard(weaponCard);
+    }
+
+    public void selectAction(int id) throws IllegalActionException {
+
+        this.actionBridge.selectAction(id);
+    }
+
+    public void endAction() {
+
+        this.actionBridge.endAction();
     }
 }
