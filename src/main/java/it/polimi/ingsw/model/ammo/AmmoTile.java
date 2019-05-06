@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.ammo;
 
-import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.CardType;
 import it.polimi.ingsw.model.cards.PowerUpCard;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.players;
 
-import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Square;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.board;
 
-import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.players.bridges.Bridge;
 import it.polimi.ingsw.model.players.bridges.Shots;
 import java.util.List;

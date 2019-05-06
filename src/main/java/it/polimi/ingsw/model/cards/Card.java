@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.model.Color;
-import java.util.List;
+import it.polimi.ingsw.model.ammo.Color;
 
 public interface Card {
 

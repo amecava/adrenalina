@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.points;
 
-import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.board.Deaths;
 import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.model.exceptions.jacop.FrenzyRegenerationException;

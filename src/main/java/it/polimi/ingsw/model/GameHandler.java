@@ -1,30 +1,62 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.players.Player;
+import it.polimi.ingsw.presenter.exceptions.LoginException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameHandler {
 
-    private Board board;
-    private EffectHandler effectHandler = new EffectHandler();
+    private String gameId;
 
-    private Player activePlayer;
     private List<Player> playerList = new ArrayList<>();
 
-    public GameHandler() {
+    public GameHandler(String gameId) {
+
+        this.gameId = gameId;
     }
 
-    public void setBoard(int boardID) {
+    public String getGameId() {
 
-        this.board = new Board.BoardBuilder(this.effectHandler).build(boardID);
-        this.board.fillBoard();
+        return this.gameId;
     }
 
-    public void setPlayerList(List<Player> playersList) {
+    public List<Player> getPlayerList() {
 
-        this.playerList = playersList;
+        return this.playerList;
+    }
+
+    public Player addPlayer(String playerId, String character) throws LoginException {
+
+        if (this.playerList.stream().anyMatch(x -> x.getPlayerId().equals(playerId))) {
+
+            throw new LoginException("PlayerId already used.");
+        }
+
+        Color color;
+
+        switch(character) {
+
+            case "sprog":
+
+                color = Color.GRAY;
+                break;
+
+            default:
+
+                throw new LoginException("Character doesn't exists.");
+        }
+
+        if (this.playerList.stream().anyMatch(x -> x.getColor().equals(color))) {
+
+            throw new LoginException("Character already used.");
+        }
+
+        Player player = new Player(playerId, color);
+
+        this.playerList.add(player);
+
+        return player;
     }
 }

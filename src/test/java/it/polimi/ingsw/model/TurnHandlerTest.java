@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;

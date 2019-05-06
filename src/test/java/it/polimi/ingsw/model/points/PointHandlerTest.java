@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.points;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.model.exceptions.jacop.FrenzyRegenerationException;

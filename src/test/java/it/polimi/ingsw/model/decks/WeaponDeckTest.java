@@ -2,8 +2,7 @@ package it.polimi.ingsw.model.decks;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.ammo.Ammo;
+import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.cards.effects.EffectType;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicType;
