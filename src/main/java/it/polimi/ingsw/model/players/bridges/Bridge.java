@@ -126,6 +126,16 @@ public class Bridge {
         this.actionBridge.setFrenzyActions(frenzyActions);
     }
 
+    public boolean isRespawn() {
+
+        return this.actionBridge.isRespawn();
+    }
+
+    public void setRespawn(boolean respawn) {
+
+        this.actionBridge.setRespawn(respawn);
+    }
+
     public int getRemainingActions() {
 
         return this.actionBridge.getRemainingActions();
@@ -144,6 +154,11 @@ public class Bridge {
     public void setCurrentWeaponCard(WeaponCard weaponCard) {
 
         this.actionBridge.setCurrentWeaponCard(weaponCard);
+    }
+
+    public List<ActionStructure> getActions() {
+
+        return this.actionBridge.getActions();
     }
 
     public void selectAction(int id) throws IllegalActionException {

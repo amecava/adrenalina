@@ -19,6 +19,7 @@ class ActionBridge {
     private boolean firstPlayer;
     private boolean frenzyActions;
 
+    private boolean respawn;
     private int remainingActions;
     private WeaponCard currentWeaponCard;
 
@@ -33,6 +34,7 @@ class ActionBridge {
         this.firstPlayer = builder.firstPlayer;
         this.frenzyActions = builder.frenzyActions;
 
+        this.respawn = builder.respawn;
         this.remainingActions = builder.remainingActions;
         this.currentWeaponCard = builder.currentWeaponCard;
 
@@ -76,6 +78,16 @@ class ActionBridge {
         this.frenzyActions = frenzyActions;
     }
 
+    public boolean isRespawn() {
+
+        return this.respawn;
+    }
+
+    public void setRespawn(boolean respawn) {
+
+        this.respawn = respawn;
+    }
+
     int getRemainingActions() {
 
         return this.remainingActions;
@@ -94,6 +106,11 @@ class ActionBridge {
     void setCurrentWeaponCard(WeaponCard weaponCard) {
 
         this.currentWeaponCard = weaponCard;
+    }
+
+    public List<ActionStructure> getActions() {
+
+        return this.possibleActions;
     }
 
     void selectAction(int number) throws IllegalActionException {
@@ -184,6 +201,7 @@ class ActionBridge {
         private boolean firstPlayer = false;
         private boolean frenzyActions = false;
 
+        private boolean respawn = false;
         private int remainingActions = 0;
         private WeaponCard currentWeaponCard;
 

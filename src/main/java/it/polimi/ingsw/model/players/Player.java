@@ -31,6 +31,7 @@ import java.util.List;
 public class Player implements Target {
 
     private String playerId;
+    private boolean activePlayer = false;
 
     private Square oldPosition;
     private Square currentPosition;
@@ -84,6 +85,16 @@ public class Player implements Target {
     public String getPlayerId() {
 
         return this.playerId;
+    }
+
+    public boolean isActivePlayer() {
+
+        return this.activePlayer;
+    }
+
+    public void setActivePlayer(boolean activePlayer) {
+
+        this.activePlayer = activePlayer;
     }
 
     public Square getOldPosition() {
@@ -201,6 +212,16 @@ public class Player implements Target {
         this.bridge.setFrenzyActions(frenzyActions);
     }
 
+    public boolean isRespawn() {
+
+        return this.bridge.isRespawn();
+    }
+
+    public void setRespawn(boolean respawn) {
+
+        this.bridge.setRespawn(respawn);
+    }
+
     private int getRemainingActions() {
 
         return this.bridge.getRemainingActions();
@@ -211,9 +232,15 @@ public class Player implements Target {
         this.bridge.setRemainingActions(remainingActions);
     }
 
+    public List<ActionStructure> getActions() {
+
+        return this.bridge.getActions();
+    }
+
     public void selectAction(int actionId) throws IllegalActionException {
 
-        if (this.currentPosition == null || (this.getRemainingActions() <= 0 && actionId != 4)) {
+        if (!this.activePlayer || this.currentPosition == null
+                || (this.getRemainingActions() <= 0 && actionId != 4)) {
 
             throw new IllegalActionException("Not valid action selected!");
         }
@@ -260,12 +287,25 @@ public class Player implements Target {
         this.powerUpsList.add(powerUp);
     }
 
+    public PowerUpCard removePowerUp(PowerUpCard powerUpCard) {
+        /*
+        PowerUpCard powerUpCard = this.powerUpsList.stream()
+                .filter(x -> x.getName() == "name")
+                .findAny()
+                .orElseThrow(() -> new CardNotFoundException("You don't have that card!"));
+        */
+        powerUpCard.setOwner(null);
+        return powerUpCard;
+    }
+
     public void removePlayerFromBoard() {
 
         this.currentPosition.removePlayer(this);
 
         this.currentPosition = null;
         this.oldPosition = null;
+
+        this.setRespawn(true);
     }
 
     public void move(EffectArgument effectTarget, EffectHandler effectHandler)
@@ -412,5 +452,21 @@ public class Player implements Target {
         }
 
         this.bridge.getCurrentWeaponCard().useCard(effectType, effectTarget, powerUpCardList);
+    }
+    //TODO needs to be changed , we need to pass the id , not the powerUpCard
+    public  PowerUpCard spawn(PowerUpCard powerUpCard) throws IllegalActionException {
+
+        if ((this.isActivePlayer() && this.currentPosition == null)
+                || this.isRespawn()) {
+
+            PowerUpCard powerUpCardTmp = this.removePowerUp(powerUpCard);
+
+            this.setRespawn(false);
+
+
+            return powerUpCardTmp;
+        } else {
+            throw new IllegalActionException("You can't respawn!");
+        }
     }
 }

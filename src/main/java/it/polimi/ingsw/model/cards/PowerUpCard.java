@@ -96,7 +96,6 @@ public class PowerUpCard implements Card, Ammo {
 
             throw new CardNotLoadedException("You can't use a power up right now!");
         }
-
     }
 
     public void useCard(EffectArgument target, AmmoCube ammoCube)
