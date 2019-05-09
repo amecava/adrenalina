@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.CardType;
 import it.polimi.ingsw.model.cards.PowerUpCard;
 import it.polimi.ingsw.model.decks.PowerUpDeck;
+import it.polimi.ingsw.model.players.Color;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.JsonObject;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 
 public interface Card {
 

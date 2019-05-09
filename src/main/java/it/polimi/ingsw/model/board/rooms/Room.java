@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.board.rooms;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.model.cards.effects.TargetType;
 import it.polimi.ingsw.model.players.Player;

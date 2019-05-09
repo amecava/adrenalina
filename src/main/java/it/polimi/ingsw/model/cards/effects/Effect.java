@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards.effects;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicEffect;
 import it.polimi.ingsw.model.cards.effects.atomic.AtomicType;
 import it.polimi.ingsw.model.players.Player;

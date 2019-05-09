@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.board.rooms;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.players.Player;
 import java.util.Arrays;

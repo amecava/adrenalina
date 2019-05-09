@@ -1,166 +1,134 @@
 package it.polimi.ingsw.presenter;
 
-import it.polimi.ingsw.model.GameHandler;
-import it.polimi.ingsw.model.players.Player;
-import it.polimi.ingsw.presenter.exceptions.LoginException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.List;
+import java.rmi.RemoteException;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.json.Json;
+import javax.json.JsonObject;
 
-public class SocketPresenter implements Runnable {
+public class SocketPresenter implements Presenter, Runnable {
 
-    private Socket socket;
+    private String playerId;
 
-    private Player player;
-    private GameHandler currentGame;
+    private Scanner in;
+    private PrintWriter out;
 
-    private List<GameHandler> gamesList;
+    private LocalDateTime lastPingTime;
 
-    public SocketPresenter(Socket socket, List<GameHandler> gamesList) {
+    private ClientHandler clientHandler;
 
-        this.socket = socket;
+    private static final Logger LOGGER = Logger.getLogger(
 
-        this.gamesList = gamesList;
+            Thread.currentThread().getStackTrace()[0].getClassName()
+    );
+
+    public SocketPresenter(Socket socket, ClientHandler clientHandler) throws IOException {
+
+        this.clientHandler = clientHandler;
+
+        this.in = new Scanner(socket.getInputStream());
+        this.out = new PrintWriter(socket.getOutputStream());
     }
 
+    @Override
     public void run() {
 
-        try (Scanner in = new Scanner(socket.getInputStream());
-                PrintWriter out = new PrintWriter(socket.getOutputStream())) {
+        LOGGER.log(Level.INFO, "Socket client connected to server.");
 
-            while (socket.isConnected()) {
+        this.clientHandler.addClient(this);
 
-                String line = in.nextLine();
+        try {
+            while (Thread.currentThread().isAlive()) {
 
-                if (line.equals("disconnetti")) {
+                String line = this.in.nextLine();
 
-                    if (this.currentGame == null) {
+                if (line.equals("ping")) {
 
-                        out.println("Disconnetto client.");
-                        out.flush();
+                    this.lastPingTime = LocalDateTime.now();
 
-                        this.socket.close();
-                    } else {
+                } else if (line.equals("disconnetti")) {
 
-                        out.println("Prima effettua il logout dalla partita corrente.");
-                        out.flush();
-                    }
-                } else if (line.equals("mostra partite disponibili")) {
-
-                    if (this.gamesList.isEmpty()) {
-
-                        out.println("Non ci sono partite disponibili.");
-                        out.flush();
-                    } else {
-
-                        out.println(this.gamesList.stream()
-                                        .map(GameHandler::getGameId)
-                                        .collect(Collectors.toList()));
-                        out.flush();
-                    }
-
-                } else if (line.startsWith("crea partita")) {
-
-                    if (this.gamesList.stream()
-                            .anyMatch(x -> x.getGameId().equals(line.substring(13)))) {
-
-                        out.println("La partita esiste già.");
-                        out.flush();
-                    } else {
-
-                        this.currentGame = new GameHandler(line.substring(13));
-                        this.gamesList.add(this.currentGame);
-
-                        out.println("Partita creata.");
-                        out.flush();
-                    }
-
-                } else if (line.startsWith("seleziona partita")) {
-
-                    try {
-
-                        this.currentGame = this.gamesList.stream()
-                                .filter(x -> x.getGameId().equals(line.substring(18)))
-                                .findFirst()
-                                .orElseThrow(IllegalArgumentException::new);
-
-                        out.println("Partita selezionata.");
-                        out.flush();
-                    } catch (IllegalArgumentException e) {
-
-                        out.println("La partita selezionata non esiste.");
-                        out.flush();
-                    }
-
-                } else if (line.equals("mostra giocatori connessi")) {
-
-                    if (this.currentGame == null) {
-
-                        out.println("Prima seleziona una partita.");
-                        out.flush();
-                    } else {
-
-                        out.println(this.currentGame.getPlayerList().stream()
-                                .map(x -> Arrays.asList(x.getPlayerId(), x.getColor()))
-                                .collect(Collectors.toList()));
-                        out.flush();
-                    }
+                    this.callRemoteMethod("disconnect", "socket");
 
                 } else if (line.startsWith("login")) {
 
-                    if (this.player != null) {
+                    this.playerId = line.substring(6);
 
-                        out.println("Sei già registrato.");
-                        out.flush();
-                    } else if (this.currentGame == null) {
+                    this.callRemoteMethod("login", line.substring(6));
 
-                        out.println("Prima seleziona una partita.");
-                        out.flush();
-                    } else {
-
-                        try {
-
-                            this.player = this.currentGame.addPlayer("playerId", "sprog");
-
-                            out.println("Ciao sprog.");
-                            out.flush();
-                        } catch (LoginException e) {
-
-                            out.println(e.getMessage());
-                            out.flush();
-                        }
-                    }
-
-                } else if (line.equals("logout")) {
-
-                    if (this.currentGame != null) {
-
-                        this.player = null;
-                        this.currentGame = null;
-
-                        out.println("Logout da partita corrente effettuato.");
-                        out.flush();
-
-                    } else {
-
-                        out.println("Non sei connesso a nessuna partita.");
-                        out.flush();
-                    }
+                    this.clientHandler.playerLogMessage(this.playerId, "connected to server.");
 
                 } else {
 
-                    out.println("Received: " + line);
-                    out.flush();
+                    this.callRemoteMethod("infoMessage", "Received: " + line);
                 }
             }
+        } catch (RemoteException | NoSuchElementException e) {
 
-        } catch (IOException e) {
+            this.clientHandler.removeClient(this);
 
-            e.printStackTrace();
+            if (this.playerId != null) {
+
+                this.clientHandler.playerLogMessage(this.playerId, "disconnected from server.");
+            }
         }
+    }
+
+    @Override
+    public String getPlayerId() {
+
+        return this.playerId;
+    }
+
+    @Override
+    public void disconnectPresenter() {
+
+        this.in.close();
+        this.out.close();
+
+        if (this.playerId == null) {
+
+            LOGGER.log(Level.INFO, "Socket client disconnected from server.");
+        } else {
+
+            LOGGER.log(Level.INFO, this.playerId + " disconnected from server.");
+        }
+    }
+
+    @Override
+    public LocalDateTime getLastPingTime() {
+
+        return this.lastPingTime;
+    }
+
+    @Override
+    public void callRemoteMethod(String method, String value) throws RemoteException {
+
+        try {
+
+            this.out.println(this.jsonSerialize(method, value));
+            this.out.flush();
+
+        } catch (NoSuchElementException e) {
+
+            throw new RemoteException();
+        }
+
+    }
+
+    private String jsonSerialize(String method, String value) {
+
+        JsonObject object = Json.createObjectBuilder()
+                .add("method", method)
+                .add("value", value)
+                .build();
+
+        return object.toString();
     }
 }

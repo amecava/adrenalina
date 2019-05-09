@@ -21,6 +21,11 @@ public class AmmoTilesDeck {
         Collections.shuffle(this.ammoTilesList);
     }
 
+    public boolean isEmpty() {
+
+        return this.ammoTilesList.isEmpty();
+    }
+
     public Card getTile() {
 
         return this.ammoTilesList.remove(0);

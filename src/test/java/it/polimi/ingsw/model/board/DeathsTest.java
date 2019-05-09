@@ -2,10 +2,9 @@ package it.polimi.ingsw.model.board;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
-import it.polimi.ingsw.model.exceptions.jacop.FrenzyRegenerationException;
 import it.polimi.ingsw.model.points.PointHandler;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
@@ -26,7 +25,9 @@ class DeathsTest {
         playerList.add(player3);
         Player player4 = new Player(" giulia ", Color.VIOLET);
         playerList.add(player4);
+
         PointHandler pointHandler = new PointHandler(playerList, 2);
+
         for (int i = 0; i < 8; i++) {
             player3.damagePlayer(player2.getColor(), true);
         }
@@ -36,11 +37,14 @@ class DeathsTest {
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-           // e.printStackTrace();
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
         } catch (EndGameException e) {
-           // e.printStackTrace();
+            fail();
         }
+
         for (int i = 0; i < 3; i++) {
             player3.damagePlayer(player2.getColor(), true);
         }
@@ -55,16 +59,21 @@ class DeathsTest {
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-           // e.printStackTrace();
+
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
+            fail();
         } catch (EndGameException e) {
-           // e.printStackTrace();
+
+            player2.setPoints(-3);
+            player3.setPoints(+10);
+            player4.setPoints(+28);
+            assertEquals(player1.getPoints(), 18);
+            assertEquals(player2.getPoints(), 19);
+            assertEquals(player3.getPoints(), 28);
+
         }
-        player2.setPoints(-3);
-        player3.setPoints(+10);
-        player4.setPoints(+28);
-        assertEquals(player1.getPoints(), 18);
-        assertEquals(player2.getPoints(), 19);
-        assertEquals(player3.getPoints(), 28);
     }
 }

@@ -1,60 +1,113 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.GameHandler;
+import it.polimi.ingsw.presenter.ClientHandler;
+import it.polimi.ingsw.presenter.AccessPoint;
 import it.polimi.ingsw.presenter.SocketPresenter;
+import it.polimi.ingsw.view.virtual.VirtualAccessPoint;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
 
     private int rmiPort;
     private int socketPort;
 
-    private List<GameHandler> gamesList = new ArrayList<>();
+    private ClientHandler clientHandler = new ClientHandler();
 
-    public Server(int rmiPort, int socketPort) {
+    private static final Logger LOGGER = Logger.getLogger(
+
+            Thread.currentThread().getStackTrace()[0].getClassName()
+    );
+
+    private Server(int rmiPort, int socketPort) {
+
+        LOGGER.log(Level.INFO, "Creating server...");
 
         this.rmiPort = rmiPort;
         this.socketPort = socketPort;
     }
 
-    public void run() {
+    private void start() {
 
-        ServerSocket serverSocket;
-        ExecutorService executor = Executors.newCachedThreadPool();
+        Thread ping = new Thread(() -> {
 
-        try {
+            while (Thread.currentThread().isAlive()) {
 
-            serverSocket = new ServerSocket(this.socketPort);
-        } catch (IOException e) {
+                try {
 
-            throw new RuntimeException(e);
-        }
+                    Thread.sleep(5000);
 
-        System.out.println("Socket server in attesa di connessioni.");
+                    this.clientHandler.removeDisconnected();
 
-        while (!serverSocket.isClosed()) {
+                } catch (InterruptedException e) {
+
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+
+        ping.setDaemon(true);
+        ping.start();
+
+        new Thread(() -> {
+
+            LOGGER.log(Level.INFO, "Creating RMI server...");
 
             try {
 
-                Socket socket = serverSocket.accept();
-                executor.submit(new SocketPresenter(socket, this.gamesList));
+                //System.setProperty("java.rmi.server.hostname", "169.254.96.246");
+
+                Registry registry = LocateRegistry.createRegistry(this.rmiPort);
+                VirtualAccessPoint stub = (VirtualAccessPoint) UnicastRemoteObject
+                        .exportObject(new AccessPoint(this.clientHandler), 0);
+
+                registry.bind("AccessPoint", stub);
+
+                LOGGER.log(Level.INFO, "RMI server ready. Waiting for connections.");
+
+            } catch (RemoteException | AlreadyBoundException e) {
+
+                LOGGER.log(Level.SEVERE, "RMI server exception.", e);
+            }
+        }).start();
+
+        new Thread(() -> {
+
+            LOGGER.log(Level.INFO, "Creating socket server...");
+
+            ExecutorService executor = Executors.newCachedThreadPool();
+
+            try (ServerSocket serverSocket = new ServerSocket(this.socketPort)) {
+
+                LOGGER.log(Level.INFO, "Socket server ready. Waiting for connections.");
+
+                while (serverSocket.isBound()) {
+
+                    Socket socket = serverSocket.accept();
+
+                    executor.submit(new SocketPresenter(socket, this.clientHandler));
+                }
             } catch (IOException e) {
 
-                executor.shutdown();
+                LOGGER.log(Level.SEVERE, "Socket server exception!", e);
             }
-        }
+        }).start();
     }
 
     public static void main(String[] args) {
 
         Server server = new Server(4561, 4562);
 
-        server.run();
+        server.start();
     }
 }

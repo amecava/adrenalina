@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.board;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.board.rooms.Square;
@@ -34,6 +34,8 @@ public class Board {
         this.weaponDeck = builder.weaponDeck;
         this.ammoTilesDeck = builder.ammoTilesDeck;
         this.powerUpDeck = builder.powerUpDeck;
+
+        // this.fillBoard();
     }
 
     public List<Room> getRoomsList() {
@@ -68,10 +70,10 @@ public class Board {
                 .flatMap(x -> x.getSquaresList().stream())
                 .forEach(x -> {
                     if (x.isSpawn()) {
-                        while (x.getTools().size() < 3) {
+                        while (x.getTools().size() < 3 && !this.weaponDeck.isEmpty()) {
                             x.addTool(this.weaponDeck.getCard());
                         }
-                    } else if (x.getTools().isEmpty()) {
+                    } else if (x.getTools().isEmpty() && !this.ammoTilesDeck.isEmpty()) {
 
                         x.addTool(this.ammoTilesDeck.getTile());
                     }

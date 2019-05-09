@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.players.bridges;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

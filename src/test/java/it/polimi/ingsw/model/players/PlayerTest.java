@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.players;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.Card;

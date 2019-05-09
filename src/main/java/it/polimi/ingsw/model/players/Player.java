@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.players;
 
-import it.polimi.ingsw.model.ammo.Color;
 import it.polimi.ingsw.model.ammo.AmmoCube;
 import it.polimi.ingsw.model.ammo.AmmoTile;
 import it.polimi.ingsw.model.board.rooms.Square;
@@ -453,8 +452,9 @@ public class Player implements Target {
 
         this.bridge.getCurrentWeaponCard().useCard(effectType, effectTarget, powerUpCardList);
     }
+
     //TODO needs to be changed , we need to pass the id , not the powerUpCard
-    public  PowerUpCard spawn(PowerUpCard powerUpCard) throws IllegalActionException {
+    public PowerUpCard spawn(PowerUpCard powerUpCard) throws IllegalActionException {
 
         if ((this.isActivePlayer() && this.currentPosition == null)
                 || this.isRespawn()) {
@@ -463,10 +463,18 @@ public class Player implements Target {
 
             this.setRespawn(false);
 
-
             return powerUpCardTmp;
         } else {
             throw new IllegalActionException("You can't respawn!");
         }
+    }
+
+    @Override
+    public String toString() {
+
+        return "{" +
+                "\"playerId\": \"" + this.playerId + "\"," +
+                "\"character\": \"" + this.bridge.getColor().getCharacter() + "\"" +
+                "}";
     }
 }

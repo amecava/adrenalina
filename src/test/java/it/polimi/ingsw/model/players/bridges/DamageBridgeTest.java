@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.players.bridges;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import org.junit.jupiter.api.Test;
 
 class DamageBridgeTest {

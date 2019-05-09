@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.players.bridges;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 
 public class Shots {
 

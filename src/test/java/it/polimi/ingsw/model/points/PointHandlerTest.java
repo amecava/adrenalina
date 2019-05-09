@@ -2,10 +2,9 @@ package it.polimi.ingsw.model.points;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.ammo.Color;
+import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
-import it.polimi.ingsw.model.exceptions.jacop.FrenzyRegenerationException;
 import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +36,13 @@ class PointHandlerTest {
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-            e.printStackTrace();
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
         } catch (EndGameException e) {
-            e.printStackTrace();
+
+            assertEquals(e.getWinner().get(0).get(0), player2);
         }
 
         assertEquals(player2.getMarks().size(), 1);
@@ -50,7 +52,6 @@ class PointHandlerTest {
         );
         assertEquals(player2.getPoints(), 8);
         assertEquals(player3.getPoints(), 7);
-        assertEquals(pointHandler.getWinner().get(0).get(0), player2);
     }
 
     @Test
@@ -66,36 +67,52 @@ class PointHandlerTest {
         playerList.add(player3);
         playerList.add(player4);
         PointHandler pointHandler = new PointHandler(playerList, 4);
+
         for (int i = 0; i < 5; i++) {
+
             player1.markPlayer(player2.getColor());
             player1.markPlayer(player3.getColor());
         }
+
         for (int i = 0; i < 4; i++) {
+
             player1.damagePlayer(player2.getColor(), true);
         }
+
         player1.damagePlayer(player4.getColor(), true);
         player1.damagePlayer(player3.getColor(), true);
         player1.damagePlayer(player3.getColor(), true);
+
         player1.markPlayer(Color.LIGHTBLUE);
         player1.markPlayer(Color.LIGHTBLUE);
+
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-            e.printStackTrace();
+
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
         } catch (EndGameException e) {
-            e.printStackTrace();
+
+            fail();
         }
+
         for (int i = 0; i < 6; i++) {
+
             player1.damagePlayer(player2.getColor(), true);
             player1.damagePlayer(player3.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-            e.printStackTrace();
-        } catch (EndGameException e) {
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
+
+        }  catch (EndGameException e) {
             e.printStackTrace();
         }
         assertEquals(player2.getPoints(), 16);
@@ -106,6 +123,7 @@ class PointHandlerTest {
 
     @Test
     void getWinner() {
+
         Player player1 = new Player("jacopo", Color.VIOLET);
         Player player2 = new Player("Amedeo", Color.GREEN);
         Player player3 = new Player("federico", Color.YELLOW);
@@ -119,13 +137,17 @@ class PointHandlerTest {
         playerList.add(player4);
         playerList.add(player5);
         playerList.add(player6);
-        PointHandler pointHandler = new PointHandler(playerList, 4);
+        PointHandler pointHandler = new PointHandler(playerList, 2);
         player1.setPoints(20);
         player2.setPoints(20);
         player3.setPoints(15);
+
+        /*
         assertTrue(pointHandler.getWinner().get(0).contains(player1));
         assertTrue(pointHandler.getWinner().get(0).contains(player2));
         assertFalse(pointHandler.getWinner().get(0).contains(player3));
+
+         */
 
         for (int i = 0; i < 13; i++) {
             player2.damagePlayer(player1.getColor(), true);
@@ -133,10 +155,13 @@ class PointHandlerTest {
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-            e.printStackTrace();
+
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
         } catch (EndGameException e) {
-            e.printStackTrace();
+            fail();
         }
         for (int i = 0; i < 12; i++) {
             player1.damagePlayer(player2.getColor(), true);
@@ -144,19 +169,27 @@ class PointHandlerTest {
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-            e.printStackTrace();
+
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
+
+            fail();
         } catch (EndGameException e) {
-            e.printStackTrace();
+
+            assertTrue(e.getWinner().get(0).contains(player1));
+            /*
+            assertFalse(e.getWinner().get(0).contains(player1));
+            assertFalse(e.getWinner().get(0).contains(player1));
+
+             */
         }
-        assertTrue(pointHandler.getWinner().get(0).contains(player1));
-        assertFalse(pointHandler.getWinner().get(0).contains(player2));
-        assertFalse(pointHandler.getWinner().get(0).contains(player3));
     }
 
 
     @Test
-    void multipleKills (){
+    void multipleKills() {
         Player player1 = new Player("jacopo", Color.VIOLET);
         Player player2 = new Player("Amedeo", Color.GREEN);
         Player player3 = new Player("federico", Color.YELLOW);
@@ -171,22 +204,25 @@ class PointHandlerTest {
         playerList.add(player5);
         playerList.add(player6);
         PointHandler pointHandler = new PointHandler(playerList, 3);
-        for (int i=1; i<=12; i++){
+        for (int i = 1; i <= 12; i++) {
             player2.damagePlayer(player1.getColor(), true);
             player3.damagePlayer(player1.getColor(), true);
         }
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-            e.printStackTrace();
+
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
         } catch (EndGameException e) {
-            e.printStackTrace();
+            fail();
         }
         player1.damagePlayer(player2.getColor(), true);
         player1.damagePlayer(player3.getColor(), true);
-        assertTrue(player1.getShots().size()==4);
-        for (int i=0; i<11; i++){
+        assertTrue(player1.getShots().size() == 4);
+        for (int i = 0; i < 11; i++) {
             player5.damagePlayer(player4.getColor(), true);
             player6.damagePlayer(player4.getColor(), true);
         }
@@ -194,21 +230,37 @@ class PointHandlerTest {
         try {
             pointHandler.checkIfDead();
             pointHandler.countKills();
-        } catch (FrenzyRegenerationException e) {
-            e.printStackTrace();
+
+            if (pointHandler.checkEndGame()) {
+
+                throw new EndGameException(pointHandler.endGame());
+            }
+
         } catch (EndGameException e) {
 
+            assertEquals(9, player2.getPoints());
+            assertEquals(6, player3.getPoints());
+            assertEquals(26, player1.getPoints());
+            assertEquals(28, player4.getPoints());
+
+            assertTrue(e.getWinner().get(0).contains(player4)
+                    && e.getWinner().get(0).size() == 1);
+
+            assertTrue(e.getWinner().get(2).contains(player2)
+                    && e.getWinner().get(2).size() == 1);
+
+            assertTrue(e.getWinner().get(3).contains(player3)
+                    && e.getWinner().get(3).size() == 1);
+
+            assertTrue(e.getWinner().get(1).contains(player1)
+                    && e.getWinner().get(1).size() == 1);
+
+            assertEquals(5, player1.getShots().size());
+
+            /*
+            assertEquals(6, pointHandler.getDeaths().getShots().size());
+             */
         }
-        assertEquals(9, player2.getPoints());
-        assertEquals(6, player3.getPoints());
-        assertEquals(26, player1.getPoints());
-        assertEquals(28, player4.getPoints());
-        assertTrue(pointHandler.getWinner().get(0).contains(player4) && pointHandler.getWinner().get(0).size()==1);
-        assertTrue(pointHandler.getWinner().get(2).contains(player2) && pointHandler.getWinner().get(2).size()==1);
-        assertTrue(pointHandler.getWinner().get(3).contains(player3) && pointHandler.getWinner().get(3).size()==1);
-        assertTrue(pointHandler.getWinner().get(1).contains(player1) && pointHandler.getWinner().get(1).size()==1);
-        assertEquals(5, player1.getShots().size());
-        assertEquals(6, pointHandler.getDeaths().getShots().size());
 
     }
 
