@@ -61,23 +61,45 @@ public class RmiPresenter implements Presenter, VirtualPresenter {
         }
     }
 
+    /*
     @Override
     public LocalDateTime getLastPingTime() {
 
         return this.lastPingTime;
     }
+    */
 
     @Override
-    public void callRemoteMethod(String method, String value) {
+    public void callRemoteMethod(String method, String value) throws RemoteException {
+
+        Thread thread = new Thread(() -> {
+
+            try {
+
+                skeleton.getClass().getMethod(method, String.class)
+                        .invoke(skeleton, value);
+
+            } catch (ReflectiveOperationException e) {
+
+                LOGGER.log(Level.SEVERE, "Reflective operation exception.", e);
+            }
+        });
 
         try {
 
-            this.skeleton.getClass().getMethod(method, String.class)
-                    .invoke(this.skeleton, value);
+            thread.start();
 
-        } catch (ReflectiveOperationException e) {
+            thread.join(1000);
 
-            LOGGER.log(Level.SEVERE, "Reflective operation exception.", e);
+            if (thread.isAlive()) {
+
+                thread.interrupt();
+
+                throw new RemoteException();
+            }
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -99,7 +121,7 @@ public class RmiPresenter implements Presenter, VirtualPresenter {
 
             LOGGER.log(Level.INFO, this.playerId + " disconnected from server.");
 
-            this.clientHandler.playerLogMessage(this.playerId, "disconnected from server.");
+            this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
         }
 
         this.skeleton.disconnect("RMI");
@@ -118,6 +140,6 @@ public class RmiPresenter implements Presenter, VirtualPresenter {
 
         this.skeleton.login(value);
 
-        this.clientHandler.playerLogMessage(this.playerId, "connected to server.");
+        this.clientHandler.broadcast("infoMessage", this.playerId + ": connected to server.");
     }
 }

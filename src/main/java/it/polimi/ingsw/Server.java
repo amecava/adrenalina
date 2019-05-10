@@ -65,7 +65,7 @@ public class Server {
 
             try {
 
-                //System.setProperty("java.rmi.server.hostname", "169.254.96.246");
+                System.setProperty("java.rmi.server.hostname", "192.168.43.105");
 
                 Registry registry = LocateRegistry.createRegistry(this.rmiPort);
                 VirtualAccessPoint stub = (VirtualAccessPoint) UnicastRemoteObject

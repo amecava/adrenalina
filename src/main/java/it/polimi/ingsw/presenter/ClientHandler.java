@@ -36,6 +36,8 @@ public class ClientHandler {
 
     public synchronized void removeDisconnected() {
 
+        /*
+
         LocalDateTime now = LocalDateTime.now();
 
         List<Presenter> removeList = new ArrayList<>();
@@ -47,6 +49,23 @@ public class ClientHandler {
 
                 removeList.add(x);
             }
+        });
+
+        */
+
+        List<Presenter> removeList = new ArrayList<>();
+
+        this.clientList.forEach(x -> {
+
+            try {
+
+                x.callRemoteMethod("isConnected", "ping");
+
+            } catch (RemoteException e) {
+
+                removeList.add(x);
+            }
+
         });
 
         removeList.forEach(x -> {
@@ -61,22 +80,19 @@ public class ClientHandler {
 
                 if (x.getPlayerId() != null) {
 
-                    this.playerLogMessage(x.getPlayerId(), "disconnected from server.");
+                    this.broadcast("infoMessage", x.getPlayerId() + ": disconnected from server.");
                 }
             });
         }
     }
 
-    void playerLogMessage(String playerId, String message) {
+    void broadcast(String method, String value) {
 
         this.clientList.forEach(x -> {
 
             try {
 
-                if (x.getPlayerId() != playerId) {
-
-                    x.callRemoteMethod("infoMessage", playerId + ": " + message);
-                }
+                x.callRemoteMethod(method, value);
 
             } catch (RemoteException e) {
 

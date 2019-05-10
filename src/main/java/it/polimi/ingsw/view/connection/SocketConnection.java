@@ -41,6 +41,7 @@ public class SocketConnection implements Runnable {
 
             LOGGER.log(Level.INFO, "Connected to socket server.");
 
+            /*
             Thread ping = new Thread(() -> {
 
                 while (Thread.currentThread().isAlive()) {
@@ -49,7 +50,7 @@ public class SocketConnection implements Runnable {
 
                         Thread.sleep(1000);
 
-                        out.println("ping");
+                        out.println(Json.createObjectBuilder().add("method", "ping").add("value", "ping").build());
                         out.flush();
 
                     } catch (InterruptedException e) {
@@ -61,6 +62,7 @@ public class SocketConnection implements Runnable {
 
             ping.setDaemon(true);
             ping.start();
+            */
 
             Thread input = new Thread(() -> {
 
@@ -68,8 +70,7 @@ public class SocketConnection implements Runnable {
 
                     try {
 
-                        String line = in.nextLine();
-                        this.view.serverInteraction(Json.createReader(new StringReader(line)).readObject());
+                        this.view.serverInteraction(Json.createReader(new StringReader(in.nextLine())).readObject());
 
                     } catch (RemoteException e) {
 
@@ -86,10 +87,9 @@ public class SocketConnection implements Runnable {
 
                     try {
 
-                        String line = this.view.userInteraction();
-
-                        out.println(line);
+                        out.println(this.view.userInteraction());
                         out.flush();
+
                     } catch (RemoteException e) {
 
                         LOGGER.log(Level.SEVERE, "Remote exception.", e);

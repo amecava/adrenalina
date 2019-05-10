@@ -6,7 +6,7 @@ import javax.json.JsonObject;
 
 public interface View extends Remote {
 
-    String userInteraction() throws RemoteException;
+    JsonObject userInteraction() throws RemoteException;
     void serverInteraction(JsonObject object) throws RemoteException;
 
     void logMessage(String value) throws RemoteException;
@@ -15,7 +15,8 @@ public interface View extends Remote {
 
     void welcomeScreen() throws RemoteException;
     Runnable connect(String ip, int rmiPort, int socketPort) throws RemoteException;
-    void disconnect(String value) throws RemoteException;
 
+    void isConnected(String value) throws RemoteException;
     void login(String value) throws RemoteException;
+    void disconnect(String value) throws RemoteException;
 }

@@ -10,6 +10,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.JsonObject;
 
 public class RmiConnection implements Runnable {
 
@@ -44,6 +45,7 @@ public class RmiConnection implements Runnable {
 
             LOGGER.log(Level.INFO, "Connected to RMI server.");
 
+            /*
             Thread ping = new Thread(() -> {
 
                 while (Thread.currentThread().isAlive()) {
@@ -63,22 +65,23 @@ public class RmiConnection implements Runnable {
 
             ping.setDaemon(true);
             ping.start();
+            */
 
             while (Thread.currentThread().isAlive()) {
 
-                String line = this.view.userInteraction();
+                JsonObject object = this.view.userInteraction();
 
-                if (line.equals("disconnetti")) {
+                if (object.getString("method").equals("disconnetti")) {
 
                     stub.remoteDisconnect();
 
-                } else if (line.startsWith("login")) {
+                } else if (object.getString("method").startsWith("login")) {
 
-                    stub.login(line.substring(6));
+                    stub.login(object.getString("value"));
 
                 } else {
 
-                    stub.sendMessage(line);
+                    stub.sendMessage(object.getString("method") + object.getString("value"));
                 }
             }
         } catch (RemoteException | NotBoundException e) {

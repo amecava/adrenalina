@@ -2,6 +2,7 @@ package it.polimi.ingsw.presenter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
@@ -37,50 +38,6 @@ public class SocketPresenter implements Presenter, Runnable {
     }
 
     @Override
-    public void run() {
-
-        LOGGER.log(Level.INFO, "Socket client connected to server.");
-
-        this.clientHandler.addClient(this);
-
-        try {
-            while (Thread.currentThread().isAlive()) {
-
-                String line = this.in.nextLine();
-
-                if (line.equals("ping")) {
-
-                    this.lastPingTime = LocalDateTime.now();
-
-                } else if (line.equals("disconnetti")) {
-
-                    this.callRemoteMethod("disconnect", "socket");
-
-                } else if (line.startsWith("login")) {
-
-                    this.playerId = line.substring(6);
-
-                    this.callRemoteMethod("login", line.substring(6));
-
-                    this.clientHandler.playerLogMessage(this.playerId, "connected to server.");
-
-                } else {
-
-                    this.callRemoteMethod("infoMessage", "Received: " + line);
-                }
-            }
-        } catch (RemoteException | NoSuchElementException e) {
-
-            this.clientHandler.removeClient(this);
-
-            if (this.playerId != null) {
-
-                this.clientHandler.playerLogMessage(this.playerId, "disconnected from server.");
-            }
-        }
-    }
-
-    @Override
     public String getPlayerId() {
 
         return this.playerId;
@@ -101,11 +58,13 @@ public class SocketPresenter implements Presenter, Runnable {
         }
     }
 
+    /*
     @Override
     public LocalDateTime getLastPingTime() {
 
         return this.lastPingTime;
     }
+    */
 
     @Override
     public void callRemoteMethod(String method, String value) throws RemoteException {
@@ -114,7 +73,6 @@ public class SocketPresenter implements Presenter, Runnable {
 
             this.out.println(this.jsonSerialize(method, value));
             this.out.flush();
-
         } catch (NoSuchElementException e) {
 
             throw new RemoteException();
@@ -122,13 +80,66 @@ public class SocketPresenter implements Presenter, Runnable {
 
     }
 
-    private String jsonSerialize(String method, String value) {
+    @Override
+    public void run() {
 
-        JsonObject object = Json.createObjectBuilder()
+        LOGGER.log(Level.INFO, "Socket client connected to server.");
+
+        this.clientHandler.addClient(this);
+
+        try {
+
+            while (Thread.currentThread().isAlive()) {
+
+                JsonObject object = this.jsonDeserialize(this.in.nextLine());
+
+                if (object.getString("method").equals("ping")) {
+
+                    this.lastPingTime = LocalDateTime.now();
+
+                } else if (object.getString("method").equals("disconnetti")) {
+
+                    this.callRemoteMethod("disconnect", "socket");
+
+                } else if (object.getString("method").startsWith("login")) {
+
+                    this.login(object.getString("value"));
+
+                } else {
+
+                    this.callRemoteMethod("infoMessage", "Received: " + object.getString("method") + object.getString("value"));
+                }
+            }
+        } catch (RemoteException | NoSuchElementException e) {
+
+            this.clientHandler.removeClient(this);
+
+            if (this.playerId != null) {
+
+                this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
+            }
+        }
+    }
+
+    private JsonObject jsonSerialize(String method, String value) {
+
+        return Json.createObjectBuilder()
                 .add("method", method)
                 .add("value", value)
                 .build();
+    }
 
-        return object.toString();
+    private JsonObject jsonDeserialize(String line) {
+
+        return Json.createReader(new StringReader(line)).readObject();
+    }
+
+    private void login(String playerId) throws RemoteException {
+
+        this.playerId = playerId;
+
+        this.callRemoteMethod("login", playerId);
+
+        this.clientHandler.broadcast("infoMessage", playerId + ": connected to server.");
     }
 }

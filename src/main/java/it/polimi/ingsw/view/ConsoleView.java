@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
 import javax.json.JsonObject;
 
 public class ConsoleView implements View {
@@ -23,16 +24,21 @@ public class ConsoleView implements View {
      * //@return
      */
     @Override
-    public String userInteraction() throws RemoteException {
+    public JsonObject userInteraction() throws RemoteException {
 
-        String line = this.input();
+        String parts[] = this.input().split(" ", 2);
 
-        if (line == null) {
+        if (parts[0] == null) {
 
             throw new RemoteException();
         }
 
-        return line;
+        JsonObject object = Json.createObjectBuilder()
+                .add("method", parts[0])
+                .add("value", parts[1])
+                .build();
+
+        return object;
     }
 
     /**
@@ -107,17 +113,23 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public void disconnect(String value) {
+    public void isConnected(String value) {
 
-        this.logMessage("Disconnected from " + value + " server.");
-
-        System.exit(0);
+        //
     }
 
     @Override
     public void login(String value) {
 
         this.output("Login effettuato come " + value + ".");
+    }
+
+    @Override
+    public void disconnect(String value) {
+
+        this.logMessage("Disconnected from " + value + " server.");
+
+        System.exit(0);
     }
 
     private String input() {
