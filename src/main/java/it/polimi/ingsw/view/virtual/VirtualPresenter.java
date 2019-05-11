@@ -5,9 +5,7 @@ import java.rmi.RemoteException;
 
 public interface VirtualPresenter extends Remote {
 
-    void pingServer() throws RemoteException;
-    void remoteDisconnect() throws RemoteException;
+    void remoteDisconnect(String value) throws RemoteException;
 
-    void login(String value) throws RemoteException;
-    void sendMessage(String value) throws RemoteException;
+    void selectPlayerId(String value) throws RemoteException;
 }

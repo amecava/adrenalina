@@ -1,22 +1,15 @@
 package it.polimi.ingsw.view;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import it.polimi.ingsw.view.connection.Connection;
 import javax.json.JsonObject;
 
-public interface View extends Remote {
+public interface View {
 
-    JsonObject userInteraction() throws RemoteException;
-    void serverInteraction(JsonObject object) throws RemoteException;
+    JsonObject userInput();
+    void userOutput(JsonObject jsonObject);
 
-    void logMessage(String value) throws RemoteException;
-    void infoMessage(String value) throws RemoteException;
-    void errorMessage(String value) throws RemoteException;
+    void serverInteraction(JsonObject object) throws ReflectiveOperationException;
 
-    void welcomeScreen() throws RemoteException;
-    Runnable connect(String ip, int rmiPort, int socketPort) throws RemoteException;
-
-    void isConnected(String value) throws RemoteException;
-    void login(String value) throws RemoteException;
-    void disconnect(String value) throws RemoteException;
+    void welcomeScreen();
+    Connection selectConnection(String ip, int rmiPort, int socketPort) throws InterruptedException;
 }

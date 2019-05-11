@@ -6,13 +6,12 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 
-public class SocketConnection implements Runnable {
+public class SocketConnection implements Connection {
 
     private String ip;
     private int port;
@@ -33,36 +32,13 @@ public class SocketConnection implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void connect() {
 
         try (Socket socket = new Socket(this.ip, this.port);
                 Scanner in = new Scanner(socket.getInputStream());
                 PrintWriter out = new PrintWriter(socket.getOutputStream())) {
 
             LOGGER.log(Level.INFO, "Connected to socket server.");
-
-            /*
-            Thread ping = new Thread(() -> {
-
-                while (Thread.currentThread().isAlive()) {
-
-                    try {
-
-                        Thread.sleep(1000);
-
-                        out.println(Json.createObjectBuilder().add("method", "ping").add("value", "ping").build());
-                        out.flush();
-
-                    } catch (InterruptedException e) {
-
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            });
-
-            ping.setDaemon(true);
-            ping.start();
-            */
 
             Thread input = new Thread(() -> {
 
@@ -72,7 +48,7 @@ public class SocketConnection implements Runnable {
 
                         this.view.serverInteraction(Json.createReader(new StringReader(in.nextLine())).readObject());
 
-                    } catch (RemoteException e) {
+                    } catch (ReflectiveOperationException e) {
 
                         LOGGER.log(Level.SEVERE, "Reflective operation exception.", e);
                     }
@@ -85,15 +61,8 @@ public class SocketConnection implements Runnable {
 
                 while (Thread.currentThread().isAlive()) {
 
-                    try {
-
-                        out.println(this.view.userInteraction());
-                        out.flush();
-
-                    } catch (RemoteException e) {
-
-                        LOGGER.log(Level.SEVERE, "Remote exception.", e);
-                    }
+                    out.println(this.view.userInput());
+                    out.flush();
                 }
             });
 

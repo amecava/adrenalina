@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.connection;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.virtual.VirtualAccessPoint;
 import it.polimi.ingsw.view.virtual.VirtualPresenter;
+import it.polimi.ingsw.view.virtual.VirtualView;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -10,9 +11,10 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
 import javax.json.JsonObject;
 
-public class RmiConnection implements Runnable {
+public class RmiConnection implements Connection {
 
     private String ip;
     private int port;
@@ -33,55 +35,37 @@ public class RmiConnection implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void connect() {
 
         try {
 
             Registry registry = LocateRegistry.getRegistry(this.ip, this.port);
             VirtualAccessPoint access = (VirtualAccessPoint) registry.lookup("AccessPoint");
 
-            View skeleton = (View) UnicastRemoteObject.exportObject(this.view, 0);
+            VirtualView skeleton = (VirtualView) UnicastRemoteObject.exportObject((VirtualView) this.view, 0);
             VirtualPresenter stub = access.callBack(skeleton);
 
             LOGGER.log(Level.INFO, "Connected to RMI server.");
 
-            /*
-            Thread ping = new Thread(() -> {
-
-                while (Thread.currentThread().isAlive()) {
-
-                    try {
-
-                        Thread.sleep(1000);
-
-                        stub.pingServer();
-
-                    } catch (InterruptedException | RemoteException e) {
-
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            });
-
-            ping.setDaemon(true);
-            ping.start();
-            */
-
             while (Thread.currentThread().isAlive()) {
 
-                JsonObject object = this.view.userInteraction();
+                JsonObject object = this.view.userInput();
 
-                if (object.getString("method").equals("disconnetti")) {
+                switch (object.getString("method")) {
 
-                    stub.remoteDisconnect();
+                    case "disconnetti":
 
-                } else if (object.getString("method").startsWith("login")) {
+                        stub.remoteDisconnect("RMI");
+                        break;
 
-                    stub.login(object.getString("value"));
+                    case "login":
 
-                } else {
+                        stub.selectPlayerId(object.getString("value"));
+                        break;
 
-                    stub.sendMessage(object.getString("method") + object.getString("value"));
+                    default:
+
+                        this.view.userOutput(Json.createObjectBuilder().add("method", "errorMessage").add("value", "Selezione non disponiile, riprova oppure help.").build());
                 }
             }
         } catch (RemoteException | NotBoundException e) {

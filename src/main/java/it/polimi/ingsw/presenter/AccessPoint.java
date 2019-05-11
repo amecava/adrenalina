@@ -3,6 +3,7 @@ package it.polimi.ingsw.presenter;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.virtual.VirtualPresenter;
 import it.polimi.ingsw.view.virtual.VirtualAccessPoint;
+import it.polimi.ingsw.view.virtual.VirtualView;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class AccessPoint implements VirtualAccessPoint {
     }
 
     @Override
-    public synchronized VirtualPresenter callBack(View skeleton) throws RemoteException {
+    public synchronized VirtualPresenter callBack(VirtualView skeleton) throws RemoteException {
 
         RmiPresenter presenter = new RmiPresenter(skeleton, this.clientHandler);
         VirtualPresenter stub = (VirtualPresenter) UnicastRemoteObject.exportObject(presenter, 0);

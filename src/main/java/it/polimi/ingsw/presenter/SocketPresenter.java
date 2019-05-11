@@ -1,11 +1,11 @@
 package it.polimi.ingsw.presenter;
 
+import it.polimi.ingsw.view.virtual.VirtualPresenter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
 import java.rmi.RemoteException;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -13,14 +13,12 @@ import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class SocketPresenter implements Presenter, Runnable {
+public class SocketPresenter implements Presenter, VirtualPresenter, Runnable {
 
     private String playerId;
 
     private Scanner in;
     private PrintWriter out;
-
-    private LocalDateTime lastPingTime;
 
     private ClientHandler clientHandler;
 
@@ -46,9 +44,6 @@ public class SocketPresenter implements Presenter, Runnable {
     @Override
     public void disconnectPresenter() {
 
-        this.in.close();
-        this.out.close();
-
         if (this.playerId == null) {
 
             LOGGER.log(Level.INFO, "Socket client disconnected from server.");
@@ -58,13 +53,19 @@ public class SocketPresenter implements Presenter, Runnable {
         }
     }
 
-    /*
     @Override
-    public LocalDateTime getLastPingTime() {
+    public void pingConnection() throws RemoteException {
 
-        return this.lastPingTime;
+        try {
+
+            this.out.println(this.jsonSerialize("isConnected", "ping"));
+            this.out.flush();
+
+        } catch (NoSuchElementException e) {
+
+            throw new RemoteException();
+        }
     }
-    */
 
     @Override
     public void callRemoteMethod(String method, String value) throws RemoteException {
@@ -73,11 +74,11 @@ public class SocketPresenter implements Presenter, Runnable {
 
             this.out.println(this.jsonSerialize(method, value));
             this.out.flush();
+
         } catch (NoSuchElementException e) {
 
             throw new RemoteException();
         }
-
     }
 
     @Override
@@ -93,21 +94,21 @@ public class SocketPresenter implements Presenter, Runnable {
 
                 JsonObject object = this.jsonDeserialize(this.in.nextLine());
 
-                if (object.getString("method").equals("ping")) {
+                switch (object.getString("method")) {
 
-                    this.lastPingTime = LocalDateTime.now();
+                    case "disconnetti":
 
-                } else if (object.getString("method").equals("disconnetti")) {
+                        this.remoteDisconnect("socket");
+                        break;
 
-                    this.callRemoteMethod("disconnect", "socket");
+                    case "login":
 
-                } else if (object.getString("method").startsWith("login")) {
+                        this.selectPlayerId(object.getString("value"));
+                        break;
 
-                    this.login(object.getString("value"));
+                    default:
 
-                } else {
-
-                    this.callRemoteMethod("infoMessage", "Received: " + object.getString("method") + object.getString("value"));
+                        this.callRemoteMethod("errorMessage", "Selezione non disponiile, riprova oppure help.");
                 }
             }
         } catch (RemoteException | NoSuchElementException e) {
@@ -118,6 +119,41 @@ public class SocketPresenter implements Presenter, Runnable {
 
                 this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
             }
+        }
+    }
+
+    @Override
+    public void remoteDisconnect(String value) throws RemoteException {
+
+        this.clientHandler.removeClient(this);
+
+        this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
+
+        this.callRemoteMethod("disconnect", value);
+
+        this.in.close();
+        this.out.close();
+    }
+
+    @Override
+    public void selectPlayerId(String value) throws RemoteException {
+
+        if (value.replace(" ", "").length() == 0) {
+
+            this.callRemoteMethod("errorMessage", "PlayerId vuoto, riprova.");
+
+        } else if (this.playerId != null) {
+
+            this.callRemoteMethod("errorMessage", "Login già effettuato, prima esegui logout.");
+
+        } else {
+
+            this.playerId = value;
+
+            this.callRemoteMethod("login", value);
+
+            this.clientHandler.broadcast("infoMessage", this.playerId + ": connected to server.");
+
         }
     }
 
@@ -132,14 +168,5 @@ public class SocketPresenter implements Presenter, Runnable {
     private JsonObject jsonDeserialize(String line) {
 
         return Json.createReader(new StringReader(line)).readObject();
-    }
-
-    private void login(String playerId) throws RemoteException {
-
-        this.playerId = playerId;
-
-        this.callRemoteMethod("login", playerId);
-
-        this.clientHandler.broadcast("infoMessage", playerId + ": connected to server.");
     }
 }

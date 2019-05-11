@@ -6,5 +6,5 @@ import java.rmi.RemoteException;
 
 public interface VirtualAccessPoint extends Remote {
 
-    VirtualPresenter callBack(View skeleton) throws RemoteException;
+    VirtualPresenter callBack(VirtualView skeleton) throws RemoteException;
 }

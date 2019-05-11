@@ -1,11 +1,10 @@
 package it.polimi.ingsw.presenter;
 
-import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.virtual.VirtualPresenter;
+import it.polimi.ingsw.view.virtual.VirtualView;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,9 +12,7 @@ public class RmiPresenter implements Presenter, VirtualPresenter {
 
     private String playerId;
 
-    private View skeleton;
-
-    private LocalDateTime lastPingTime;
+    private VirtualView skeleton;
 
     private ClientHandler clientHandler;
 
@@ -24,7 +21,7 @@ public class RmiPresenter implements Presenter, VirtualPresenter {
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    RmiPresenter(View skeleton, ClientHandler clientHandler) {
+    RmiPresenter(VirtualView skeleton, ClientHandler clientHandler) {
 
         this.skeleton = skeleton;
 
@@ -61,85 +58,58 @@ public class RmiPresenter implements Presenter, VirtualPresenter {
         }
     }
 
-    /*
     @Override
-    public LocalDateTime getLastPingTime() {
+    public void pingConnection() throws RemoteException {
 
-        return this.lastPingTime;
+        this.skeleton.isConnected("ping");
     }
-    */
 
     @Override
     public void callRemoteMethod(String method, String value) throws RemoteException {
 
-        Thread thread = new Thread(() -> {
-
-            try {
-
-                skeleton.getClass().getMethod(method, String.class)
-                        .invoke(skeleton, value);
-
-            } catch (ReflectiveOperationException e) {
-
-                LOGGER.log(Level.SEVERE, "Reflective operation exception.", e);
-            }
-        });
-
         try {
 
-            thread.start();
+            this.pingConnection();
 
-            thread.join(1000);
+            this.skeleton.getClass().getMethod(method, String.class)
+                    .invoke(this.skeleton, value);
 
-            if (thread.isAlive()) {
+        } catch (ReflectiveOperationException e) {
 
-                thread.interrupt();
-
-                throw new RemoteException();
-            }
-        } catch (InterruptedException e) {
-
-            Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "Reflective operation exception.", e);
         }
+
     }
 
     @Override
-    public void pingServer() {
-
-        this.lastPingTime = LocalDateTime.now();
-    }
-
-    @Override
-    public void remoteDisconnect() throws RemoteException {
+    public void remoteDisconnect(String value) throws RemoteException {
 
         this.clientHandler.removeClient(this);
 
-        if (this.playerId == null) {
+        this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
 
-            LOGGER.log(Level.INFO, "RMI client disconnected from server.");
+        this.skeleton.disconnect(value);
+    }
+
+    @Override
+    public void selectPlayerId(String value) throws RemoteException {
+
+        if (value.replace(" ", "").length() == 0) {
+
+            this.skeleton.errorMessage("PlayerId vuoto, riprova.");
+
+        } else if (this.playerId != null) {
+
+            this.skeleton.errorMessage("Login già effettuato, prima esegui logout.");
+
         } else {
 
-            LOGGER.log(Level.INFO, this.playerId + " disconnected from server.");
+            this.playerId = value;
 
-            this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
+            this.skeleton.login(value);
+
+            this.clientHandler.broadcast("infoMessage", this.playerId + ": connected to server.");
+
         }
-
-        this.skeleton.disconnect("RMI");
-    }
-
-    @Override
-    public void sendMessage(String value) throws RemoteException {
-
-        this.skeleton.infoMessage("Received: " + value);
-    }
-
-    @Override
-    public void login(String value) throws RemoteException {
-
-        this.playerId = value;
-
-        this.skeleton.login(value);
-
-        this.clientHandler.broadcast("infoMessage", this.playerId + ": connected to server.");
     }
 }

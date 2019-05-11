@@ -5,8 +5,12 @@ import it.polimi.ingsw.presenter.AccessPoint;
 import it.polimi.ingsw.presenter.SocketPresenter;
 import it.polimi.ingsw.view.virtual.VirtualAccessPoint;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -29,15 +33,20 @@ public class Server {
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    private Server(int rmiPort, int socketPort) {
+    private Server(int rmiPort, int socketPort) throws UnknownHostException {
 
         LOGGER.log(Level.INFO, "Creating server...");
 
         this.rmiPort = rmiPort;
         this.socketPort = socketPort;
+
+        System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostAddress());
     }
 
-    private void start() {
+    private void run() {
+
+        new Thread(() -> this.rmiServer(this.rmiPort)).start();
+        new Thread(() -> this.socketServer(this.socketPort)).start();
 
         Thread ping = new Thread(() -> {
 
@@ -58,56 +67,91 @@ public class Server {
 
         ping.setDaemon(true);
         ping.start();
+    }
 
-        new Thread(() -> {
+    private static void discoveryServer(int port) {
 
-            LOGGER.log(Level.INFO, "Creating RMI server...");
+        try (DatagramSocket socket = new DatagramSocket(port, InetAddress.getByName("0.0.0.0"))) {
 
-            try {
+            socket.setBroadcast(true);
 
-                System.setProperty("java.rmi.server.hostname", "192.168.43.105");
+            while (Thread.currentThread().isAlive()) {
 
-                Registry registry = LocateRegistry.createRegistry(this.rmiPort);
-                VirtualAccessPoint stub = (VirtualAccessPoint) UnicastRemoteObject
-                        .exportObject(new AccessPoint(this.clientHandler), 0);
+                byte[] buffer = new byte[15000];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                socket.receive(packet);
 
-                registry.bind("AccessPoint", stub);
+                String message = new String(packet.getData()).trim();
+                if (message.equals("DISCOVER_ADRENALINA_REQUEST")) {
+                    byte[] out = "DISCOVER_ADRENALINA_RESPONSE".getBytes();
 
-                LOGGER.log(Level.INFO, "RMI server ready. Waiting for connections.");
-
-            } catch (RemoteException | AlreadyBoundException e) {
-
-                LOGGER.log(Level.SEVERE, "RMI server exception.", e);
-            }
-        }).start();
-
-        new Thread(() -> {
-
-            LOGGER.log(Level.INFO, "Creating socket server...");
-
-            ExecutorService executor = Executors.newCachedThreadPool();
-
-            try (ServerSocket serverSocket = new ServerSocket(this.socketPort)) {
-
-                LOGGER.log(Level.INFO, "Socket server ready. Waiting for connections.");
-
-                while (serverSocket.isBound()) {
-
-                    Socket socket = serverSocket.accept();
-
-                    executor.submit(new SocketPresenter(socket, this.clientHandler));
+                    socket.send(new DatagramPacket(out, out.length, packet.getAddress(), packet.getPort()));
                 }
-            } catch (IOException e) {
-
-                LOGGER.log(Level.SEVERE, "Socket server exception!", e);
             }
-        }).start();
+        } catch (IOException e) {
+
+            LOGGER.log(Level.SEVERE, "Discovery server exception.", e);
+        }
+    }
+
+    private void rmiServer(int port) {
+
+        LOGGER.log(Level.INFO, "Creating RMI server...");
+
+        try {
+
+            Registry registry = LocateRegistry.createRegistry(this.rmiPort);
+            VirtualAccessPoint stub = (VirtualAccessPoint) UnicastRemoteObject
+                    .exportObject(new AccessPoint(this.clientHandler), 0);
+
+            registry.bind("AccessPoint", stub);
+
+            LOGGER.log(Level.INFO, "RMI server ready. Waiting for connections.");
+
+        } catch (RemoteException | AlreadyBoundException e) {
+
+            LOGGER.log(Level.SEVERE, "RMI server exception.", e);
+        }
+    }
+
+    private void socketServer(int port) {
+
+        LOGGER.log(Level.INFO, "Creating socket server...");
+
+        ExecutorService executor = Executors.newCachedThreadPool();
+
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+
+            LOGGER.log(Level.INFO, "Socket server ready. Waiting for connections.");
+
+            while (serverSocket.isBound()) {
+
+                Socket socket = serverSocket.accept();
+
+                executor.submit(new SocketPresenter(socket, this.clientHandler));
+            }
+        } catch (IOException e) {
+
+            LOGGER.log(Level.SEVERE, "Socket server exception.", e);
+        }
     }
 
     public static void main(String[] args) {
 
-        Server server = new Server(4561, 4562);
+        try {
 
-        server.start();
+            Thread discovery = new Thread(() -> Server.discoveryServer(4560));
+
+            discovery.setDaemon(true);
+            discovery.start();
+
+            Server server = new Server(4561, 4562);
+
+            server.run();
+
+        } catch (UnknownHostException e) {
+
+            LOGGER.log(Level.SEVERE, "Unknown host InetAdress exception.", e);
+        }
     }
 }

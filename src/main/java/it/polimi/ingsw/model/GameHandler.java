@@ -24,10 +24,7 @@ public class GameHandler {
     private PointHandler pointHandler;
     private EffectHandler effectHandler = new EffectHandler();
 
-    private boolean frenzy = false;
-
     private Player activePlayer;
-    private Player firstFrenzyPlayer;
 
     public GameHandler(String gameId) {
 
@@ -47,11 +44,6 @@ public class GameHandler {
     public void selectNumberOfDeaths(int numberOfDeaths) {
 
         this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
-    }
-
-    public List<Player> getPlayerList() {
-
-        return this.playerList;
     }
 
     public Player addPlayer(String playerId, String character) throws LoginException {
@@ -108,18 +100,6 @@ public class GameHandler {
 
             this.activePlayer.setRemainingActions(2);
         }
-    }
-
-    public int getNextPlayer(Player player) {
-
-        int nextPlayer = playerList.indexOf(player) + 1;
-
-        if (nextPlayer == playerList.size()) {
-
-            nextPlayer = 0;
-        }
-
-        return nextPlayer;
     }
 
     public void endOfTurn() throws EndGameException {

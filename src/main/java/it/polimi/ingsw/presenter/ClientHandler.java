@@ -3,8 +3,6 @@ package it.polimi.ingsw.presenter;
 import it.polimi.ingsw.model.GameHandler;
 import it.polimi.ingsw.model.players.Player;
 import java.rmi.RemoteException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,30 +34,13 @@ public class ClientHandler {
 
     public synchronized void removeDisconnected() {
 
-        /*
-
-        LocalDateTime now = LocalDateTime.now();
-
-        List<Presenter> removeList = new ArrayList<>();
-
-        this.clientList.forEach(x -> {
-
-            if (x.getLastPingTime() != null && Duration.between(x.getLastPingTime(), now)
-                    .compareTo(Duration.ofMillis(5000)) > 0) {
-
-                removeList.add(x);
-            }
-        });
-
-        */
-
         List<Presenter> removeList = new ArrayList<>();
 
         this.clientList.forEach(x -> {
 
             try {
 
-                x.callRemoteMethod("isConnected", "ping");
+                x.pingConnection();
 
             } catch (RemoteException e) {
 
