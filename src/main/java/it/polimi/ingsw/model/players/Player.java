@@ -26,6 +26,8 @@ import it.polimi.ingsw.model.cards.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 public class Player implements Target {
 
@@ -469,12 +471,11 @@ public class Player implements Target {
         }
     }
 
-    @Override
-    public String toString() {
+    public JsonObject toJsonObject() {
 
-        return "{" +
-                "\"playerId\": \"" + this.playerId + "\"," +
-                "\"character\": \"" + this.bridge.getColor().getCharacter() + "\"" +
-                "}";
+        return Json.createObjectBuilder()
+                .add("playerId", this.playerId)
+                .add("character", this.getColor().getCharacter())
+                .build();
     }
 }

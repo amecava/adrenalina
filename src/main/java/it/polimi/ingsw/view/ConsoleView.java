@@ -3,13 +3,19 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.view.connection.RmiConnection;
 import it.polimi.ingsw.view.connection.SocketConnection;
 import it.polimi.ingsw.virtual.VirtualView;
+import java.io.StringReader;
 import java.net.InetAddress;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 
 public class ConsoleView implements View, VirtualView {
 
@@ -43,6 +49,18 @@ public class ConsoleView implements View, VirtualView {
                 case "login":
 
                     return builder.add(METHOD, "selectPlayerId").build();
+
+                case "mostrapartite":
+
+                    return builder.add(METHOD, "askGames").build();
+
+                case "creapartita":
+
+                    return builder.add(METHOD, "askCreateGame").build();
+
+                case "selezionapartita":
+
+                    return builder.add(METHOD, "selectGame").build();
 
                 default:
 
@@ -120,6 +138,53 @@ public class ConsoleView implements View, VirtualView {
     public void completeDisconnect(String value) {
 
         this.logMessage("Disconnected from server.");
+    }
+
+    @Override
+    public void showGames(String value) {
+
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+
+            JsonArray jsonArray = reader.readArray();
+
+            if (jsonArray.isEmpty()) {
+
+                this.output("Non sono ancora state create partite.");
+                this.output(
+                        "Creane una con il comando \"creapartita nomePartita(nome) numeroMorti(numero intero) frenesia(vero/falso)\".");
+
+            } else {
+
+                jsonArray.stream()
+                        .map(JsonValue::asJsonObject)
+                        .forEach(x -> {
+
+                            this.output("Nome partita: " + x.getString("gameId"));
+                            this.output("---> Numero morti: " + x.getInt("numberOfDeaths")
+                                    + ", frenesia finale: " + (x.getBoolean("frenzy") ? "Sì"
+                                    : "No"));
+
+                            this.output("---> Giocatori connessi: " + x.getJsonArray("playerList")
+                                    .stream()
+                                    .map(JsonValue::asJsonObject)
+                                    .map(y -> y.getString("playerId") + ": " +
+                                            y.getString("character"))
+                                    .collect(Collectors.toList()));
+                        });
+            }
+        }
+    }
+
+    @Override
+    public void completeCreateGame(String value) {
+
+        this.output("Partita creata con nome " + value + ".");
+    }
+
+    @Override
+    public void completeSelectGame(String value) throws RemoteException {
+
+        this.output("Sei stato aggiunto con successo alla partita " + value + ".");
     }
 
     private String input() {

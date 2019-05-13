@@ -17,6 +17,11 @@ public class Deaths extends Bridge {
         this.setKillStreakCount();
     }
 
+    public int getNumberOfDeaths() {
+
+        return this.maxNumberOfDeaths;
+    }
+
     public List<Shots> getKillStreak() {
 
         return this.getShots();

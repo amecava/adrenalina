@@ -27,6 +27,16 @@ public class PointHandler {
         this.deaths = new Deaths(numberOfDeaths);
     }
 
+    public int getNumberOfDeaths() {
+
+        return deaths.getNumberOfDeaths();
+    }
+
+    public boolean isFrenzy() {
+
+        return this.frenzyEnabled;
+    }
+
     public void enableFrenzy() {
 
         this.frenzyEnabled = true;

@@ -11,6 +11,9 @@ import it.polimi.ingsw.model.points.PointHandler;
 import it.polimi.ingsw.presenter.exceptions.LoginException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 
 public class GameHandler {
 
@@ -26,9 +29,19 @@ public class GameHandler {
 
     private Player activePlayer;
 
-    public GameHandler(String gameId) {
+    public GameHandler(String gameId, int numberOfDeaths) {
 
         this.gameId = gameId;
+
+        this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
+    }
+
+    public GameHandler(String gameId, int numberOfDeaths, boolean frenzy) {
+
+        this.gameId = gameId;
+
+        this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
+        this.pointHandler.enableFrenzy();
     }
 
     public String getGameId() {
@@ -39,11 +52,6 @@ public class GameHandler {
     public void createBoard(int id) {
 
         this.board = new Board.BoardBuilder(this.effectHandler).build(id);
-    }
-
-    public void selectNumberOfDeaths(int numberOfDeaths) {
-
-        this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
     }
 
     public Player addPlayer(String playerId, String character) throws LoginException {
@@ -68,11 +76,6 @@ public class GameHandler {
     public Player getActivePlayer() {
 
         return this.activePlayer;
-    }
-
-    public void enableFrenzy() {
-
-        this.pointHandler.enableFrenzy();
     }
 
     public synchronized void setActivePlayer(Player activePlayer) {
@@ -138,5 +141,21 @@ public class GameHandler {
         } else {
             throw new IllegalActionException(" game already started!!");
         }
+    }
+
+    public JsonObject toJsonObject() {
+
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+
+        this.playerList.stream()
+                .map(Player::toJsonObject)
+                .forEach(builder::add);
+
+        return Json.createObjectBuilder()
+                .add("gameId", this.gameId)
+                .add("numberOfDeaths", this.pointHandler.getNumberOfDeaths())
+                .add("frenzy", this.pointHandler.isFrenzy())
+                .add("playerList", builder.build())
+                .build();
     }
 }

@@ -10,12 +10,15 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 
 public class ClientHandler {
 
-    private static List<Presenter> clientList = new ArrayList<>();
+    public static List<Presenter> clientList = new ArrayList<>();
 
-    private static Map<GameHandler, Map<Player, Presenter>> map = new HashMap<>();
+    public static Map<GameHandler, Map<Player, Presenter>> map = new HashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger(
 
@@ -62,5 +65,14 @@ public class ClientHandler {
                 });
 
         disconnected.forEach(ClientHandler::removeClient);
+    }
+
+    public static synchronized JsonArray getGameHandlerJsonArray() {
+
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+
+        map.keySet().forEach(x -> builder.add(x.toJsonObject()));
+
+        return builder.build();
     }
 }

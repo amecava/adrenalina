@@ -13,4 +13,9 @@ public interface VirtualView extends Remote {
 
     void completeLogin(String value) throws RemoteException;
     void completeDisconnect(String value) throws RemoteException;
+
+    void showGames(String value) throws RemoteException;
+    void completeCreateGame(String value) throws RemoteException;
+
+    void completeSelectGame(String value) throws RemoteException;
 }
