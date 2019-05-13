@@ -49,8 +49,7 @@ public class EffectHandler {
         return this.inactive;
     }
 
-    public void useEffect(Effect effect, EffectArgument target)
-            throws EffectException, PropertiesException {
+    public void useEffect(Effect effect, EffectArgument target) throws EffectException, PropertiesException {
 
         // Launch exception if atomic target is null
         if (target == null) {

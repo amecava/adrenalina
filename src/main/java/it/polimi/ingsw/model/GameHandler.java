@@ -55,7 +55,7 @@ public class GameHandler {
 
         if (this.playerList.stream().anyMatch(x -> x.getColor().equals(Color.ofCharacter(character)))) {
 
-            throw new LoginException("Il personaggio selezionato è già stato selezionato.");
+            throw new LoginException("Il personaggio selezionato è già stato preso.");
         }
 
         Player player = new Player(playerId, Color.ofCharacter(character));

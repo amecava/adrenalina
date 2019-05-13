@@ -4,16 +4,19 @@ import it.polimi.ingsw.view.View;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
+import javax.json.JsonObject;
 
-public class SocketConnection implements Connection {
+public class SocketConnection implements Runnable {
 
-    private String ip;
+    private InetAddress inetAddress;
     private int port;
 
     private View view;
@@ -23,18 +26,18 @@ public class SocketConnection implements Connection {
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    public SocketConnection(String ip, int port, View view) {
+    public SocketConnection(InetAddress inetAddress, int port, View view) {
 
-        this.ip = ip;
+        this.inetAddress = inetAddress;
         this.port = port;
 
         this.view = view;
     }
 
     @Override
-    public void connect() {
+    public void run() {
 
-        try (Socket socket = new Socket(this.ip, this.port);
+        try (Socket socket = new Socket(this.inetAddress.getHostAddress(), this.port);
                 Scanner in = new Scanner(socket.getInputStream());
                 PrintWriter out = new PrintWriter(socket.getOutputStream())) {
 
@@ -46,15 +49,35 @@ public class SocketConnection implements Connection {
 
                     try {
 
-                        this.view.serverInteraction(Json.createReader(new StringReader(in.nextLine())).readObject());
+                        JsonObject object = Json.createReader(new StringReader(in.nextLine()))
+                                .readObject();
 
-                    } catch (ReflectiveOperationException e) {
+                        out.println(this.jsonSerialize("pong", ""));
+                        out.flush();
 
-                        LOGGER.log(Level.SEVERE, "Reflective operation exception.", e);
+                        this.view.getClass()
+                                .getMethod(object.getString("method"), String.class)
+                                .invoke(this.view, object.getString("value"));
+
+                        if (object.getString("method").equals("completeDisconnect")) {
+
+                            break;
+                        }
+
+                    } catch (NoSuchMethodException e) {
+
+                        LOGGER.log(Level.SEVERE, "Selected method does not exist.", e);
+
+                    } catch (IllegalAccessException e) {
+
+                        LOGGER.log(Level.SEVERE, "Method visibility qualifiers violated.", e);
+
+                    } catch (InvocationTargetException e) {
+
+                        LOGGER.log(Level.SEVERE, "Invocation target exception.", e);
+
                     }
                 }
-
-                Thread.currentThread().interrupt();
             });
 
             Thread output = new Thread(() -> {
@@ -75,7 +98,7 @@ public class SocketConnection implements Connection {
 
         } catch (UnknownHostException e) {
 
-            LOGGER.log(Level.SEVERE, "Socket connection exception.", e);
+            LOGGER.log(Level.SEVERE, "Socket server not reachable.", e);
 
         } catch (IOException e) {
 
@@ -85,5 +108,13 @@ public class SocketConnection implements Connection {
 
             Thread.currentThread().interrupt();
         }
+    }
+
+    private JsonObject jsonSerialize(String method, String value) {
+
+        return Json.createObjectBuilder()
+                .add("method", method)
+                .add("value", value)
+                .build();
     }
 }

@@ -21,8 +21,6 @@ public class PropertiesAnalyzer {
 
     private Effect effect;
 
-    private ViewInspector viewInspector = new ViewInspector();
-
     public void setEffect(Effect effect) {
 
         this.effect = effect;
@@ -90,10 +88,10 @@ public class PropertiesAnalyzer {
                 for (Target target : targetList) {
 
                     // Launch exception if target view flag violated
-                    if ((this.viewInspector
+                    if ((ViewInspector
                             .targetView(activePlayer.getCurrentPosition(),
                                     target.getCurrentPosition())
-                            && !this.effect.getTargetView()) || (!this.viewInspector
+                            && !this.effect.getTargetView()) || (!ViewInspector
                             .targetView(activePlayer.getCurrentPosition(),
                                     target.getCurrentPosition())
                             && this.effect.getTargetView())) {
@@ -103,7 +101,7 @@ public class PropertiesAnalyzer {
                 }
 
                 // Launch exception if source can't view the targeted rooms
-            } else if (this.effect.getTargetView() && !this.viewInspector
+            } else if (this.effect.getTargetView() && !ViewInspector
                     .roomView(activePlayer.getCurrentPosition(), targetList)) {
 
                 throw new TargetViewException("Room view exception!");
@@ -121,7 +119,7 @@ public class PropertiesAnalyzer {
                 for (Target target : targetList) {
 
                     // Launch exception if seen by active flag violated
-                    if (!this.viewInspector.targetView(active.getCurrentPosition(),
+                    if (!ViewInspector.targetView(active.getCurrentPosition(),
                             target.getCurrentPosition())) {
 
                         throw new TargetViewException("Target not seen by active!");
@@ -141,7 +139,7 @@ public class PropertiesAnalyzer {
             for (Target target : targetList) {
 
                 // Distance between two squares considering cardinal and throughWalls flags
-                distance = this.viewInspector
+                distance = ViewInspector
                         .computeDistance(activeSquare, target.getCurrentPosition(),
                                 this.effect.isCardinal(), this.effect.isThroughWalls());
 
@@ -164,7 +162,7 @@ public class PropertiesAnalyzer {
             throws CardinalException {
 
         // Launch exception if the cardinal flag is true and targets not in same direction
-        if (this.effect.isCardinal() && !this.viewInspector
+        if (this.effect.isCardinal() && !ViewInspector
                 .sameDirection(activeSquare, targetList)) {
 
             throw new CardinalException("Targets are not on same cardinal direction!");

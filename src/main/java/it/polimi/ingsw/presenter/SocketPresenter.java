@@ -1,159 +1,147 @@
 package it.polimi.ingsw.presenter;
 
-import it.polimi.ingsw.view.virtual.VirtualPresenter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class SocketPresenter implements Presenter, VirtualPresenter, Runnable {
-
-    private String playerId;
+public class SocketPresenter extends Presenter implements Runnable {
 
     private Scanner in;
     private PrintWriter out;
 
-    private ClientHandler clientHandler;
+    private Queue<JsonObject> data = new ArrayDeque<>();
 
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    public SocketPresenter(Socket socket, ClientHandler clientHandler) throws IOException {
-
-        this.clientHandler = clientHandler;
+    public SocketPresenter(Socket socket) throws IOException {
 
         this.in = new Scanner(socket.getInputStream());
         this.out = new PrintWriter(socket.getOutputStream());
-    }
 
-    @Override
-    public String getPlayerId() {
-
-        return this.playerId;
+        this.setPlayerId("Socket client");
     }
 
     @Override
     public void disconnectPresenter() {
 
-        if (this.playerId == null) {
-
-            LOGGER.log(Level.INFO, "Socket client disconnected from server.");
-        } else {
-
-            LOGGER.log(Level.INFO, this.playerId + " disconnected from server.");
-        }
+        this.out.close();
     }
 
     @Override
-    public void pingConnection() throws RemoteException {
-
-        try {
-
-            this.out.println(this.jsonSerialize("isConnected", "ping"));
-            this.out.flush();
-
-        } catch (NoSuchElementException e) {
-
-            throw new RemoteException();
-        }
-    }
-
-    @Override
-    public void callRemoteMethod(String method, String value) throws RemoteException {
+    public synchronized void callRemoteMethod(String method, String value) throws RemoteException {
 
         try {
 
             this.out.println(this.jsonSerialize(method, value));
             this.out.flush();
 
+            wait(1000);
+
+            JsonObject object = data.remove();
+
+            if (!object.getString("method").equals("pong")) {
+
+                data.add(object);
+
+                notifyAll();
+            }
+
         } catch (NoSuchElementException e) {
 
             throw new RemoteException();
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
         }
     }
 
     @Override
     public void run() {
 
-        LOGGER.log(Level.INFO, "Socket client connected to server.");
+        ClientHandler.addClient(this);
 
-        this.clientHandler.addClient(this);
+        Thread input = new Thread(() -> {
+
+            try {
+
+                while (Thread.currentThread().isAlive()) {
+
+                    JsonObject object = this.jsonDeserialize(this.in.nextLine());
+
+                    synchronized (this) {
+
+                        data.add(object);
+
+                        notifyAll();
+                    }
+                }
+            } catch (NoSuchElementException e) {
+
+                //
+            }
+        });
+
+        input.setDaemon(true);
+        input.start();
 
         try {
 
             while (Thread.currentThread().isAlive()) {
 
-                JsonObject object = this.jsonDeserialize(this.in.nextLine());
+                synchronized (this) {
 
-                switch (object.getString("method")) {
+                    while (data.peek() == null) {
 
-                    case "disconnetti":
+                        wait();
+                    }
 
-                        this.remoteDisconnect("socket");
-                        break;
+                    JsonObject object = data.remove();
 
-                    case "login":
+                    if (object.getString("method").equals("pong")) {
 
-                        this.selectPlayerId(object.getString("value"));
-                        break;
+                        data.add(object);
 
-                    default:
+                        notifyAll();
 
-                        this.callRemoteMethod("errorMessage", "Selezione non disponiile, riprova oppure help.");
+                    } else {
+
+                        this.getClass()
+                                .getMethod(object.getString("method"), String.class)
+                                .invoke(this, object.getString("value"));
+                    }
                 }
             }
-        } catch (RemoteException | NoSuchElementException e) {
 
-            this.clientHandler.removeClient(this);
+        } catch (NoSuchMethodException e) {
 
-            if (this.playerId != null) {
+            LOGGER.log(Level.SEVERE, "Selected method does not exist.", e);
 
-                this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
-            }
-        }
-    }
+        } catch (IllegalAccessException e) {
 
-    @Override
-    public void remoteDisconnect(String value) throws RemoteException {
+            LOGGER.log(Level.SEVERE, "Method visibility qualifiers violated.", e);
 
-        this.clientHandler.removeClient(this);
+        } catch (InvocationTargetException e) {
 
-        this.clientHandler.broadcast("infoMessage", this.playerId + ": disconnected from server.");
+            LOGGER.log(Level.SEVERE, "Invocation target exception.", e);
 
-        this.callRemoteMethod("disconnect", value);
+        } catch (InterruptedException e) {
 
-        this.in.close();
-        this.out.close();
-    }
-
-    @Override
-    public void selectPlayerId(String value) throws RemoteException {
-
-        if (value.replace(" ", "").length() == 0) {
-
-            this.callRemoteMethod("errorMessage", "PlayerId vuoto, riprova.");
-
-        } else if (this.playerId != null) {
-
-            this.callRemoteMethod("errorMessage", "Login già effettuato, prima esegui logout.");
-
-        } else {
-
-            this.playerId = value;
-
-            this.callRemoteMethod("login", value);
-
-            this.clientHandler.broadcast("infoMessage", this.playerId + ": connected to server.");
-
+            Thread.currentThread().interrupt();
         }
     }
 

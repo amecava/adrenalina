@@ -3,9 +3,9 @@ package it.polimi.ingsw.model.exceptions.jacop;
 import it.polimi.ingsw.model.players.Player;
 import java.util.List;
 
-public class EndGameException extends Throwable {
+public class EndGameException extends Exception {
 
-    List<List<Player>> winner;
+    private final List<List<Player>> winner;
 
     public EndGameException(List<List<Player>> winner) {
 

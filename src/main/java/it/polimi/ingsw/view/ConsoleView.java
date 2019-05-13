@@ -1,18 +1,22 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.view.connection.Connection;
 import it.polimi.ingsw.view.connection.RmiConnection;
 import it.polimi.ingsw.view.connection.SocketConnection;
-import it.polimi.ingsw.view.virtual.VirtualView;
+import it.polimi.ingsw.virtual.VirtualView;
+import java.net.InetAddress;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 public class ConsoleView implements View, VirtualView {
 
     private Scanner stdin = new Scanner(System.in);
+
+    private static final String METHOD = "method";
+    private static final String VALUE = "value";
 
     private static final Logger LOGGER = Logger.getLogger(
 
@@ -22,37 +26,33 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public JsonObject userInput() {
 
-        String parts[] = this.input().split(" ", 2);
+        JsonObjectBuilder builder = Json.createObjectBuilder();
 
-        return Json.createObjectBuilder()
-                .add("method", parts[0])
-                .add("value", parts.length == 2 ? parts[1] : "")
-                .build();
-    }
+        while (true) {
 
-    @Override
-    public void userOutput(JsonObject object) {
+            String[] parts = this.input().split(" ", 2);
 
-        try {
+            builder.add(VALUE, parts.length == 2 ? parts[1] : "");
 
-            this.serverInteraction(object);
+            switch (parts[0]) {
 
-        } catch (ReflectiveOperationException e) {
+                case "disconnetti":
 
-            LOGGER.log(Level.SEVERE, "Reflective operation exception.", e);
+                    return builder.add(METHOD, "remoteDisconnect").build();
+
+                case "login":
+
+                    return builder.add(METHOD, "selectPlayerId").build();
+
+                default:
+
+                    this.errorMessage("Selezione non disponibile, riprova o digita help.");
+            }
         }
     }
 
     @Override
-    public void serverInteraction(JsonObject object) throws ReflectiveOperationException {
-
-        this.getClass()
-                .getMethod(object.getString("method"), String.class)
-                .invoke(this, object.getString("value"));
-    }
-
-    @Override
-    public void welcomeScreen() {
+    public void adrenalinaSplashScreen() {
 
         this.output("    _   ___  ___ ___ _  _   _   _    ___ _  _   _   ");
         this.output("   /_\\ |   \\| _ \\ __| \\| | /_\\ | |  |_ _| \\| | /_\\  ");
@@ -61,29 +61,29 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public Connection selectConnection(String ip, int rmiPort, int socketPort) throws InterruptedException {
+    public Runnable selectConnection(InetAddress inetAddress, int rmiPort, int socketPort) {
 
         this.output("Seleziona il tipo di connessione da utilizzare:");
         this.output("    1. RMI");
         this.output("    2. Socket");
 
-        while (Thread.currentThread().isAlive()) {
+        while (true) {
 
             String line = this.input().toLowerCase();
 
             if (line.contains("rmi") && !line.contains("socket")) {
 
-                return new RmiConnection(ip, rmiPort, this);
+                return new RmiConnection(inetAddress, rmiPort, this);
+
             } else if (line.contains("socket") && !line.contains("rmi")) {
 
-                return new SocketConnection(ip, socketPort, this);
+                return new SocketConnection(inetAddress, socketPort, this);
+
             } else {
 
                 this.errorMessage("Selezione non disponibile, riprova.");
             }
         }
-
-        throw new InterruptedException();
     }
 
     @Override
@@ -111,17 +111,15 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void login(String value) {
+    public void completeLogin(String value) {
 
         this.output("Login effettuato come " + value + ".");
     }
 
     @Override
-    public void disconnect(String value) {
+    public void completeDisconnect(String value) {
 
-        this.logMessage("Disconnected from " + value + " server.");
-
-        System.exit(0);
+        this.logMessage("Disconnected from server.");
     }
 
     private String input() {

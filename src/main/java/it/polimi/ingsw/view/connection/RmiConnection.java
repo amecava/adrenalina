@@ -1,9 +1,11 @@
 package it.polimi.ingsw.view.connection;
 
 import it.polimi.ingsw.view.View;
-import it.polimi.ingsw.view.virtual.VirtualAccessPoint;
-import it.polimi.ingsw.view.virtual.VirtualPresenter;
-import it.polimi.ingsw.view.virtual.VirtualView;
+import it.polimi.ingsw.virtual.VirtualAccessPoint;
+import it.polimi.ingsw.virtual.VirtualPresenter;
+import it.polimi.ingsw.virtual.VirtualView;
+import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,12 +13,11 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.json.Json;
 import javax.json.JsonObject;
 
-public class RmiConnection implements Connection {
+public class RmiConnection implements Runnable {
 
-    private String ip;
+    private InetAddress inetAddress;
     private int port;
 
     private View view;
@@ -26,20 +27,20 @@ public class RmiConnection implements Connection {
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    public RmiConnection(String ip, int port, View view) {
+    public RmiConnection(InetAddress inetAddress, int port, View view) {
 
-        this.ip = ip;
+        this.inetAddress = inetAddress;
         this.port = port;
 
         this.view = view;
     }
 
     @Override
-    public void connect() {
+    public void run() {
 
         try {
 
-            Registry registry = LocateRegistry.getRegistry(this.ip, this.port);
+            Registry registry = LocateRegistry.getRegistry(this.inetAddress.getHostAddress(), this.port);
             VirtualAccessPoint access = (VirtualAccessPoint) registry.lookup("AccessPoint");
 
             VirtualView skeleton = (VirtualView) UnicastRemoteObject.exportObject((VirtualView) this.view, 0);
@@ -51,26 +52,38 @@ public class RmiConnection implements Connection {
 
                 JsonObject object = this.view.userInput();
 
-                switch (object.getString("method")) {
+                stub.getClass()
+                        .getMethod(object.getString("method"), String.class)
+                        .invoke(stub, object.getString("value"));
 
-                    case "disconnetti":
+                if (object.getString("method").equals("remoteDisconnect")) {
 
-                        stub.remoteDisconnect("RMI");
-                        break;
+                    UnicastRemoteObject.unexportObject((VirtualView) this.view, false);
 
-                    case "login":
-
-                        stub.selectPlayerId(object.getString("value"));
-                        break;
-
-                    default:
-
-                        this.view.userOutput(Json.createObjectBuilder().add("method", "errorMessage").add("value", "Selezione non disponiile, riprova oppure help.").build());
+                    break;
                 }
             }
-        } catch (RemoteException | NotBoundException e) {
 
-            LOGGER.log(Level.SEVERE, "RMI connection exception.", e);
+        } catch (RemoteException e) {
+
+            LOGGER.log(Level.SEVERE, "RMI server not reachable.", e);
+
+        } catch (NotBoundException e) {
+
+            LOGGER.log(Level.SEVERE, "RMI access point not reachable.", e);
+
+        } catch (NoSuchMethodException e) {
+
+            LOGGER.log(Level.SEVERE, "Selected method does not exist.", e);
+
+        } catch (IllegalAccessException e) {
+
+            LOGGER.log(Level.SEVERE, "Method visibility qualifiers violated.", e);
+
+        } catch (InvocationTargetException e) {
+
+            LOGGER.log(Level.SEVERE, "Invocation target exception.", e);
+
         }
     }
 }

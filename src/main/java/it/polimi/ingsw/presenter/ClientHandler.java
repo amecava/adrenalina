@@ -7,78 +7,60 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ClientHandler {
 
-    private List<Presenter> clientList = new ArrayList<>();
+    private static List<Presenter> clientList = new ArrayList<>();
 
-    private Map<GameHandler, Map<Player, Presenter>> map = new HashMap<>();
+    private static Map<GameHandler, Map<Player, Presenter>> map = new HashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    synchronized void addClient(Presenter presenter) {
+    public static synchronized void addClient(Presenter presenter) {
 
-        this.clientList.add(presenter);
+        clientList.add(presenter);
+
+        LOGGER.log(Level.INFO, "{0} connected to server.", presenter.getPlayerId());
     }
 
-    synchronized void removeClient(Presenter presenter) {
+    public static synchronized void removeClient(Presenter presenter) {
+
+        clientList.remove(presenter);
+
+        LOGGER.log(Level.INFO, "{0} disconnected from server.", presenter.getPlayerId());
+
+        if (!presenter.getPlayerId().equals("RMI client") && !presenter.getPlayerId().equals("Socket client")) {
+
+            broadcast(x -> true, "infoMessage", presenter.getPlayerId() + ": disconnected from server.");
+        }
 
         presenter.disconnectPresenter();
-        this.clientList.remove(presenter);
     }
 
-    public synchronized void removeDisconnected() {
+    public static synchronized void broadcast(Predicate<Presenter> filter, String method, String value) {
 
-        List<Presenter> removeList = new ArrayList<>();
+        List<Presenter> disconnected = new ArrayList<>();
 
-        this.clientList.forEach(x -> {
+        clientList.stream()
+                .filter(filter)
+                .forEach(x -> {
 
-            try {
+                    try {
 
-                x.pingConnection();
+                        x.callRemoteMethod(method, value);
 
-            } catch (RemoteException e) {
+                    } catch (RemoteException e) {
 
-                removeList.add(x);
-            }
+                        disconnected.add(x);
+                    }
+                });
 
-        });
-
-        removeList.forEach(x -> {
-
-            x.disconnectPresenter();
-            this.clientList.remove(x);
-        });
-
-        if (!removeList.isEmpty()) {
-
-            removeList.forEach(x -> {
-
-                if (x.getPlayerId() != null) {
-
-                    this.broadcast("infoMessage", x.getPlayerId() + ": disconnected from server.");
-                }
-            });
-        }
-    }
-
-    void broadcast(String method, String value) {
-
-        this.clientList.forEach(x -> {
-
-            try {
-
-                x.callRemoteMethod(method, value);
-
-            } catch (RemoteException e) {
-
-                LOGGER.log(Level.SEVERE, "Disconnected client in client list.", e);
-            }
-        });
+        disconnected.forEach(ClientHandler::removeClient);
     }
 }

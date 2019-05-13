@@ -1,15 +1,12 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.view.connection.Connection;
+import java.net.InetAddress;
 import javax.json.JsonObject;
 
 public interface View {
 
     JsonObject userInput();
-    void userOutput(JsonObject jsonObject);
 
-    void serverInteraction(JsonObject object) throws ReflectiveOperationException;
-
-    void welcomeScreen();
-    Connection selectConnection(String ip, int rmiPort, int socketPort) throws InterruptedException;
+    void adrenalinaSplashScreen();
+    Runnable selectConnection(InetAddress inetAddress, int rmiPort, int socketPort);
 }

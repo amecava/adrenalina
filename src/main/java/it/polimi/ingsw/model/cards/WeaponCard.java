@@ -209,12 +209,12 @@ public class WeaponCard implements Card {
         this.effectHandler.useEffect(this.map.get(effectType), target);
         this.effectHandler.updateCardUsageVariables(this.map.get(effectType), this);
 
-        costCopy.forEach(x -> {
+        costCopy.forEach(x ->
             this.owner.getAmmoCubesList().stream()
                     .filter(y -> y.getColor().equals(x) && !y.isUsed())
                     .findFirst().get()
-                    .setUsed(true);
-        });
+                    .setUsed(true)
+        );
     }
 
     private void checkCost(List<Color> costCopy, List<PowerUpCard> ammoList) throws CostException {

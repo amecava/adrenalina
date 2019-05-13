@@ -2,21 +2,16 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.view.ConsoleView;
 import it.polimi.ingsw.view.View;
-import it.polimi.ingsw.view.connection.Connection;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.rmi.RemoteException;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client {
 
-    private String ip;
+    private InetAddress inetAddress;
 
     private int rmiPort;
     private int socketPort;
@@ -28,19 +23,19 @@ public class Client {
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    private Client(String ip, int rmiPort, int socketPort) {
+    private Client(InetAddress inetAddress, int rmiPort, int socketPort) {
 
-        this.ip = ip;
+        this.inetAddress = inetAddress;
 
         this.rmiPort = rmiPort;
         this.socketPort = socketPort;
     }
 
-    private void start() throws InterruptedException {
+    private void start() {
 
-        this.view.welcomeScreen();
+        this.view.adrenalinaSplashScreen();
 
-        this.view.selectConnection(this.ip, this.rmiPort, this.socketPort).connect();
+        this.view.selectConnection(this.inetAddress, this.rmiPort, this.socketPort).run();
     }
 
     private static InetAddress discoverServer(int port) throws IOException {
@@ -51,30 +46,7 @@ public class Client {
 
             byte[] out = "DISCOVER_ADRENALINA_REQUEST".getBytes();
 
-            socket.send(
-                    new DatagramPacket(out, out.length, InetAddress.getByName("255.255.255.255"),
-                            port));
-
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-
-            while (interfaces.hasMoreElements()) {
-
-                NetworkInterface networkInterface = interfaces.nextElement();
-
-                if (!networkInterface.isLoopback() && networkInterface.isUp()) {
-
-                    for (InterfaceAddress interfaceAddress : networkInterface
-                            .getInterfaceAddresses()) {
-
-                        InetAddress broadcast = interfaceAddress.getBroadcast();
-
-                        if (broadcast != null) {
-
-                            socket.send(new DatagramPacket(out, out.length, broadcast, port));
-                        }
-                    }
-                }
-            }
+            socket.send(new DatagramPacket(out, out.length, InetAddress.getByName("255.255.255.255"), port));
 
             byte[] in = new byte[15000];
             DatagramPacket packet = new DatagramPacket(in, in.length);
@@ -87,7 +59,7 @@ public class Client {
                 return packet.getAddress();
             }
 
-            return InetAddress.getByName("127.0.0.1");
+            throw new IOException();
         }
     }
 
@@ -95,18 +67,14 @@ public class Client {
 
         try {
 
-            InetAddress server = Client.discoverServer(4560);
-
-            Client client = new Client(server.getHostAddress(), 4561, 4562);
+            Client client = new Client(Client.discoverServer(4560), 4561, 4562);
 
             client.start();
 
         } catch (IOException e) {
 
-            LOGGER.log(Level.SEVERE, "Server connection exception.", e);
-        } catch (InterruptedException e) {
-
-            Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "Server not reachable.", e);
         }
+
     }
 }

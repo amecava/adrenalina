@@ -35,7 +35,7 @@ public class Board {
         this.ammoTilesDeck = builder.ammoTilesDeck;
         this.powerUpDeck = builder.powerUpDeck;
 
-        // this.fillBoard();
+        //this.fillBoard();
     }
 
     public List<Room> getRoomsList() {

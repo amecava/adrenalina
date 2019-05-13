@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.virtual;
+package it.polimi.ingsw.virtual;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -10,6 +10,7 @@ public interface VirtualView extends Remote {
     void errorMessage(String value) throws RemoteException;
 
     void isConnected(String value) throws RemoteException;
-    void login(String value) throws RemoteException;
-    void disconnect(String value) throws RemoteException;
+
+    void completeLogin(String value) throws RemoteException;
+    void completeDisconnect(String value) throws RemoteException;
 }

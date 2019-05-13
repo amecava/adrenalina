@@ -3,7 +3,7 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.presenter.ClientHandler;
 import it.polimi.ingsw.presenter.AccessPoint;
 import it.polimi.ingsw.presenter.SocketPresenter;
-import it.polimi.ingsw.view.virtual.VirtualAccessPoint;
+import it.polimi.ingsw.virtual.VirtualAccessPoint;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -23,51 +23,12 @@ import java.util.logging.Logger;
 
 public class Server {
 
-    private int rmiPort;
-    private int socketPort;
-
-    private ClientHandler clientHandler = new ClientHandler();
+    private static final Thread pingThread = new Thread(Server::pingServer);
 
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
-
-    private Server(int rmiPort, int socketPort) throws UnknownHostException {
-
-        LOGGER.log(Level.INFO, "Creating server...");
-
-        this.rmiPort = rmiPort;
-        this.socketPort = socketPort;
-
-        System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostAddress());
-    }
-
-    private void run() {
-
-        new Thread(() -> this.rmiServer(this.rmiPort)).start();
-        new Thread(() -> this.socketServer(this.socketPort)).start();
-
-        Thread ping = new Thread(() -> {
-
-            while (Thread.currentThread().isAlive()) {
-
-                try {
-
-                    Thread.sleep(5000);
-
-                    this.clientHandler.removeDisconnected();
-
-                } catch (InterruptedException e) {
-
-                    Thread.currentThread().interrupt();
-                }
-            }
-        });
-
-        ping.setDaemon(true);
-        ping.start();
-    }
 
     private static void discoveryServer(int port) {
 
@@ -94,15 +55,15 @@ public class Server {
         }
     }
 
-    private void rmiServer(int port) {
+    private static void rmiServer(int port) {
 
         LOGGER.log(Level.INFO, "Creating RMI server...");
 
         try {
 
-            Registry registry = LocateRegistry.createRegistry(this.rmiPort);
+            Registry registry = LocateRegistry.createRegistry(port);
             VirtualAccessPoint stub = (VirtualAccessPoint) UnicastRemoteObject
-                    .exportObject(new AccessPoint(this.clientHandler), 0);
+                    .exportObject(new AccessPoint(), 0);
 
             registry.bind("AccessPoint", stub);
 
@@ -112,9 +73,15 @@ public class Server {
 
             LOGGER.log(Level.SEVERE, "RMI server exception.", e);
         }
+
+        if (!pingThread.isAlive()) {
+
+            pingThread.setDaemon(true);
+            pingThread.start();
+        }
     }
 
-    private void socketServer(int port) {
+    private static void socketServer(int port) {
 
         LOGGER.log(Level.INFO, "Creating socket server...");
 
@@ -124,11 +91,17 @@ public class Server {
 
             LOGGER.log(Level.INFO, "Socket server ready. Waiting for connections.");
 
+            if (!pingThread.isAlive()) {
+
+                pingThread.setDaemon(true);
+                pingThread.start();
+            }
+
             while (serverSocket.isBound()) {
 
                 Socket socket = serverSocket.accept();
 
-                executor.submit(new SocketPresenter(socket, this.clientHandler));
+                executor.submit(new SocketPresenter(socket));
             }
         } catch (IOException e) {
 
@@ -136,18 +109,39 @@ public class Server {
         }
     }
 
+    private static void pingServer() {
+
+        while (Thread.currentThread().isAlive()) {
+
+            try {
+
+                Thread.sleep(5000);
+
+                ClientHandler.broadcast(x -> true,"isConnected", "ping");
+
+            } catch (InterruptedException e) {
+
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
     public static void main(String[] args) {
 
         try {
+
+            LOGGER.log(Level.INFO, "Creating server...");
+
+            System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostAddress());
 
             Thread discovery = new Thread(() -> Server.discoveryServer(4560));
 
             discovery.setDaemon(true);
             discovery.start();
 
-            Server server = new Server(4561, 4562);
+            new Thread(() -> Server.rmiServer(4561)).start();
+            new Thread(() -> Server.socketServer(4562)).start();
 
-            server.run();
 
         } catch (UnknownHostException e) {
 

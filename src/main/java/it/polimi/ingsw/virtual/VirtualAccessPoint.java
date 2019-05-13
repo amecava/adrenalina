@@ -1,6 +1,5 @@
-package it.polimi.ingsw.view.virtual;
+package it.polimi.ingsw.virtual;
 
-import it.polimi.ingsw.view.View;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

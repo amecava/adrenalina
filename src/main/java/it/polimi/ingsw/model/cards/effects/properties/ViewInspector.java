@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 class ViewInspector {
 
-    int computeDistance(Square fromSquare, Square toSquare, boolean cardinal,
+    static int computeDistance(Square fromSquare, Square toSquare, boolean cardinal,
             boolean throughWalls) throws SquareDistanceException {
 
         // Return compute cardinal distance if cardinal true
@@ -25,11 +25,11 @@ class ViewInspector {
         }
 
         // Return recursive distance if cardinal false
-        return this.recursiveDistance(fromSquare.getMap(throughWalls), toSquare, throughWalls);
+        return recursiveDistance(fromSquare.getMap(throughWalls), toSquare, throughWalls);
 
     }
 
-    boolean targetView(Square fromSquare, Square toSquare) {
+    static boolean targetView(Square fromSquare, Square toSquare) {
 
         // Return true if same rooms
         if (fromSquare.getRoom().equals(toSquare.getRoom())) {
@@ -51,7 +51,7 @@ class ViewInspector {
         return false;
     }
 
-    boolean roomView(Square fromSquare, List<Target> targetList) throws TargetViewException {
+    static boolean roomView(Square fromSquare, List<Target> targetList) throws TargetViewException {
 
         try {
             int seen = 0;
@@ -80,7 +80,7 @@ class ViewInspector {
         }
     }
 
-    boolean sameDirection(Square fromSquare, List<Target> targetList) {
+    static boolean sameDirection(Square fromSquare, List<Target> targetList) {
 
         int seen;
         Square tmpSquare;
@@ -115,7 +115,7 @@ class ViewInspector {
         return false;
     }
 
-    private int computeCardinalDistance(Square fromSquare, Square toSquare,
+    private static int computeCardinalDistance(Square fromSquare, Square toSquare,
             boolean throughWalls) throws SquareDistanceException {
 
         int count;
@@ -149,7 +149,7 @@ class ViewInspector {
         throw new SquareDistanceException("Target not found with selected properties!");
     }
 
-    private int recursiveDistance(Map<Square, Integer> map, Square toSquare,
+    private static int recursiveDistance(Map<Square, Integer> map, Square toSquare,
             boolean throughWalls) {
 
         // Return distance if node found
@@ -189,6 +189,6 @@ class ViewInspector {
                 );
 
         // Recursively call recursive distance until node found
-        return this.recursiveDistance(map, toSquare, throughWalls);
+        return recursiveDistance(map, toSquare, throughWalls);
     }
 }
