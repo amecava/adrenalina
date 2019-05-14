@@ -29,24 +29,26 @@ public class GameHandler {
 
     private Player activePlayer;
 
-    public GameHandler(String gameId, int numberOfDeaths) {
-
-        this.gameId = gameId;
-
-        this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
-    }
-
     public GameHandler(String gameId, int numberOfDeaths, boolean frenzy) {
 
         this.gameId = gameId;
 
         this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
-        this.pointHandler.enableFrenzy();
+        this.pointHandler.setFrienzy(frenzy);
     }
 
     public String getGameId() {
 
         return this.gameId;
+    }
+
+    public List<Player> getPlayerList() {
+
+        return this.playerList;
+    }
+
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
     }
 
     public void createBoard(int id) {

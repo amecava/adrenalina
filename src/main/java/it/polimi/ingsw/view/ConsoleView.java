@@ -131,7 +131,7 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public void completeLogin(String value) {
 
-        this.output("Login effettuato come " + value + ".");
+        this.output(value);
     }
 
     @Override
@@ -150,8 +150,8 @@ public class ConsoleView implements View, VirtualView {
             if (jsonArray.isEmpty()) {
 
                 this.output("Non sono ancora state create partite.");
-                this.output(
-                        "Creane una con il comando \"creapartita nomePartita(nome) numeroMorti(numero intero) frenesia(vero/falso)\".");
+                this.output("Creane una con il comando \"creapartita nomePartita(nome) "
+                        + "numeroMorti(numero intero) frenesia(vero/falso)\".");
 
             } else {
 
@@ -167,8 +167,7 @@ public class ConsoleView implements View, VirtualView {
                             this.output("---> Giocatori connessi: " + x.getJsonArray("playerList")
                                     .stream()
                                     .map(JsonValue::asJsonObject)
-                                    .map(y -> y.getString("playerId") + ": " +
-                                            y.getString("character"))
+                                    .map(y -> y.getString("playerId") + ": " + y.getString("character") + (y.getBoolean("connected") ? "" : " (disconnesso)"))
                                     .collect(Collectors.toList()));
                         });
             }

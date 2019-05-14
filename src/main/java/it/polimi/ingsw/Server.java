@@ -46,7 +46,8 @@ public class Server {
                 if (message.equals("DISCOVER_ADRENALINA_REQUEST")) {
                     byte[] out = "DISCOVER_ADRENALINA_RESPONSE".getBytes();
 
-                    socket.send(new DatagramPacket(out, out.length, packet.getAddress(), packet.getPort()));
+                    socket.send(new DatagramPacket(out, out.length, packet.getAddress(),
+                            packet.getPort()));
                 }
             }
         } catch (IOException e) {
@@ -117,7 +118,7 @@ public class Server {
 
                 Thread.sleep(5000);
 
-                ClientHandler.broadcast(x -> true,"isConnected", "ping");
+                ClientHandler.broadcast(x -> true, "isConnected", "ping");
 
             } catch (InterruptedException e) {
 
@@ -132,7 +133,8 @@ public class Server {
 
             LOGGER.log(Level.INFO, "Creating server...");
 
-            System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostAddress());
+            System.setProperty("java.rmi.server.hostname",
+                    InetAddress.getLocalHost().getHostAddress());
 
             Thread discovery = new Thread(() -> Server.discoveryServer(4560));
 

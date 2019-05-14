@@ -14,7 +14,7 @@ public class PointHandler {
     private Deaths deaths;
 
     private Player firstFrenzyPlayer;
-    private boolean frenzyEnabled = false;
+    private boolean frenzyEnabled;
 
     private List<Player> playerList;
 
@@ -37,9 +37,9 @@ public class PointHandler {
         return this.frenzyEnabled;
     }
 
-    public void enableFrenzy() {
+    public void setFrienzy(boolean frenzy) {
 
-        this.frenzyEnabled = true;
+        this.frenzyEnabled = frenzy;
     }
 
     public void checkIfDead() {

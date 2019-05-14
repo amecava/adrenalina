@@ -34,6 +34,16 @@ public abstract class Presenter implements VirtualPresenter {
         this.playerId = playerId;
     }
 
+    public Player getPlayer() {
+
+        return this.player;
+    }
+
+    public GameHandler getGameHandler() {
+
+        return this.gameHandler;
+    }
+
     @Override
     public void remoteDisconnect(String value) throws RemoteException {
 
@@ -46,22 +56,46 @@ public abstract class Presenter implements VirtualPresenter {
     public void selectPlayerId(String value) throws RemoteException {
 
         //TODO regex
-        if (value.replace(" ", "").length() == 0) {
+        if (!this.playerId.equals("RMI client") && !this.playerId.equals("Socket client")) {
+
+            this.callRemoteMethod("errorMessage", "Login già effettuato, prima esegui logout.");
+
+        } else if (value.replace(" ", "").length() == 0) {
 
             this.callRemoteMethod("errorMessage", "PlayerId vuoto, riprova.");
 
-        } else if (!this.playerId.equals("RMI client") && !this.playerId.equals("Socket client")) {
+        } else if (ClientHandler.isClientPresent(value)) {
 
-            this.callRemoteMethod("errorMessage", "Login già effettuato, prima esegui logout.");
+            this.callRemoteMethod("errorMessage", "PlayerId già preso.");
+
+        } else if (ClientHandler.isPlayerPresent(value)) {
+
+            this.gameHandler = ClientHandler.getGameHandler(
+                    x -> x.getPlayerList().stream().anyMatch(y -> y.getPlayerId().equals(value)));
+
+            this.player = ClientHandler
+                    .getPlayer(this.gameHandler, x -> x.getPlayerId().equals(value));
+
+            ClientHandler.putPlayerPresenter(this.gameHandler, this.player, this);
+
+            this.playerId = value;
+
+            this.callRemoteMethod("completeLogin",
+                    "Login effettuato come " + value + " e riconnesso alla partita "
+                            + this.gameHandler.getGameId() + ".");
+
+            ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "infoMessage",
+                    this.playerId + ": riconnesso alla partita " + this.gameHandler.getGameId()
+                            + ".");
 
         } else {
 
             this.playerId = value;
 
-            this.callRemoteMethod("completeLogin", value);
+            this.callRemoteMethod("completeLogin", "Login effettuato come " + value + ".");
 
             ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "infoMessage",
-                    this.playerId + ": connected to server.");
+                    this.playerId + ": connesso al server.");
         }
     }
 
@@ -89,20 +123,20 @@ public abstract class Presenter implements VirtualPresenter {
             this.callRemoteMethod("errorMessage",
                     "Comando errato, riprova scrivendo \"creapartita nomePartita(nome) numeroMorti(numero intero da 5 a 8) frenesia(vero/falso)\".");
 
-        } else if (ClientHandler.map.keySet().stream()
-                .map(GameHandler::getGameId)
-                .anyMatch(x -> x.equals(m.group(2)))) {
+        } else if (ClientHandler.isGameHandlerPresent(m.group(2))) {
 
             this.callRemoteMethod("errorMessage",
                     "Nome partita già esistente, ripeti con un nuovo nome.");
 
         } else {
 
-            this.gameHandler = new GameHandler(m.group(2), Integer.valueOf(m.group(4)), m.group(6).equals("vero"));
-
-            ClientHandler.map.put(this.gameHandler, new HashMap<>());
+            ClientHandler.addGameHandler(m.group(2), Integer.valueOf(m.group(4)),
+                    m.group(6).equals("vero"));
 
             this.callRemoteMethod("completeCreateGame", m.group(2));
+
+            ClientHandler.broadcast(x -> !x.equals(this), "infoMessage",
+                    "Partita " + m.group(2) + " creata.");
         }
     }
 
@@ -120,11 +154,15 @@ public abstract class Presenter implements VirtualPresenter {
             this.callRemoteMethod("errorMessage",
                     "Effettua il login prima di selezionare una partita (comando: login nomeUtente).");
 
+        } else if (this.gameHandler != null && this.player != null) {
+
+            this.callRemoteMethod("errorMessage", "Prima logout.");
+
         } else if (!m.find()) {
 
             this.callRemoteMethod("errorMessage", "REGEX.");
 
-        } else if (!ClientHandler.map.keySet().stream().map(GameHandler::getGameId).anyMatch(x -> x.equals(m.group(2)))) {
+        } else if (!ClientHandler.isGameHandlerPresent(m.group(2))) {
 
             this.callRemoteMethod("errorMessage", "Nome partita preso cazzo.");
 
@@ -132,15 +170,23 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
+                this.gameHandler = ClientHandler
+                        .getGameHandler(x -> x.getGameId().equals(m.group(2)));
+
                 this.player = this.gameHandler.addPlayer(this.playerId, m.group(4));
 
-                ClientHandler.map.get(this.gameHandler).put(this.player, this);
+                ClientHandler.putPlayerPresenter(this.gameHandler, this.player, this);
 
                 this.callRemoteMethod("completeSelectGame", this.gameHandler.getGameId());
+
+                ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "infoMessage",
+                        this.playerId + ": connesso alla partita " + this.gameHandler.getGameId()
+                                + ".");
 
             } catch (LoginException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
+
             }
         }
     }

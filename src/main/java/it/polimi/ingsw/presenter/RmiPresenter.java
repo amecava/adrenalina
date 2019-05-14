@@ -37,7 +37,7 @@ public class RmiPresenter extends Presenter {
     }
 
     @Override
-    public synchronized void callRemoteMethod(String method, String value) throws RemoteException {
+    public void callRemoteMethod(String method, String value) throws RemoteException {
 
         try {
 

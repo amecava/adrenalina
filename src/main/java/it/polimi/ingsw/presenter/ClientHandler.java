@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,9 +17,9 @@ import javax.json.JsonArrayBuilder;
 
 public class ClientHandler {
 
-    public static List<Presenter> clientList = new ArrayList<>();
+    private static List<Presenter> clientList = new ArrayList<>();
 
-    public static Map<GameHandler, Map<Player, Presenter>> map = new HashMap<>();
+    private static Map<GameHandler, Map<Player, Presenter>> map = new HashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger(
 
@@ -36,14 +37,26 @@ public class ClientHandler {
 
         clientList.remove(presenter);
 
+        if (presenter.getGameHandler() != null && presenter.getPlayer() != null) {
+
+            map.get(presenter.getGameHandler()).replace(presenter.getPlayer(), null);
+        }
+
         LOGGER.log(Level.INFO, "{0} disconnected from server.", presenter.getPlayerId());
 
         if (!presenter.getPlayerId().equals("RMI client") && !presenter.getPlayerId().equals("Socket client")) {
 
-            broadcast(x -> true, "infoMessage", presenter.getPlayerId() + ": disconnected from server.");
+            broadcast(x -> true, "infoMessage", presenter.getPlayerId() + ": disconnesso dal server.");
         }
 
         presenter.disconnectPresenter();
+    }
+
+    public static synchronized boolean isClientPresent(String playerId) {
+
+        return clientList.stream()
+                .map(Presenter::getPlayerId)
+                .anyMatch(x -> x.equals(playerId));
     }
 
     public static synchronized void broadcast(Predicate<Presenter> filter, String method, String value) {
@@ -61,10 +74,84 @@ public class ClientHandler {
                     } catch (RemoteException e) {
 
                         disconnected.add(x);
+
+                    } catch (NullPointerException e) {
+
+                        //
                     }
                 });
 
         disconnected.forEach(ClientHandler::removeClient);
+    }
+
+    public static synchronized void gameBroadcast(Predicate<Presenter> filter, GameHandler gameHandler, String method, String value) {
+
+        List<Presenter> disconnected = new ArrayList<>();
+
+        map.get(gameHandler).values().stream()
+                .filter(filter)
+                .forEach(x -> {
+
+                    try {
+
+                        x.callRemoteMethod(method, value);
+
+                    } catch (RemoteException e) {
+
+                        disconnected.add(x);
+
+                    } catch (NullPointerException e) {
+
+                        //
+                    }
+                });
+
+        disconnected.forEach(ClientHandler::removeClient);
+    }
+
+    public static synchronized GameHandler getGameHandler(Predicate<GameHandler> filter) {
+
+        return map.keySet().stream()
+                .filter(filter)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    public static synchronized Player getPlayer(GameHandler gameHandler, Predicate<Player> filter) {
+
+        return map.get(gameHandler).keySet().stream()
+                .filter(filter)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    public static synchronized void addGameHandler(String gameId, int numberOdDeaths, boolean frenzy) {
+
+        map.put(new GameHandler(gameId, numberOdDeaths, frenzy), new HashMap<>());
+    }
+
+    public static synchronized boolean isGameHandlerPresent(String gameId) {
+
+        return map.keySet().stream().map(GameHandler::getGameId).anyMatch(x -> x.equals(gameId));
+    }
+
+    public static synchronized void putPlayerPresenter(GameHandler gameHandler, Player player, Presenter presenter) {
+
+        if (map.get(gameHandler).keySet().contains(player)) {
+
+            map.get(gameHandler).replace(player, presenter);
+        } else {
+
+            map.get(gameHandler).put(player, presenter);
+        }
+    }
+
+    public static synchronized boolean isPlayerPresent(String playerId) {
+
+        return map.values().stream()
+                .flatMap(x -> x.keySet().stream())
+                .map(Player::getPlayerId)
+                .anyMatch(x -> x.equals(playerId));
     }
 
     public static synchronized JsonArray getGameHandlerJsonArray() {

@@ -23,6 +23,7 @@ import it.polimi.ingsw.model.players.bridges.Bridge;
 import it.polimi.ingsw.model.players.bridges.Shots;
 import it.polimi.ingsw.model.points.PointStructure;
 import it.polimi.ingsw.model.cards.Target;
+import it.polimi.ingsw.presenter.ClientHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -476,6 +477,7 @@ public class Player implements Target {
         return Json.createObjectBuilder()
                 .add("playerId", this.playerId)
                 .add("character", this.getColor().getCharacter())
+                .add("connected", ClientHandler.isClientPresent(this.playerId))
                 .build();
     }
 }

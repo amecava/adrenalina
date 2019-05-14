@@ -20,7 +20,8 @@ public class SocketPresenter extends Presenter implements Runnable {
     private Scanner in;
     private PrintWriter out;
 
-    private Queue<JsonObject> data = new ArrayDeque<>();
+    private final Queue<JsonObject> data = new ArrayDeque<>();
+    private final Queue<JsonObject> ping = new ArrayDeque<>();
 
     private static final Logger LOGGER = Logger.getLogger(
 
@@ -42,22 +43,18 @@ public class SocketPresenter extends Presenter implements Runnable {
     }
 
     @Override
-    public synchronized void callRemoteMethod(String method, String value) throws RemoteException {
+    public void callRemoteMethod(String method, String value) throws RemoteException {
 
         try {
 
-            this.out.println(this.jsonSerialize(method, value));
-            this.out.flush();
+            synchronized (this.ping) {
 
-            wait(1000);
+                this.out.println(this.jsonSerialize(method, value));
+                this.out.flush();
 
-            JsonObject object = data.remove();
+                this.ping.wait(1000);
 
-            if (!object.getString("method").equals("pong")) {
-
-                data.add(object);
-
-                notifyAll();
+                this.ping.remove();
             }
 
         } catch (NoSuchElementException e) {
@@ -75,26 +72,7 @@ public class SocketPresenter extends Presenter implements Runnable {
 
         ClientHandler.addClient(this);
 
-        Thread input = new Thread(() -> {
-
-            try {
-
-                while (Thread.currentThread().isAlive()) {
-
-                    JsonObject object = this.jsonDeserialize(this.in.nextLine());
-
-                    synchronized (this) {
-
-                        data.add(object);
-
-                        notifyAll();
-                    }
-                }
-            } catch (NoSuchElementException e) {
-
-                //
-            }
-        });
+        Thread input = new Thread(this::inputStream);
 
         input.setDaemon(true);
         input.start();
@@ -103,27 +81,18 @@ public class SocketPresenter extends Presenter implements Runnable {
 
             while (Thread.currentThread().isAlive()) {
 
-                synchronized (this) {
+                synchronized (this.data) {
 
-                    while (data.peek() == null) {
+                    while (this.data.peek() == null) {
 
-                        wait();
+                        this.data.wait();
                     }
 
-                    JsonObject object = data.remove();
+                    JsonObject object = this.data.remove();
 
-                    if (object.getString("method").equals("pong")) {
-
-                        data.add(object);
-
-                        notifyAll();
-
-                    } else {
-
-                        this.getClass()
-                                .getMethod(object.getString("method"), String.class)
-                                .invoke(this, object.getString("value"));
-                    }
+                    this.getClass()
+                            .getMethod(object.getString("method"), String.class)
+                            .invoke(this, object.getString("value"));
                 }
             }
 
@@ -142,6 +111,42 @@ public class SocketPresenter extends Presenter implements Runnable {
         } catch (InterruptedException e) {
 
             Thread.currentThread().interrupt();
+        }
+    }
+
+    private void inputStream() {
+
+        try {
+
+            while (Thread.currentThread().isAlive()) {
+
+                JsonObject object = this.jsonDeserialize(this.in.nextLine());
+
+                synchronized (this) {
+
+                    if (!object.getString("method").equals("pong")) {
+
+                        synchronized (data) {
+
+                            data.add(object);
+
+                            data.notifyAll();
+                        }
+
+                    } else {
+
+                        synchronized (ping) {
+
+                            ping.add(object);
+
+                            ping.notifyAll();
+                        }
+                    }
+                }
+            }
+        } catch (NoSuchElementException e) {
+
+            //
         }
     }
 
