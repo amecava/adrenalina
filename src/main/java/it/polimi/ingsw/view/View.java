@@ -9,4 +9,5 @@ public interface View {
 
     void adrenalinaSplashScreen();
     Runnable selectConnection(InetAddress inetAddress, int rmiPort, int socketPort);
+
 }

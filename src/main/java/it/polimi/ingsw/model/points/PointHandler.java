@@ -37,7 +37,7 @@ public class PointHandler {
         return this.frenzyEnabled;
     }
 
-    public void setFrienzy(boolean frenzy) {
+    public void setFrenzy(boolean frenzy) {
 
         this.frenzyEnabled = frenzy;
     }
@@ -63,7 +63,7 @@ public class PointHandler {
         for (Player player : playerList) {
             if (!player.getBridge().getColor().equals(Color.ALL) && player.isDead()) {
 
-                killShot = player.getShots().get(player.getShots().size() - 1).getColor();
+                killShot = player.getShots().get(player.getShots().size() - 1);
                 foundLastShot = player.getShots().size() >= 12;
                 deaths.addKill(killShot, foundLastShot);
                 if (this.firstFrenzyPlayer != null && !(player.getBridge().isKillStreakCount())) {

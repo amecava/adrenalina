@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.players.bridges.Bridge;
-import it.polimi.ingsw.model.players.bridges.Shots;
 import java.util.List;
 
 public class Deaths extends Bridge {
@@ -22,7 +21,7 @@ public class Deaths extends Bridge {
         return this.maxNumberOfDeaths;
     }
 
-    public List<Shots> getKillStreak() {
+    public List<Color> getKillStreak() {
 
         return this.getShots();
     }

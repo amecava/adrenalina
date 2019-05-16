@@ -28,6 +28,8 @@ public class PowerUpDeck {
 
     public PowerUpCard getPowerUpCard() {
 
+        System.out.println(this.deck.size());
+
         return this.deck.remove(0);
     }
 

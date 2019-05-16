@@ -2,10 +2,13 @@ package it.polimi.ingsw.model.board;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.model.board.rooms.Square;
 import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.board.rooms.Connection;
 import it.polimi.ingsw.model.board.rooms.Direction;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.model.players.Player;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 class BoardTest {
@@ -60,4 +63,16 @@ class BoardTest {
                 Connection.ENDMAP
         );
     }
+
+    @Test
+    void squareJson() {
+
+        Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
+        board.fillBoard();
+
+        System.out.println(board.toJsonObject());
+        //with the prints I could verify it works
+        assertTrue(true);
+    }
+
 }

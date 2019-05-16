@@ -40,7 +40,7 @@ public class ConsoleView implements View, VirtualView {
 
             builder.add(VALUE, parts.length == 2 ? parts[1] : "");
 
-            switch (parts[0]) {
+            switch (parts[0].toLowerCase()) {
 
                 case "disconnetti":
 
@@ -61,6 +61,10 @@ public class ConsoleView implements View, VirtualView {
                 case "selezionapartita":
 
                     return builder.add(METHOD, "selectGame").build();
+
+                case "votaarena":
+
+                    return builder.add(METHOD, "voteBoard").build();
 
                 default:
 
@@ -102,6 +106,7 @@ public class ConsoleView implements View, VirtualView {
                 this.errorMessage("Selezione non disponibile, riprova.");
             }
         }
+
     }
 
     @Override
@@ -132,6 +137,12 @@ public class ConsoleView implements View, VirtualView {
     public void completeLogin(String value) {
 
         this.output(value);
+        this.output("Adesso puoi:");
+        this.output("- Vedere quali partite sono state create e chi c'è collegato in ogni partita creata digitando \"mostrapartite\";");
+        this.output("- Entrare a far parte di una partita digitando \"selezionapartita\" "
+                + "seguito dal nome della partita in cui vuoi entrare e dal nome del personaggio che vuoi utilizzare;");
+        this.output("- Creare una nuova partita digitando \" creapartita\" seguito dal numero di teschi che vuoi utilizzare nella partita"
+                + " e \"frenesia\" se vuoi utilizzare la modalità frenesia finale, se no niente.");
     }
 
     @Override
@@ -151,7 +162,7 @@ public class ConsoleView implements View, VirtualView {
 
                 this.output("Non sono ancora state create partite.");
                 this.output("Creane una con il comando \"creapartita nomePartita(nome) "
-                        + "numeroMorti(numero intero) frenesia(vero/falso)\".");
+                        + "numeroMorti(numero intero tra 5 e 8) frenesia(o niente se non vuoi utilizzare questa modalità)\".");
 
             } else {
 
@@ -184,6 +195,46 @@ public class ConsoleView implements View, VirtualView {
     public void completeSelectGame(String value) throws RemoteException {
 
         this.output("Sei stato aggiunto con successo alla partita " + value + ".");
+    }
+
+    @Override
+    public void completeVoteBoard(String value) throws RemoteException {
+
+        this.output("Hai votato per giocare con l'arena " + value + ".");
+    }
+
+    @Override
+    public void showBoard(String value) throws RemoteException {
+
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+
+            JsonArray jsonArray = reader.readArray();
+
+            if (jsonArray.isEmpty()) {
+
+                this.output("Non sono ancora state create partite.");
+                this.output("Creane una con il comando \"creapartita nomePartita(nome) "
+                        + "numeroMorti(numero intero tra 5 e 8) frenesia(o niente se non vuoi utilizzare questa modalità)\".");
+
+            } else {
+
+                jsonArray.stream()
+                        .map(JsonValue::asJsonObject)
+                        .forEach(x -> {
+
+                            this.output("Nome partita: " + x.getString("gameId"));
+                            this.output("---> Numero morti: " + x.getInt("numberOfDeaths")
+                                    + ", frenesia finale: " + (x.getBoolean("frenzy") ? "Sì"
+                                    : "No"));
+
+                            this.output("---> Giocatori connessi: " + x.getJsonArray("playerList")
+                                    .stream()
+                                    .map(JsonValue::asJsonObject)
+                                    .map(y -> y.getString("playerId") + ": " + y.getString("character") + (y.getBoolean("connected") ? "" : " (disconnesso)"))
+                                    .collect(Collectors.toList()));
+                        });
+            }
+        }
     }
 
     private String input() {

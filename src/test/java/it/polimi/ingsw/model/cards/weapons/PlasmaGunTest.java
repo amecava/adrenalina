@@ -103,8 +103,8 @@ public class PlasmaGunTest {
         try {
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
-            assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
+            assertSame(target1.getShots().get(0), Color.GRAY);
+            assertSame(target1.getShots().get(1), Color.GRAY);
             assertSame(target1.getShots().size(), 2);
         } catch (EffectException | PropertiesException | CardException e) {
             fail();
@@ -128,7 +128,7 @@ public class PlasmaGunTest {
         try {
             tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(2).getColor(), Color.GRAY);
+            assertSame(target1.getShots().get(2), Color.GRAY);
             assertSame(target1.getShots().size(), 3);
         } catch (EffectException | PropertiesException | CardException e) {
             fail();

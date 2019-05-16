@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.cards.WeaponCard;
 import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 public class Bridge {
 
@@ -66,12 +68,12 @@ public class Bridge {
         this.damageBridge.setKillStreakCount();
     }
 
-    public List<Shots> getShots() {
+    public List<Color> getShots() {
 
         return this.damageBridge.getShots();
     }
 
-    public List<Shots> getMarks() {
+    public List<Color> getMarks() {
 
         return this.damageBridge.getMarks();
     }
@@ -169,5 +171,13 @@ public class Bridge {
     public void endAction() {
 
         this.actionBridge.endAction();
+    }
+
+    public JsonObject toJsonObject() {
+
+        return Json.createObjectBuilder()
+                .add("damageBridge", this.damageBridge.toJsonObject())
+                .add("adrenalin", this.actionBridge.getAdrenalin().toString())
+                .build();
     }
 }

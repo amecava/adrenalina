@@ -53,6 +53,11 @@ class ActionBridge {
         }
     }
 
+    public Adrenalin getAdrenalin() {
+
+        return this.adrenalin;
+    }
+
     ActionStructure getCurrentAction() {
 
         return this.currentAction;

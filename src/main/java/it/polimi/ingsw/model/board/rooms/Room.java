@@ -7,6 +7,9 @@ import it.polimi.ingsw.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 
 public class Room implements Target {
 
@@ -63,5 +66,19 @@ public class Room implements Target {
 
         this.squaresList.add(square);
         square.setRoom(this);
+    }
+
+    public JsonObject toJsonObject() {
+
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+
+        this.squaresList.stream()
+                .map(Square::toJsonObject)
+                .forEach(builder::add);
+
+        return Json.createObjectBuilder()
+                .add("color", this.color.toString())
+                .add("squares", builder.build())
+                .build();
     }
 }

@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
@@ -78,6 +81,54 @@ public class Board {
                         x.addTool(this.ammoTilesDeck.getTile());
                     }
                 });
+    }
+
+    public JsonObject toJsonObject() {
+
+        JsonArrayBuilder builder;
+        List<JsonArray> board = new ArrayList<>();
+
+        int i = 0;
+        int j = 0;
+        Square tmpSquare = this.roomsList.get(i).getSquare(0);
+
+        while (board.size() < 3) {
+
+            builder = Json.createArrayBuilder();
+
+            if (i >= 1 && !tmpSquare.getAdjacent(Direction.NORTH)
+                    .equals(this.roomsList.get(i - 1).getSquare(0))) {
+
+                builder.add(Json.createObjectBuilder().add("empty", "").build());
+                j++;
+            }
+
+            builder.add(tmpSquare.toJsonObject());
+
+            j++;
+            while (!tmpSquare.getConnection(Direction.EAST).equals(Connection.ENDMAP)) {
+
+                tmpSquare = tmpSquare.getAdjacent(Direction.EAST);
+                builder.add(tmpSquare.toJsonObject());
+                j++;
+
+                if (tmpSquare.getConnection(Direction.EAST).equals(Connection.ENDMAP)
+                        && j < 4) {
+
+                    builder.add(Json.createObjectBuilder().add("empty", "").build());
+                }
+            }
+
+            board.add(builder.build());
+
+            i++;
+            tmpSquare = this.roomsList.get(i).getSquare(0);
+        }
+
+        builder = Json.createArrayBuilder();
+        board.forEach(builder::add);
+
+        return Json.createObjectBuilder().add("arrays", builder.build()).build();
     }
 
     public static class BoardBuilder {

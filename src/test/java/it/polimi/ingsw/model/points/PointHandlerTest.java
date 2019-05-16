@@ -47,7 +47,7 @@ class PointHandlerTest {
 
         assertEquals(player2.getMarks().size(), 1);
         assertEquals(
-                player2.getMarks().get(0).getColor(),
+                player2.getMarks().get(0),
                 player1.getColor()
         );
         assertEquals(player2.getPoints(), 8);

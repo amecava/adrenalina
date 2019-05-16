@@ -61,11 +61,11 @@ class PowerUpCardTest {
 
             target1.getPowerUpsList().get(0).useCard(new EffectArgument());
 
-            assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
-            assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
+            assertSame(target1.getShots().get(0), Color.GRAY);
+            assertSame(target1.getShots().get(1), Color.GRAY);
             assertSame(target1.getShots().size(), 2);
 
-            assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target1.getMarks().get(0), Color.GRAY);
             assertSame(target1.getMarks().size(), 1);
             assertSame(source.getMarks().size(), 1);
 

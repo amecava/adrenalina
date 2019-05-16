@@ -7,6 +7,9 @@ import it.polimi.ingsw.model.decks.PowerUpDeck;
 import it.polimi.ingsw.model.players.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 public class AmmoTile implements Card {
@@ -51,6 +54,26 @@ public class AmmoTile implements Card {
     public PowerUpCard getPowerUpCard() {
 
         return this.powerUpDeck.getPowerUpCard();
+    }
+
+    @Override
+    public String toString() {
+
+        return (this.ammoCubesList.size() == 2) ?
+                this.ammoCubesList.stream()
+                .map(Color::toString)
+                .collect(Collectors.joining(" ")) + " POWER_UP" :
+                this.ammoCubesList.stream()
+                .map(Color::toString)
+                .collect(Collectors.joining(" "));
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+
+        return Json.createObjectBuilder()
+                .add("colors", this.toString())
+                .build();
     }
 
     public static class AmmoTileBuilder {

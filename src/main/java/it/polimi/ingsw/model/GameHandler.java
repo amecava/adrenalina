@@ -4,13 +4,23 @@ import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
-import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.points.PointHandler;
+import it.polimi.ingsw.presenter.ClientHandler;
+import it.polimi.ingsw.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.presenter.exceptions.LoginException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -23,6 +33,7 @@ public class GameHandler {
     private List<Player> playerList = new ArrayList<>();
 
     private Board board;
+    private Map<Player, Integer> votes = new HashMap<>();
 
     private PointHandler pointHandler;
     private EffectHandler effectHandler = new EffectHandler();
@@ -34,12 +45,17 @@ public class GameHandler {
         this.gameId = gameId;
 
         this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
-        this.pointHandler.setFrienzy(frenzy);
+        this.pointHandler.setFrenzy(frenzy);
     }
 
     public String getGameId() {
 
         return this.gameId;
+    }
+
+    public boolean isGameStarted() {
+
+        return this.gameStarted;
     }
 
     public List<Player> getPlayerList() {
@@ -51,9 +67,21 @@ public class GameHandler {
         this.playerList = playerList;
     }
 
-    public void createBoard(int id) {
+    public void createBoard() {
 
-        this.board = new Board.BoardBuilder(this.effectHandler).build(id);
+        System.out.println(this.votes.values().stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .max(Comparator.comparing(Entry::getValue))
+                .map(x -> x.getKey() - 1));
+
+        this.board = new Board.BoardBuilder(this.effectHandler).build(
+                this.votes.values().stream()
+                        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                        .entrySet().stream()
+                        .max(Comparator.comparing(Entry::getValue))
+                        .map(x -> x.getKey() - 1)
+                        .orElse(ThreadLocalRandom.current().nextInt(0, 4)));
     }
 
     public Player addPlayer(String playerId, String character) throws LoginException {
@@ -63,7 +91,8 @@ public class GameHandler {
             throw new LoginException("Il personaggio selezionato non esiste.");
         }
 
-        if (this.playerList.stream().anyMatch(x -> x.getColor().equals(Color.ofCharacter(character)))) {
+        if (this.playerList.stream()
+                .anyMatch(x -> x.getColor().equals(Color.ofCharacter(character)))) {
 
             throw new LoginException("Il personaggio selezionato è già stato preso.");
         }
@@ -72,7 +101,34 @@ public class GameHandler {
 
         this.playerList.add(player);
 
+        if (this.playerList.size() == 3) {
+
+            new Timer().schedule(
+
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+
+                            ClientHandler.gameBroadcast(x -> true, GameHandler.this, "infoMessage", "La partita è iniziata!");
+
+                            startGame();
+                        }
+                    },
+                    60000
+            );
+        }
+
         return player;
+    }
+
+    public void voteBoard(Player player, int board) throws BoardVoteException {
+
+        if (this.votes.containsKey(player)) {
+
+            throw new BoardVoteException("Hai già votato per questa partita.");
+        }
+
+        this.votes.put(player, board);
     }
 
     public Player getActivePlayer() {
@@ -91,8 +147,9 @@ public class GameHandler {
                 Thread.currentThread().interrupt();
             }
         }
-        if (this.activePlayer != null)
+        if (this.activePlayer != null) {
             this.activePlayer.setActivePlayer(false);
+        }
         this.activePlayer = activePlayer;
         this.activePlayer.setActivePlayer(true);
 
@@ -129,20 +186,21 @@ public class GameHandler {
         this.board.fillBoard();
     }
 
-    public void startGame(int index) throws IllegalActionException {
+    public void startGame() {
 
-        if (!this.gameStarted && index >= 0 && index < this.playerList.size()) {
+        //TODO Random int
 
-            this.gameStarted = true;
-            this.playerList.forEach(x ->
-                    x.addPowerUp(this.board.getPowerUp()));
-            this.playerList.forEach(x ->
-                    x.addPowerUp(this.board.getPowerUp()));
-            this.playerList.get(index).setFirstPlayer(true);
-            this.setActivePlayer(this.playerList.get(index));
-        } else {
-            throw new IllegalActionException(" game already started!!");
-        }
+        this.createBoard();
+
+        this.gameStarted = true;
+        this.playerList.forEach(x ->
+                x.addPowerUp(this.board.getPowerUp()));
+        this.playerList.forEach(x ->
+                x.addPowerUp(this.board.getPowerUp()));
+        this.playerList.get(0).setFirstPlayer(true);
+        this.setActivePlayer(this.playerList.get(0));
+
+        ClientHandler.gameBroadcast(x -> true, this, "showBoard", this.board.toJsonObject().toString());
     }
 
     public JsonObject toJsonObject() {

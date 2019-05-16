@@ -126,11 +126,11 @@ class LockRifleTest {
         try {
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
-            assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
+            assertSame(target1.getShots().get(0), Color.GRAY);
+            assertSame(target1.getShots().get(1), Color.GRAY);
             assertSame(target1.getShots().size(), 2);
 
-            assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target1.getMarks().get(0), Color.GRAY);
             assertSame(target1.getMarks().size(), 1);
 
         } catch (EffectException | PropertiesException | CardException e) {
@@ -185,9 +185,9 @@ class LockRifleTest {
         try {
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(0).getColor(), Color.GRAY);
-            assertSame(target1.getShots().get(1).getColor(), Color.GRAY);
-            assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target1.getShots().get(0), Color.GRAY);
+            assertSame(target1.getShots().get(1), Color.GRAY);
+            assertSame(target1.getMarks().get(0), Color.GRAY);
 
         } catch (EffectException | PropertiesException | CardException e) {
             fail();
@@ -209,7 +209,7 @@ class LockRifleTest {
         try {
             tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getMarks().get(0).getColor(), Color.GRAY);
+            assertSame(target1.getMarks().get(0), Color.GRAY);
 
         } catch (EffectException | PropertiesException | CardException e) {
             fail();

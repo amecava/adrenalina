@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 public class WeaponCard implements Card {
 
@@ -248,6 +251,15 @@ public class WeaponCard implements Card {
 
             throw new CostException("Cost exception");
         }
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+
+        return Json.createObjectBuilder()
+                .add("name", this.name)
+                .add("notes", (this.notes != null) ? this.notes : " ")
+                .build();
     }
 
     public static class WeaponCardBuilder {

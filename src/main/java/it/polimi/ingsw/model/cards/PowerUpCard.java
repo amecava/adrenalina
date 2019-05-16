@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.exceptions.effects.EffectCallException;
 import it.polimi.ingsw.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.model.players.Player;
+import javax.json.Json;
 import javax.json.JsonObject;
 
 public class PowerUpCard implements Card, Ammo {
@@ -75,7 +76,8 @@ public class PowerUpCard implements Card, Ammo {
         target.setWeaponCard(false);
 
         if (!this.effect.isSameAsPlayer() && this.owner
-                .equals(this.effectHandler.getActivePlayer())) {
+                .equals(this.effectHandler.getActivePlayer())
+                && this.owner.getRemainingActions() != -1) {
 
             this.effectHandler.useEffect(this.effect.getNext(), target);
 
@@ -113,7 +115,8 @@ public class PowerUpCard implements Card, Ammo {
         }
 
         if (effect.isSameAsPlayer() || !this.owner
-                .equals(effectHandler.getActivePlayer())) {
+                .equals(effectHandler.getActivePlayer())
+                || this.owner.getRemainingActions() == -1) {
 
             throw new CardNotLoadedException("You can't use a power up right now!");
         }
@@ -123,6 +126,16 @@ public class PowerUpCard implements Card, Ammo {
         this.effectHandler.useEffect(this.effect.getNext(), target);
 
         ammoCube.setUsed(true);
+
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+
+        return Json.createObjectBuilder()
+                .add("name",this.name)
+                .add("color", this.color.toString())
+                .build();
     }
 
     public static class PowerUpCardBuilder {

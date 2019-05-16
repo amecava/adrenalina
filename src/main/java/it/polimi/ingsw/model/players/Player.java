@@ -20,7 +20,6 @@ import it.polimi.ingsw.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.model.exceptions.cards.FullHandException;
 import it.polimi.ingsw.model.exceptions.cards.SquareTypeException;
 import it.polimi.ingsw.model.players.bridges.Bridge;
-import it.polimi.ingsw.model.players.bridges.Shots;
 import it.polimi.ingsw.model.points.PointStructure;
 import it.polimi.ingsw.model.cards.Target;
 import it.polimi.ingsw.presenter.ClientHandler;
@@ -140,12 +139,12 @@ public class Player implements Target {
         this.bridge.setPointsUsed();
     }
 
-    public List<Shots> getShots() {
+    public List<Color> getShots() {
 
         return this.bridge.getShots();
     }
 
-    public List<Shots> getMarks() {
+    public List<Color> getMarks() {
 
         return this.bridge.getMarks();
     }
@@ -224,7 +223,7 @@ public class Player implements Target {
         this.bridge.setRespawn(respawn);
     }
 
-    private int getRemainingActions() {
+    public int getRemainingActions() {
 
         return this.bridge.getRemainingActions();
     }
@@ -257,7 +256,7 @@ public class Player implements Target {
         this.bridge.endAction();
     }
 
-    public PointStructure createPointStructure(List<Shots> shots) {
+    public PointStructure createPointStructure(List<Color> shots) {
 
         return this.pointStructure.createPointStructure(shots);
     }
@@ -289,14 +288,15 @@ public class Player implements Target {
         this.powerUpsList.add(powerUp);
     }
 
-    public PowerUpCard removePowerUp(PowerUpCard powerUpCard) {
-        /*
+    public PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
+
         PowerUpCard powerUpCard = this.powerUpsList.stream()
-                .filter(x -> x.getName() == "name")
+                .filter(x -> x.getName().equals("name") && x.getColor().equals(color))
                 .findAny()
-                .orElseThrow(() -> new CardNotFoundException("You don't have that card!"));
-        */
+                .orElseThrow(() -> new CardNotFoundException("You don't have that power up card!"));
+
         powerUpCard.setOwner(null);
+
         return powerUpCard;
     }
 
@@ -456,18 +456,19 @@ public class Player implements Target {
         this.bridge.getCurrentWeaponCard().useCard(effectType, effectTarget, powerUpCardList);
     }
 
-    //TODO needs to be changed , we need to pass the id , not the powerUpCard
-    public PowerUpCard spawn(PowerUpCard powerUpCard) throws IllegalActionException {
+    public PowerUpCard spawn(String name, Color color) throws IllegalActionException, CardNotFoundException {
 
         if ((this.isActivePlayer() && this.currentPosition == null)
                 || this.isRespawn()) {
 
-            PowerUpCard powerUpCardTmp = this.removePowerUp(powerUpCard);
+            PowerUpCard powerUpCard = this.removePowerUp(name, color);
 
             this.setRespawn(false);
 
-            return powerUpCardTmp;
+            return powerUpCard;
+
         } else {
+
             throw new IllegalActionException("You can't respawn!");
         }
     }
@@ -477,6 +478,7 @@ public class Player implements Target {
         return Json.createObjectBuilder()
                 .add("playerId", this.playerId)
                 .add("character", this.getColor().getCharacter())
+                .add("bridge", this.bridge.toJsonObject())
                 .add("connected", ClientHandler.isClientPresent(this.playerId))
                 .build();
     }
