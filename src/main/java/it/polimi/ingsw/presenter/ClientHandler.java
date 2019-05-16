@@ -30,7 +30,7 @@ public class ClientHandler {
 
         clientList.add(presenter);
 
-        LOGGER.log(Level.INFO, "{0} connected to server.", presenter.getPlayerId());
+        LOGGER.log(Level.INFO, "Client connected to server.");
     }
 
     public static synchronized void removeClient(Presenter presenter) {
@@ -44,9 +44,10 @@ public class ClientHandler {
 
         LOGGER.log(Level.INFO, "{0} disconnected from server.", presenter.getPlayerId());
 
-        if (!presenter.getPlayerId().equals("RMI client") && !presenter.getPlayerId().equals("Socket client")) {
+        if (!presenter.getPlayerId().equals("Client")) {
 
-            broadcast(x -> true, "infoMessage", presenter.getPlayerId() + ": disconnesso dal server.");
+            broadcast(x -> true, "broadcast",
+                    presenter.getPlayerId() + ": disconnesso dal server.");
         }
 
         presenter.disconnectPresenter();
@@ -59,7 +60,8 @@ public class ClientHandler {
                 .anyMatch(x -> x.equals(playerId));
     }
 
-    public static synchronized void broadcast(Predicate<Presenter> filter, String method, String value) {
+    public static synchronized void broadcast(Predicate<Presenter> filter, String method,
+            String value) {
 
         List<Presenter> disconnected = new ArrayList<>();
 
@@ -84,7 +86,8 @@ public class ClientHandler {
         disconnected.forEach(ClientHandler::removeClient);
     }
 
-    public static synchronized void gameBroadcast(Predicate<Presenter> filter, GameHandler gameHandler, String method, String value) {
+    public static synchronized void gameBroadcast(Predicate<Presenter> filter,
+            GameHandler gameHandler, String method, String value) {
 
         List<Presenter> disconnected = new ArrayList<>();
 
@@ -125,7 +128,8 @@ public class ClientHandler {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    public static synchronized void addGameHandler(String gameId, int numberOdDeaths, boolean frenzy) {
+    public static synchronized void addGameHandler(String gameId, int numberOdDeaths,
+            boolean frenzy) {
 
         map.put(new GameHandler(gameId, numberOdDeaths, frenzy), new HashMap<>());
     }
@@ -135,7 +139,8 @@ public class ClientHandler {
         return map.keySet().stream().map(GameHandler::getGameId).anyMatch(x -> x.equals(gameId));
     }
 
-    public static synchronized void putPlayerPresenter(GameHandler gameHandler, Player player, Presenter presenter) {
+    public static synchronized void putPlayerPresenter(GameHandler gameHandler, Player player,
+            Presenter presenter) {
 
         if (map.get(gameHandler).keySet().contains(player)) {
 

@@ -40,6 +40,11 @@
       <artifactId>javax.json-api</artifactId>
       <version>RELEASE</version>
     </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>12</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -87,6 +92,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.1</version>
+        <configuration>
+          <mainClass>it.polimi.ingsw.view.gui.GUIView</mainClass>
+        </configuration>
+
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

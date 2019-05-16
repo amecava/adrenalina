@@ -46,7 +46,8 @@ public class RmiConnection implements Runnable {
             VirtualView skeleton = (VirtualView) UnicastRemoteObject.exportObject((VirtualView) this.view, 0);
             VirtualPresenter stub = access.callBack(skeleton);
 
-            LOGGER.log(Level.INFO, "Connected to RMI server.");
+            this.view.splashScreen();
+            this.view.loginScreen();
 
             while (Thread.currentThread().isAlive()) {
 

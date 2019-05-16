@@ -1,0 +1,18 @@
+[
+  {
+    "input": ["disconnetti"],
+    "method": "remoteDisconnect"
+  },
+  {
+    "input": ["login"],
+    "method":"selectPlayerId"
+  },
+  {
+    "input": ["creapartita", "nuovapartita"],
+    "method": "askCreateGame"
+  },
+  {
+    "input": ["selezionapartita"],
+    "method": "selectGame"
+  }
+]
