@@ -62,6 +62,10 @@ public class ConsoleView implements View, VirtualView {
 
                     return builder.add(METHOD, "selectGame").build();
 
+                case "fineturno":
+
+                    return builder.add(METHOD, "endOfTurn").build();
+
                 default:
 
                     this.errorMessage("Selezione non disponibile, riprova o digita help.");
@@ -167,7 +171,9 @@ public class ConsoleView implements View, VirtualView {
                             this.output("---> Giocatori connessi: " + x.getJsonArray("playerList")
                                     .stream()
                                     .map(JsonValue::asJsonObject)
-                                    .map(y -> y.getString("playerId") + ": " + y.getString("character") + (y.getBoolean("connected") ? "" : " (disconnesso)"))
+                                    .map(y -> y.getString("playerId") + ": " + y
+                                            .getString("character") + (y.getBoolean("connected")
+                                            ? "" : " (disconnesso)"))
                                     .collect(Collectors.toList()));
                         });
             }
@@ -184,6 +190,13 @@ public class ConsoleView implements View, VirtualView {
     public void completeSelectGame(String value) throws RemoteException {
 
         this.output("Sei stato aggiunto con successo alla partita " + value + ".");
+    }
+
+    @Override
+    public void completeEndOfTurn(String value) throws RemoteException {
+
+        this.output(
+                "Turno finito correttamente, appena tutti faranno il respawn iniziera' il prossimo turno ");
     }
 
     private String input() {

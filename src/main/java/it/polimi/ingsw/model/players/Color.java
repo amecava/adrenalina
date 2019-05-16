@@ -6,11 +6,11 @@ import java.util.Map;
 
 public enum Color {
 
-    YELLOW(":D-STRUCT-OR"),
-    LIGHTBLUE("BANSHEE"),
-    GRAY("DOZER"),
-    VIOLET("VIOLET"),
-    GREEN("SPROG"),
+    YELLOW(":d-strutt-or3"),
+    LIGHTBLUE("banshee"),
+    GRAY("dozer"),
+    VIOLET("violetta"),
+    GREEN("sprog"),
     RED,
     BLUE,
     WHITE,

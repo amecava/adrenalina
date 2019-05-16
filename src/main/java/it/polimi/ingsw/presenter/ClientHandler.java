@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -84,21 +85,21 @@ public class ClientHandler {
         disconnected.forEach(ClientHandler::removeClient);
     }
 
-    public static synchronized void gameBroadcast(Predicate<Presenter> filter, GameHandler gameHandler, String method, String value) {
+    public static synchronized void gameBroadcast(GameHandler gameHandler, Predicate<Entry<Player, Presenter>> filter, String method, String value) {
 
         List<Presenter> disconnected = new ArrayList<>();
 
-        map.get(gameHandler).values().stream()
+        map.get(gameHandler).entrySet().stream()
                 .filter(filter)
                 .forEach(x -> {
 
                     try {
 
-                        x.callRemoteMethod(method, value);
+                        x.getValue().callRemoteMethod(method, value);
 
                     } catch (RemoteException e) {
 
-                        disconnected.add(x);
+                        disconnected.add(x.getValue());
 
                     } catch (NullPointerException e) {
 
@@ -123,6 +124,16 @@ public class ClientHandler {
                 .filter(filter)
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
+    }
+
+    public static synchronized Presenter getPresenter(GameHandler gameHandler, Predicate<Player> filter) {
+
+        Player player = map.get(gameHandler).keySet().stream()
+                .filter(filter)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+
+        return map.get(gameHandler).get(player);
     }
 
     public static synchronized void addGameHandler(String gameId, int numberOdDeaths, boolean frenzy) {

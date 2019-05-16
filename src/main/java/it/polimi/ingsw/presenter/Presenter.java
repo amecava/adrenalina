@@ -2,11 +2,14 @@ package it.polimi.ingsw.presenter;
 
 import it.polimi.ingsw.Client;
 import it.polimi.ingsw.model.GameHandler;
+import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
+import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.presenter.exceptions.LoginException;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -84,9 +87,11 @@ public abstract class Presenter implements VirtualPresenter {
                     "Login effettuato come " + value + " e riconnesso alla partita "
                             + this.gameHandler.getGameId() + ".");
 
-            ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "infoMessage",
-                    this.playerId + ": riconnesso alla partita " + this.gameHandler.getGameId()
-                            + ".");
+            ClientHandler
+                    .gameBroadcast(this.gameHandler, x -> !x.getValue().equals(this), "infoMessage",
+                            this.playerId + ": riconnesso alla partita " + this.gameHandler
+                                    .getGameId()
+                                    + ".");
 
         } else {
 
@@ -109,47 +114,132 @@ public abstract class Presenter implements VirtualPresenter {
 
     @Override
     public void askCreateGame(String value) throws RemoteException {
+        String returnString;
+        int i = 0;
+        List<String> regexList = new ArrayList<>();
+        String regex1 = "(\\s*)(\\S+)(\\s*)";
+        String regex2 = "(\\s*)([5-8])(\\s*)";
+        String regex3 = "(\\s*)(frenesia|)(\\s*)";
+
+        regexList.add(regex1);
+
+        regexList.add(regex2);
+
+        regexList.add(regex3);
+
+
+        Pattern p = Pattern.compile(regexList.get(i));
+        Matcher m = p.matcher(value);
+        while (m.lookingAt()) {
+
+            regexList.set(i, m.group(2));
+            value = value.substring(m.end());
+            i++;
+            if (i >= regexList.size()) {
+                break;
+            }
+            p = Pattern.compile(regexList.get(i));
+            m = p.matcher(value);
+        }
+        if (i < regexList.size() || value.length() > 0) {
+            switch (i) {
+                case 0:
+                    returnString = "scrivi un nome partita";
+                    break;
+                case 1:
+                    returnString = "immetti un numero da 1-5";
+                    break;
+
+                default:
+                    returnString = " metti frenesia o meno";
+            }
+            this.callRemoteMethod("errorMessage", "Errore di scrittura." + returnString);
+        }
+
+
+
 
         //TODO frenesia o niente
-
+        /*
         String pattern = "(\\s*)([a-zA-Z_0-9]+)(\\s*)([5-8])(\\s*)(vero|falso)";
 
         Pattern r = Pattern.compile(pattern);
 
         Matcher m = r.matcher(value);
 
+
+
         if (!m.find()) {
 
             this.callRemoteMethod("errorMessage",
                     "Comando errato, riprova scrivendo \"creapartita nomePartita(nome) numeroMorti(numero intero da 5 a 8) frenesia(vero/falso)\".");
 
-        } else if (ClientHandler.isGameHandlerPresent(m.group(2))) {
+
+         */
+         else if (ClientHandler.isGameHandlerPresent(regexList.get(0))) {
 
             this.callRemoteMethod("errorMessage",
                     "Nome partita già esistente, ripeti con un nuovo nome.");
 
         } else {
 
-            ClientHandler.addGameHandler(m.group(2), Integer.valueOf(m.group(4)),
-                    m.group(6).equals("vero"));
+            ClientHandler.addGameHandler(regexList.get(0), Integer.valueOf(regexList.get(1)),
+                    regexList.get(2).equals("frenesia"));
 
-            this.callRemoteMethod("completeCreateGame", m.group(2));
+            this.callRemoteMethod("completeCreateGame", regexList.get(0));
 
             ClientHandler.broadcast(x -> !x.equals(this), "infoMessage",
-                    "Partita " + m.group(2) + " creata.");
+                    "Partita " + regexList.get(0) + " creata.");
         }
     }
 
     @Override
     public void selectGame(String value) throws RemoteException {
+        int i = 0;
+        List<String> regexList = new ArrayList<>();
+        String returnString;
+        String regex1 = "(\\s*)([a-zA-Z_0-9]+)(\\s*)";
+        String regex2 = "(\\s*)(\\S+)(\\s*)";
+        regexList.add(regex1);
+        regexList.add(regex2);
+        Pattern p = Pattern.compile(regexList.get(i));
+        Matcher m = p.matcher(value);
+        while (m.lookingAt()) {
+            regexList.set(i, m.group(2));
+            value = value.substring(m.end());
+            i++;
+            if (i >= regexList.size()) {
+                break;
+            }
+            p = Pattern.compile(regexList.get(i));
+            m = p.matcher(value);
 
-        String pattern = "(\\s*)([a-zA-Z_0-9]+)(\\s*)(\\S+)(\\s*)";
+        }
+        if (i < regexList.size() || value.length() > 0) {
+            switch (i) {
+                case 0:
+                    returnString = " per favore scrivi un nome partita corretto";
+                    break;
+                case 1:
+                    returnString = " per favore scrivi uno dei personaggi validi";
+                    break;
+                default:
+                    returnString = "";
+            }
+            this.callRemoteMethod("errorMessage", "Errore di scrittura." + returnString);
+        }
+
+
+        /*
+        String pattern = "(\\s*)([a-zA-Z_0-9]+)(\\s*)()(\\s*)";
 
         Pattern r = Pattern.compile(pattern);
 
         Matcher m = r.matcher(value);
 
-        if (this.playerId.equals("RMI client") || this.playerId.equals("Socket client")) {
+         */
+
+        else if (this.playerId.equals("RMI client") || this.playerId.equals("Socket client")) {
 
             this.callRemoteMethod("errorMessage",
                     "Effettua il login prima di selezionare una partita (comando: login nomeUtente).");
@@ -158,28 +248,34 @@ public abstract class Presenter implements VirtualPresenter {
 
             this.callRemoteMethod("errorMessage", "Prima logout.");
 
-        } else if (!m.find()) {
+         /*else if (!m.find()) {
 
             this.callRemoteMethod("errorMessage", "REGEX.");
 
-        } else if (!ClientHandler.isGameHandlerPresent(m.group(2))) {
+          */
+
+        } else if (!ClientHandler.isGameHandlerPresent(regexList.get(0))) {
 
             this.callRemoteMethod("errorMessage", "Nome partita preso cazzo.");
 
         } else {
 
             try {
+                for (String string : regexList) {
+                    System.out.println(string);
+                }
 
                 this.gameHandler = ClientHandler
-                        .getGameHandler(x -> x.getGameId().equals(m.group(2)));
+                        .getGameHandler(x -> x.getGameId().equals(regexList.get(0)));
 
-                this.player = this.gameHandler.addPlayer(this.playerId, m.group(4));
+                this.player = this.gameHandler.addPlayer(this.playerId, regexList.get(1));
 
                 ClientHandler.putPlayerPresenter(this.gameHandler, this.player, this);
 
                 this.callRemoteMethod("completeSelectGame", this.gameHandler.getGameId());
 
-                ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "infoMessage",
+                ClientHandler.gameBroadcast(this.gameHandler, x -> !x.getValue().equals(this),
+                        "infoMessage",
                         this.playerId + ": connesso alla partita " + this.gameHandler.getGameId()
                                 + ".");
 
@@ -189,5 +285,23 @@ public abstract class Presenter implements VirtualPresenter {
 
             }
         }
+    }
+
+    @Override
+    public void endOfTurn(String value) throws RemoteException {
+        if (!this.player.isActivePlayer()) {
+            this.callRemoteMethod("errorMessage", "Non sei l'active player..");
+        }
+        try {
+            this.gameHandler.endOfTurn();
+            Thread canFinishTurn = new Thread(() -> this.gameHandler.canFinishTurn(this.player));
+            canFinishTurn.start();
+            this.callRemoteMethod("completeEndOfTurn", "");
+        } catch (EndGameException e) {
+            e.printStackTrace();
+        } catch (IllegalActionException e) {
+            this.callRemoteMethod("errorMessage", e.getMessage());
+        }
+
     }
 }
