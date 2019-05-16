@@ -19,8 +19,6 @@ public class RmiPresenter extends Presenter {
     RmiPresenter(VirtualView skeleton) {
 
         this.skeleton = skeleton;
-
-        this.setPlayerId("RMI client");
     }
 
     @Override

@@ -1,21 +1,16 @@
 package it.polimi.ingsw.presenter;
 
-import it.polimi.ingsw.Client;
 import it.polimi.ingsw.model.GameHandler;
-import it.polimi.ingsw.model.players.Color;
 import it.polimi.ingsw.model.players.Player;
 import it.polimi.ingsw.presenter.exceptions.LoginException;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.json.JsonArray;
 
 public abstract class Presenter implements VirtualPresenter {
 
-    private String playerId;
+    private String playerId = "Client";
 
     private Player player;
     private GameHandler gameHandler;
@@ -27,11 +22,6 @@ public abstract class Presenter implements VirtualPresenter {
     String getPlayerId() {
 
         return this.playerId;
-    }
-
-    void setPlayerId(String playerId) {
-
-        this.playerId = playerId;
     }
 
     public Player getPlayer() {
@@ -50,13 +40,16 @@ public abstract class Presenter implements VirtualPresenter {
         this.callRemoteMethod("completeDisconnect", value);
 
         ClientHandler.removeClient(this);
+
+        ClientHandler.broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null, "showGames",
+                ClientHandler.getGameHandlerJsonArray().toString());
     }
 
     @Override
     public void selectPlayerId(String value) throws RemoteException {
 
         //TODO regex
-        if (!this.playerId.equals("RMI client") && !this.playerId.equals("Socket client")) {
+        if (!this.playerId.equals("Client")) {
 
             this.callRemoteMethod("errorMessage", "Login già effettuato, prima esegui logout.");
 
@@ -84,9 +77,15 @@ public abstract class Presenter implements VirtualPresenter {
                     "Login effettuato come " + value + " e riconnesso alla partita "
                             + this.gameHandler.getGameId() + ".");
 
-            ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "infoMessage",
+            ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
+                    this.playerId + ": connesso al server.");
+
+            ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "gameBroadcast",
                     this.playerId + ": riconnesso alla partita " + this.gameHandler.getGameId()
                             + ".");
+
+            ClientHandler.broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null, "showGames",
+                    ClientHandler.getGameHandlerJsonArray().toString());
 
         } else {
 
@@ -94,17 +93,12 @@ public abstract class Presenter implements VirtualPresenter {
 
             this.callRemoteMethod("completeLogin", "Login effettuato come " + value + ".");
 
-            ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "infoMessage",
+            ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
                     this.playerId + ": connesso al server.");
+
+            ClientHandler.broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null, "showGames",
+                    ClientHandler.getGameHandlerJsonArray().toString());
         }
-    }
-
-    @Override
-    public void askGames(String value) throws RemoteException {
-
-        JsonArray jsonArray = ClientHandler.getGameHandlerJsonArray();
-
-        this.callRemoteMethod("showGames", jsonArray.toString());
     }
 
     @Override
@@ -118,7 +112,11 @@ public abstract class Presenter implements VirtualPresenter {
 
         Matcher m = r.matcher(value);
 
-        if (!m.find()) {
+        if (this.playerId.equals("Client")) {
+
+            this.callRemoteMethod("errorMessage", "Come prima cosa effettua il login.");
+
+        } else if (!m.find()) {
 
             this.callRemoteMethod("errorMessage",
                     "Comando errato, riprova scrivendo \"creapartita nomePartita(nome) numeroMorti(numero intero da 5 a 8) frenesia(vero/falso)\".");
@@ -135,8 +133,8 @@ public abstract class Presenter implements VirtualPresenter {
 
             this.callRemoteMethod("completeCreateGame", m.group(2));
 
-            ClientHandler.broadcast(x -> !x.equals(this), "infoMessage",
-                    "Partita " + m.group(2) + " creata.");
+            ClientHandler.broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null, "showGames",
+                    ClientHandler.getGameHandlerJsonArray().toString());
         }
     }
 
@@ -149,10 +147,9 @@ public abstract class Presenter implements VirtualPresenter {
 
         Matcher m = r.matcher(value);
 
-        if (this.playerId.equals("RMI client") || this.playerId.equals("Socket client")) {
+        if (this.playerId.equals("Client")) {
 
-            this.callRemoteMethod("errorMessage",
-                    "Effettua il login prima di selezionare una partita (comando: login nomeUtente).");
+            this.callRemoteMethod("errorMessage", "Come prima cosa effettua il login.");
 
         } else if (this.gameHandler != null && this.player != null) {
 
@@ -179,9 +176,12 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("completeSelectGame", this.gameHandler.getGameId());
 
-                ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "infoMessage",
+                ClientHandler.gameBroadcast(x -> !x.equals(this), this.gameHandler, "gameBroadcast",
                         this.playerId + ": connesso alla partita " + this.gameHandler.getGameId()
                                 + ".");
+
+                ClientHandler.broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null, "showGames",
+                        ClientHandler.getGameHandlerJsonArray().toString());
 
             } catch (LoginException e) {
 

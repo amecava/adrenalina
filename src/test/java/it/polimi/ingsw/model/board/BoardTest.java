@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class BoardTest {
 
     @Test
-    void buildBoard() {
+    void  buildBoard() {
 
         Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
 

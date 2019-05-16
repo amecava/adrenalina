@@ -32,8 +32,6 @@ public class SocketPresenter extends Presenter implements Runnable {
 
         this.in = new Scanner(socket.getInputStream());
         this.out = new PrintWriter(socket.getOutputStream());
-
-        this.setPlayerId("Socket client");
     }
 
     @Override
