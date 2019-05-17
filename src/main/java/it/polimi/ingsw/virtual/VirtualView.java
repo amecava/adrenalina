@@ -5,7 +5,8 @@ import java.rmi.RemoteException;
 
 public interface VirtualView extends Remote {
 
-    void logMessage(String value) throws RemoteException;
+    void broadcast(String value) throws RemoteException;
+    void gameBroadcast(String value) throws RemoteException;
     void infoMessage(String value) throws RemoteException;
     void errorMessage(String value) throws RemoteException;
 

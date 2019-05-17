@@ -1,11 +1,12 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.view.ConsoleView;
+import it.polimi.ingsw.view.console.ConsoleView;
 import it.polimi.ingsw.view.View;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,9 +24,11 @@ public class Client {
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    private Client(InetAddress inetAddress, int rmiPort, int socketPort) {
+    private Client(int discoveryPort, int rmiPort, int socketPort) throws IOException {
 
-        this.inetAddress = inetAddress;
+        this.view.searchingForServer();
+
+        this.inetAddress = Client.discoverServer(discoveryPort);
 
         this.rmiPort = rmiPort;
         this.socketPort = socketPort;
@@ -33,41 +36,53 @@ public class Client {
 
     private void start() {
 
-        this.view.adrenalinaSplashScreen();
+        Runnable connection = this.view.selectConnection(this.inetAddress, this.rmiPort, this.socketPort);
 
-        this.view.selectConnection(this.inetAddress, this.rmiPort, this.socketPort).run();
+        this.view.connectingToServer();
+
+        connection.run();
     }
 
     private static InetAddress discoverServer(int port) throws IOException {
 
-        try (DatagramSocket socket = new DatagramSocket()) {
+        InetAddress inetAddress = null;
 
-            socket.setBroadcast(true);
+        while (inetAddress == null) {
 
-            byte[] out = "DISCOVER_ADRENALINA_REQUEST".getBytes();
+            try (DatagramSocket socket = new DatagramSocket()) {
 
-            socket.send(new DatagramPacket(out, out.length, InetAddress.getByName("255.255.255.255"), port));
+                socket.setBroadcast(true);
+                socket.setSoTimeout(5000);
 
-            byte[] in = new byte[15000];
-            DatagramPacket packet = new DatagramPacket(in, in.length);
-            socket.receive(packet);
+                byte[] out = "DISCOVER_ADRENALINA_REQUEST".getBytes();
 
-            String message = new String(packet.getData()).trim();
+                socket.send(new DatagramPacket(out, out.length, InetAddress.getByName("255.255.255.255"), port));
 
-            if (message.equals("DISCOVER_ADRENALINA_RESPONSE")) {
+                byte[] in = new byte[15000];
+                DatagramPacket packet = new DatagramPacket(in, in.length);
+                socket.receive(packet);
 
-                return packet.getAddress();
+                String message = new String(packet.getData()).trim();
+
+                if (message.equals("DISCOVER_ADRENALINA_RESPONSE")) {
+
+                    inetAddress = packet.getAddress();
+                }
+
+            } catch (SocketTimeoutException e) {
+
+                //
             }
-
-            throw new IOException();
         }
+
+        return inetAddress;
     }
 
     public static void main(String[] args) {
 
         try {
 
-            Client client = new Client(Client.discoverServer(4560), 4561, 4562);
+            Client client = new Client(4560, 4561, 4562);
 
             client.start();
 

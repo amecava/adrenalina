@@ -41,7 +41,8 @@ public class SocketConnection implements Runnable {
                 Scanner in = new Scanner(socket.getInputStream());
                 PrintWriter out = new PrintWriter(socket.getOutputStream())) {
 
-            LOGGER.log(Level.INFO, "Connected to socket server.");
+            this.view.splashScreen();
+            this.view.loginScreen();
 
             Thread input = new Thread(() -> {
 
