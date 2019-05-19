@@ -98,7 +98,8 @@ public class PointHandler {
                     this.playerList.forEach(
                             x -> x.setFrenzyActions(true));
 
-                    // Flips the damage bridge and the possible actions!!!
+                    // Flips the damage bridge and gives new points for each kill
+                    //also there isn't the first blood damage!!
                     this.playerList.stream()
                             .filter(x -> x.getShots().isEmpty())
                             .forEach(Player::setFrenzy);

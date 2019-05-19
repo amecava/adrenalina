@@ -230,6 +230,7 @@ public class Player implements Target {
     public void setRespawn(boolean respawn) {
 
         this.bridge.setRespawn(respawn);
+
     }
 
     public int getRemainingActions() {
@@ -250,9 +251,10 @@ public class Player implements Target {
     public void selectAction(int actionId) throws IllegalActionException {
 
         if (!this.activePlayer || this.currentPosition == null
-                || (this.getRemainingActions() <= 0 && actionId != 4)) {
+                || (this.getRemainingActions() == -1) || (this.getRemainingActions() == 0
+                && actionId != 4)) {
 
-            throw new IllegalActionException("Not valid action selected!");
+            throw new IllegalActionException("Non valid action selected!");
         }
 
         this.bridge.selectAction(actionId - 1);

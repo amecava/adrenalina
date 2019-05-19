@@ -133,8 +133,9 @@ class ActionBridge {
             this.currentAction.endAction(4, true);
 
             this.currentAction = null;
-            this.currentWeaponCard = null;
         }
+        if (this.currentWeaponCard!=null)
+            this.currentWeaponCard = null;
     }
 
     private ActionStructure findAction(int id) {

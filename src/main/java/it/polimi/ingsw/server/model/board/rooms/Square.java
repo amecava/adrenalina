@@ -12,12 +12,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 
 public class Square implements Target {
 
@@ -171,72 +165,5 @@ public class Square implements Target {
         this.tools.add(playerCard);
 
         return this.tools.remove(index);
-    }
-
-    public JsonObject toJsonObject() {
-
-        if (this.spawn) {
-
-            JsonArrayBuilder builder = Json.createArrayBuilder();
-
-            this.tools.stream()
-                    .map(Card::toJsonObject)
-                    .forEach(builder::add);
-
-            if (this.players.isEmpty()) {
-
-                return Json.createObjectBuilder()
-                        .add("color", this.room.getColor().toString())
-                        .add("isSpawn", this.spawn)
-                        .add("tools", builder.build())
-                        .add("north", this.connection.get(Direction.NORTH).toString())
-                        .add("south", this.connection.get(Direction.SOUTH).toString())
-                        .add("east", this.connection.get(Direction.EAST).toString())
-                        .add("west", this.connection.get(Direction.WEST).toString())
-                        .build();
-            } else {
-
-                return  Json.createObjectBuilder().add("color", this.room.getColor().toString())
-                        .add("isSpawn", this.spawn)
-                        .add("playersIn", Json.createArrayBuilder(this.players.stream()
-                                .map(x -> x.getColor().getCharacter())
-                                .map(y -> y.substring(0, 2))
-                                .collect(Collectors.toList())))
-                        .add("cards", builder.build())
-                        .add("north", this.connection.get(Direction.NORTH).toString())
-                        .add("south", this.connection.get(Direction.SOUTH).toString())
-                        .add("east", this.connection.get(Direction.EAST).toString())
-                        .add("west", this.connection.get(Direction.WEST).toString())
-                        .build();
-            }
-        } else {
-
-            if (this.players.isEmpty()) {
-
-                return Json.createObjectBuilder().add("color", this.room.getColor().toString())
-                        .add("isSpawn", this.spawn)
-                        .add("tile", this.tools.get(0).toJsonObject())
-                        .add("north", this.connection.get(Direction.NORTH).toString())
-                        .add("south", this.connection.get(Direction.SOUTH).toString())
-                        .add("east", this.connection.get(Direction.EAST).toString())
-                        .add("west", this.connection.get(Direction.WEST).toString())
-                        .build();
-            } else {
-
-                return Json.createObjectBuilder().add("color", this.room.getColor().toString())
-                        .add("isSpawn", this.spawn)
-                        .add("playersIn", this.players.isEmpty() ? "empty" :
-                                this.players.stream()
-                                        .map(x -> x.getColor().getCharacter())
-                                        .map(y -> y.substring(0, 2))
-                                        .collect(Collectors.joining(" ")))
-                        .add("tile", this.tools.get(0).toJsonObject())
-                        .add("north", this.connection.get(Direction.NORTH).toString())
-                        .add("south", this.connection.get(Direction.SOUTH).toString())
-                        .add("east", this.connection.get(Direction.EAST).toString())
-                        .add("west", this.connection.get(Direction.WEST).toString())
-                        .build();
-            }
-        }
     }
 }

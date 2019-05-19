@@ -9,6 +9,11 @@ import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.server.model.points.PointHandler;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
+import it.polimi.ingsw.server.presenter.ClientHandler;
+import it.polimi.ingsw.server.presenter.Presenter;
+import it.polimi.ingsw.server.presenter.exceptions.LoginException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
@@ -86,17 +91,53 @@ public class GameHandler {
         return this.activePlayer;
     }
 
-    public synchronized void setActivePlayer(Player activePlayer) {
-
-        while (this.playerList.stream().anyMatch(
-                x -> x.isRespawn() || (x.isActivePlayer() && x.getCurrentPosition() == null))) {
+    public synchronized void canFinishTurn(Player activePlayer) {
+        long elapsedTime = 0;
+        long remainingTimeToWait = 20000;
+        LocalDateTime startingTime;
+        long oldNumberOfPlayerInRespawn;
+        ClientHandler.gameBroadcast(this,
+                x -> x.getKey().isRespawn() || (x.getKey().isActivePlayer()
+                        && x.getKey().getCurrentPosition() == null), "infoMessage",
+                "Devi fare il respawn, utilizza il comando spawn nomePowerUp colorePowerUp.");
+        while (this.numberOfPlayerInRespawn() > 0) {
             try {
-                this.wait();
-            } catch (InterruptedException e) {
+                oldNumberOfPlayerInRespawn = this.numberOfPlayerInRespawn();
+                startingTime = LocalDateTime.now();
 
-                Thread.currentThread().interrupt();
+                if (remainingTimeToWait > 0) {
+                    this.wait(remainingTimeToWait);
+                }
+                if (oldNumberOfPlayerInRespawn > this
+                        .numberOfPlayerInRespawn()) {
+
+                    elapsedTime = Duration.between(startingTime, LocalDateTime.now()).toMillis();
+                    remainingTimeToWait = remainingTimeToWait - elapsedTime;
+
+                } else {
+
+                    this.playerList.stream().filter(x -> x.isRespawn() || (x.isActivePlayer()
+                            && x.getCurrentPosition() == null)).forEach(x -> {
+
+                        Presenter presenter = ClientHandler.getPresenter(this, y-> y.getKey().equals(x));
+
+                        //presenter.spawn("random");
+                        //presenter needs to see if it's called with the keyWord random
+
+                        ClientHandler.gameBroadcast(this, y -> y.getKey().equals(x), "infoMessage",
+                                "Sei stato respawnato in modo casuale per via del timer scaduto.");
+
+
+                    });
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+        this.setActivePlayer(activePlayer);
+    }
+
+    private void setActivePlayer(Player activePlayer) {
         if (this.activePlayer != null) {
             this.activePlayer.setActivePlayer(false);
         }
@@ -114,8 +155,17 @@ public class GameHandler {
         }
     }
 
-    public void endOfTurn() throws EndGameException {
+    public int numberOfPlayerInRespawn() {
+        return (int) this.playerList.stream()
+                .filter(x -> x.isRespawn() || (x.isActivePlayer()
+                        && x.getCurrentPosition() == null)).count();
 
+    }
+
+    public void endOfTurn() throws EndGameException, IllegalActionException {
+        if (this.activePlayer.getRemainingActions() == -1) {
+            throw new IllegalActionException(" you have already finished your turn!!");
+        }
         this.activePlayer.endAction();
         this.activePlayer.setRemainingActions(-1);
         this.playerList.stream()

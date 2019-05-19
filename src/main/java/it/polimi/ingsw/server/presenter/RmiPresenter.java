@@ -47,4 +47,5 @@ public class RmiPresenter extends Presenter {
             throw new RemoteException();
         }
     }
+
 }
