@@ -20,6 +20,7 @@ public interface VirtualView extends Remote {
 
     void completeSelectGame(String value) throws RemoteException;
 
+    void updateGameNotStartedScreen(String value) throws RemoteException;
     void completeVoteBoard(String value) throws RemoteException;
 
     void showBoard(String value) throws RemoteException;

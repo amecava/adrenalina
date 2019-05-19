@@ -1,5 +1,4 @@
 /*
-!lib/
 !src/
 !pom.xml
 !README.md
@@ -7,3 +6,5 @@
 !.gitignore
 !.gitattributes
 !deliverable/
+!adrenalina
+.DS_store
