@@ -1,0 +1,223 @@
+[
+    {
+        "id": 1,
+
+        "name": "LOCK RIFLE",
+        "reloadCost": ["BLUE", "BLUE"],
+
+        "primary": 1,
+        "optional1": 2
+    },
+    {
+        "id": 2,
+
+        "name": "MACHINE GUN",
+        "reloadCost": ["BLUE", "RED"],
+
+        "primary": 3,
+        "optional1": 4,
+        "optional2": 5,
+
+        "notes": "If you deal both additional points of damage, they must be dealt to 2 different targets. If you see only 2 targets, you deal 2 to each if you use both optional effects. If you use the basic effect on only 1 target, you can still use the the turret tripod to give it 1 additional damage."
+    },
+    {
+        "id": 3,
+
+        "name": "T.H.O.R.",
+        "reloadCost": ["BLUE", "RED"],
+
+        "primary": 6,
+        "optional1": 7,
+        "optional2": 8,
+
+        "notes": "This card constrains the order in which you can use its effects. (Most cards don't.) Also note that each target must be a different player."
+    },
+    {
+        "id": 4,
+
+        "name": "PLASMA GUN",
+        "reloadCost": ["BLUE", "YELLOW"],
+
+        "primary": 9,
+        "optional1": 10,
+        "optional2": 11,
+
+        "notes": "The two moves have no ammo cost. You don't have to be able to see your target when you play the card. For example, you can move 2 squares and shoot a target you now see. You cannot use 1 move before shooting and 1 move after."
+    },
+    {
+        "id": 5,
+
+        "name": "WHISPER",
+        "reloadCost": ["BLUE", "YELLOW"],
+
+        "primary": 12,
+
+        "notes": "For example, in the 2-by-2 room, you cannot shoot a target on an adjacent square, but you can shoot a target on the diagonal. If you are beside a door, you can't shoot a target on the other side of the door, but you can shoot a target on a different square of that room."
+    },
+    {
+        "id": 6,
+
+        "name": "ELECTROSCYTHE",
+        "reloadCost": ["BLUE"],
+
+        "primary": 13,
+        "alternative": 14
+    },
+    {
+        "id": 7,
+
+        "name": "TRACTOR BEAM",
+        "reloadCost": ["BLUE"],
+
+        "primary": 15,
+        "alternative": 16,
+
+        "notes": "You can move a target even if you can't see it. The target ends up in a place where you can see and damage it. The moves do not have to be in the same direction."
+    },
+    {
+        "id": 8,
+
+        "name": "VORTEX CANNON",
+        "reloadCost": ["RED", "BLUE"],
+
+        "primary": 17,
+        "optional1": 18,
+
+        "notes": "The 3 targets must be different, but some might start on the same square. It is legal to choose targets on your square, on the vortex, or even on squares you can't see. They all end up on the vortex."
+    },
+    {
+        "id": 9,
+
+        "name": "FURNACE",
+        "reloadCost": ["RED"],
+
+        "primary": 19,
+        "alternative": 20
+    },
+    {
+        "id": 10,
+
+        "name": "HEATSEEKER",
+        "reloadCost": ["RED", "RED", "YELLOW"],
+
+        "primary": 21,
+
+        "notes": "Yes, this can only hit targets you cannot see."
+    },
+    {
+        "id": 11,
+
+        "name": "HELLION",
+        "reloadCost": ["RED", "YELLOW"],
+
+        "primary": 22,
+        "alternative": 23
+    },
+    {
+        "id": 12,
+
+        "name": "FLAMETHROWER",
+        "reloadCost": ["RED"],
+
+        "primary": 24,
+        "alternative": 25,
+
+        "notes": "This weapon cannot damage anyone in your square. However, it can sometimes damage a target you can't see – the flame won't go through walls, but it will go through doors. Think of it as a straight-line blast of flame that can travel 2 squares in a cardinal direction."
+    },
+    {
+        "id": 13,
+
+        "name": "GRENADE LAUNCHER",
+        "reloadCost": ["RED"],
+
+        "primary": 26,
+
+        "notes": "For example, you can shoot a target, move it onto a square with other targets, then damage everyone including the first target. Or you can deal 2 to a main target, 1 to everyone else on that square, then move the main target. Or you can deal 1 to an isolated target and 1 to everyone on a different square. If you target your own square, you will not be moved or damaged."
+    },
+    {
+        "id": 14,
+
+        "name": "ROCKET LAUNCHER",
+        "reloadCost": ["RED", "RED"],
+
+        "primary": 28,
+        "optional1": 29,
+        "optional2": 30,
+
+        "notes": "If you use the rocket jump before the basic effect, you consider only your new square when determining if a target is legal. You can even move off a square so you can shoot someone on it. If you use the fragmenting warhead, you deal damage to everyone on the target's square before you move the target – your target will take 3 damage total."
+    },
+    {
+        "id": 15,
+
+        "name": "RAILGUN",
+        "reloadCost": ["YELLOW"],
+
+        "primary": 31,
+        "alternative": 32,
+
+        "notes": "Basically, you're shooting in a straight line and ignoring walls. You don't have to pick a target on the other side of a wall – it could even be someone on your own square – but shooting through walls sure is fun. There are only 4 cardinal directions. You imagine facing one wall or door, square-on, and firing in that direction. Anyone on a square in that direction (including yours) is a valid target. In piercing mode, the 2 targets can be on the same square or on different squares."
+    },
+    {
+        "id": 16,
+
+        "name": "CYBERBLADE",
+        "reloadCost": ["YELLOW", "RED"],
+
+        "primary": 33,
+        "optional1": 34,
+        "optional2": 35,
+
+        "notes": "Combining all effects allows you to move onto a square and whack 2 people; or whack somebody, move, and whack somebody else; or whack 2 people and then move."
+    },
+    {
+        "id": 17,
+
+        "name": "ZX-2",
+        "reloadCost": ["YELLOW", "RED"],
+
+        "primary": 36,
+        "alternative": 37,
+
+        "notes": "Remember that the 3 targets can be in 3 different rooms."
+    },
+    {
+        "id": 18,
+
+        "name": "SHOTGUN",
+        "reloadCost": ["YELLOW", "YELLOW"],
+
+        "primary": 38,
+        "alternative": 39
+    },
+    {
+        "id": 19,
+
+        "name": "POWER GLOVE",
+        "reloadCost": ["YELLOW", "BLUE"],
+
+        "primary": 40,
+        "alternative": 41,
+
+        "notes": "In rocket fist mode, you're flying 2 squares in a straight line, punching 1 person per square."
+    },
+    {
+        "id": 20,
+
+        "name": "SHOCKWAVE",
+        "reloadCost": ["YELLOW"],
+
+        "primary": 42,
+        "alternative": 43
+    },
+    {
+        "id": 21,
+
+        "name": "SLEDGEHAMMER",
+        "reloadCost": ["YELLOW"],
+
+        "primary": 44,
+        "alternative": 45,
+
+        "notes": "Remember that moves go through doors, but not walls."
+    }
+]
