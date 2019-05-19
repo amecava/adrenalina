@@ -10,5 +10,4 @@ public interface VirtualPresenter extends Remote {
 
     void askCreateGame(String value) throws RemoteException;
     void selectGame(String value) throws RemoteException;
-    void endOfTurn(String value) throws  RemoteException;
 }

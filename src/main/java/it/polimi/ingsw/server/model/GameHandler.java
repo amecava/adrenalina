@@ -1,24 +1,20 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.server.model;
 
-import it.polimi.ingsw.model.cards.PowerUpCard;
-import it.polimi.ingsw.model.players.Color;
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
-import it.polimi.ingsw.model.exceptions.jacop.IllegalActionException;
-import it.polimi.ingsw.model.players.Player;
-import it.polimi.ingsw.model.players.bridges.Adrenalin;
-import it.polimi.ingsw.model.points.PointHandler;
-import it.polimi.ingsw.presenter.ClientHandler;
-import it.polimi.ingsw.presenter.Presenter;
-import it.polimi.ingsw.presenter.exceptions.LoginException;
+import it.polimi.ingsw.server.model.players.Color;
+import it.polimi.ingsw.server.model.board.Board;
+import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
+import it.polimi.ingsw.server.model.players.Player;
+import it.polimi.ingsw.server.model.players.bridges.Adrenalin;
+import it.polimi.ingsw.server.model.points.PointHandler;
+import it.polimi.ingsw.server.presenter.ClientHandler;
+import it.polimi.ingsw.server.presenter.Presenter;
+import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -117,7 +113,7 @@ public class GameHandler {
                     this.playerList.stream().filter(x -> x.isRespawn() || (x.isActivePlayer()
                             && x.getCurrentPosition() == null)).forEach(x -> {
 
-                        Presenter presenter = ClientHandler.getPresenter(this, y -> y.equals(x));
+                        Presenter presenter = ClientHandler.getPresenter(this, y-> y.getKey().equals(x));
 
                         //presenter.spawn("random");
                         //presenter needs to see if it's called with the keyWord random

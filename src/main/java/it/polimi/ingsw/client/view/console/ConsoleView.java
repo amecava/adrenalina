@@ -29,7 +29,7 @@ public class ConsoleView implements View, VirtualView {
 
     static {
 
-        InputStream in = WeaponDeckBuilder.class.getClassLoader().getResourceAsStream("ConsoleInput.json");
+        InputStream in = ConsoleView.class.getClassLoader().getResourceAsStream("ConsoleInput.json");
 
         JsonArray object = Json.createReader(in).readArray();
 

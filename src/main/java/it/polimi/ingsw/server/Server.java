@@ -120,6 +120,7 @@ public class Server {
 
                 ClientHandler.broadcast(x -> true, "isConnected", "ping");
 
+
             } catch (InterruptedException e) {
 
                 Thread.currentThread().interrupt();
