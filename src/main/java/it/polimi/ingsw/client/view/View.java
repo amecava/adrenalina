@@ -11,7 +11,6 @@ public interface View {
     Runnable selectConnection(InetAddress inetAddress, int rmiPort, int socketPort);
     void connectingToServer();
 
-    void splashScreen();
     void loginScreen();
     //void gameNotStartedScreen();
     //void gameStartedScreen();

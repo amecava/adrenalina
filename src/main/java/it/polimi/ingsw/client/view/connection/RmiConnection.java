@@ -46,16 +46,15 @@ public class RmiConnection implements Runnable {
             VirtualView skeleton = (VirtualView) UnicastRemoteObject.exportObject((VirtualView) this.view, 0);
             VirtualPresenter stub = access.callBack(skeleton);
 
-            this.view.splashScreen();
             this.view.loginScreen();
 
             while (Thread.currentThread().isAlive()) {
 
                 JsonObject object = this.view.userInput();
 
-                stub.getClass()
+                VirtualPresenter.class
                         .getMethod(object.getString("method"), String.class)
-                        .invoke(stub, object.getString("value"));
+                        .invoke(stub, object.toString());
 
                 if (object.getString("method").equals("remoteDisconnect")) {
 
@@ -83,8 +82,8 @@ public class RmiConnection implements Runnable {
 
         } catch (InvocationTargetException e) {
 
-            LOGGER.log(Level.SEVERE, "Invocation target exception.", e);
 
+            LOGGER.log(Level.SEVERE, "Invocation target exception.", e);
         }
     }
 }

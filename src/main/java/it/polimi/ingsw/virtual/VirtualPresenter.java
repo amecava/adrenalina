@@ -2,6 +2,7 @@ package it.polimi.ingsw.virtual;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import javax.json.JsonObject;
 
 public interface VirtualPresenter extends Remote {
 

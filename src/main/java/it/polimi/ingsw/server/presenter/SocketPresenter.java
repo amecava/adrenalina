@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.presenter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.rmi.RemoteException;
@@ -47,7 +46,8 @@ public class SocketPresenter extends Presenter implements Runnable {
 
             synchronized (this.ping) {
 
-                this.out.println(this.jsonSerialize(method, value));
+                this.out.println(Json.createObjectBuilder()
+                        .add("method", method).add("value", value).build());
                 this.out.flush();
 
                 this.ping.wait(1000);
@@ -90,7 +90,7 @@ public class SocketPresenter extends Presenter implements Runnable {
 
                     this.getClass()
                             .getMethod(object.getString("method"), String.class)
-                            .invoke(this, object.getString("value"));
+                            .invoke(this, object.toString());
                 }
             }
 
@@ -146,18 +146,5 @@ public class SocketPresenter extends Presenter implements Runnable {
 
             //
         }
-    }
-
-    private JsonObject jsonSerialize(String method, String value) {
-
-        return Json.createObjectBuilder()
-                .add("method", method)
-                .add("value", value)
-                .build();
-    }
-
-    private JsonObject jsonDeserialize(String line) {
-
-        return Json.createReader(new StringReader(line)).readObject();
     }
 }

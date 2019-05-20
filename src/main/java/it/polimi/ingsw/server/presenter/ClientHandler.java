@@ -128,7 +128,8 @@ public class ClientHandler {
         return map.get(gameHandler).keySet().stream()
                 .filter(filter)
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoSuchElementException::new)
+                .setConnected(true);
     }
 
 

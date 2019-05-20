@@ -1,12 +1,10 @@
 [
     {
         "boardId": 1,
-
-        "rooms":[
+        "rooms": [
             {
                 "roomId": 0,
-                "roomColor":"BLUE",
-
+                "roomColor": "BLUE",
                 "squares": [
                     {
                         "squareId": 0,
@@ -93,7 +91,6 @@
             {
                 "roomId": 1,
                 "roomColor": "RED",
-
                 "squares": [
                     {
                         "squareId": 0,
@@ -186,7 +183,6 @@
             {
                 "roomId": 2,
                 "roomColor": "WHITE",
-
                 "squares": [
                     {
                         "squareId": 0,
@@ -247,7 +243,6 @@
             {
                 "roomId": 3,
                 "roomColor": "YELLOW",
-
                 "squares": [
                     {
                         "squareId": 0,
