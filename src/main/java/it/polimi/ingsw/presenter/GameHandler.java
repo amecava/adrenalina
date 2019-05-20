@@ -1,15 +1,14 @@
 package it.polimi.ingsw.presenter;
 
 import it.polimi.ingsw.model.Model;
-import it.polimi.ingsw.model.players.Color;
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
-import it.polimi.ingsw.model.players.Player;
-import it.polimi.ingsw.model.players.bridges.Adrenalin;
-import it.polimi.ingsw.model.points.PointHandler;
 import it.polimi.ingsw.presenter.exceptions.BoardVoteException;
-import it.polimi.ingsw.presenter.exceptions.LoginException;
+import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
+import it.polimi.ingsw.server.model.players.Player;
+import it.polimi.ingsw.server.presenter.ClientHandler;
+import it.polimi.ingsw.server.presenter.Presenter;
+import it.polimi.ingsw.server.presenter.exceptions.LoginException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -121,9 +120,67 @@ public class GameHandler {
         this.gameStarted = true;
         this.model.startGame();
 
-        ClientHandler.gameBroadcast(x -> true, this, "showBoard",
+        ClientHandler.gameBroadcast(this, x -> true, "showBoard",
                 this.model.getBoard().toJsonObject().toString());
     }
+
+    public synchronized void canFinishTurn(Player activePlayer) {
+
+        long elapsedTime = 0;
+        long remainingTimeToWait = 20000;
+        LocalDateTime startingTime;
+        long oldNumberOfPlayerInRespawn;
+        ClientHandler.gameBroadcast(this,
+                x -> x.getKey().isRespawn() || (x.getKey().isActivePlayer()
+                        && x.getKey().getCurrentPosition() == null), "infoMessage",
+                "Devi fare il respawn, utilizza il comando spawn nomePowerUp colorePowerUp.");
+        while (this.numberOfPlayerInRespawn() > 0) {
+            try {
+                oldNumberOfPlayerInRespawn = this.numberOfPlayerInRespawn();
+                startingTime = LocalDateTime.now();
+
+                if (remainingTimeToWait > 0) {
+                    this.wait(remainingTimeToWait);
+                }
+                if (oldNumberOfPlayerInRespawn > this
+                        .numberOfPlayerInRespawn()) {
+
+                    elapsedTime = Duration.between(startingTime, LocalDateTime.now()).toMillis();
+                    remainingTimeToWait = remainingTimeToWait - elapsedTime;
+
+                } else {
+
+                    this.model.getPlayerList().stream()
+                            .filter(x -> x.isRespawn() || (x.isActivePlayer()
+                                    && x.getCurrentPosition() == null)).forEach(x -> {
+
+                        Presenter presenter = ClientHandler
+                                .getPresenter(this, y -> y.getKey().equals(x));
+
+                        //presenter.spawn("random");
+                        //presenter needs to see if it's called with the keyWord random
+
+                        ClientHandler.gameBroadcast(this, y -> y.getKey().equals(x), "infoMessage",
+                                "Sei stato respawnato in modo casuale per via del timer scaduto.");
+
+
+                    });
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        this.setActivePlayer(activePlayer);
+    }
+
+    public int numberOfPlayerInRespawn() {
+
+        return (int) this.model.getPlayerList().stream()
+                .filter(x -> x.isRespawn() || (x.isActivePlayer()
+                        && x.getCurrentPosition() == null)).count();
+
+    }
+
 
     public JsonObject toJsonObject() {
 

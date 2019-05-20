@@ -133,7 +133,7 @@ public class PowerUpCard implements Card, Ammo {
     public JsonObject toJsonObject() {
 
         return Json.createObjectBuilder()
-                .add("name",this.name)
+                .add("name", this.name)
                 .add("color", this.color.toString())
                 .build();
     }

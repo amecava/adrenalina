@@ -12,6 +12,11 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 public class Square implements Target {
 
@@ -165,5 +170,28 @@ public class Square implements Target {
         this.tools.add(playerCard);
 
         return this.tools.remove(index);
+    }
+
+    public JsonObject toJsonObject() {
+
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        JsonArrayBuilder toolsBuilder = Json.createArrayBuilder();
+        JsonArrayBuilder playersBuilder = Json.createArrayBuilder();
+
+        this.players.stream()
+                .map(Player::toJsonObject)
+                .forEach(playersBuilder::add);
+
+        this.tools.stream()
+                .map(Card::toJsonObject)
+                .forEach(toolsBuilder::add);
+
+        return objectBuilder
+                .add("color", this.room.getColor().toString())
+                .add("isSpawn", this.spawn)
+                .add("tools", toolsBuilder.build())
+                .add("playersIn",(this.players.isEmpty()) ? JsonValue.NULL : playersBuilder.build())
+                .add("eastConnection", this.connection.get(Direction.EAST).toString())
+                .build();
     }
 }

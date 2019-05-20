@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.server.model.GameHandler;
+import it.polimi.ingsw.presenter.GameHandler;
 import it.polimi.ingsw.server.model.players.Player;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -128,7 +128,8 @@ public class ClientHandler {
         return map.get(gameHandler).keySet().stream()
                 .filter(filter)
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoSuchElementException::new)
+                .setConnected(true);
     }
 
 

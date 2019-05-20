@@ -26,7 +26,7 @@ public class RegexValidation {
 
     static {
         InputStream in = RegexValidation.class.getClassLoader().getResourceAsStream("Patter.json");
-        JsonArray jsonArray= Json.createReader(in).readArray();
+        JsonArray jsonArray = Json.createReader(in).readArray();
         jsonArray.stream().map(JsonValue::asJsonObject).forEach(x ->
                 {
                     List<Entry<Pattern, String>> tmpList = new ArrayList<>();

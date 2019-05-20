@@ -1,16 +1,22 @@
 package it.polimi.ingsw.client.view.console;
 
+import it.polimi.ingsw.server.model.board.Board.BoardBuilder;
 import it.polimi.ingsw.server.model.decks.WeaponDeck.WeaponDeckBuilder;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
+import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.virtual.VirtualView;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -24,15 +30,16 @@ import javax.json.JsonValue;
 
 public class ConsoleView implements View, VirtualView {
 
-    final String METHOD = "method";
-    final String VALUE = "value";
+    static final String METHOD = "method";
+    static final String VALUE = "value";
 
     //avevo tolto private static ma se non sbaglio l'avevamo fatto insieme
     private static Map<String, String> map = new HashMap<>();
 
     static {
 
-        InputStream in = ConsoleView.class.getClassLoader().getResourceAsStream("ConsoleInput.json");
+        InputStream in = ConsoleView.class.getClassLoader()
+                .getResourceAsStream("ConsoleInput.json");
 
         JsonArray object = Json.createReader(in).readArray();
 
@@ -290,92 +297,75 @@ public class ConsoleView implements View, VirtualView {
     public void completeVoteBoard(String value) {
 
         Terminal.info("Hai votato per giocare con l'arena " + value + ".");
+
     }
 
 
     @Override
     public void showBoard(String value) {
 
-        String[][] square;
-
-        ColoredChars[][] fullBoard = new ColoredChars[16][12];
-
         try (JsonReader reader = Json.createReader(new StringReader(value))) {
-
-            JsonArray jsonArray = reader.readObject().getJsonArray("arrays");
 
             Terminal.clearScreen();
 
-            int i = 0;
+            JsonArray jsonArray = reader.readObject().getJsonArray("arrays");
 
-            for (JsonValue rows : jsonArray) {
-
-                for (JsonValue squaresLine : rows.asJsonArray().getJsonArray(i)) {
-
-                    square = this.drawSquare(squaresLine.asJsonObject());
-
-                    for (i = 0; i < 4; i++) {
-
-                        for (int j = 0; j < 4; j++) {
-
-                            System.out.println(square[i][j]);
-                        }
-                    }
-                }
-            }
-
+            BoardDrawer.drawBoard(jsonArray).forEach(x -> {
+                Terminal.output(x[0].toString());
+                Terminal.output(x[1].toString());
+                Terminal.output(x[2].toString());
+                Terminal.output(x[3].toString());
+                Terminal.output(x[4].toString());
+            });
         }
     }
 
-    private String[][] drawSquare(JsonObject jsonSquare) {
+    private String addTiles(String cubesSubString, JsonArray jsonArray, int row, int squareInRow) {
 
-        final int MAX_VERT_TILES = 4; //rows.
-        final int MAX_HORIZ_TILES = 4; //cols.
+        if (jsonArray.getJsonArray(row)
+                .getJsonObject(squareInRow)
+                .getBoolean("isSpawn") || jsonArray.getJsonArray(row).getJsonObject(squareInRow)
+                .containsKey("empty")) {
 
-        String[][] tiles = new String[MAX_VERT_TILES][MAX_HORIZ_TILES];
+            return cubesSubString + "         ";
 
-        if (jsonSquare.containsKey("empty")) {
-
-            for (String[] row: tiles) {
-
-                Arrays.fill(row, " ");
-            }
-
-            return tiles;
         }
 
-        String squareColor = Color.ansiColor(jsonSquare.getString("color"));
+        for (String color : jsonArray.getJsonArray(row)
+                .getJsonObject(squareInRow)
+                .getJsonArray("tools")
+                .getJsonObject(0)
+                .getJsonArray("colors").stream()
+                .map(x -> x.toString().substring(1, x.toString().length() - 1))
+                .map(Color::ansiColor)
+                .collect(Collectors.toList())) {
 
-        tiles[0][0] = squareColor + "╔";
-
-        for (int c = 1; c < MAX_HORIZ_TILES - 1; c++) {
-
-            tiles[0][c] = "═";
+            cubesSubString = cubesSubString + color + "◆";
         }
 
-        tiles[0][MAX_HORIZ_TILES - 1] = "╗";
+        if (jsonArray.getJsonArray(row)
+                .getJsonObject(squareInRow)
+                .getJsonArray("tools")
+                .getJsonObject(0)
+                .getJsonArray("colors").size() == 2) {
 
-        for (int r = 1; r < MAX_VERT_TILES - 1; r++) {
+            cubesSubString = cubesSubString + "      " + Color
+                    .ansiColor(jsonArray.getJsonArray(row)
+                            .getJsonObject(squareInRow).getString("color"));
 
-            tiles[r][0] = "║";
-            for (int c = 1; c < MAX_HORIZ_TILES - 1; c++) {
+        } else {
 
-                tiles[r][c] = " ";
-            }
-
-            tiles[r][MAX_HORIZ_TILES - 1] = "║";
+            cubesSubString = cubesSubString + "    " + Color
+                    .ansiColor(jsonArray.getJsonArray(row)
+                            .getJsonObject(squareInRow).getString("color"));
         }
 
-        tiles[MAX_VERT_TILES - 1][0] = "╚";
+        return cubesSubString;
+    }
 
-        for (int c = 1; c < MAX_HORIZ_TILES - 1; c++) {
+    private String addPlayers(String playersSubString) {
 
-            tiles[MAX_VERT_TILES - 1][c] = "═";
-        }
-
-        tiles[MAX_VERT_TILES - 1][MAX_HORIZ_TILES - 1] = "╝" + Color.ansiColor("ANY");
-
-        return tiles;
+        return playersSubString;
     }
 
     int levenshteinDistance(String input, String match) {

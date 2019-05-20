@@ -1,16 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.model.exceptions.jacop.EndGameException;
-import it.polimi.ingsw.model.players.Color;
-import it.polimi.ingsw.model.players.Player;
-import it.polimi.ingsw.model.players.bridges.Adrenalin;
-import it.polimi.ingsw.model.points.PointHandler;
-import it.polimi.ingsw.presenter.ClientHandler;
-import it.polimi.ingsw.presenter.GameHandler;
-import it.polimi.ingsw.presenter.exceptions.BoardVoteException;
-import it.polimi.ingsw.presenter.exceptions.LoginException;
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
@@ -100,15 +89,6 @@ public class Model {
 
     public synchronized void setActivePlayer(Player activePlayer) {
 
-        while (this.playerList.stream().anyMatch(
-                x -> x.isRespawn() || (x.isActivePlayer() && x.getCurrentPosition() == null))) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-
-                Thread.currentThread().interrupt();
-            }
-        }
         if (this.activePlayer != null) {
             this.activePlayer.setActivePlayer(false);
         }
