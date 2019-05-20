@@ -39,7 +39,8 @@ public class RmiPresenter extends Presenter {
 
         try {
 
-            this.skeleton.getClass().getMethod(method, String.class)
+            VirtualView.class
+                    .getMethod(method, String.class)
                     .invoke(this.skeleton, value);
 
         } catch (ReflectiveOperationException e) {

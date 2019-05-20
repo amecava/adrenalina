@@ -1,22 +1,61 @@
 [
-  {
-    "input": ["disconnetti"],
-    "method": "remoteDisconnect"
-  },
-  {
-    "input": ["login"],
-    "method":"selectPlayerId"
-  },
-  {
-    "input": ["creapartita", "nuovapartita"],
-    "method": "askCreateGame"
-  },
-  {
-    "input": ["selezionapartita"],
-    "method": "selectGame"
-  },
-  {
-    "input": ["votaarena"],
-    "method": "voteBoard"
-  }
+    {
+        "input": ["disconnetti"],
+        "method": "remoteDisconnect",
+        "value": [
+            {
+                "name": "disconnect",
+                "regex": "(\\s*)(\\s*)(\\s*)",
+                "error": "Non scrivere niente dopo disconnetti."
+            }
+        ]
+    },
+    {
+        "input": ["login"],
+        "method": "selectPlayerId",
+        "value": [
+            {
+                "name": "playerId",
+                "regex": "(\\s*)(\\S+)(\\s*)",
+                "error": "Non hai scritto il nome utente."
+            }
+        ]
+    },
+    {
+        "input": ["creapartita", "nuovapartita"],
+        "method": "askCreateGame",
+        "value": [
+            {
+                "name": "gameId",
+                "regex": "(\\s*)(\\S+)(\\s*)",
+                "error": "Non hai scritto il nome della partita."
+            },
+            {
+                "name": "numberOfDeaths",
+                "regex": "(\\s*)([5-8])(\\s*)",
+                "error": "Immetti un numero da 1 a 5."
+            },
+            {
+                "name": "frenzy",
+                "regex": "(\\s*)(frenesia|)(\\s*)",
+                "error": "Scrivi frenesia oppure non scrivere niente."
+            }
+        ]
+    },
+    {
+        "input": ["selezionapartita"],
+        "method": "selectGame",
+        "value": [
+            {
+                "name": "gameId",
+                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "error": "Devi seleziona una partita."
+            },
+            {
+                "name": "character",
+                "regex": "(\\s*)(\\S+)(\\s*)",
+                "error": "Devi selezionare un personaggio."
+            }
+        ]
+    }
 ]

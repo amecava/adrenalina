@@ -1,7 +1,5 @@
 package it.polimi.ingsw.client.view.console;
 
-import it.polimi.ingsw.server.model.board.Board.BoardBuilder;
-import it.polimi.ingsw.server.model.decks.WeaponDeck.WeaponDeckBuilder;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
@@ -19,39 +17,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.io.StringReader;
+import java.net.InetAddress;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 public class ConsoleView implements View, VirtualView {
-
-    static final String METHOD = "method";
-    static final String VALUE = "value";
-
-    //avevo tolto private static ma se non sbaglio l'avevamo fatto insieme
-    private static Map<String, String> map = new HashMap<>();
-
-    static {
-
-        InputStream in = ConsoleView.class.getClassLoader()
-                .getResourceAsStream("ConsoleInput.json");
-
-        JsonArray object = Json.createReader(in).readArray();
-
-        object.stream()
-                .map(JsonValue::asJsonObject)
-                .forEach(x ->
-
-                        x.getJsonArray("input").stream()
-                                .map(JsonValue::toString)
-                                .forEach(y -> map.put(y, x.getString(METHOD)))
-                );
-    }
 
     public ConsoleView() {
 
@@ -70,27 +46,15 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public JsonObject userInput() {
 
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-
         while (true) {
-
-            String[] parts = Terminal.input().split(" ", 2);
-
-            builder.add(VALUE, parts.length == 2 ? parts[1] : "");
 
             try {
 
-                return builder.add(
-                        METHOD,
-                        map.entrySet().stream()
-                                .filter(x -> levenshteinDistance(parts[0], x.getKey()) <= 3)
-                                .map(Entry::getValue)
-                                .findFirst()
-                                .orElseThrow(NoSuchElementException::new)).build();
+                return RegexJson.toJsonObject(Terminal.input().split(" ", 2));
 
             } catch (NoSuchElementException e) {
 
-                this.errorMessage("Selezione non disponibile, riprova o digita help.");
+                this.errorMessage(e.getMessage());
             }
         }
     }
@@ -141,26 +105,14 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void splashScreen() {
-
-        Terminal.clearScreen();
-
-        Terminal.output("");
-        Terminal.output("    _   ___  ___ ___ _  _   _   _    ___ _  _   _   ");
-        Terminal.output("   /_\\ |   \\| _ \\ __| \\| | /_\\ | |  |_ _| \\| | /_\\  ");
-        Terminal.output("  / _ \\| |) |   / _|| .` |/ _ \\| |__ | || .` |/ _ \\ ");
-        Terminal.output(" /_/ \\_\\___/|_|_\\___|_|\\_/_/ \\_\\____|___|_|\\_/_/ \\_\\\n");
-    }
-
-    @Override
     public void loginScreen() {
 
         Terminal.toggleMessages();
 
-        Terminal.output(
-                "Adrenalina porta i classici videogiochi “spara-tutto” direttamente sul vostro tavolo.");
-        Terminal.output(
-                "Costruisci il tuo arsenale per un turno micidiale, la risoluzione dei combattimenti è facile, ma senza dadi..");
+        this.splashScreen();
+
+        Terminal.output("Adrenalina porta i classici videogiochi “spara-tutto” direttamente sul vostro tavolo.");
+        Terminal.output("Costruisci il tuo arsenale per un turno micidiale, la risoluzione dei combattimenti è facile, ma senza dadi..");
         Terminal.output("Prendi fucile e munizioni ed inizia a sparare!");
         Terminal.output("");
         Terminal.output(
@@ -216,7 +168,7 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public void completeDisconnect(String value) {
 
-        this.splashScreen();
+        //
     }
 
     @Override
@@ -320,92 +272,14 @@ public class ConsoleView implements View, VirtualView {
         }
     }
 
-    private String addTiles(String cubesSubString, JsonArray jsonArray, int row, int squareInRow) {
+    private void splashScreen() {
 
-        if (jsonArray.getJsonArray(row)
-                .getJsonObject(squareInRow)
-                .getBoolean("isSpawn") || jsonArray.getJsonArray(row).getJsonObject(squareInRow)
-                .containsKey("empty")) {
+        Terminal.clearScreen();
 
-            return cubesSubString + "         ";
-
-        }
-
-        for (String color : jsonArray.getJsonArray(row)
-                .getJsonObject(squareInRow)
-                .getJsonArray("tools")
-                .getJsonObject(0)
-                .getJsonArray("colors").stream()
-                .map(x -> x.toString().substring(1, x.toString().length() - 1))
-                .map(Color::ansiColor)
-                .collect(Collectors.toList())) {
-
-            cubesSubString = cubesSubString + color + "◆";
-        }
-
-        if (jsonArray.getJsonArray(row)
-                .getJsonObject(squareInRow)
-                .getJsonArray("tools")
-                .getJsonObject(0)
-                .getJsonArray("colors").size() == 2) {
-
-            cubesSubString = cubesSubString + "      " + Color
-                    .ansiColor(jsonArray.getJsonArray(row)
-                            .getJsonObject(squareInRow).getString("color"));
-
-        } else {
-
-            cubesSubString = cubesSubString + "    " + Color
-                    .ansiColor(jsonArray.getJsonArray(row)
-                            .getJsonObject(squareInRow).getString("color"));
-        }
-
-        return cubesSubString;
-    }
-
-    private String addPlayers(String playersSubString) {
-
-        return playersSubString;
-    }
-
-    int levenshteinDistance(String input, String match) {
-
-        input = input.toLowerCase();
-        match = match.toLowerCase();
-
-        int[] costs = new int[match.length() + 1];
-
-        for (int i = 0; i <= input.length(); i++) {
-
-            int lastValue = i;
-
-            for (int j = 0; j <= match.length(); j++) {
-
-                if (i == 0) {
-
-                    costs[j] = j;
-
-                } else if (j > 0) {
-
-                    int newValue = costs[j - 1];
-
-                    if (input.charAt(i - 1) != match.charAt(j - 1)) {
-
-                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-                    }
-
-                    costs[j - 1] = lastValue;
-
-                    lastValue = newValue;
-                }
-            }
-
-            if (i > 0) {
-
-                costs[match.length()] = lastValue;
-            }
-        }
-
-        return costs[match.length()];
+        Terminal.output("");
+        Terminal.output("    _   ___  ___ ___ _  _   _   _    ___ _  _   _   ");
+        Terminal.output("   /_\\ |   \\| _ \\ __| \\| | /_\\ | |  |_ _| \\| | /_\\  ");
+        Terminal.output("  / _ \\| |) |   / _|| .` |/ _ \\| |__ | || .` |/ _ \\ ");
+        Terminal.output(" /_/ \\_\\___/|_|_\\___|_|\\_/_/ \\_\\____|___|_|\\_/_/ \\_\\\n");
     }
 }

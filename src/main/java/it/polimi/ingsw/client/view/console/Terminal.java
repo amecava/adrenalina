@@ -66,7 +66,10 @@ class Terminal {
 
                 print("\033[H\033[2J" + screen);
 
-                Arrays.stream(broadcast).forEach(Terminal::println);
+                if (messages) {
+
+                    Arrays.stream(broadcast).forEach(Terminal::println);
+                }
 
                 println(response);
 

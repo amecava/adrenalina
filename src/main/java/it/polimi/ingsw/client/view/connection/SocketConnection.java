@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.view.connection;
 
 import it.polimi.ingsw.client.view.View;
+import it.polimi.ingsw.virtual.VirtualView;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -41,7 +42,6 @@ public class SocketConnection implements Runnable {
                 Scanner in = new Scanner(socket.getInputStream());
                 PrintWriter out = new PrintWriter(socket.getOutputStream())) {
 
-            this.view.splashScreen();
             this.view.loginScreen();
 
             Thread input = new Thread(() -> {
@@ -56,7 +56,7 @@ public class SocketConnection implements Runnable {
                         out.println(this.jsonSerialize("pong", ""));
                         out.flush();
 
-                        this.view.getClass()
+                        VirtualView.class
                                 .getMethod(object.getString("method"), String.class)
                                 .invoke(this.view, object.getString("value"));
 
