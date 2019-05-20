@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 class ConsoleViewTest {
 
+
     @Test
     void showBoard() {
 

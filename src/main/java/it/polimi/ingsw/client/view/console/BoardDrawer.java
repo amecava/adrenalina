@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 public class BoardDrawer {
@@ -19,23 +20,27 @@ public class BoardDrawer {
     private static StringBuilder cubesSubString = new StringBuilder();
     private static StringBuilder playersSubString = new StringBuilder();
     private static StringBuilder[] squareLine = new StringBuilder[MAX_VERT_TILES];
-    private static List<StringBuilder[]> rows = new ArrayList<>();
 
-    private static JsonArray jDrawSquaresArray;
+    private static JsonArray jDrawSquares;
 
     static {
 
         InputStream in = ConsoleView.class.getClassLoader().getResourceAsStream("DrawBoards.json");
 
-        jDrawSquaresArray = Json.createReader(in).readArray();
+        jDrawSquares = Json.createReader(in).readArray();
     }
 
-    public static List<StringBuilder[]> drawBoard(JsonArray jsonArray) {
+    public static List<StringBuilder[]> drawBoard(JsonObject jsonObject) {
 
+        List<StringBuilder[]> rows = new ArrayList<>();
+
+        JsonArray jsonArray = jsonObject.getJsonArray("arrays");
+        JsonArray jDrawSquaresArray = jDrawSquares.getJsonArray(jsonObject.getInt("boardId"));
 
         //for each line of the map
         for (int row = 0; row < 3; row++) {
 
+            squareLine = new StringBuilder[MAX_VERT_TILES];
             squareLine[0] = new StringBuilder();
             squareLine[1] = new StringBuilder();
             squareLine[2] = new StringBuilder();
@@ -87,8 +92,6 @@ public class BoardDrawer {
                 playersSubString = new StringBuilder();
             }
 
-
-
             rows.add(squareLine);
         }
 
@@ -99,7 +102,7 @@ public class BoardDrawer {
 
         StringBuilder line = new StringBuilder();
 
-        for (int i = 0; i < 8 - length; i++) {
+        for (int i = 0; i < 10 - length; i++) {
 
             line.append(" ");
         }

@@ -33,7 +33,7 @@
             {
                 "name": "numberOfDeaths",
                 "regex": "(\\s*)([5-8])(\\s*)",
-                "error": "Immetti un numero da 1 a 5."
+                "error": "Immetti un numero da 5 a 8."
             },
             {
                 "name": "frenzy",
@@ -55,6 +55,17 @@
                 "name": "character",
                 "regex": "(\\s*)(\\S+)(\\s*)",
                 "error": "Devi selezionare un personaggio."
+            }
+        ]
+    },
+    {
+        "input": ["votaarena"],
+        "method": "voteBoard",
+        "value": [
+            {
+                "name": "vote",
+                "regex": "(\\s*)([1-4])(\\s*)",
+                "error": "Devi scrivere un numero da 1 a 4."
             }
         ]
     }

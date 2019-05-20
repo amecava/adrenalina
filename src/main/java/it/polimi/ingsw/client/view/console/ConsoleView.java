@@ -260,9 +260,9 @@ public class ConsoleView implements View, VirtualView {
 
             Terminal.clearScreen();
 
-            JsonArray jsonArray = reader.readObject().getJsonArray("arrays");
+            JsonObject jsonObject = reader.readObject();
 
-            BoardDrawer.drawBoard(jsonArray).forEach(x -> {
+            BoardDrawer.drawBoard(jsonObject).forEach(x -> {
                 Terminal.output(x[0].toString());
                 Terminal.output(x[1].toString());
                 Terminal.output(x[2].toString());

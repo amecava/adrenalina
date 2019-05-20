@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;

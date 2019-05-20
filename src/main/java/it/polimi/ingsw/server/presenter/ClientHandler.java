@@ -95,6 +95,7 @@ public class ClientHandler {
         List<Presenter> disconnected = new ArrayList<>();
 
         map.get(gameHandler).entrySet().stream()
+                .filter(x -> x.getValue() != null)
                 .filter(filter)
                 .forEach(x -> {
 

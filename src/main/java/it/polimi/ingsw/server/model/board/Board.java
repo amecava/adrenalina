@@ -21,6 +21,8 @@ import javax.json.JsonValue;
 
 public class Board {
 
+    private int boardId;
+
     private List<Room> roomsList;
 
     private WeaponDeck weaponDeck;
@@ -29,13 +31,13 @@ public class Board {
 
     private Board(BoardBuilder builder) {
 
+        this.boardId = builder.boardId;
+
         this.roomsList = builder.roomsList;
 
         this.weaponDeck = builder.weaponDeck;
         this.ammoTilesDeck = builder.ammoTilesDeck;
         this.powerUpDeck = builder.powerUpDeck;
-
-        //this.fillBoard();
     }
 
     public List<Room> getRoomsList() {
@@ -126,10 +128,14 @@ public class Board {
         builder = Json.createArrayBuilder();
         board.forEach(builder::add);
 
-        return Json.createObjectBuilder().add("arrays", builder.build()).build();
+        return Json.createObjectBuilder()
+                .add("boardId", this.boardId)
+                .add("arrays", builder.build()).build();
     }
 
     public static class BoardBuilder {
+
+        private int boardId;
 
         private List<Room> roomsList = new ArrayList<>();
 
@@ -165,6 +171,8 @@ public class Board {
         }
 
         private void readFromJson(int boardID) {
+
+            this.boardId = boardID;
 
             JsonArray jRoomsArray = object.getJsonObject(boardID).getJsonArray(ROOMS);
 

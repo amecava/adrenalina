@@ -1,6 +1,6 @@
 package it.polimi.ingsw.presenter;
 
-import it.polimi.ingsw.model.Model;
+import it.polimi.ingsw.server.model.Model;
 import it.polimi.ingsw.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Player;
@@ -9,7 +9,6 @@ import it.polimi.ingsw.server.presenter.Presenter;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +19,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
 public class GameHandler {
@@ -54,6 +51,11 @@ public class GameHandler {
         return this.model.getPlayerList();
     }
 
+    public Model getModel() {
+
+        return this.model;
+    }
+
     public void createBoard() {
 
         this.model.createBoard(this.votes.values().stream()
@@ -68,7 +70,31 @@ public class GameHandler {
 
         Player player = this.model.addPlayer(playerId, character);
 
-        if (this.model.getPlayerList().size() == 3) {
+        if (this.model.getPlayerList().size() == 3 && !this.gameStarted) {
+
+            Thread countdown = new Thread(() -> {
+
+                try {
+
+                    for (int i = 60; i >= 0; i--) {
+
+                        ClientHandler.gameBroadcast(this, x -> true,
+                                "infoMessage", "La partita inizierà tra " + i
+                                        + " secondi, vota l'arena se non lo hai ancora fatto.");
+
+                        Thread.sleep(1000);
+                    }
+
+                    ClientHandler.gameBroadcast(this, x -> true,
+                            "infoMessage", "La partita è iniziata.");
+                } catch (InterruptedException e) {
+
+                    Thread.currentThread().interrupt();
+                }
+            });
+
+            countdown.setDaemon(true);
+            countdown.start();
 
             new Timer().schedule(
 
@@ -79,7 +105,7 @@ public class GameHandler {
                             startGame();
                         }
                     },
-                    60000
+                    63000
             );
         }
 
@@ -113,9 +139,8 @@ public class GameHandler {
 
     public void startGame() {
 
-        //TODO Random int
-
         this.createBoard();
+        this.model.getBoard().fillBoard();
 
         this.gameStarted = true;
         this.model.startGame();

@@ -85,15 +85,14 @@ public abstract class Presenter implements VirtualPresenter {
             ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
                     this.playerId + ": connesso al server.");
 
-            ClientHandler.gameBroadcast(this.gameHandler, x -> !x.getValue().equals(this),
-                    "gameBroadcast",
-                    this.playerId + ": riconnesso alla partita " + this.gameHandler.getGameId()
-                            + ".");
-
             ClientHandler
                     .broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
                             "showGames",
                             ClientHandler.getGameHandlerJsonArray().toString());
+
+            ClientHandler.gameBroadcast(this.gameHandler, x -> true,
+                    "showBoard",
+                    this.gameHandler.getModel().getBoard().toJsonObject().toString());
 
         } else {
 
@@ -151,9 +150,13 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("errorMessage", "Prima logout.");
 
+            } else if (ClientHandler.getGameHandler(x -> x.getGameId().equals(object.getString("gameId"))).isGameStarted()) {
+
+                this.callRemoteMethod("errorMessage", "La partita è già iniziata.");
+
             } else if (!ClientHandler.isGameHandlerPresent(object.getString("gameId"))) {
 
-                this.callRemoteMethod("errorMessage", "Nome partita preso cazzo.");
+                this.callRemoteMethod("errorMessage", "Non esiste questa partita cazzo.");
 
             } else {
 
@@ -165,16 +168,14 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("completeSelectGame", this.gameHandler.getGameId());
 
-                ClientHandler.gameBroadcast(this.gameHandler, x -> !x.getValue().equals(this),
-                        "gameBroadcast",
-                        this.playerId + ": connesso alla partita " + this.gameHandler
-                                .getGameId()
-                                + ".");
-
                 ClientHandler.broadcast(
                         x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
                         "showGames",
                         ClientHandler.getGameHandlerJsonArray().toString());
+
+                //ClientHandler.gameBroadcast(this.gameHandler, x -> !x.getValue().equals(this),
+                //        "updateGameNotStartedScreen",
+                //        ClientHandler.getGameHandlerJsonArray().toString());
             }
 
 
@@ -188,11 +189,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void voteBoard(String value) throws RemoteException {
 
-        String pattern = "(\\s*)([1-4])(\\s*)";
-
-        Pattern r = Pattern.compile(pattern);
-
-        Matcher m = r.matcher(value);
+        JsonObject object = this.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -202,17 +199,13 @@ public abstract class Presenter implements VirtualPresenter {
 
             this.callRemoteMethod("errorMessage", "La partita è gia iniziata.");
 
-        } else if (!m.find()) {
-
-            this.callRemoteMethod("errorMessage", "Comando errato: inserisci un numero da 1 a 4 ");
-
         } else {
 
             try {
 
-                this.gameHandler.voteBoard(this.player.getPlayerId(), Integer.valueOf(m.group(2)));
+                this.gameHandler.voteBoard(this.player.getPlayerId(), Integer.valueOf(object.getString("vote")));
 
-                this.callRemoteMethod("completeVoteBoard", m.group(2));
+                this.callRemoteMethod("completeVoteBoard", object.getString("vote"));
 
             } catch (BoardVoteException e) {
 
