@@ -1,4 +1,4 @@
-package it.polimi.ingsw.presenter.exceptions;
+package it.polimi.ingsw.server.presenter.exceptions;
 
 public class BoardVoteException extends Exception {
 

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.presenter.GameHandler;
 import it.polimi.ingsw.server.model.players.Player;
 import java.rmi.RemoteException;
 import java.util.ArrayList;

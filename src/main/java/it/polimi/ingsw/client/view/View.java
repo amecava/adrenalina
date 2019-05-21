@@ -12,5 +12,8 @@ public interface View {
     void connectingToServer();
 
     void loginScreen();
+    void gamesListScreen();
+
     void gameNotStartedScreen();
+    void boardScreen();
 }

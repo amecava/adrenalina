@@ -3,20 +3,7 @@ package it.polimi.ingsw.client.view.console;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
-import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.virtual.VirtualView;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.net.InetAddress;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.util.NoSuchElementException;
@@ -115,18 +102,32 @@ public class ConsoleView implements View, VirtualView {
         Terminal.output("Costruisci il tuo arsenale per un turno micidiale, la risoluzione dei combattimenti è facile, ma senza dadi..");
         Terminal.output("Prendi fucile e munizioni ed inizia a sparare!");
         Terminal.output("");
-        Terminal.output(
-                "Come prima cosa effettua il login scrivendo la parola chiave \"login\" seguita dal tuo playerId.");
+        Terminal.output("Come prima cosa effettua il login scrivendo la parola chiave \"login\" seguita dal tuo playerId.");
+    }
+
+    @Override
+    public void gamesListScreen() {
+
+        this.splashScreen();
     }
 
     @Override
     public void gameNotStartedScreen() {
 
         this.splashScreen();
-        Terminal.output(
-                "Se non lo hai ancora fatto, vota l'arena che vuoi utilizzare con il comando"
-                        + " \"votaarena\" seguito dal numero dell'arena che desideri.");
-        Terminal.output("boards");
+        Terminal.output("Vota l'arena con il comando \"votaarena\" seguito dal numero dell'arena che vuoi utilizzare.");
+
+        Terminal.output("");
+        Terminal.output("1: \u001b[34m█ █ █  \u001b[0m  2: █ █ █ █\u001b[0m  3: █ █ █ █\u001b[0m  4: █ █ █ █\u001b[0m");
+        Terminal.output("   \u001b[31m█ █ █ \u001b[33m█\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+        Terminal.output("   \u001b[37m  █ █ \u001b[33m█\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+        Terminal.output("");
+    }
+
+    @Override
+    public void boardScreen() {
+
+        Terminal.clearScreen();
     }
 
     @Override
@@ -178,7 +179,7 @@ public class ConsoleView implements View, VirtualView {
 
             JsonArray jsonArray = reader.readArray();
 
-            this.splashScreen();
+            this.gamesListScreen();
 
             if (jsonArray.isEmpty()) {
 
@@ -241,6 +242,52 @@ public class ConsoleView implements View, VirtualView {
                             .getString("character") + (y.getBoolean("connected")
                             ? "" : " (disconnesso)"))
                     .collect(Collectors.toList()));
+
+            Terminal.output("");
+
+            int countdown = jsonObject.getInt("countdown");
+
+            switch (countdown) {
+
+                case 60:
+
+                    Terminal.output("Raggiunto il numero minimo di giocatori la partita inizierà dopo un minuto.\n\n\n\n\n");
+                    break;
+
+                case 5:
+
+                    Terminal.output("     _____  \n    | ____| \n    | |__   \n    |___ \\  \n     ___) | \n    |____/  ");
+                    break;
+
+                case 4:
+
+                    Terminal.output("     _  _    \n    | || |   \n    | || |_  \n    |__   _| \n       | |   \n       |_|   ");
+                    break;
+
+                case 3:
+
+                    Terminal.output("     ____   \n    |___ \\  \n      __) | \n     |__ <  \n     ___) | \n    |____/  ");
+                    break;
+
+                case 2:
+
+                    Terminal.output("     ___   \n    |__ \\  \n       ) | \n      / /  \n     / /_  \n    |____| ");
+                    break;
+
+                case 1:
+
+                    Terminal.output("     __  \n    /_ | \n     | | \n     | | \n     | | \n     |_| ");
+                    break;
+
+                case 0:
+
+                    Terminal.output("      ___   \n     / _ \\  \n    | | | | \n    | | | | \n    | |_| | \n     \\___/  ");
+                    break;
+
+                default:
+
+                    Terminal.output("La partita inizierà tra " + countdown + " secondi.\n\n\n\n\n");
+            }
         }
 
     }
@@ -258,7 +305,7 @@ public class ConsoleView implements View, VirtualView {
 
         try (JsonReader reader = Json.createReader(new StringReader(value))) {
 
-            Terminal.clearScreen();
+            this.boardScreen();
 
             JsonObject jsonObject = reader.readObject();
 
