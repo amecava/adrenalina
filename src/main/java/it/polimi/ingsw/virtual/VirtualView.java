@@ -15,13 +15,13 @@ public interface VirtualView extends Remote {
     void completeLogin(String value) throws RemoteException;
     void completeDisconnect(String value) throws RemoteException;
 
-    void showGames(String value) throws RemoteException;
+    void updateGameList(String value) throws RemoteException;
     void completeCreateGame(String value) throws RemoteException;
     void completeSelectGame(String value) throws RemoteException;
 
     void updateGameNotStartedScreen(String value) throws RemoteException;
     void completeVoteBoard(String value) throws RemoteException;
 
-    void showBoard(String value) throws RemoteException;
+    void updateBoard(String value) throws RemoteException;
 
 }

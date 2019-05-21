@@ -68,5 +68,21 @@
                 "error": "Devi scrivere un numero da 1 a 4."
             }
         ]
+    },
+    {
+        "input": ["spawn"],
+        "method": "spawn",
+        "value": [
+            {
+                "name": "name",
+                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "error": "Devi scrivere il nome del power up da utilizzare."
+            },
+            {
+                "name": "color",
+                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "error": "Devi scrivere il colore del power up da utilizzare."
+            }
+        ]
     }
 ]

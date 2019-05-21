@@ -66,7 +66,7 @@
         }
     },
     {
-        "name": "RAGGIO CINETICO",
+        "name": "RAGGIOCINETICO",
         "color": "RED",
         
         "effect": {
@@ -89,7 +89,7 @@
         }
     }, 
     {
-        "name": "RAGGIO CINETICO",
+        "name": "RAGGIOCINETICO",
         "color": "BLUE",
         
         "effect": {
@@ -112,7 +112,7 @@
         }
     },
     {
-        "name": "RAGGIO CINETICO",
+        "name": "RAGGIOCINETICO",
         "color": "YELLOW",
         
         "effect": {
@@ -135,7 +135,7 @@
         }
     },
     {
-        "name": "GRANATA VENOM",
+        "name": "GRANATAVENOM",
         "color": "RED",
 
         "effect": {
@@ -155,7 +155,7 @@
 
     }, 
     {
-        "name": "GRANATA VENOM",
+        "name": "GRANATAVENOM",
         "color": "BLUE",
 
         "effect": {
@@ -175,7 +175,7 @@
 
     },
     {
-        "name": "GRANATA VENOM",
+        "name": "GRANATAVENOM",
         "color": "YELLOW",
 
         "effect": {
@@ -333,7 +333,7 @@
         }
     },
     {
-        "name": "RAGGIO CINETICO",
+        "name": "RAGGIOCINETICO",
         "color": "RED",
         
         "effect": {
@@ -356,7 +356,7 @@
         }
     }, 
     {
-        "name": "RAGGIO CINETICO",
+        "name": "RAGGIOCINETICO",
         "color": "BLUE",
         
         "effect": {
@@ -379,7 +379,7 @@
         }
     },
     {
-        "name": "RAGGIO CINETICO",
+        "name": "RAGGIOCINETICO",
         "color": "YELLOW",
         
         "effect": {
@@ -402,7 +402,7 @@
         }
     },
     {
-        "name": "GRANATA VENOM",
+        "name": "GRANATAVENOM",
         "color": "RED",
 
         "effect": {
@@ -422,7 +422,7 @@
 
     }, 
     {
-        "name": "GRANATA VENOM",
+        "name": "GRANATAVENOM",
         "color": "BLUE",
 
         "effect": {
@@ -442,7 +442,7 @@
 
     },
     {
-        "name": "GRANATA VENOM",
+        "name": "GRANATAVENOM",
         "color": "YELLOW",
 
         "effect": {

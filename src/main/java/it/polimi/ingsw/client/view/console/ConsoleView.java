@@ -173,7 +173,7 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void showGames(String value) {
+    public void updateGameList(String value) {
 
         try (JsonReader reader = Json.createReader(new StringReader(value))) {
 
@@ -301,7 +301,7 @@ public class ConsoleView implements View, VirtualView {
 
 
     @Override
-    public void showBoard(String value) {
+    public void updateBoard(String value) {
 
         try (JsonReader reader = Json.createReader(new StringReader(value))) {
 

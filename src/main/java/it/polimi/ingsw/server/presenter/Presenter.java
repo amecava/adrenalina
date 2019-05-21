@@ -1,11 +1,16 @@
 package it.polimi.ingsw.server.presenter;
 
+import it.polimi.ingsw.server.model.board.rooms.Square;
+import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
+import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.StringReader;
 import java.rmi.RemoteException;
+import java.util.NoSuchElementException;
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -200,11 +205,57 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    @Override
+    public void spawn(String value) throws RemoteException {
+
+        JsonObject object = this.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            try {
+
+                Color color = Color.valueOf(object.getString("color"));
+                Square destination = this.gameHandler.findSpawnSquare(color);
+
+                this.gameHandler.getModel()
+                        .getBoard()
+                        .getPowerUpDeck()
+                        .addPowerUpCard(this.player.spawn(object.getString("name"), color));
+
+                this.player.movePlayer(destination);
+
+                this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.");
+
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateBoard",
+                        this.gameHandler.getModel().getBoard().toJsonObject().toString());
+
+            } catch (IllegalActionException | CardNotFoundException | NoSuchElementException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+
+            } catch (IllegalArgumentException e) {
+
+                this.callRemoteMethod("errorMessage", "Il colore selezionato non esiste.");
+            }
+        }
+    }
+
     private void updateLoginGame() {
 
         ClientHandler.broadcast(
                 x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
-                "showGames",
+                "updateGameList",
                 ClientHandler.getGameHandlerJsonArray().toString());
 
         if (this.gameHandler != null) {
@@ -222,12 +273,10 @@ public abstract class Presenter implements VirtualPresenter {
                 ClientHandler.gameBroadcast(
                         this.gameHandler,
                         x -> true,
-                        "showBoard",
+                        "updateBoard",
                         this.gameHandler.getModel().getBoard().toJsonObject().toString());
             }
         }
-
-
     }
 
     JsonObject jsonDeserialize(String line) {

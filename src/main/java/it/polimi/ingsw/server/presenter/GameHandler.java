@@ -1,6 +1,10 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.Model;
+import it.polimi.ingsw.server.model.board.rooms.Square;
+import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
+import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Player;
@@ -12,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
@@ -121,9 +126,16 @@ public class GameHandler {
         this.votes.put(playerId, board);
     }
 
-    public Player getActivePlayer() {
+    public Square findSpawnSquare(Color color) {
 
-        return this.model.getActivePlayer();
+        return this.model.getBoard()
+                .getRoomsList()
+                .stream()
+                .filter(x -> x.getColor().equals(color))
+                .flatMap(x -> x.getSquaresList().stream())
+                .filter(Square::isSpawn)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("In questa stanza non c'è uno spawn."));
     }
 
     public synchronized void setActivePlayer(Player activePlayer) {
@@ -143,7 +155,7 @@ public class GameHandler {
 
         this.model.startGame();
 
-        ClientHandler.gameBroadcast(this, x -> true, "showBoard",
+        ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
                 this.model.getBoard().toJsonObject().toString());
     }
 
