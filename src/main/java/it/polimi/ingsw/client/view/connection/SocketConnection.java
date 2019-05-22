@@ -53,8 +53,11 @@ public class SocketConnection implements Runnable {
                         JsonObject object = Json.createReader(new StringReader(in.nextLine()))
                                 .readObject();
 
-                        out.println(this.jsonSerialize("pong", ""));
-                        out.flush();
+                        synchronized (out) {
+
+                            out.println(this.jsonSerialize("pong", ""));
+                            out.flush();
+                        }
 
                         VirtualView.class
                                 .getMethod(object.getString("method"), String.class)
@@ -85,8 +88,13 @@ public class SocketConnection implements Runnable {
 
                 while (Thread.currentThread().isAlive()) {
 
-                    out.println(this.view.userInput());
-                    out.flush();
+                    JsonObject object = this.view.userInput();
+
+                    synchronized (out) {
+
+                        out.println(object);
+                        out.flush();
+                    }
                 }
             });
 

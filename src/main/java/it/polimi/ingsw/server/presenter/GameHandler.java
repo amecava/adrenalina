@@ -1,6 +1,10 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.Model;
+import it.polimi.ingsw.server.model.board.rooms.Square;
+import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
+import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Player;
@@ -12,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
@@ -22,7 +27,7 @@ import javax.json.JsonObject;
 public class GameHandler {
 
     private String gameId;
-    private boolean gameStarted = false;
+    private int gameStarted = 60;
 
     private Map<String, Integer> votes = new HashMap<>();
 
@@ -41,7 +46,7 @@ public class GameHandler {
 
     public boolean isGameStarted() {
 
-        return this.gameStarted;
+        return this.gameStarted == 0;
     }
 
     public List<Player> getPlayerList() {
@@ -68,7 +73,7 @@ public class GameHandler {
 
         Player player = this.model.addPlayer(playerId, character);
 
-        if (this.model.getPlayerList().size() == 3 && !this.gameStarted) {
+        if (this.model.getPlayerList().size() == 3 && this.gameStarted != 0) {
 
             Thread countdown = new Thread(() -> {
 
@@ -76,15 +81,16 @@ public class GameHandler {
 
                     for (int i = 60; i >= 0; i--) {
 
-                        ClientHandler.gameBroadcast(this, x -> true,
-                                "infoMessage", "La partita inizierà tra " + i
-                                        + " secondi, vota l'arena se non lo hai ancora fatto.");
+                        this.gameStarted = i;
+
+                        ClientHandler.gameBroadcast(
+                                this, x -> true,
+                                "updateGameNotStartedScreen",
+                                this.toJsonObject().toString());
 
                         Thread.sleep(1000);
                     }
 
-                    ClientHandler.gameBroadcast(this, x -> true,
-                            "infoMessage", "La partita è iniziata.");
                 } catch (InterruptedException e) {
 
                     Thread.currentThread().interrupt();
@@ -103,7 +109,7 @@ public class GameHandler {
                             startGame();
                         }
                     },
-                    63000
+                    62000
             );
         }
 
@@ -120,9 +126,16 @@ public class GameHandler {
         this.votes.put(playerId, board);
     }
 
-    public Player getActivePlayer() {
+    public Square findSpawnSquare(Color color) {
 
-        return this.model.getActivePlayer();
+        return this.model.getBoard()
+                .getRoomsList()
+                .stream()
+                .filter(x -> x.getColor().equals(color))
+                .flatMap(x -> x.getSquaresList().stream())
+                .filter(Square::isSpawn)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("In questa stanza non c'è uno spawn."));
     }
 
     public synchronized void setActivePlayer(Player activePlayer) {
@@ -140,11 +153,10 @@ public class GameHandler {
         this.createBoard();
         this.model.getBoard().fillBoard();
 
-        this.gameStarted = true;
         this.model.startGame();
 
-        ClientHandler.gameBroadcast(this, x -> true, "showBoard",
-                this.toJsonObject().toString());
+        ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
+                this.model.getBoard().toJsonObject().toString());
     }
 
     public synchronized void canFinishTurn(Player activePlayer) {
@@ -203,7 +215,6 @@ public class GameHandler {
                         && x.getCurrentPosition() == null)).count();
 
     }
-
 
     public JsonObject toJsonObject() {
 

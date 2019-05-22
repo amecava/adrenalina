@@ -1,11 +1,16 @@
 package it.polimi.ingsw.server.presenter;
 
+import it.polimi.ingsw.server.model.board.rooms.Square;
+import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
+import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.StringReader;
 import java.rmi.RemoteException;
+import java.util.NoSuchElementException;
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -42,10 +47,7 @@ public abstract class Presenter implements VirtualPresenter {
 
         ClientHandler.removeClient(this);
 
-        ClientHandler
-                .broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
-                        "showGames",
-                        ClientHandler.getGameHandlerJsonArray().toString());
+        this.updateLoginGame();
     }
 
     @Override
@@ -64,44 +66,40 @@ public abstract class Presenter implements VirtualPresenter {
         } else if (ClientHandler.isPlayerPresent(object.getString("playerId"))) {
 
             this.gameHandler = ClientHandler.getGameHandler(
-                    x -> x.getPlayerList().stream().anyMatch(y -> y.getPlayerId().equals(object.getString("playerId"))));
+                    x -> x.getPlayerList().stream()
+                            .anyMatch(y -> y.getPlayerId().equals(object.getString("playerId"))));
 
             this.player = ClientHandler
-                    .getPlayer(this.gameHandler, x -> x.getPlayerId().equals(object.getString("playerId")));
+                    .getPlayer(this.gameHandler,
+                            x -> x.getPlayerId().equals(object.getString("playerId")));
 
             ClientHandler.putPlayerPresenter(this.gameHandler, this.player, this);
 
             this.playerId = object.getString("playerId");
 
             this.callRemoteMethod("completeLogin",
-                    "Login effettuato come " + object.getString("playerId") + " e riconnesso alla partita "
+                    "Login effettuato come " + object.getString("playerId")
+                            + " e riconnesso alla partita "
                             + this.gameHandler.getGameId() + ".");
 
             ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
-                    this.playerId + ": connesso al server.");
+                    this.playerId + ": riconnesso al server.");
 
-            ClientHandler
-                    .broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
-                            "showGames",
-                            ClientHandler.getGameHandlerJsonArray().toString());
-
-            ClientHandler.gameBroadcast(this.gameHandler, x -> true,
-                    "showBoard",
-                    this.gameHandler.toJsonObject().toString());
+            this.updateLoginGame();
 
         } else {
 
             this.playerId = object.getString("playerId");
 
-            this.callRemoteMethod("completeLogin", "Login effettuato come " + object.getString("playerId") + ".");
+            this.callRemoteMethod("completeLogin",
+                    "Login effettuato come " + object.getString("playerId") + ".");
 
-            ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
+            ClientHandler.broadcast(
+                    (x) -> !x.getPlayerId().equals(this.playerId),
+                    "broadcast",
                     this.playerId + ": connesso al server.");
 
-            ClientHandler
-                    .broadcast(x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
-                            "showGames",
-                            ClientHandler.getGameHandlerJsonArray().toString());
+            this.updateLoginGame();
         }
     }
 
@@ -110,28 +108,29 @@ public abstract class Presenter implements VirtualPresenter {
 
         JsonObject object = this.jsonDeserialize(value);
 
-        if (ClientHandler.isGameHandlerPresent(object.getString("gameId"))) {
+        if (this.playerId.equals("Client")) {
+
+            this.callRemoteMethod("errorMessage", "Come prima cosa effettua il login.");
+
+        } else if (ClientHandler.isGameHandlerPresent(object.getString("gameId"))) {
 
             this.callRemoteMethod("errorMessage",
                     "Nome partita già esistente, ripeti con un nuovo nome.");
 
         } else {
 
-        ClientHandler.addGameHandler(object.getString("gameId"), Integer.valueOf(object.getString("numberOfDeaths")),
-                object.getString("frenzy").equals("frenesia"));
+            ClientHandler.addGameHandler(object.getString("gameId"),
+                    Integer.valueOf(object.getString("numberOfDeaths")),
+                    object.getString("frenzy").equals("frenesia"));
 
             this.callRemoteMethod("completeCreateGame", object.getString("gameId"));
 
-            ClientHandler
-                    .broadcast(x -> !x.getPlayerId().equals("Client")
-                                    && x.getGameHandler() == null,
-                            "showGames",
-                            ClientHandler.getGameHandlerJsonArray().toString());
+            this.updateLoginGame();
         }
     }
 
     @Override
-    public  void selectGame(String value) throws RemoteException {
+    public void selectGame(String value) throws RemoteException {
 
         JsonObject object = this.jsonDeserialize(value);
 
@@ -145,7 +144,9 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("errorMessage", "Prima logout.");
 
-            } else if (ClientHandler.getGameHandler(x -> x.getGameId().equals(object.getString("gameId"))).isGameStarted()) {
+            } else if (ClientHandler
+                    .getGameHandler(x -> x.getGameId().equals(object.getString("gameId")))
+                    .isGameStarted()) {
 
                 this.callRemoteMethod("errorMessage", "La partita è già iniziata.");
 
@@ -155,24 +156,18 @@ public abstract class Presenter implements VirtualPresenter {
 
             } else {
 
-                this.gameHandler = ClientHandler.getGameHandler(x -> x.getGameId().equals(object.getString("gameId")));
+                this.gameHandler = ClientHandler
+                        .getGameHandler(x -> x.getGameId().equals(object.getString("gameId")));
 
-                this.player = this.gameHandler.addPlayer(this.playerId, object.getString("character"));
+                this.player = this.gameHandler
+                        .addPlayer(this.playerId, object.getString("character"));
 
                 ClientHandler.putPlayerPresenter(this.gameHandler, this.player, this);
 
                 this.callRemoteMethod("completeSelectGame", this.gameHandler.getGameId());
 
-                ClientHandler.broadcast(
-                        x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
-                        "showGames",
-                        ClientHandler.getGameHandlerJsonArray().toString());
-
-                //ClientHandler.gameBroadcast(this.gameHandler, x -> !x.getValue().equals(this),
-                //        "updateGameNotStartedScreen",
-                //        ClientHandler.getGameHandlerJsonArray().toString());
+                this.updateLoginGame();
             }
-
 
         } catch (LoginException e) {
 
@@ -198,13 +193,88 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
-                this.gameHandler.voteBoard(this.player.getPlayerId(), Integer.valueOf(object.getString("vote")));
+                this.gameHandler.voteBoard(this.player.getPlayerId(),
+                        Integer.valueOf(object.getString("vote")));
 
                 this.callRemoteMethod("completeVoteBoard", object.getString("vote"));
 
             } catch (BoardVoteException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void spawn(String value) throws RemoteException {
+
+        JsonObject object = this.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            try {
+
+                Color color = Color.valueOf(object.getString("color"));
+                Square destination = this.gameHandler.findSpawnSquare(color);
+
+                this.gameHandler.getModel()
+                        .getBoard()
+                        .getPowerUpDeck()
+                        .addPowerUpCard(this.player.spawn(object.getString("name"), color));
+
+                this.player.movePlayer(destination);
+
+                this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.");
+
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateBoard",
+                        this.gameHandler.getModel().getBoard().toJsonObject().toString());
+
+            } catch (IllegalActionException | CardNotFoundException | NoSuchElementException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+
+            } catch (IllegalArgumentException e) {
+
+                this.callRemoteMethod("errorMessage", "Il colore selezionato non esiste.");
+            }
+        }
+    }
+
+    private void updateLoginGame() {
+
+        ClientHandler.broadcast(
+                x -> !x.getPlayerId().equals("Client") && x.getGameHandler() == null,
+                "updateGameList",
+                ClientHandler.getGameHandlerJsonArray().toString());
+
+        if (this.gameHandler != null) {
+
+            if (!this.gameHandler.isGameStarted()) {
+
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateGameNotStartedScreen",
+                        this.gameHandler.toJsonObject().toString());
+
+            } else {
+
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateBoard",
+                        this.gameHandler.getModel().getBoard().toJsonObject().toString());
             }
         }
     }

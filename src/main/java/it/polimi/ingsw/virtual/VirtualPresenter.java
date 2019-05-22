@@ -2,7 +2,6 @@ package it.polimi.ingsw.virtual;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import javax.json.JsonObject;
 
 public interface VirtualPresenter extends Remote {
 
@@ -13,4 +12,6 @@ public interface VirtualPresenter extends Remote {
     void selectGame(String value) throws RemoteException;
 
     void voteBoard(String value) throws RemoteException;
+
+    void spawn(String value) throws RemoteException;
 }
