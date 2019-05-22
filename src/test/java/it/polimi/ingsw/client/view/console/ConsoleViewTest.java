@@ -5,12 +5,17 @@ import it.polimi.ingsw.server.model.board.rooms.Connection;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
+import it.polimi.ingsw.server.presenter.GameHandler;
+import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
+import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
@@ -18,6 +23,79 @@ import org.junit.jupiter.api.Test;
 
 class ConsoleViewTest {
 
+    @Test
+    void test() {
+
+        GameHandler gameHandler = new GameHandler("test", 8, false);
+
+        try {
+
+            gameHandler.addPlayer("fede", "sprog");
+            gameHandler.addPlayer("ame", "dozer");
+            gameHandler.addPlayer("jacop", "violetta");
+
+            gameHandler.voteBoard("fede", 2);
+            gameHandler.createBoard();
+
+            gameHandler.getModel().getBoard().fillBoard();
+
+        } catch (LoginException | BoardVoteException e) {
+            //
+        }
+        Board board = new Board.BoardBuilder(new EffectHandler()).build(1);
+
+        Player one = new Player("ame", Color.GREEN);
+        Player two = new Player("fede", Color.GRAY);
+        Player three = new Player("jacop", Color.YELLOW);
+        Player four = new Player("frank", Color.LIGHTBLUE);
+        Player five = new Player("edo", Color.VIOLET);
+
+        one.damagePlayer(Color.GRAY, true);
+        one.damagePlayer(Color.GRAY, true);
+        one.markPlayer(Color.GRAY);
+        one.markPlayer(Color.VIOLET);
+        one.markPlayer(Color.LIGHTBLUE);
+        one.markPlayer(Color.LIGHTBLUE);
+        one.damagePlayer(Color.YELLOW, true);
+        one.damagePlayer(Color.VIOLET, true);
+
+        two.damagePlayer(Color.GREEN, true);
+        two.damagePlayer(Color.GREEN, true);
+        two.markPlayer(Color.VIOLET);
+        two.markPlayer(Color.VIOLET);
+        two.markPlayer(Color.GREEN);
+        two.markPlayer(Color.LIGHTBLUE);
+        two.damagePlayer(Color.VIOLET, true);
+        two.damagePlayer(Color.YELLOW, true);
+
+        three.damagePlayer(Color.LIGHTBLUE, true);
+        three.markPlayer(Color.LIGHTBLUE);
+
+        four.damagePlayer(Color.YELLOW, true);
+
+        five.markPlayer(Color.LIGHTBLUE);
+
+        one.movePlayer(board.getRoom(0).getSquare(0));
+        two.movePlayer(board.getRoom(1).getSquare(0));
+        three.movePlayer(board.getRoom(1).getSquare(0));
+        four.movePlayer(board.getRoom(2).getSquare(0));
+        five.movePlayer(board.getRoom(4).getSquare(1));
+
+
+
+        try (JsonReader reader = Json.createReader(new StringReader(gameHandler.toJsonObject().toString()))) {
+
+            Terminal.clearScreen();
+
+            JsonObject jsonObject = reader.readObject();
+
+
+            StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject);
+
+            //Arrays.stream(builder).map(StringBuilder::toString).forEach(System.out::println);
+
+        }
+    }
 
     @Test
     void showBoard() {

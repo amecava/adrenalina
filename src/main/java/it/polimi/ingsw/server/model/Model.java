@@ -23,6 +23,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 public class Model {
 
@@ -151,6 +152,7 @@ public class Model {
         return Json.createObjectBuilder()
                 .add("numberOfDeaths", this.pointHandler.getNumberOfDeaths())
                 .add("frenzy", this.pointHandler.isFrenzy())
-                .add("playerList", builder.build());
+                .add("playerList", builder.build())
+                .add("board", this.board != null ? this.board.toJsonObject() : JsonValue.NULL);
     }
 }

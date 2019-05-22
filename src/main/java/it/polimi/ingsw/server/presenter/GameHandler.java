@@ -1,11 +1,9 @@
-package it.polimi.ingsw.presenter;
+package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.Model;
-import it.polimi.ingsw.presenter.exceptions.BoardVoteException;
+import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Player;
-import it.polimi.ingsw.server.presenter.ClientHandler;
-import it.polimi.ingsw.server.presenter.Presenter;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -146,7 +144,7 @@ public class GameHandler {
         this.model.startGame();
 
         ClientHandler.gameBroadcast(this, x -> true, "showBoard",
-                this.model.getBoard().toJsonObject().toString());
+                this.toJsonObject().toString());
     }
 
     public synchronized void canFinishTurn(Player activePlayer) {
@@ -211,6 +209,7 @@ public class GameHandler {
 
         return this.model.toJsonObject()
                 .add("gameId", this.gameId)
+                .add("gameStarted", this.gameStarted)
                 .build();
     }
 }

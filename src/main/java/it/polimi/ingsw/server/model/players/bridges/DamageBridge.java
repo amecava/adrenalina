@@ -97,15 +97,15 @@ class DamageBridge {
 
     public JsonObject toJsonObject() {
 
+        JsonArrayBuilder shotsBuilder = Json.createArrayBuilder();
+        JsonArrayBuilder marksBuilder = Json.createArrayBuilder();
+
+        this.shots.stream().map(Color::toString).forEach(shotsBuilder::add);
+        this.marks.stream().map(Color::toString).forEach(marksBuilder::add);
+
         return Json.createObjectBuilder()
-                .add("shots", Json.createArrayBuilder().add(this.shots.stream()
-                        .map(Color::toString)
-                        .collect(Collectors.joining(" ")))
-                        .build())
-                .add("marks", Json.createArrayBuilder().add(this.marks.stream()
-                        .map(Color::toString)
-                        .collect(Collectors.joining(" ")))
-                        .build())
+                .add("shots", shotsBuilder.build())
+                .add("marks", marksBuilder.build())
                 .build();
     }
 }

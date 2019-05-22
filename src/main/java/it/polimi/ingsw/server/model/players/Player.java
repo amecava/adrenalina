@@ -489,6 +489,8 @@ public class Player implements Target {
         return Json.createObjectBuilder()
                 .add("playerId", this.playerId)
                 .add("character", this.getColor().getCharacter())
+                .add("isActivePlayer", this.activePlayer)
+                .add("bridge", this.bridge.toJsonObject())
                 .add("connected", this.connected)
                 .build();
     }

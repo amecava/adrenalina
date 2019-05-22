@@ -262,13 +262,10 @@ public class ConsoleView implements View, VirtualView {
 
             JsonObject jsonObject = reader.readObject();
 
-            BoardDrawer.drawBoard(jsonObject).forEach(x -> {
-                Terminal.output(x[0].toString());
-                Terminal.output(x[1].toString());
-                Terminal.output(x[2].toString());
-                Terminal.output(x[3].toString());
-                Terminal.output(x[4].toString());
-            });
+            StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject);
+
+            Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
+
         }
     }
 

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 class ActionBridge {
@@ -195,6 +197,18 @@ class ActionBridge {
                 break;
         }
 
+    }
+
+    public JsonObject toJsonObject() {
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        this.possibleActions.stream().map(ActionStructure::toJsonObject).forEach(arrayBuilder::add);
+
+        return Json.createObjectBuilder()
+                .add("possibleActionsArray", arrayBuilder.build())
+                .add("isFirstPlayer", firstPlayer)
+                .build();
     }
 
     public static class ActionBridgeBuilder {

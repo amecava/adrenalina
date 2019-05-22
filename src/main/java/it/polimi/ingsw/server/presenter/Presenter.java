@@ -1,16 +1,11 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.presenter.GameHandler;
-import it.polimi.ingsw.presenter.exceptions.BoardVoteException;
+import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.StringReader;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -92,7 +87,7 @@ public abstract class Presenter implements VirtualPresenter {
 
             ClientHandler.gameBroadcast(this.gameHandler, x -> true,
                     "showBoard",
-                    this.gameHandler.getModel().getBoard().toJsonObject().toString());
+                    this.gameHandler.toJsonObject().toString());
 
         } else {
 

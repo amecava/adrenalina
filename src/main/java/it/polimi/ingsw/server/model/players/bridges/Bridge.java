@@ -177,7 +177,8 @@ public class Bridge {
 
         return Json.createObjectBuilder()
                 .add("damageBridge", this.damageBridge.toJsonObject())
-                .add("adrenalin", this.actionBridge.getAdrenalin().toString())
+                .add("actionBridge", this.actionBridge.toJsonObject())
+                .add("deathBridgeArray", this.deathBridge.toJsonArray())
                 .build();
     }
 }

@@ -320,7 +320,7 @@
                             {
                                 "direction": "SOUTH",
                                 "connection": "DOOR",
-                                "roomId": 2,
+                                "roomId": 1,
                                 "squareId": 0
                             },
                             {
@@ -346,7 +346,7 @@
                             {
                                 "direction": "SOUTH",
                                 "connection": "WALL",
-                                "roomId": 2,
+                                "roomId": 1,
                                 "squareId": 1
                             },
                             {
@@ -380,7 +380,7 @@
                             {
                                 "direction": "EAST",
                                 "connection": "DOOR",
-                                "roomId": 1,
+                                "roomId": 3,
                                 "squareId": 0
                             },
                             {
@@ -395,40 +395,6 @@
             },
             {
                 "roomId": 1,
-                "roomColor": "GREEN",
-
-                "squares": [
-                    {
-                        "squareId": 0,
-                        "spawn": false,
-                        "adjacent": [
-                            {
-                                "direction": "NORTH",
-                                "connection": "ENDMAP"
-                            },
-                            {
-                                "direction": "SOUTH",
-                                "connection": "DOOR",
-                                "roomId": 4,
-                                "squareId":1
-                            },
-                            {
-                                "direction": "EAST",
-                                "connection": "ENDMAP"
-                            },
-                            {
-                                "direction": "WEST",
-                                "connection": "SQUARE",
-                                "roomId": 0,
-                                "squareId": 2
-                            }
-                        ]
-                    }
-                ]
-
-            },
-            {
-                "roomId": 2,
                 "roomColor": "RED",
 
                 "squares": [
@@ -471,7 +437,7 @@
                             {
                                 "direction": "SOUTH",
                                 "connection": "DOOR",   
-                                "roomId": 3,
+                                "roomId": 2,
                                 "squareId": 0
                             },
                             {
@@ -482,16 +448,17 @@
                             },
                             {
                                 "direction": "WEST",
+                                "connection": "SQUARE",
                                 "roomId": 1,
-                                "squareId": 0,
-                                "connection": "SQUARE"
+                                "squareId": 0
+                                
                             }
                         ]
                     }
                 ]
             },
             {
-                "roomId": 3,
+                "roomId": 2,
                 "roomColor": "WHITE",
 
                 "squares": [
@@ -524,6 +491,40 @@
                 ]
             },
             {
+                "roomId": 3,
+                "roomColor": "GREEN",
+
+                "squares": [
+                    {
+                        "squareId": 0,
+                        "spawn": false,
+                        "adjacent": [
+                            {
+                                "direction": "NORTH",
+                                "connection": "ENDMAP"
+                            },
+                            {
+                                "direction": "SOUTH",
+                                "connection": "DOOR",
+                                "roomId": 4,
+                                "squareId":1
+                            },
+                            {
+                                "direction": "EAST",
+                                "connection": "ENDMAP"
+                            },
+                            {
+                                "direction": "WEST",
+                                "connection": "DOOR",
+                                "roomId": 0,
+                                "squareId": 2
+                            }
+                        ]
+                    }
+                ]
+
+            },
+            {
                 "roomId": 4,
                 "roomColor": "YELLOW",
 
@@ -542,7 +543,7 @@
                                 "direction": "SOUTH",
                                 "connection": "SQUARE",
                                 "roomId": 4,
-                                "squareId": 0
+                                "squareId": 2
                             },
                             {
                                 "direction": "EAST",
@@ -552,7 +553,7 @@
                             },
                             {
                                 "direction": "WEST",
-                                "connection": "DOOR",
+                                "connection": "WALL",
                                 "roomId": 1,
                                 "squareId": 1
                             }
@@ -565,7 +566,7 @@
                             {
                                 "direction": "NORTH",
                                 "connection": "DOOR",
-                                "roomId": 1,
+                                "roomId": 3,
                                 "squareId": 0
                             },
                             {
@@ -604,12 +605,12 @@
                                 "direction": "EAST",
                                 "connection": "SQUARE",
                                 "roomId": 4,
-                                "squareId": 0
+                                "squareId": 3
                             },
                             {
                                 "direction": "WEST",
                                 "connection": "DOOR",
-                                "roomId": 3,
+                                "roomId": 2,
                                 "squareId": 0
                             }
                         ]
@@ -634,7 +635,7 @@
                             },
                             {
                                 "direction": "WEST",
-                                "connection": "DOOR",
+                                "connection": "SQUARE",
                                 "roomId": 4,
                                 "squareId": 2
                             }
