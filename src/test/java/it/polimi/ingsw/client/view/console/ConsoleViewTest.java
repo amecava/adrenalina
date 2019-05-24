@@ -26,23 +26,9 @@ class ConsoleViewTest {
     @Test
     void test() {
 
-        GameHandler gameHandler = new GameHandler("test", 8, false);
 
-        try {
-
-            gameHandler.addPlayer("fede", "sprog");
-            gameHandler.addPlayer("ame", "dozer");
-            gameHandler.addPlayer("jacop", "violetta");
-
-            gameHandler.voteBoard("fede", 2);
-            gameHandler.createBoard();
-
-            gameHandler.getModel().getBoard().fillBoard();
-
-        } catch (LoginException | BoardVoteException e) {
-            //
-        }
         Board board = new Board.BoardBuilder(new EffectHandler()).build(1);
+        board.fillBoard();
 
         Player one = new Player("ame", Color.GREEN);
         Player two = new Player("fede", Color.GRAY);
@@ -82,17 +68,33 @@ class ConsoleViewTest {
         five.movePlayer(board.getRoom(4).getSquare(1));
 
 
+        one.addPowerUp(board.getPowerUp());
+        one.addPowerUp(board.getPowerUp());
+        one.addWeaponCard(board.getWeaponDeck().getCard());
+        one.addWeaponCard(board.getWeaponDeck().getCard());
+        one.getWeaponCardList().get(0).setLoaded(false);
 
-        try (JsonReader reader = Json.createReader(new StringReader(gameHandler.toJsonObject().toString()))) {
+        two.addPowerUp(board.getPowerUp());
+        two.addPowerUp(board.getPowerUp());
+        two.addPowerUp(board.getPowerUp());
+        two.addWeaponCard(board.getWeaponDeck().getCard());
+        two.addWeaponCard(board.getWeaponDeck().getCard());
+
+        four.addPowerUp(board.getPowerUp());
+        four.addWeaponCard(board.getWeaponDeck().getCard());
+        five.addPowerUp(board.getPowerUp());
+        five.addWeaponCard(board.getWeaponDeck().getCard());
+
+        try (JsonReader reader = Json.createReader(new StringReader(board.toJsonObject().toString()))) {
 
             Terminal.clearScreen();
 
             JsonObject jsonObject = reader.readObject();
 
 
-            StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject);
+            StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject, five.getPlayerId());
 
-            //Arrays.stream(builder).map(StringBuilder::toString).forEach(System.out::println);
+            Arrays.stream(builder).map(StringBuilder::toString).forEach(System.out::println);
 
         }
     }

@@ -84,5 +84,16 @@
                 "error": "Devi scrivere il colore del power up da utilizzare."
             }
         ]
+    },
+    {
+        "input": ["selezionaazione"],
+        "method": "selectAction",
+        "value": [
+            {
+                "name": "actionNumber",
+                "regex": "(\\s*)([1-9]|10)(\\s*)",
+                "error": "Devi scrivere un numero da 1 a 3."
+            }
+        ]
     }
 ]

@@ -78,9 +78,10 @@ public abstract class Presenter implements VirtualPresenter {
             this.playerId = object.getString("playerId");
 
             this.callRemoteMethod("completeLogin",
-                    "Login effettuato come " + object.getString("playerId")
-                            + " e riconnesso alla partita "
-                            + this.gameHandler.getGameId() + ".");
+                    Json.createObjectBuilder(object)
+                            .add("gameId",  this.gameHandler.getGameId() != null ? this.gameHandler.getGameId(): " ")
+                            .add("isGameStarted", this.gameHandler.isGameStarted())
+                            .build().toString());
 
             ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
                     this.playerId + ": riconnesso al server.");
@@ -92,7 +93,9 @@ public abstract class Presenter implements VirtualPresenter {
             this.playerId = object.getString("playerId");
 
             this.callRemoteMethod("completeLogin",
-                    "Login effettuato come " + object.getString("playerId") + ".");
+                    Json.createObjectBuilder(object)
+                            .add("isGameStarted", this.gameHandler == null)
+                            .build().toString());
 
             ClientHandler.broadcast(
                     (x) -> !x.getPlayerId().equals(this.playerId),
@@ -232,13 +235,15 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.player.movePlayer(destination);
 
-                this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.");
+                this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.\n"
+                        + "Adesso puoi selezionare un'azione: scrivi \"selezionaazione \" seguito dal numero dell'azione che vuoi usare.\n"
+                        + "1 - ricarica 2 - corri 3 - raccogli 4 - spara");
 
                 ClientHandler.gameBroadcast(
                         this.gameHandler,
                         x -> true,
                         "updateBoard",
-                        this.gameHandler.getModel().getBoard().toJsonObject().toString());
+                        this.gameHandler.toJsonObject().toString());
 
             } catch (IllegalActionException | CardNotFoundException | NoSuchElementException e) {
 
@@ -249,6 +254,41 @@ public abstract class Presenter implements VirtualPresenter {
                 this.callRemoteMethod("errorMessage", "Il colore selezionato non esiste.");
             }
         }
+    }
+
+    @Override
+    public void selectAction(String value) throws RemoteException {
+
+        JsonObject object = this.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else if (!this.player.isActivePlayer()) {
+
+            this.callRemoteMethod("infoMessage",
+                    "Per selezionare un'azione aspetta che sia il tuo turno");
+        } else {
+
+            try {
+
+                this.player
+                        .selectAction(Integer.valueOf(object.getString("actionNumber")));
+
+                this.callRemoteMethod("infoMessage", "Inserisci i dettagli per completare ");
+
+            } catch (IllegalActionException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+            }
+        }
+
+
     }
 
     private void updateLoginGame() {
@@ -274,7 +314,7 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler,
                         x -> true,
                         "updateBoard",
-                        this.gameHandler.getModel().getBoard().toJsonObject().toString());
+                        this.gameHandler.toJsonObject().toString());
             }
         }
     }

@@ -1,13 +1,9 @@
 package it.polimi.ingsw.client.view.console;
 
-import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.board.rooms.Connection;
 import it.polimi.ingsw.server.model.players.Color;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -20,7 +16,7 @@ public class BoardDrawer {
 
     private static StringBuilder cubesSubString = new StringBuilder();
     private static StringBuilder playersSubString = new StringBuilder();
-    private static StringBuilder[] squareLine = new StringBuilder[MAX_VERT_TILES * 3];
+    private static StringBuilder[] squareLine = new StringBuilder[MAX_VERT_TILES * 3 + 5];
 
     private static JsonArray jDrawSquares;
 
@@ -31,19 +27,30 @@ public class BoardDrawer {
         jDrawSquares = Json.createReader(in).readArray();
     }
 
-    public static StringBuilder[] drawBoard(JsonObject jsonObject) {
+    public static StringBuilder[] drawBoard(JsonObject jsonObject, String playerId) throws IllegalArgumentException {
 
+        JsonObject thisPlayerObject = jsonObject.getJsonArray("playerList").stream()
+                .map(JsonValue::asJsonObject)
+                .filter(x -> x.getString("playerId").equals(playerId))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
+
+        //TODO here
         JsonArray jsonArray = jsonObject.getJsonObject("board").getJsonArray("arrays");
-        JsonArray jDrawSquaresArray = jDrawSquares.getJsonArray(jsonObject.getJsonObject("board").getInt("boardId"));
+        JsonArray jDrawSquaresArray = jDrawSquares
+                .getJsonArray(jsonObject.getJsonObject("board").getInt("boardId"));
+
+        squareLine[0] = new StringBuilder()
+                .append("Plancia delle morti           xxxxxxxx          ");
 
         //for each line of the map
         for (int row = 0; row < 3; row++) {
 
-            squareLine[MAX_VERT_TILES * row] = new StringBuilder();
             squareLine[MAX_VERT_TILES * row + 1] = new StringBuilder();
             squareLine[MAX_VERT_TILES * row + 2] = new StringBuilder();
             squareLine[MAX_VERT_TILES * row + 3] = new StringBuilder();
             squareLine[MAX_VERT_TILES * row + 4] = new StringBuilder();
+            squareLine[MAX_VERT_TILES * row + 5] = new StringBuilder();
 
             //for each square of that line
             for (int squareInRow = 0; squareInRow < 4; squareInRow++) {
@@ -61,7 +68,7 @@ public class BoardDrawer {
                     if ((lineInSquare == 1) && !jsonArray.getJsonArray(row)
                             .getJsonObject(squareInRow).containsKey("empty")) {
 
-                        squareLine[MAX_VERT_TILES * row + lineInSquare]
+                        squareLine[MAX_VERT_TILES * row + lineInSquare + 1]
                                 .append(jDrawSquaresArray.getJsonArray(row)
                                         .getJsonArray(squareInRow).getString(lineInSquare))
                                 .append(playersSubString.toString());
@@ -71,7 +78,7 @@ public class BoardDrawer {
                             .getJsonArray(row)
                             .getJsonObject(squareInRow).getBoolean("isSpawn")) {
 
-                        squareLine[MAX_VERT_TILES * row + lineInSquare]
+                        squareLine[MAX_VERT_TILES * row + lineInSquare + 1]
                                 .append(jDrawSquaresArray.getJsonArray(row)
                                         .getJsonArray(squareInRow).getString(lineInSquare))
                                 .append(cubesSubString.toString());
@@ -79,7 +86,7 @@ public class BoardDrawer {
 
                     } else {
 
-                        squareLine[MAX_VERT_TILES * row + lineInSquare]
+                        squareLine[MAX_VERT_TILES * row + lineInSquare + 1]
                                 .append(jDrawSquaresArray.getJsonArray(row)
                                         .getJsonArray(squareInRow)
                                         .getString(lineInSquare));
@@ -91,16 +98,79 @@ public class BoardDrawer {
             }
         }
 
+        for (int tmp = 16; tmp < 20; tmp++) {
+
+            squareLine[tmp] = new StringBuilder();
+        }
+
+        addMyPowerUps(thisPlayerObject);
+
+        addMyCards(thisPlayerObject);
+
         Arrays.stream(squareLine).forEach(x -> x.append("  "));
 
         return addPlayersBridges(squareLine, jsonObject);
     }
 
-    private static String fixLength(int length) {
+    private static void addMyPowerUps(JsonObject thisPlayerObject) {
+
+        StringBuilder thisPlayerPowerUps = new StringBuilder();
+
+        thisPlayerObject.getJsonArray("powerUps")
+                .stream()
+                .map(JsonValue::asJsonObject)
+                .forEach(x -> {
+                    thisPlayerPowerUps.append(Color.ansiColor(x.getString("color")))
+                            .append(x.getString("name").substring(0, 3))
+                            .append(" ");
+                });
+
+        squareLine[16].append(Color.ansiColor(Color.ofCharacter(thisPlayerObject
+                .getString("character")).toString()))
+                .append("PowerUp: ")
+                .append(thisPlayerPowerUps.toString());
+
+        squareLine[16].append(fixLength(48,
+                squareLine[16].length() - 5 - (5 * thisPlayerObject.getJsonArray("powerUps")
+                        .size())));
+    }
+
+    private static void addMyCards(JsonObject thisPlayerObject) {
+
+        for (int cards = 0; cards < thisPlayerObject.getJsonArray("weapons").size(); cards++) {
+
+            squareLine[17 + cards].append(Color.ansiColor(Color.ofCharacter(thisPlayerObject
+                    .getString("character")).toString()))
+                    .append("ID: ")
+                    .append(thisPlayerObject.getJsonArray("weapons").getJsonObject(cards)
+                            .getInt("id"))
+                    .append(" ")
+                    .append("Nome: ")
+                    .append(thisPlayerObject.getJsonArray("weapons").getJsonObject(cards)
+                            .getString("name"));
+
+            if (!thisPlayerObject.getJsonArray("weapons").getJsonObject(cards)
+                    .getBoolean("isLoaded")) {
+
+                squareLine[17 + cards].append("(scarica)");
+            }
+
+            squareLine[17 + cards].append(fixLength(48, squareLine[17 + cards].length() - 5));
+
+        }
+
+        for (int i = 17 + thisPlayerObject.getJsonArray("weapons").size();
+                i < MAX_VERT_TILES * 3 + 5; i++) {
+
+            squareLine[i].append("                                                ");
+        }
+    }
+
+    private static String fixLength(int distReach, int length) {
 
         StringBuilder line = new StringBuilder();
 
-        for (int i = 0; i < 10 - length; i++) {
+        for (int i = 0; i < distReach - length; i++) {
 
             line.append(" ");
         }
@@ -135,7 +205,7 @@ public class BoardDrawer {
                     .append("◆");
         }
 
-        cubesSubString.append(fixLength((int) jsonArray.getJsonArray(row)
+        cubesSubString.append(fixLength(10, (int) jsonArray.getJsonArray(row)
                 .getJsonObject(squareInRow)
                 .getJsonArray("tools")
                 .getJsonObject(0)
@@ -185,7 +255,7 @@ public class BoardDrawer {
         if (jsonArray.getJsonArray(row)
                 .getJsonObject(squareInRow).get("playersIn") == JsonValue.NULL) {
 
-            playersSubString.append(fixLength(1));
+            playersSubString.append(fixLength(10, 1));
 
         } else {
 
@@ -200,7 +270,7 @@ public class BoardDrawer {
 
             }
 
-            playersSubString.append(fixLength((int) jsonArray.getJsonArray(row)
+            playersSubString.append(fixLength(10, (int) jsonArray.getJsonArray(row)
                     .getJsonObject(squareInRow).getJsonArray("playersIn").stream()
                     .map(JsonValue::asJsonObject).map(x -> x.getString("character"))
                     .map(Color::ofCharacter).count() + 1));
@@ -242,6 +312,7 @@ public class BoardDrawer {
         StringBuilder name;
         StringBuilder actions;
         StringBuilder deaths;
+        StringBuilder cards;
 
         //for each player
         for (int player = 0; player < jPlayersArray.size(); player++) {
@@ -249,10 +320,10 @@ public class BoardDrawer {
             name = new StringBuilder();
             actions = new StringBuilder();
             deaths = new StringBuilder();
-
+            cards = new StringBuilder();
             if (jPlayersArray.getJsonObject(player).getBoolean("isActivePlayer")) {
 
-                name.append("Turno - ");
+                name.append(Color.ansiColor("ALL")).append("Turno - ");
             }
 
             name.append(Color.ansiColor(
@@ -274,12 +345,45 @@ public class BoardDrawer {
                     .append(" -> Plancia Morti: ")
                     .append(addDeaths(jPlayersArray.getJsonObject(player)));
 
-            squareLine[3 * player].append(name.toString());
-            squareLine[3 * player + 1].append(actions.toString());
-            squareLine[3 * player + 2].append(deaths.toString());
+            cards.append(Color.ansiColor(
+                    Color.ofCharacter(jPlayersArray.getJsonObject(player).getString("character"))
+                            .toString()))
+                    .append(addOthersCards(jPlayersArray.getJsonObject(player)));
+
+            squareLine[4 * player].append(name.toString());
+            squareLine[4 * player + 1].append(actions.toString());
+            squareLine[4 * player + 2].append(deaths.toString());
+            squareLine[4 * player + 3].append(cards.toString());
         }
 
         return squareLine;
+    }
+
+    private static String addOthersCards(JsonObject jPlayerObject) {
+
+        StringBuilder cards = new StringBuilder();
+
+        jPlayerObject.getJsonArray("weapons").stream()
+                .map(JsonValue::asJsonObject)
+                .forEach(x -> {
+
+                    cards.append(x.getInt("id"));
+
+                    if (!x.getBoolean("isLoaded")) {
+
+                        cards.append("(scarica) ");
+                    } else {
+
+                        cards.append(" ");
+                    }
+                });
+
+        return new StringBuilder().append(" -> Carte: ")
+                .append(cards.toString())
+                .append(" -> Numero power up: ")
+                .append(jPlayerObject.getJsonArray("powerUps").size())
+                .toString();
+
     }
 
     private static String addDamages(JsonObject jPlayerObject) {
@@ -381,4 +485,6 @@ public class BoardDrawer {
 
         return line.toString();
     }
+
+
 }

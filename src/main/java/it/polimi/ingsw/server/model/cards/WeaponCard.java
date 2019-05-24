@@ -258,6 +258,8 @@ public class WeaponCard implements Card {
 
         return Json.createObjectBuilder()
                 .add("name", this.name)
+                .add("id", this.id)
+                .add("isLoaded", this.loaded)
                 .add("notes", (this.notes != null) ? this.notes : " ")
                 .build();
     }

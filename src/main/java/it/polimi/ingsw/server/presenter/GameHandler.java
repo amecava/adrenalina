@@ -156,7 +156,10 @@ public class GameHandler {
         this.model.startGame();
 
         ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
-                this.model.getBoard().toJsonObject().toString());
+                this.toJsonObject().toString());
+        ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer(), "infoMessage",
+                "È il tuo turno, devi generarti in una stanza.\n"
+                        + "Scrivi \"spawn\" seguito dal powerUp che vuoi scartare.");
     }
 
     public synchronized void canFinishTurn(Player activePlayer) {
@@ -220,7 +223,7 @@ public class GameHandler {
 
         return this.model.toJsonObject()
                 .add("gameId", this.gameId)
-                .add("gameStarted", this.gameStarted)
+                .add("countdown", this.gameStarted)
                 .build();
     }
 }

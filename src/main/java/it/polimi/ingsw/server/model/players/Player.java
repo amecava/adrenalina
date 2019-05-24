@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.model.players;
 import it.polimi.ingsw.server.model.ammo.AmmoCube;
 import it.polimi.ingsw.server.model.ammo.AmmoTile;
 import it.polimi.ingsw.server.model.board.rooms.Square;
+import it.polimi.ingsw.server.model.cards.Card;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
 public class Player implements Target {
@@ -254,7 +256,7 @@ public class Player implements Target {
                 || (this.getRemainingActions() == -1) || (this.getRemainingActions() == 0
                 && actionId != 4)) {
 
-            throw new IllegalActionException("Non valid action selected!");
+            throw new IllegalActionException("Seleziona un'azione valida!");
         }
 
         this.bridge.selectAction(actionId - 1);
@@ -308,7 +310,8 @@ public class Player implements Target {
 
         powerUpCard.setOwner(null);
 
-        return powerUpCard;
+
+        return this.powerUpsList.remove(this.powerUpsList.indexOf(powerUpCard));
     }
 
     public void removePlayerFromBoard() {
@@ -486,11 +489,19 @@ public class Player implements Target {
 
     public JsonObject toJsonObject() {
 
+        JsonArrayBuilder weaponsBuilder = Json.createArrayBuilder();
+        JsonArrayBuilder powerUpsBuilder = Json.createArrayBuilder();
+
+        this.weaponCardList.stream().map(Card::toJsonObject).forEach(weaponsBuilder::add);
+        this.powerUpsList.stream().map(Card::toJsonObject).forEach(powerUpsBuilder::add);
+
         return Json.createObjectBuilder()
                 .add("playerId", this.playerId)
                 .add("character", this.getColor().getCharacter())
                 .add("isActivePlayer", this.activePlayer)
                 .add("bridge", this.bridge.toJsonObject())
+                .add("weapons", weaponsBuilder.build())
+                .add("powerUps", powerUpsBuilder.build())
                 .add("connected", this.connected)
                 .build();
     }
