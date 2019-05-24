@@ -2,11 +2,13 @@ package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
+import it.polimi.ingsw.server.presenter.exceptions.SpawnException;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.StringReader;
 import java.rmi.RemoteException;
@@ -223,14 +225,8 @@ public abstract class Presenter implements VirtualPresenter {
             try {
 
                 Color color = Color.valueOf(object.getString("color"));
-                Square destination = this.gameHandler.findSpawnSquare(color);
 
-                this.gameHandler.getModel()
-                        .getBoard()
-                        .getPowerUpDeck()
-                        .addPowerUpCard(this.player.spawn(object.getString("name"), color));
-
-                this.player.movePlayer(destination);
+                this.gameHandler.spawnPlayer(this.player, object.getString("name"), color);
 
                 this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.");
 
@@ -240,13 +236,47 @@ public abstract class Presenter implements VirtualPresenter {
                         "updateBoard",
                         this.gameHandler.getModel().getBoard().toJsonObject().toString());
 
-            } catch (IllegalActionException | CardNotFoundException | NoSuchElementException e) {
+            } catch (SpawnException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
 
             } catch (IllegalArgumentException e) {
 
                 this.callRemoteMethod("errorMessage", "Il colore selezionato non esiste.");
+            }
+        }
+    }
+
+    @Override
+    public void endOfTurn(String value) throws RemoteException {
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else if (!this.player.isActivePlayer() || this.player.getRemainingActions() == -1) {
+
+            this.callRemoteMethod("errorMessage", "Non è il tuo turno.");
+
+        } else if (this.player.isActivePlayer() && this.player.getCurrentPosition() == null) {
+
+            this.callRemoteMethod("errorMessage", "Devi fare lo spawn prima di finire il turno.");
+
+        } else {
+
+            try {
+
+                this.gameHandler.endOfTurn();
+
+                this.callRemoteMethod("infoMessage", "Turno finito.");
+
+            } catch (EndGameException e) {
+
+                //TODO end game
             }
         }
     }

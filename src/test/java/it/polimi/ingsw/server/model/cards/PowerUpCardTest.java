@@ -57,7 +57,7 @@ class PowerUpCardTest {
 
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
-            target1.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATA VENOM")).findAny().get());
+            target1.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
 
             target1.getPowerUpsList().get(0).useCard(new EffectArgument());
 
@@ -70,7 +70,7 @@ class PowerUpCardTest {
             assertSame(source.getMarks().size(), 1);
 
             source.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("MIRINO")).findAny().get());
-            source.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("RAGGIO CINETICO")).findAny().get());
+            source.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("RAGGIOCINETICO")).findAny().get());
             source.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("TELETRASPORTO")).findAny().get());
 
             source.getPowerUpsList().get(0).useCard(effectArgument, source.getAmmoCubesList().stream()

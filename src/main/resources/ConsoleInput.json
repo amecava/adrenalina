@@ -84,5 +84,16 @@
                 "error": "Devi scrivere il colore del power up da utilizzare."
             }
         ]
+    },
+    {
+        "input": ["fineturno"],
+        "method": "endOfTurn",
+        "value": [
+            {
+                "name": "endOfTurn",
+                "regex": "(\\s*)(\\s*)(\\s*)",
+                "error": "Non scrivere niente dopo fineturno."
+            }
+        ]
     }
 ]
