@@ -16,4 +16,5 @@ public interface VirtualPresenter extends Remote {
     void spawn(String value) throws RemoteException;
 
     void selectAction(String value) throws RemoteException;
+    void endOfTurn(String value) throws RemoteException;
 }

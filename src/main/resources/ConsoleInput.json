@@ -95,5 +95,16 @@
                 "error": "Devi scrivere un numero da 1 a 3."
             }
         ]
+    },
+    {
+        "input": ["fineturno"],
+        "method": "endOfTurn",
+        "value": [
+            {
+                "name": "endOfTurn",
+                "regex": "(\\s*)(\\s*)(\\s*)",
+                "error": "Non scrivere niente dopo fineturno."
+            }
+        ]
     }
 ]

@@ -88,12 +88,28 @@ public class Model {
         return this.activePlayer;
     }
 
-    public synchronized void setActivePlayer(Player activePlayer) {
+    public synchronized void nextPlayer() {
 
         if (this.activePlayer != null) {
+
             this.activePlayer.setActivePlayer(false);
+
         }
-        this.activePlayer = activePlayer;
+
+        if (this.activePlayer == null) {
+
+            this.playerList.get(0).setFirstPlayer(true);
+            this.activePlayer = this.playerList.get(0);
+
+        } else if (this.playerList.indexOf(this.activePlayer) == this.playerList.size()) {
+
+            this.activePlayer = this.playerList.get(0);
+
+        } else {
+
+            this.activePlayer = this.playerList.get(this.playerList.indexOf(this.activePlayer) + 1);
+        }
+
         this.activePlayer.setActivePlayer(true);
 
         this.effectHandler.setActivePlayer(activePlayer);
@@ -101,6 +117,7 @@ public class Model {
         if (this.activePlayer.getAdrenalin().equals(Adrenalin.SECONDFRENZY)) {
 
             this.activePlayer.setRemainingActions(1);
+
         } else {
 
             this.activePlayer.setRemainingActions(2);
@@ -127,18 +144,6 @@ public class Model {
         }
 
         this.board.fillBoard();
-    }
-
-    public void startGame() {
-
-        //TODO Random int
-
-        this.playerList.forEach(x ->
-                x.addPowerUp(this.board.getPowerUp()));
-        this.playerList.forEach(x ->
-                x.addPowerUp(this.board.getPowerUp()));
-        this.playerList.get(0).setFirstPlayer(true);
-        this.setActivePlayer(this.playerList.get(0));
     }
 
     public JsonObjectBuilder toJsonObject() {
