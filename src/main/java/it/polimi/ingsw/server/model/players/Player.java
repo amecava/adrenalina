@@ -252,11 +252,21 @@ public class Player implements Target {
 
     public void selectAction(int actionId) throws IllegalActionException {
 
-        if (!this.activePlayer || this.currentPosition == null
-                || (this.getRemainingActions() == -1) || (this.getRemainingActions() == 0
+        if ((this.getRemainingActions() == -1) || !this.activePlayer) {
+
+            throw new IllegalActionException(
+                    "Per selezionare un'azione aspetta che sia il tuo turno.");
+        }
+        if (this.currentPosition == null) {
+
+            throw new IllegalActionException(
+                    "Per selezionare un'azione devi prima rigenerarti in un quadrato.");
+        }
+        if ((this.getRemainingActions() == 0
                 && actionId != 4)) {
 
-            throw new IllegalActionException("Seleziona un'azione valida!");
+            throw new IllegalActionException(
+                    "Hai finito le azioni disponibili, puoi solo ricaricare.");
         }
 
         this.bridge.selectAction(actionId - 1);
@@ -310,7 +320,6 @@ public class Player implements Target {
 
         powerUpCard.setOwner(null);
 
-
         return this.powerUpsList.remove(this.powerUpsList.indexOf(powerUpCard));
     }
 
@@ -330,7 +339,7 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().getMove() == null || !this
                 .getCurrentAction().getMove()) {
 
-            throw new IllegalActionException("You can't move!");
+            throw new IllegalActionException("Non puoi muoverti adesso.");
         }
 
         effectHandler.useEffect(this.getCurrentAction().getEffect(), effectTarget);
@@ -345,12 +354,13 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null || !this
                 .getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("You can't collect!");
+            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona l'azione giusta.");
         }
 
         if (this.currentPosition.isSpawn()) {
 
-            throw new SquareTypeException("You're in a spawn square, wrong method call");
+            throw new SquareTypeException(
+                    "Sei in uno square di rigenerazione, seleziona l'id della carta da raccogliere\ned eventualmente l'id della carta da scartare.");
         }
 
         AmmoTile tmpTile = this.currentPosition.collectAmmoTile();
@@ -375,17 +385,17 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null
                 || !this.getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("You can't collect!");
+            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona l'azione giusta.");
         }
 
         if (!this.currentPosition.isSpawn()) {
 
-            throw new SquareTypeException("You're not in a spawn square, wrong method call");
+            throw new SquareTypeException("Sei in un quadrato di rigenerazione, non c'è nessuna carta da raccogliere.");
         }
 
         if (this.weaponCardList.size() == 3) {
 
-            throw new FullHandException("You already have three cards, wrong method call");
+            throw new FullHandException("Hai già tre carte in mano, devi selezionare l'id della carta che vui scartare.");
         }
 
         this.addWeaponCard((WeaponCard) this.currentPosition.collectWeaponCard(cardId));
@@ -470,7 +480,8 @@ public class Player implements Target {
         this.bridge.getCurrentWeaponCard().useCard(effectType, effectTarget, powerUpCardList);
     }
 
-    public PowerUpCard spawn(String name, Color color) throws IllegalActionException, CardNotFoundException {
+    public PowerUpCard spawn(String name, Color color)
+            throws IllegalActionException, CardNotFoundException {
 
         if ((this.isActivePlayer() && this.currentPosition == null)
                 || this.isRespawn()) {
@@ -491,9 +502,15 @@ public class Player implements Target {
 
         JsonArrayBuilder weaponsBuilder = Json.createArrayBuilder();
         JsonArrayBuilder powerUpsBuilder = Json.createArrayBuilder();
+        JsonArrayBuilder cubesBuilder = Json.createArrayBuilder();
 
         this.weaponCardList.stream().map(Card::toJsonObject).forEach(weaponsBuilder::add);
         this.powerUpsList.stream().map(Card::toJsonObject).forEach(powerUpsBuilder::add);
+        this.ammoCubesList.stream()
+                .filter(x -> !x.isUsed())
+                .map(AmmoCube::getColor)
+                .map(Color::toString)
+                .forEach(cubesBuilder::add);
 
         return Json.createObjectBuilder()
                 .add("playerId", this.playerId)
@@ -502,6 +519,7 @@ public class Player implements Target {
                 .add("bridge", this.bridge.toJsonObject())
                 .add("weapons", weaponsBuilder.build())
                 .add("powerUps", powerUpsBuilder.build())
+                .add("ammoCubes", cubesBuilder.build())
                 .add("connected", this.connected)
                 .build();
     }

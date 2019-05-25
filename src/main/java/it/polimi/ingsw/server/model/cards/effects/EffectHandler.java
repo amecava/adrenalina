@@ -60,26 +60,26 @@ public class EffectHandler {
         // Launch exception if effect already used
         if (effect.isUsed()) {
 
-            throw new EffectUsedException("Effect already used!");
+            throw new EffectUsedException("Hai già usato questo effetto.");
         }
 
         // Launch exception if effect is not activated
         if (effect.getActivated() != null && !effect.getActivated()) {
 
-            throw new EffectNotActivatedException("You can't use this effect right now!");
+            throw new EffectNotActivatedException("Non puoi usare questo effetto in questo momento.");
         }
 
         // Launch exception if wrong method call
         if (effect.getArgs() != target.getArgs()) {
 
-            throw new EffectCallException("Wrong number of arguments to method call!");
+            throw new EffectCallException("Il numerod di parametri che hai scritto è sbagliato.");
         }
 
         // Launch exception if wrong target type
         if (target.getTargetList().stream().anyMatch(x ->
                 x.getTargetType() != effect.getTargetType())) {
 
-            throw new TargetTypeException("Wrong target type!");
+            throw new TargetTypeException("Il target che hai selezionato non è valido.");
         }
 
         // Create properties related target list

@@ -63,6 +63,11 @@ public class Model {
         return this.board;
     }
 
+    public EffectHandler getEffectHandler() {
+
+        return this.effectHandler;
+    }
+
     public Player addPlayer(String playerId, String character) throws LoginException {
 
         if (Color.ofCharacter(character) == null) {
@@ -101,8 +106,9 @@ public class Model {
             this.playerList.get(0).setFirstPlayer(true);
             this.activePlayer = this.playerList.get(0);
 
-        } else if (this.playerList.indexOf(this.activePlayer) == this.playerList.size()) {
+        } else if (this.playerList.indexOf(this.activePlayer) == this.playerList.size() - 1) {
 
+            //TODO fix
             this.activePlayer = this.playerList.get(0);
 
         } else {
@@ -145,7 +151,7 @@ public class Model {
 
         this.board.fillBoard();
     }
-
+    
     public JsonObjectBuilder toJsonObject() {
 
         JsonArrayBuilder builder = Json.createArrayBuilder();

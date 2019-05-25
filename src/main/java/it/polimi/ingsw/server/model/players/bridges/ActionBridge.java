@@ -122,7 +122,11 @@ class ActionBridge {
 
         if (number >= this.possibleActions.size()) {
 
-            throw new IllegalActionException("Action not present!");
+            throw new IllegalActionException("L'azione selezionata non è disponibile adesso.");
+
+        } else if (this.currentAction != null) {
+
+            throw new IllegalActionException("Prima completa l'azione che hai selezionato in precedenza scrivendo \"fineazione\".");
         }
 
         this.currentAction = this.possibleActions.get(number);

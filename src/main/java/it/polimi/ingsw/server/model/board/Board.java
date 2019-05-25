@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model.board;
 
+import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
+import it.polimi.ingsw.server.model.exceptions.cards.SquareTypeException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.board.rooms.Connection;
 import it.polimi.ingsw.server.model.board.rooms.Direction;
@@ -57,6 +59,11 @@ public class Board {
         return this.weaponDeck;
     }
 
+    public AmmoTilesDeck getAmmoTilesDeck() {
+
+        return this.ammoTilesDeck;
+    }
+
     public PowerUpDeck getPowerUpDeck() {
 
         return this.powerUpDeck;
@@ -81,6 +88,16 @@ public class Board {
                         x.addTool(this.ammoTilesDeck.getTile());
                     }
                 });
+    }
+
+    public Square findSquare(String color, String id) throws IllegalArgumentException {
+
+        return this.roomsList.stream()
+                .filter(x -> x.getColor().equals(Color.valueOf(color)))
+                .flatMap(y -> y.getSquaresList().stream())
+                .filter(z -> z.getSquareId() == Integer.valueOf(id))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public JsonObject toJsonObject() {
@@ -143,7 +160,7 @@ public class Board {
         return Json.createObjectBuilder()
                 .add("boardId", this.boardId)
                 .add("arrays", builder.build())
-                .add("players", players.build())
+                .add("playerList", players.build())
                 .build();
     }
 

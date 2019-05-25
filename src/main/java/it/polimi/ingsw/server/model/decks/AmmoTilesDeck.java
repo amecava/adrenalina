@@ -29,6 +29,11 @@ public class AmmoTilesDeck {
         return this.ammoTilesList.remove(0);
     }
 
+    public void addTile(AmmoTile tile) {
+
+        this.ammoTilesList.add(tile);
+    }
+
     public static class AmmoTilesDeckBuilder {
 
         private PowerUpDeck powerUpDeck;

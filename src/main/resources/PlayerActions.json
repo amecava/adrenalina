@@ -17,6 +17,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 3,
 
             "atomicEffectList": ["MOVE"]
@@ -37,6 +38,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 1,
 
             "atomicEffectList": ["MOVE"]
@@ -61,6 +63,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 2,
 
             "atomicEffectList": ["MOVE"]
@@ -80,6 +83,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 1,
 
             "atomicEffectList": ["MOVE"]
@@ -100,6 +104,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 1,
 
             "atomicEffectList": ["MOVE"]
@@ -118,6 +123,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 4,
 
             "atomicEffectList": ["MOVE"]
@@ -137,6 +143,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 2,
 
             "atomicEffectList": ["MOVE"]
@@ -157,6 +164,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 2,
 
             "atomicEffectList": ["MOVE"]
@@ -176,6 +184,7 @@
             "maxTargets": 1,
             "sameAsPlayer": true,
 
+            "minDist": 1,
             "maxDist": 3,
 
             "atomicEffectList": ["MOVE"]

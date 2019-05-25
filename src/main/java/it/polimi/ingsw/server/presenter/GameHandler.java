@@ -109,7 +109,7 @@ public class GameHandler {
                             startGame();
                         }
                     },
-                    1000
+                    62000
             );
         }
 
@@ -201,7 +201,7 @@ public class GameHandler {
                             .forEach(GameHandler.this::randomSpawn);
                 }
             }
-        }, 1000);
+        }, 60000);
 
         new Thread(() -> {
 
@@ -242,7 +242,7 @@ public class GameHandler {
         this.nextPlayer();
 
         ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
-                this.model.getBoard().toJsonObject().toString());
+                this.toJsonObject().toString());
     }
 
     public JsonObject toJsonObject() {
