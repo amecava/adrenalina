@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
@@ -9,20 +10,11 @@ import it.polimi.ingsw.server.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.server.model.points.PointHandler;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 public class Model {
 
@@ -47,11 +39,6 @@ public class Model {
         return this.playerList;
     }
 
-    public void setPlayerList(List<Player> playerList) {
-
-        this.playerList = playerList;
-    }
-
     public void createBoard(int vote) {
 
         this.board = new Board.BoardBuilder(this.effectHandler).build(vote);
@@ -62,15 +49,16 @@ public class Model {
         return this.board;
     }
 
-    public Player addPlayer(String playerId, String character) throws LoginException {
+    public EffectHandler getEffectHandler() {
 
-        if (Color.ofCharacter(character) == null) {
+        return this.effectHandler;
+    }
 
-            throw new LoginException("Il personaggio selezionato non esiste.");
-        }
+    public Player addPlayer(String playerId, String character) throws LoginException, ColorException {
+
 
         if (this.playerList.stream()
-                .anyMatch(x -> x.getColor().equals(Color.ofCharacter(character)))) {
+                .anyMatch(x -> x.getColor().equals(Color.getColor(character)))) {
 
             throw new LoginException("Il personaggio selezionato è già stato preso.");
         }
@@ -87,12 +75,28 @@ public class Model {
         return this.activePlayer;
     }
 
-    public synchronized void setActivePlayer(Player activePlayer) {
+    public synchronized void nextPlayer() {
 
         if (this.activePlayer != null) {
+
             this.activePlayer.setActivePlayer(false);
+
         }
-        this.activePlayer = activePlayer;
+
+        if (this.activePlayer == null) {
+
+            this.playerList.get(0).setFirstPlayer(true);
+            this.activePlayer = this.playerList.get(0);
+
+        } else if (this.playerList.indexOf(this.activePlayer) == this.playerList.size() - 1) {
+
+            this.activePlayer = this.playerList.get(0);
+
+        } else {
+
+            this.activePlayer = this.playerList.get(this.playerList.indexOf(this.activePlayer) + 1);
+        }
+
         this.activePlayer.setActivePlayer(true);
 
         this.effectHandler.setActivePlayer(activePlayer);
@@ -100,6 +104,7 @@ public class Model {
         if (this.activePlayer.getAdrenalin().equals(Adrenalin.SECONDFRENZY)) {
 
             this.activePlayer.setRemainingActions(1);
+
         } else {
 
             this.activePlayer.setRemainingActions(2);
@@ -127,19 +132,7 @@ public class Model {
 
         this.board.fillBoard();
     }
-
-    public void startGame() {
-
-        //TODO Random int
-
-        this.playerList.forEach(x ->
-                x.addPowerUp(this.board.getPowerUp()));
-        this.playerList.forEach(x ->
-                x.addPowerUp(this.board.getPowerUp()));
-        this.playerList.get(0).setFirstPlayer(true);
-        this.setActivePlayer(this.playerList.get(0));
-    }
-
+    
     public JsonObjectBuilder toJsonObject() {
 
         JsonArrayBuilder builder = Json.createArrayBuilder();
@@ -151,6 +144,7 @@ public class Model {
         return Json.createObjectBuilder()
                 .add("numberOfDeaths", this.pointHandler.getNumberOfDeaths())
                 .add("frenzy", this.pointHandler.isFrenzy())
-                .add("playerList", builder.build());
+                .add("playerList", builder.build())
+                .add("board", this.board != null ? this.board.toJsonObject() : JsonValue.NULL);
     }
 }

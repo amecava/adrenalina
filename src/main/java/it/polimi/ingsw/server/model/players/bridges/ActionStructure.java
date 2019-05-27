@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.players.bridges;
 
 import it.polimi.ingsw.server.model.cards.effects.Effect;
+import javax.json.Json;
 import javax.json.JsonObject;
 
 public class ActionStructure {
@@ -108,10 +109,10 @@ public class ActionStructure {
         private int id;
 
         private Boolean move;
+
         private Boolean collect;
         private Boolean reload;
         private Boolean shoot;
-
         private Effect effect;
 
         ActionStructureBuilder(JsonObject jActionObject) {
@@ -151,5 +152,16 @@ public class ActionStructure {
 
             return new ActionStructure(this);
         }
+
+    }
+
+    public JsonObject toJsonObject() {
+
+        return Json.createObjectBuilder()
+                .add("move", move != null ? effect.getMaxDist() : 0)
+                .add("collect", collect != null)
+                .add("reload", reload != null)
+                .add("shoot", shoot != null)
+                .build();
     }
 }

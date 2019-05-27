@@ -19,14 +19,12 @@ import java.util.stream.Collectors;
 
 public class PropertiesAnalyzer {
 
-    private Effect effect;
+    private PropertiesAnalyzer() {
 
-    public void setEffect(Effect effect) {
-
-        this.effect = effect;
+        //
     }
 
-    public void maxTargets(List<Target> target) throws DuplicateException, MaxTargetsException {
+    public static void maxTargets(Effect effect, List<Target> target) throws DuplicateException, MaxTargetsException {
 
         // Launch exception if duplicates found
         if (target.size() != target.stream().distinct().collect(Collectors.toList()).size()) {
@@ -35,24 +33,24 @@ public class PropertiesAnalyzer {
         }
 
         // Launch exception if max targets property is violated
-        if (this.effect.getMaxTargets() != null &&
-                target.size() > this.effect.getMaxTargets()) {
+        if (effect.getMaxTargets() != null &&
+                target.size() > effect.getMaxTargets()) {
 
             throw new MaxTargetsException("Too many targets in the target list!");
         }
     }
 
-    public void sameAsFather(List<Target> active, List<Target> inactive,
+    public static void sameAsFather(Effect effect, List<Target> active, List<Target> inactive,
             List<Target> target) throws SameAsFatherException {
 
         // If the same as father flag is present
-        if (this.effect.getSameAsFather() != null) {
+        if (effect.getSameAsFather() != null) {
 
             // Create new List to avoid ConcurrentModificationException
             List<Target> notFound = new ArrayList<>(target);
 
             try {
-                this.effect.getSameAsFather().forEach(x -> {
+                effect.getSameAsFather().forEach(x -> {
 
                     // Check if all targets eaten
                     if (notFound.isEmpty()) {
@@ -77,13 +75,13 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public void targetView(Player activePlayer, List<Target> targetList)
+    public static void targetView(Effect effect, Player activePlayer, List<Target> targetList)
             throws TargetViewException {
 
         // If the target view flag is present
-        if (this.effect.getTargetView() != null) {
+        if (effect.getTargetView() != null) {
 
-            if (!this.effect.getTargetType().equals(TargetType.ROOM)) {
+            if (!effect.getTargetType().equals(TargetType.ROOM)) {
 
                 for (Target target : targetList) {
 
@@ -91,17 +89,17 @@ public class PropertiesAnalyzer {
                     if ((ViewInspector
                             .targetView(activePlayer.getCurrentPosition(),
                                     target.getCurrentPosition())
-                            && !this.effect.getTargetView()) || (!ViewInspector
+                            && !effect.getTargetView()) || (!ViewInspector
                             .targetView(activePlayer.getCurrentPosition(),
                                     target.getCurrentPosition())
-                            && this.effect.getTargetView())) {
+                            && effect.getTargetView())) {
 
                         throw new TargetViewException("Target view exception!");
                     }
                 }
 
                 // Launch exception if source can't view the targeted rooms
-            } else if (this.effect.getTargetView() && !ViewInspector
+            } else if (effect.getTargetView() && !ViewInspector
                     .roomView(activePlayer.getCurrentPosition(), targetList)) {
 
                 throw new TargetViewException("Room view exception!");
@@ -109,11 +107,11 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public void seenByActive(List<Target> activeList, List<Target> targetList)
+    public static void seenByActive(Effect effect, List<Target> activeList, List<Target> targetList)
             throws TargetViewException {
 
         // If the seen by active flag is present
-        if (this.effect.isSeenByActive()) {
+        if (effect.isSeenByActive()) {
 
             for (Target active : activeList) {
                 for (Target target : targetList) {
@@ -129,10 +127,10 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public void checkDistance(Square activeSquare, List<Target> targetList)
+    public static void checkDistance(Effect effect, Square activeSquare, List<Target> targetList)
             throws SquareDistanceException {
 
-        if (!this.effect.getTargetType().equals(TargetType.ROOM)) {
+        if (!effect.getTargetType().equals(TargetType.ROOM)) {
 
             int distance;
 
@@ -141,16 +139,16 @@ public class PropertiesAnalyzer {
                 // Distance between two squares considering cardinal and throughWalls flags
                 distance = ViewInspector
                         .computeDistance(activeSquare, target.getCurrentPosition(),
-                                this.effect.isCardinal(), this.effect.isThroughWalls());
+                                effect.isCardinal(), effect.isThroughWalls());
 
                 // Launch exception if the distance is lower than the minDist property
-                if (this.effect.getMinDist() != null && distance < this.effect.getMinDist()) {
+                if (effect.getMinDist() != null && distance < effect.getMinDist()) {
 
                     throw new SquareDistanceException("Distance metrics not satisfied!");
                 }
 
                 // Launch exception if the distance is greater than the maxDist property
-                if (this.effect.getMaxDist() != null && distance > this.effect.getMaxDist()) {
+                if (effect.getMaxDist() != null && distance > effect.getMaxDist()) {
 
                     throw new SquareDistanceException("Distance metrics not satisfied!");
                 }
@@ -158,18 +156,18 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public void checkCardinal(Square activeSquare, List<Target> targetList)
+    public static void checkCardinal(Effect effect, Square activeSquare, List<Target> targetList)
             throws CardinalException {
 
         // Launch exception if the cardinal flag is true and targets not in same direction
-        if (this.effect.isCardinal() && !ViewInspector
+        if (effect.isCardinal() && !ViewInspector
                 .sameDirection(activeSquare, targetList)) {
 
             throw new CardinalException("Targets are not on same cardinal direction!");
         }
 
         // If the different squares flag is true
-        if (this.effect.isDifferentSquares()) {
+        if (effect.isDifferentSquares()) {
 
             // Duplicates will have the same key and will not be added to the set
             HashSet<Target> duplicate = new HashSet<>();
@@ -182,14 +180,14 @@ public class PropertiesAnalyzer {
         }
     }
 
-    public void sameAsPlayer(Player activePlayer, List<Target> target)
+    public static void sameAsPlayer(Effect effect, Player activePlayer, List<Target> target)
             throws SameAsPlayerException {
 
         // Same as player flag true
-        if (this.effect.isSameAsPlayer()) {
+        if (effect.isSameAsPlayer()) {
 
             // Launch exception if any target on different position of active player
-            if (this.effect.getArgs() == 2 && target.stream().anyMatch(
+            if (effect.getArgs() == 2 && target.stream().anyMatch(
                     x -> !x.getCurrentPosition().equals(activePlayer.getCurrentPosition()))) {
 
                 throw new SameAsPlayerException("Targets on different position of active player!");
@@ -197,7 +195,7 @@ public class PropertiesAnalyzer {
 
             // Launch exception if any target on same position of active player
         } else if (target.stream().anyMatch(x -> x.equals(activePlayer)) || (
-                this.effect.getTargetType().equals(TargetType.ROOM) && target.stream()
+                effect.getTargetType().equals(TargetType.ROOM) && target.stream()
                         .anyMatch(x -> x.equals(activePlayer.getCurrentPosition().getRoom())))) {
 
             throw new SameAsPlayerException("Same as player flag is false!");

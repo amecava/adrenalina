@@ -7,6 +7,7 @@ import it.polimi.ingsw.server.model.players.bridges.Bridge;
 import it.polimi.ingsw.server.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class PointHandler {
@@ -82,55 +83,54 @@ public class PointHandler {
 
     public boolean checkEndGame() {
 
-        if (deaths.isGameEnded()) {
+        if (!deaths.isGameEnded()) {
 
-            if (!frenzyEnabled) {
-
-                return true;
-            } else {
-
-                Player activePlayer = this.playerList.stream().filter(Player::isActivePlayer)
-                        .findFirst().get();
-
-                if (this.firstFrenzyPlayer == null) {
-
-                    // Sets end game true so that adrenalin doesn't change !!
-                    this.playerList.forEach(
-                            x -> x.setFrenzyActions(true));
-
-                    // Flips the damage bridge and gives new points for each kill
-                    //also there isn't the first blood damage!!
-                    this.playerList.stream()
-                            .filter(x -> x.getShots().isEmpty())
-                            .forEach(Player::setFrenzy);
-
-                    Player tempPlayer = this.getNextPlayer(activePlayer);
-
-                    while (!tempPlayer.isFirstPlayer()) {
-
-                        tempPlayer.setAdrenalin(Adrenalin.FIRSTFRENZY);
-                        tempPlayer = this.getNextPlayer(tempPlayer);
-                    }
-
-                    while (tempPlayer != activePlayer) {
-
-                        tempPlayer.setAdrenalin(Adrenalin.SECONDFRENZY);
-                        tempPlayer = this.getNextPlayer(tempPlayer);
-                    }
-
-                    this.firstFrenzyPlayer = this.getNextPlayer(activePlayer);
-
-                } else {
-
-                    if (this.getNextPlayer(activePlayer) == firstFrenzyPlayer) {
-
-                        return true;
-                    }
-                }
-            }
+            return false;
         }
 
-        return false;
+        if (frenzyEnabled) {
+
+            Player activePlayer = this.playerList.stream()
+                    .filter(Player::isActivePlayer)
+                    .findFirst()
+                    .orElseThrow(NoSuchElementException::new);
+
+            if (this.firstFrenzyPlayer == null) {
+
+                // Sets end game true so that adrenalin doesn't change !!
+                this.playerList.forEach(
+                        x -> x.setFrenzyActions(true));
+
+                // Flips the damage bridge and gives new points for each kill
+                //also there isn't the first blood damage!!
+                this.playerList.stream()
+                        .filter(x -> x.getShots().isEmpty())
+                        .forEach(Player::setFrenzy);
+
+                Player tempPlayer = this.getNextPlayer(activePlayer);
+
+                while (!tempPlayer.isFirstPlayer()) {
+
+                    tempPlayer.setAdrenalin(Adrenalin.FIRSTFRENZY);
+                    tempPlayer = this.getNextPlayer(tempPlayer);
+                }
+
+                while (tempPlayer != activePlayer) {
+
+                    tempPlayer.setAdrenalin(Adrenalin.SECONDFRENZY);
+                    tempPlayer = this.getNextPlayer(tempPlayer);
+                }
+
+                this.firstFrenzyPlayer = this.getNextPlayer(activePlayer);
+
+                return false;
+
+            }
+
+            return this.getNextPlayer(activePlayer) == firstFrenzyPlayer;
+        }
+
+        return true;
     }
 
     public List<List<Player>> endGame() {

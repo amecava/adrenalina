@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 class ActionBridge {
@@ -120,7 +122,11 @@ class ActionBridge {
 
         if (number >= this.possibleActions.size()) {
 
-            throw new IllegalActionException("Action not present!");
+            throw new IllegalActionException("L'azione selezionata non è disponibile adesso.");
+
+        } else if (this.currentAction != null) {
+
+            throw new IllegalActionException("Prima completa l'azione che hai selezionato in precedenza scrivendo \"fineazione\".");
         }
 
         this.currentAction = this.possibleActions.get(number);
@@ -195,6 +201,18 @@ class ActionBridge {
                 break;
         }
 
+    }
+
+    public JsonObject toJsonObject() {
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        this.possibleActions.stream().map(ActionStructure::toJsonObject).forEach(arrayBuilder::add);
+
+        return Json.createObjectBuilder()
+                .add("possibleActionsArray", arrayBuilder.build())
+                .add("isFirstPlayer", firstPlayer)
+                .build();
     }
 
     public static class ActionBridgeBuilder {

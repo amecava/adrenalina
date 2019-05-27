@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server.model.points;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
 public class PointsOfDeath {
 
     private int value;
@@ -25,5 +28,13 @@ public class PointsOfDeath {
         this.used = true;
 
         return this.value;
+    }
+
+    public JsonObject toJsonObject() {
+
+        return Json.createObjectBuilder()
+                .add("used", this.used)
+                .add("value", this.value)
+                .build();
     }
 }

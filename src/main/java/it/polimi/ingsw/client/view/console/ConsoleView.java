@@ -8,6 +8,7 @@ import it.polimi.ingsw.virtual.VirtualView;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import javax.json.Json;
@@ -17,6 +18,8 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 public class ConsoleView implements View, VirtualView {
+
+    private String id;
 
     public ConsoleView() {
 
@@ -136,9 +139,9 @@ public class ConsoleView implements View, VirtualView {
         Terminal.output("Vota l'arena con il comando \"votaarena\" seguito dal numero dell'arena che vuoi utilizzare.");
 
         Terminal.output("");
-        Terminal.output("1: \u001b[34m█ █ █  \u001b[0m  2: █ █ █ █\u001b[0m  3: █ █ █ █\u001b[0m  4: █ █ █ █\u001b[0m");
-        Terminal.output("   \u001b[31m█ █ █ \u001b[33m█\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
-        Terminal.output("   \u001b[37m  █ █ \u001b[33m█\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+        Terminal.output("1: \u001b[34m█ █ █  \u001b[0m  2:\u001b[34m █ █ █ \u001b[32m█\u001b[0m  3: █ █ █ █\u001b[0m  4: █ █ █ █\u001b[0m");
+        Terminal.output("   \u001b[31m█ █ █ \u001b[33m█\u001b[0m     \u001b[31m█ █\u001b[33m █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+        Terminal.output("   \u001b[37m  █ █ \u001b[33m█\u001b[0m     \u001b[37m  █ \u001b[33m█ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
         Terminal.output("");
     }
 
@@ -181,7 +184,22 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public void completeLogin(String value) {
 
-        this.infoMessage(value);
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+
+            JsonObject jsonObject = reader.readObject();
+
+            this.id =jsonObject.getString("playerId");
+
+            if (jsonObject.getBoolean("isGameStarted") && jsonObject.containsKey("gameId")) {
+
+                this.infoMessage("Login effettuato come " + jsonObject.getString("playerId") +
+                        "e riconnesso alla partita " + jsonObject.getString("gameId"));
+            } else {
+
+                this.infoMessage("Login effettuato come " + jsonObject.getString("playerId"));
+            }
+        }
+
     }
 
     @Override
@@ -203,7 +221,7 @@ public class ConsoleView implements View, VirtualView {
 
                 Terminal.output("Non sono ancora state create partite.");
                 Terminal.output("Creane una con il comando \"creapartita nomePartita(nome) "
-                        + "numeroMorti(numero intero) frenesia(vero/falso)\".");
+                        + "numeroMorti(numero intero) frenesia(o niente se vuoi giocare senza)\".");
 
             } else {
 
@@ -269,7 +287,7 @@ public class ConsoleView implements View, VirtualView {
 
                 case 60:
 
-                    Terminal.output("Raggiunto il numero minimo di giocatori la partita inizierà dopo un minuto.\n\n\n\n\n");
+                    Terminal.output("Raggiunto il numero minimo di giocatori, la partita inizierà dopo un minuto.\n\n\n\n\n");
                     break;
 
                 case 5:
@@ -327,13 +345,13 @@ public class ConsoleView implements View, VirtualView {
 
             JsonObject jsonObject = reader.readObject();
 
-            BoardDrawer.drawBoard(jsonObject).forEach(x -> {
-                Terminal.output(x[0].toString());
-                Terminal.output(x[1].toString());
-                Terminal.output(x[2].toString());
-                Terminal.output(x[3].toString());
-                Terminal.output(x[4].toString());
-            });
+            StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject, this.id);
+
+            Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
+
+        } catch (IllegalArgumentException e ) {
+
+            Terminal.error("Non sei loggato a nessuna partita.");
         }
     }
 

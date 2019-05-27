@@ -1,21 +1,24 @@
 package it.polimi.ingsw.server.model.players;
 
+import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
+import it.polimi.ingsw.virtual.JsonUtility;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public enum Color {
 
-    YELLOW("\u001b[33m", ":d-strutt-or3"),
-    LIGHTBLUE("\u001b[36m", "banshee"),
-    GRAY("\u001b[37m", "dozer"),
-    VIOLET("\u001b[35m", "violetta"),
-    GREEN("\u001b[32m", "sprog"),
-    RED("\u001b[31m"),
-    BLUE("\u001b[34m"),
-    WHITE("\u001b[37m"),
-    ALL("\u001b[0m");
+    YELLOW("Giallo", "\u001b[33m", ":D-strutt-OR3"),
+    LIGHTBLUE("Azzurro", "\u001b[36m", "Banshee"),
+    GRAY("Grigio", "\u001b[37m", "Dozer"),
+    VIOLET("Viola", "\u001b[35m", "Violetta"),
+    GREEN("Verde", "\u001b[32m", "Sprog"),
+    RED("Rosso", "\u001b[31m"),
+    BLUE("Blu", "\u001b[34m"),
+    WHITE("Bianco", "\u001b[37m"),
+    ALL("All", "\u001b[0m");
 
+    private final String name;
     private final String ansiColor;
     private final String character;
 
@@ -28,16 +31,23 @@ public enum Color {
                 .forEach(x -> map.put(x.character, x));
     }
 
-    Color(String ansiColor) {
+    Color(String name, String ansiColor) {
 
+        this.name = name;
+        this.ansiColor = ansiColor;
         this.character = null;
+    }
+
+    Color(String name, String ansiColor, String character) {
+
+        this.name = name;
+        this.character = character;
         this.ansiColor = ansiColor;
     }
 
-    Color(String ansiColor, String character) {
+    public String getName() {
 
-        this.character = character;
-        this.ansiColor = ansiColor;
+        return this.name;
     }
 
     public String getCharacter() {
@@ -45,12 +55,29 @@ public enum Color {
         return this.character;
     }
 
-    public static Color ofCharacter(String character) {
+    public static Color getColor(String character) {
 
         return map.get(character);
     }
 
-    public static String ansiColor(String color) {
+    public static Color ofName(String name) throws ColorException {
+
+        return Arrays.stream(values())
+                .filter(x -> JsonUtility.levenshteinDistance(name.toLowerCase(), x.name) <= 1)
+                .findFirst()
+                .orElseThrow(() -> new ColorException("Il colore selezionato non esiste."));
+    }
+
+    public static Color ofCharacter(String characterName) throws ColorException {
+
+        return Arrays.stream(values())
+                .filter(x -> x.character != null)
+                .filter(x -> JsonUtility.levenshteinDistance(characterName, x.character) <= 3)
+                .findFirst()
+                .orElseThrow(() -> new ColorException("Il personaggio selezionato non esiste."));
+    }
+
+    public static String ansiColorOf(String color) {
 
         return Color.valueOf(color).ansiColor;
     }

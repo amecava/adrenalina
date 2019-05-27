@@ -15,6 +15,7 @@ class DeathsTest {
 
     @Test
     void endGame() {
+
         EffectHandler effectHandler = new EffectHandler();
         List<Player> playerList = new ArrayList<>();
         Player player1 = new Player("Jacopo", Color.BLUE);

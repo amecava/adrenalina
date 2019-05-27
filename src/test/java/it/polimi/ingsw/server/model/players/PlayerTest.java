@@ -11,7 +11,7 @@ import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
 import it.polimi.ingsw.server.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.server.model.exceptions.cards.FullHandException;
-import it.polimi.ingsw.server.model.exceptions.cards.SquareTypeException;
+import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +67,7 @@ class PlayerTest {
             assertEquals(Arrays.asList(Color.YELLOW, Color.RED, Color.YELLOW),
                     ((AmmoTile) tester).getAmmoCubesList());
 
-        } catch (SquareTypeException | EmptySquareException e) {
+        } catch (SquareException | EmptySquareException e) {
             fail();
         } catch (IllegalActionException e) {
             assertTrue(true);
@@ -89,7 +89,7 @@ class PlayerTest {
             assertEquals(Arrays.asList(Color.YELLOW, Color.BLUE),
                     ((AmmoTile) tester).getAmmoCubesList());
 
-        } catch (SquareTypeException | EmptySquareException e) {
+        } catch (SquareException | EmptySquareException e) {
             fail();
         } catch (IllegalActionException e) {
             assertTrue(true);
@@ -111,7 +111,7 @@ class PlayerTest {
             assertEquals(Arrays.asList(Color.YELLOW, Color.RED),
                     ((AmmoTile) tester).getAmmoCubesList());
 
-        } catch (SquareTypeException | EmptySquareException e) {
+        } catch (SquareException | EmptySquareException e) {
             fail();
         } catch (IllegalActionException e) {
             assertTrue(true);
@@ -127,7 +127,7 @@ class PlayerTest {
         } catch (EmptySquareException e) {
 
             assertTrue(true);
-        } catch (SquareTypeException e) {
+        } catch (SquareException e) {
 
             fail();
         } catch (IllegalActionException e) {
@@ -141,7 +141,7 @@ class PlayerTest {
 
             player.collect();
             fail();
-        } catch (SquareTypeException e) {
+        } catch (SquareException e) {
 
             assertTrue(true);
         } catch (EmptySquareException e) {
@@ -171,7 +171,7 @@ class PlayerTest {
 
             fail();
 
-        } catch (FullHandException | SquareTypeException e) {
+        } catch (FullHandException | SquareException e) {
 
             fail();
         } catch (EmptySquareException e) {
@@ -194,7 +194,7 @@ class PlayerTest {
         } catch (FullHandException | EmptySquareException e) {
 
             fail();
-        } catch (SquareTypeException e) {
+        } catch (SquareException e) {
 
             assertTrue(true);
         } catch (CardException e) {
@@ -216,7 +216,7 @@ class PlayerTest {
 
             fail();
 
-        } catch (SquareTypeException | EmptySquareException e) {
+        } catch (SquareException | EmptySquareException e) {
 
             fail();
         } catch (FullHandException e) {
@@ -238,7 +238,7 @@ class PlayerTest {
             player.collect(1);
 
             assertEquals("LOCK RIFLE", player.getWeaponCardList().get(0).getName());
-        } catch (SquareTypeException | FullHandException | EmptySquareException e) {
+        } catch (SquareException | FullHandException | EmptySquareException e) {
             fail();
         } catch (CardException e) {
             fail();
@@ -265,7 +265,7 @@ class PlayerTest {
 
             fail();
 
-        } catch (SquareTypeException | FullHandException e) {
+        } catch (SquareException | FullHandException e) {
 
             fail();
         } catch (EmptySquareException e) {
@@ -299,7 +299,7 @@ class PlayerTest {
 
             fail();
 
-        } catch (SquareTypeException | EmptySquareException e) {
+        } catch (SquareException | EmptySquareException e) {
 
             fail();
 
@@ -324,7 +324,7 @@ class PlayerTest {
             assertTrue(player.getCurrentPosition().getTools().stream().map(x -> (WeaponCard) x)
                     .anyMatch(y -> y.getId() == 15));
 
-        } catch (SquareTypeException | EmptySquareException e) {
+        } catch (SquareException | EmptySquareException e) {
 
             fail();
 

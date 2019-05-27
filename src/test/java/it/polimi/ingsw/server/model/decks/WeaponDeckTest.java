@@ -40,11 +40,16 @@ class WeaponDeckTest {
                 effect.getOptionalId()
         );
 
+        assertNull(tester.getNotes());
+
         assertEquals(
-                Arrays.asList(AtomicType.DAMAGE, AtomicType.DAMAGE, AtomicType.MARK),
-                effect.getAtomicEffectList().stream().map(AtomicEffect::getAtomicType)
-                        .collect(Collectors.toList())
+                tester.getName(),
+                "LOCK RIFLE"
         );
+
+        assertEquals(tester.getOptionalList().get(0).getName(), "with second lock");
+
+        assertEquals(tester.getOptionalList().get(0).getDescription(), "Deal 1 mark to a different target you can see.");
 
         assertNull(effect.getActivated());
 

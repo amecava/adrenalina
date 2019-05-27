@@ -84,5 +84,59 @@
                 "error": "Devi scrivere il colore del power up da utilizzare."
             }
         ]
+    },
+    {
+        "input": ["selezionaazione"],
+        "method": "selectAction",
+        "value": [
+            {
+                "name": "actionNumber",
+                "regex": "(\\s*)([1-9]|10)(\\s*)",
+                "error": "Devi scrivere un numero da 1 a 3."
+            }
+        ]
+    },
+    {
+        "input": ["corri", "muovi"],
+        "method": "moveAction",
+        "value": [
+            {
+                "name": "squareColor",
+                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "error": "Devi scrivere il colore del quadrato in cui vuoi muoverti."
+            },
+            {
+                "name": "squareId",
+                "regex": "(\\s*)([0-3])(\\s*)",
+                "error": "Devi scrivere il numero del quadrato in cui vuoi muoverti (da 0 a 3)."
+            }
+        ]
+    },
+    {
+        "input": ["raccogli"],
+        "method": "askCollect",
+        "value": [
+            {
+                "name": "collectId",
+                "regex": "(\\s*)([1-9]|1[0-9]|2[0-4]|)(\\s*)",
+                "error": "Devi scrivere l'id della carta che vuoi raccogliere."
+            },
+            {
+                "name": "discardId",
+                "regex": "(\\s*)([1-9]|1[0-9]|2[0-4]|)(\\s*)",
+                "error": "Devi scrivere l'id della carta che vuoi scartare."
+            }
+        ]
+    },
+    {
+        "input": ["fineturno"],
+        "method": "endOfTurn",
+        "value": [
+            {
+                "name": "endOfTurn",
+                "regex": "(\\s*)(\\s*)(\\s*)",
+                "error": "Non scrivere niente dopo fineturno."
+            }
+        ]
     }
 ]

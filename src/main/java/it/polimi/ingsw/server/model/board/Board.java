@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model.board;
 
+import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
+import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.board.rooms.Connection;
 import it.polimi.ingsw.server.model.board.rooms.Direction;
@@ -10,9 +12,11 @@ import it.polimi.ingsw.server.model.decks.AmmoTilesDeck;
 import it.polimi.ingsw.server.model.decks.PowerUpDeck;
 import it.polimi.ingsw.server.model.decks.WeaponDeck;
 import it.polimi.ingsw.server.model.board.rooms.Room;
+import it.polimi.ingsw.server.model.players.Player;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -56,6 +60,11 @@ public class Board {
         return this.weaponDeck;
     }
 
+    public AmmoTilesDeck getAmmoTilesDeck() {
+
+        return this.ammoTilesDeck;
+    }
+
     public PowerUpDeck getPowerUpDeck() {
 
         return this.powerUpDeck;
@@ -82,6 +91,35 @@ public class Board {
                 });
     }
 
+    public Square findSpawn(Color color) throws SquareException {
+
+        return this.roomsList.stream()
+                .filter(x -> x.getColor().equals(color))
+                .flatMap(x -> x.getSquaresList().stream())
+                .filter(Square::isSpawn)
+                .findFirst()
+                .orElseThrow(() -> new SquareException("In questa stanza non c'è uno spawn."));
+    }
+
+    public Square findSquare(String name, String id) throws SquareException, ColorException {
+
+        try {
+
+            Color color = Color.ofName(name);
+
+            return this.roomsList.stream()
+                    .filter(x -> x.getColor().equals(color))
+                    .flatMap(y -> y.getSquaresList().stream())
+                    .filter(z -> z.getSquareId() == Integer.valueOf(id))
+                    .findAny()
+                    .orElseThrow(NoSuchElementException::new);
+
+        } catch (NoSuchElementException e) {
+
+            throw new SquareException("Il quadrato che hai scelto non esiste.");
+        }
+    }
+
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder builder;
@@ -102,11 +140,11 @@ public class Board {
                 j++;
             }
 
-            //TODO fix
             builder.add(tmpSquare.toJsonObject());
 
             j++;
             while (!tmpSquare.getConnection(Direction.EAST).equals(Connection.ENDMAP)) {
+
 
                 tmpSquare = tmpSquare.getAdjacent(Direction.EAST);
                 builder.add(tmpSquare.toJsonObject());
@@ -122,15 +160,28 @@ public class Board {
             board.add(builder.build());
 
             i++;
+
+            //qui l'errore, la room 1 non è più sotto la 0, cazzo
             tmpSquare = this.roomsList.get(i).getSquare(0);
         }
 
         builder = Json.createArrayBuilder();
         board.forEach(builder::add);
 
+        JsonArrayBuilder players = Json.createArrayBuilder();
+
+        this.roomsList.stream()
+                .flatMap(x -> x.getSquaresList().stream())
+                .filter(y -> !y.getPlayers().isEmpty())
+                .flatMap(z -> z.getPlayers().stream())
+                .map(Player::toJsonObject)
+                .forEach(players::add);
+
         return Json.createObjectBuilder()
                 .add("boardId", this.boardId)
-                .add("arrays", builder.build()).build();
+                .add("arrays", builder.build())
+                .add("playerList", players.build())
+                .build();
     }
 
     public static class BoardBuilder {

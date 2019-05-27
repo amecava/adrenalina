@@ -143,7 +143,7 @@ public class Square implements Target {
             return (AmmoTile) this.tools.remove(0);
         }
 
-        throw new EmptySquareException("You already collected everything in this square!");
+        throw new EmptySquareException("Hai già raccolto le munizioni in questo quadrato.");
     }
 
     public Card collectWeaponCard(int id) throws EmptySquareException {
@@ -153,7 +153,7 @@ public class Square implements Target {
                         .map(x -> (WeaponCard) x)
                         .filter(y -> y.getId() == id)
                         .findAny().orElseThrow(() ->
-                        new EmptySquareException("The card you selected is not in this square"))));
+                        new EmptySquareException("La carta che vuoi raccogliere non è in questo quadrato."))));
     }
 
     public Card collectWeaponCard(WeaponCard playerCard, int squareCardId)
