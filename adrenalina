@@ -3,14 +3,11 @@
 if type -p java;
 then
     _java=java
-elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];
-then
-    _java="$JAVA_HOME/bin/java" 2> /dev/null
 else
-    echo "Java not found."
+    _java="$JAVA_HOME/bin/java" 2> /dev/null
 fi
 
-if [[ ! $@ =~ ^\-.+ ]]
+if [[ ! $@ =~ ^\-.+ ]];
 then
   echo "Usage:"
       echo "    adrenalina -s    Adrenalina server."
