@@ -26,14 +26,12 @@ public class EffectHandler {
     private List<Target> active = new ArrayList<>();
     private List<Target> inactive = new ArrayList<>();
 
-    private PropertiesAnalyzer propertiesAnalyzer = new PropertiesAnalyzer();
-
-    public Player getActivePlayer() {
+    public synchronized Player getActivePlayer() {
 
         return this.activePlayer;
     }
 
-    public void setActivePlayer(Player activePlayer) {
+    public synchronized void setActivePlayer(Player activePlayer) {
 
         this.activePlayer = activePlayer;
         this.activeSquare = activePlayer.getCurrentPosition();
@@ -49,12 +47,13 @@ public class EffectHandler {
         return this.inactive;
     }
 
-    public void useEffect(Effect effect, EffectArgument target) throws EffectException, PropertiesException {
+    public synchronized void useEffect(Effect effect, EffectArgument target)
+            throws EffectException, PropertiesException {
 
         // Launch exception if atomic target is null
         if (target == null) {
 
-            throw new NullPointerException();
+            throw new EffectException("Null pointer effect argument.");
         }
 
         // Launch exception if effect already used
@@ -66,7 +65,8 @@ public class EffectHandler {
         // Launch exception if effect is not activated
         if (effect.getActivated() != null && !effect.getActivated()) {
 
-            throw new EffectNotActivatedException("Non puoi usare questo effetto in questo momento.");
+            throw new EffectNotActivatedException(
+                    "Non puoi usare questo effetto in questo momento.");
         }
 
         // Launch exception if wrong method call
@@ -157,7 +157,7 @@ public class EffectHandler {
             return this.createTargetForNoArgumentsEffects(effect, target);
         }
 
-        if (target.getArgs() == 1 && effect.isSameAsPlayer()) {
+        if ((target.getArgs() == 0.5 || target.getArgs() == 1) && effect.isSameAsPlayer()) {
 
             // Move active player types of effects
             if (effect.getTargetType().equals(TargetType.PLAYER)
@@ -210,7 +210,10 @@ public class EffectHandler {
                 // Apply on active square types of effects
             } else if (effect.getTargetType().equals(TargetType.SQUARE)) {
 
-                target.appendTarget(this.activeSquare);
+                this.activeSquare.getPlayers().stream()
+                        .filter(x -> !x.equals(this.activePlayer))
+                        .forEach(target::appendTarget);
+
             }
 
             // Create target list for same as father types of effect
@@ -241,30 +244,28 @@ public class EffectHandler {
     private Effect checkProperties(Effect effect, EffectArgument target)
             throws PropertiesException {
 
-        this.propertiesAnalyzer.setEffect(effect);
-
         // Check max number of targets property
-        this.propertiesAnalyzer.maxTargets(target.getTargetList());
+        PropertiesAnalyzer.maxTargets(effect, target.getTargetList());
 
         // Check same as father property (to sublist of target list if destination square appended)
-        this.propertiesAnalyzer.sameAsFather(this.active, this.inactive, target.getTargetList());
+        PropertiesAnalyzer.sameAsFather(effect, this.active, this.inactive, target.getTargetList());
 
         // Check target view property (to sublist of target list if destination square appended)
-        this.propertiesAnalyzer.targetView(this.activePlayer, target.getTargetList());
+        PropertiesAnalyzer.targetView(effect, this.activePlayer, target.getTargetList());
 
         // Check seen by active property
-        this.propertiesAnalyzer.seenByActive(this.active, target.getTargetList());
+        PropertiesAnalyzer.seenByActive(effect, this.active, target.getTargetList());
 
         // Check distance properties (to sublist of target list if destination square appended)
-        this.propertiesAnalyzer.checkDistance(target.getDestination() == null
+        PropertiesAnalyzer.checkDistance(effect, target.getDestination() == null
                 ? this.activeSquare : target.getDestination(), target.getTargetList());
 
         // Check cardinal properties
-        this.propertiesAnalyzer.checkCardinal(target.getDestination() == null
+        PropertiesAnalyzer.checkCardinal(effect, target.getDestination() == null
                 ? this.activeSquare : target.getDestination(), target.getTargetList());
 
         // Check same as player property and update target list if needed
-        this.propertiesAnalyzer.sameAsPlayer(this.activePlayer, target.getTargetList());
+        PropertiesAnalyzer.sameAsPlayer(effect, this.activePlayer, target.getTargetList());
 
         // Recursively call check properties for move effect types
         if (effect.getNext() != null && effect.getNext().getTargetType().equals(TargetType.MOVE)) {

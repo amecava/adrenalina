@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
+import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
@@ -9,19 +10,9 @@ import it.polimi.ingsw.server.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.server.model.points.PointHandler;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -48,11 +39,6 @@ public class Model {
         return this.playerList;
     }
 
-    public void setPlayerList(List<Player> playerList) {
-
-        this.playerList = playerList;
-    }
-
     public void createBoard(int vote) {
 
         this.board = new Board.BoardBuilder(this.effectHandler).build(vote);
@@ -68,15 +54,11 @@ public class Model {
         return this.effectHandler;
     }
 
-    public Player addPlayer(String playerId, String character) throws LoginException {
+    public Player addPlayer(String playerId, String character) throws LoginException, ColorException {
 
-        if (Color.ofCharacter(character) == null) {
-
-            throw new LoginException("Il personaggio selezionato non esiste.");
-        }
 
         if (this.playerList.stream()
-                .anyMatch(x -> x.getColor().equals(Color.ofCharacter(character)))) {
+                .anyMatch(x -> x.getColor().equals(Color.getColor(character)))) {
 
             throw new LoginException("Il personaggio selezionato è già stato preso.");
         }
@@ -108,7 +90,6 @@ public class Model {
 
         } else if (this.playerList.indexOf(this.activePlayer) == this.playerList.size() - 1) {
 
-            //TODO fix
             this.activePlayer = this.playerList.get(0);
 
         } else {

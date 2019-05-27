@@ -21,7 +21,6 @@ class ViewInspectorTest {
     private int distOne;
     private boolean cardinal = true;
     private boolean throughWalls = true;
-    private ViewInspector viewInspector = new ViewInspector();
 
     private Square one = board.getRoom(2).getSquare(1);
     private Square two = board.getRoom(0).getSquare(2);
@@ -39,7 +38,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(one, two, cardinal, throughWalls);
+            distOne = ViewInspector.computeDistance(one, two, cardinal, throughWalls);
             assertEquals(2, distOne);
 
         } catch (SquareDistanceException e) {
@@ -48,7 +47,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(three, four, cardinal, !throughWalls);
+            distOne = ViewInspector.computeDistance(three, four, cardinal, !throughWalls);
 
         } catch (SquareDistanceException e) {
             assertTrue(true);
@@ -56,7 +55,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(three, four, cardinal, throughWalls);
+            distOne = ViewInspector.computeDistance(three, four, cardinal, throughWalls);
             assertEquals(2, distOne);
         } catch (SquareDistanceException e) {
             fail();
@@ -64,7 +63,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(five, six, !cardinal, !throughWalls);
+            distOne = ViewInspector.computeDistance(five, six, !cardinal, !throughWalls);
             assertEquals(5, distOne);
 
         } catch (SquareDistanceException e) {
@@ -73,7 +72,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(five, five, !cardinal, !throughWalls);
+            distOne = ViewInspector.computeDistance(five, five, !cardinal, !throughWalls);
             assertEquals(0, distOne);
 
         } catch (SquareDistanceException e) {
@@ -82,7 +81,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(five, two, !cardinal, !throughWalls);
+            distOne = ViewInspector.computeDistance(five, two, !cardinal, !throughWalls);
             assertEquals(2, distOne);
 
         } catch (SquareDistanceException e) {
@@ -91,7 +90,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(four, seven, !cardinal, !throughWalls);
+            distOne = ViewInspector.computeDistance(four, seven, !cardinal, !throughWalls);
             assertEquals(3, distOne);
 
         } catch (SquareDistanceException e) {
@@ -100,7 +99,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(four, seven, !cardinal, throughWalls);
+            distOne = ViewInspector.computeDistance(four, seven, !cardinal, throughWalls);
             assertEquals(1, distOne);
 
         } catch (SquareDistanceException e) {
@@ -109,7 +108,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(one, two, !cardinal, !throughWalls);
+            distOne = ViewInspector.computeDistance(one, two, !cardinal, !throughWalls);
             assertEquals(4, distOne);
 
         } catch (SquareDistanceException e) {
@@ -118,7 +117,7 @@ class ViewInspectorTest {
 
         try {
 
-            distOne = viewInspector.computeDistance(one, four, !cardinal, !throughWalls);
+            distOne = ViewInspector.computeDistance(one, four, !cardinal, !throughWalls);
             assertEquals(5, distOne);
 
         } catch (SquareDistanceException e) {
@@ -130,11 +129,11 @@ class ViewInspectorTest {
     @Test
     void targetView() {
 
-        assertTrue(viewInspector.targetView(one, three));
-        assertTrue(!viewInspector.targetView(one, two));
-        assertTrue(viewInspector.targetView(five, seven));
-        assertTrue(viewInspector.targetView(six, three));
-        assertTrue(!viewInspector.targetView(four, seven));
+        assertTrue(ViewInspector.targetView(one, three));
+        assertTrue(!ViewInspector.targetView(one, two));
+        assertTrue(ViewInspector.targetView(five, seven));
+        assertTrue(ViewInspector.targetView(six, three));
+        assertTrue(!ViewInspector.targetView(four, seven));
     }
 
     @Test
@@ -144,13 +143,13 @@ class ViewInspectorTest {
         test.add(two);
         test.add(four);
 
-        assertTrue(viewInspector.sameDirection(five, test));
+        assertTrue(ViewInspector.sameDirection(five, test));
 
         test.clear();
         test.add(six);
         test.add(one);
 
-        assertTrue(viewInspector.sameDirection(three, test));
+        assertTrue(ViewInspector.sameDirection(three, test));
 
         test.clear();
         test.add(four);
@@ -158,14 +157,14 @@ class ViewInspectorTest {
         testPlayer.movePlayer(six);
         test.add(testPlayer);
 
-        assertTrue(!viewInspector.sameDirection(seven, test));
+        assertTrue(!ViewInspector.sameDirection(seven, test));
 
         test.clear();
         test.add(two);
         testPlayer.movePlayer(four);
         test.add(testPlayer);
 
-        assertTrue(viewInspector.sameDirection(five, test));
+        assertTrue(ViewInspector.sameDirection(five, test));
 
     }
 }

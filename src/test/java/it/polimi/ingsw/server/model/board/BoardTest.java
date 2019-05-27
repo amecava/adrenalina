@@ -2,6 +2,9 @@ package it.polimi.ingsw.server.model.board;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.server.model.board.rooms.Square;
+import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
+import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.board.rooms.Connection;
 import it.polimi.ingsw.server.model.board.rooms.Direction;
@@ -66,10 +69,121 @@ class BoardTest {
 
         Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
         board.fillBoard();
-
-        System.out.println(board.toJsonObject());
-        //with the prints I could verify it works
-        assertTrue(true);
     }
 
+    @Test
+    void fillBoard() {
+
+        Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
+        board.fillBoard();
+
+        board.getRoomsList().stream()
+                .flatMap(x -> x.getSquaresList().stream())
+                .forEach(y -> {
+
+                    if (y.isSpawn()) {
+
+                        assertEquals(y.getTools().size(), 3);
+
+                    } else {
+
+                        assertEquals(y.getTools().size(), 1);
+                    }
+                });
+    }
+
+    @Test
+    void findSpawn() {
+
+        Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
+
+        try {
+
+            assertEquals(board.findSpawn(Color.RED).getRoom().getColor(), Color.RED);
+
+        } catch (SquareException e) {
+
+            fail();
+        }
+
+        try {
+
+            board.findSpawn(Color.VIOLET);
+
+            fail();
+
+        } catch (SquareException e) {
+
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void findSquare() {
+
+        Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
+
+        try {
+
+            Square square = board.findSquare("rosso", "0");
+
+            assertEquals(square.getRoom().getColor(), Color.RED);
+
+        } catch (SquareException | ColorException e) {
+
+            fail();
+        }
+
+        try {
+
+            Square square = board.findSquare("ROSSO", "0");
+
+            assertEquals(square.getRoom().getColor(), Color.RED);
+
+        } catch (SquareException | ColorException e) {
+
+            fail();
+        }
+
+        try {
+
+            Square square = board.findSquare("roso", "0");
+
+            assertEquals(square.getRoom().getColor(), Color.RED);
+
+        } catch (SquareException | ColorException e) {
+
+            fail();
+        }
+
+        try {
+
+            Square square = board.findSquare("dfgdfg", "0");
+
+            fail();
+
+        } catch (SquareException e) {
+
+            fail();
+
+        } catch (ColorException e) {
+
+            assertTrue(true);
+        }
+
+        try {
+
+            Square square = board.findSquare("rosso", "5");
+
+            fail();
+
+        } catch (SquareException e) {
+
+            assertTrue(true);
+
+        } catch (ColorException e) {
+
+            fail();
+        }
+    }
 }

@@ -114,7 +114,7 @@ public class BoardDrawer {
 
     private static void addMyCubes(JsonObject thisPlayerObject) {
 
-        squareLine[20].append(Color.ansiColor(Color.ofCharacter(thisPlayerObject
+        squareLine[20].append(Color.ansiColorOf(Color.getColor(thisPlayerObject
                 .getString("character")).toString()))
                 .append("Le tue munizioni: ");
 
@@ -122,7 +122,7 @@ public class BoardDrawer {
         thisPlayerObject.getJsonArray("ammoCubes").stream()
                 .map(x -> x.toString().substring(1, x.toString().length() - 1))
                 .forEach(x -> {
-                    squareLine[20].append(Color.ansiColor(x))
+                    squareLine[20].append(Color.ansiColorOf(x))
                             .append("◆");
                 });
 
@@ -139,12 +139,12 @@ public class BoardDrawer {
                 .stream()
                 .map(JsonValue::asJsonObject)
                 .forEach(x -> {
-                    thisPlayerPowerUps.append(Color.ansiColor(x.getString("color")))
+                    thisPlayerPowerUps.append(Color.ansiColorOf(x.getString("color")))
                             .append(x.getString("name").substring(0, 3))
                             .append(" ");
                 });
 
-        squareLine[16].append(Color.ansiColor(Color.ofCharacter(thisPlayerObject
+        squareLine[16].append(Color.ansiColorOf(Color.getColor(thisPlayerObject
                 .getString("character")).toString()))
                 .append("PowerUp: ")
                 .append(thisPlayerPowerUps.toString());
@@ -158,7 +158,7 @@ public class BoardDrawer {
 
         for (int cards = 0; cards < thisPlayerObject.getJsonArray("weapons").size(); cards++) {
 
-            squareLine[17 + cards].append(Color.ansiColor(Color.ofCharacter(thisPlayerObject
+            squareLine[17 + cards].append(Color.ansiColorOf(Color.getColor(thisPlayerObject
                     .getString("character")).toString()))
                     .append("ID: ")
                     .append(thisPlayerObject.getJsonArray("weapons").getJsonObject(cards)
@@ -226,7 +226,7 @@ public class BoardDrawer {
                     .getJsonObject(0)
                     .getJsonArray("colors").stream()
                     .map(x -> x.toString().substring(1, x.toString().length() - 1))
-                    .map(Color::ansiColor)
+                    .map(Color::ansiColorOf)
                     .collect(Collectors.toList())) {
 
                 cubesSubString
@@ -250,7 +250,7 @@ public class BoardDrawer {
                 .equals(Connection.WALL))) {
 
             cubesSubString
-                    .append(Color.ansiColor(jsonArray.getJsonArray(row).getJsonObject(squareInRow)
+                    .append(Color.ansiColorOf(jsonArray.getJsonArray(row).getJsonObject(squareInRow)
                             .getString("color")))
                     .append("┃");
 
@@ -258,7 +258,7 @@ public class BoardDrawer {
                 .getJsonObject(squareInRow).getString("eastConnection")).equals(Connection.DOOR)) {
 
             cubesSubString
-                    .append(Color.ansiColor(jsonArray.getJsonArray(row).getJsonObject(squareInRow)
+                    .append(Color.ansiColorOf(jsonArray.getJsonArray(row).getJsonObject(squareInRow)
                             .getString("color")))
                     .append("┏");
 
@@ -293,10 +293,10 @@ public class BoardDrawer {
             for (Color color : jsonArray.getJsonArray(row)
                     .getJsonObject(squareInRow).getJsonArray("playersIn").stream()
                     .map(JsonValue::asJsonObject).map(x -> x.getString("character"))
-                    .map(Color::ofCharacter).collect(Collectors.toList())) {
+                    .map(Color::getColor).collect(Collectors.toList())) {
 
                 playersSubString
-                        .append(Color.ansiColor(color.toString()))
+                        .append(Color.ansiColorOf(color.toString()))
                         .append(color.getCharacter().substring(0, 1));
 
             }
@@ -304,7 +304,7 @@ public class BoardDrawer {
             playersSubString.append(fixLength(10, (int) jsonArray.getJsonArray(row)
                     .getJsonObject(squareInRow).getJsonArray("playersIn").stream()
                     .map(JsonValue::asJsonObject).map(x -> x.getString("character"))
-                    .map(Color::ofCharacter).count() + 1));
+                    .map(Color::getColor).count() + 1));
         }
 
         if ((Connection.valueOf(jsonArray.getJsonArray(row)
@@ -314,7 +314,7 @@ public class BoardDrawer {
                 .equals(Connection.WALL))) {
 
             playersSubString
-                    .append(Color.ansiColor(jsonArray.getJsonArray(row).getJsonObject(squareInRow)
+                    .append(Color.ansiColorOf(jsonArray.getJsonArray(row).getJsonObject(squareInRow)
                             .getString("color")))
                     .append("┃");
 
@@ -346,30 +346,30 @@ public class BoardDrawer {
             cards = new StringBuilder();
             if (jPlayersArray.getJsonObject(player).getBoolean("isActivePlayer")) {
 
-                name.append(Color.ansiColor("ALL")).append("Turno - ");
+                name.append(Color.ansiColorOf("ALL")).append("Turno - ");
             }
 
-            name.append(Color.ansiColor(
-                    Color.ofCharacter(jPlayersArray.getJsonObject(player).getString("character"))
+            name.append(Color.ansiColorOf(
+                    Color.getColor(jPlayersArray.getJsonObject(player).getString("character"))
                             .toString()))
                     .append(jPlayersArray.getJsonObject(player).getString("character"))
                     .append("(" + jPlayersArray.getJsonObject(player).getString("playerId") + ")")
                     .append(addDamages(jPlayersArray.getJsonObject(player)));
 
-            actions.append(Color.ansiColor(
-                    Color.ofCharacter(jPlayersArray.getJsonObject(player).getString("character"))
+            actions.append(Color.ansiColorOf(
+                    Color.getColor(jPlayersArray.getJsonObject(player).getString("character"))
                             .toString()))
                     .append(" -> Azioni:")
                     .append(addActions(jPlayersArray.getJsonObject(player)));
 
-            deaths.append(Color.ansiColor(
-                    Color.ofCharacter(jPlayersArray.getJsonObject(player).getString("character"))
+            deaths.append(Color.ansiColorOf(
+                    Color.getColor(jPlayersArray.getJsonObject(player).getString("character"))
                             .toString()))
                     .append(" -> Plancia Morti: ")
                     .append(addDeaths(jPlayersArray.getJsonObject(player)));
 
-            cards.append(Color.ansiColor(
-                    Color.ofCharacter(jPlayersArray.getJsonObject(player).getString("character"))
+            cards.append(Color.ansiColorOf(
+                    Color.getColor(jPlayersArray.getJsonObject(player).getString("character"))
                             .toString()))
                     .append(addOthersCards(jPlayersArray.getJsonObject(player)));
 
@@ -419,15 +419,15 @@ public class BoardDrawer {
                 .stream()
                 .map(JsonValue::toString)
                 .map(x -> x.substring(1, x.length() - 1))
-                .map(Color::ansiColor)
+                .map(Color::ansiColorOf)
                 .forEach(x -> {
 
                     line.append(x);
                     line.append("◉");
                 });
 
-        return line.append(Color.ansiColor(
-                Color.ofCharacter(jPlayerObject.getString("character"))
+        return line.append(Color.ansiColorOf(
+                Color.getColor(jPlayerObject.getString("character"))
                         .toString())).append(addMarks(jPlayerObject
                 .getJsonObject("bridge")
                 .getJsonObject("damageBridge")
@@ -443,7 +443,7 @@ public class BoardDrawer {
         jMarksArray.stream()
                 .map(JsonValue::toString)
                 .map(x -> x.substring(1, x.length() - 1))
-                .map(Color::ansiColor)
+                .map(Color::ansiColorOf)
                 .forEach(x -> {
 
                     line.append(x);

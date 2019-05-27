@@ -4,6 +4,8 @@ import it.polimi.ingsw.server.model.Model;
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
+import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
+import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
@@ -16,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
@@ -69,7 +70,7 @@ public class GameHandler {
                 .orElse(ThreadLocalRandom.current().nextInt(0, 4)));
     }
 
-    public Player addPlayer(String playerId, String character) throws LoginException {
+    public Player addPlayer(String playerId, String character) throws LoginException, ColorException {
 
         Player player = this.model.addPlayer(playerId, character);
 
@@ -132,7 +133,7 @@ public class GameHandler {
 
             PowerUpCard powerUp = player.getPowerUpsList().get(0);
 
-            this.spawnPlayer(player, powerUp.getName(), powerUp.getColor());
+            this.spawnPlayer(player, powerUp.getName(), powerUp.getColor().toString());
 
         } catch (SpawnException e) {
 
@@ -140,23 +141,17 @@ public class GameHandler {
         }
     }
 
-    public void spawnPlayer(Player player, String name, Color color) throws SpawnException {
+    public void spawnPlayer(Player player, String cardId, String colorName) throws SpawnException {
 
         try {
 
-            Square destination = this.model.getBoard()
-                    .getRoomsList()
-                    .stream()
-                    .filter(x -> x.getColor().equals(color))
-                    .flatMap(x -> x.getSquaresList().stream())
-                    .filter(Square::isSpawn)
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException(
-                            "In questa stanza non c'è uno spawn."));
+            Color color = Color.ofName(colorName);
+
+            Square destination = this.model.getBoard().findSpawn(color);
 
             this.model.getBoard()
                     .getPowerUpDeck()
-                    .addPowerUpCard(player.spawn(name, color));
+                    .addPowerUpCard(player.spawn(cardId, color));
 
             player.movePlayer(destination);
 
@@ -170,7 +165,7 @@ public class GameHandler {
                 notifyAll();
             }
 
-        } catch (IllegalActionException | CardNotFoundException | NoSuchElementException e) {
+        } catch (IllegalActionException | CardNotFoundException | SquareException | ColorException e) {
 
             throw new SpawnException(e.getMessage());
         }

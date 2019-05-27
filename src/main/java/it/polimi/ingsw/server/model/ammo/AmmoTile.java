@@ -1,15 +1,12 @@
 package it.polimi.ingsw.server.model.ammo;
 
 import it.polimi.ingsw.server.model.cards.Card;
-import it.polimi.ingsw.server.model.cards.CardType;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.decks.PowerUpDeck;
 import it.polimi.ingsw.server.model.players.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
@@ -22,12 +19,6 @@ public class AmmoTile implements Card {
 
         this.powerUpDeck = builder.powerUpDeck;
         this.ammoCubesList = builder.ammoCubes;
-    }
-
-    @Override
-    public CardType getCardType() {
-
-        return CardType.AMMO_TILE;
     }
 
     @Override
@@ -57,17 +48,6 @@ public class AmmoTile implements Card {
         return this.powerUpDeck.getPowerUpCard();
     }
 
-    @Override
-    public String toString() {
-
-        return (this.ammoCubesList.size() == 2) ?
-                this.ammoCubesList.stream()
-                .map(Color::toString)
-                .collect(Collectors.joining(" ")) + " POWER_UP" :
-                this.ammoCubesList.stream()
-                .map(Color::toString)
-                .collect(Collectors.joining(" "));
-    }
 
     @Override
     public JsonObject toJsonObject() {

@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.model.board;
 
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.bridges.Bridge;
-import it.polimi.ingsw.server.model.players.bridges.Shots;
 import java.util.List;
 
 public class Deaths extends Bridge {
@@ -30,6 +29,7 @@ public class Deaths extends Bridge {
     public void addKill(Color color, boolean infer) {
 
         if (infer) {
+
             this.maxNumberOfDeaths++;
             this.appendShot(color, true);
         }

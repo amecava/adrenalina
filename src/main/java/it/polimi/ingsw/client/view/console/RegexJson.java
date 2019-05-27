@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.console;
 
+import it.polimi.ingsw.virtual.JsonUtility;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +68,7 @@ class RegexJson {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         String method = inputMethod.entrySet().stream()
-                .filter(x -> levenshteinDistance(parts[0], x.getKey()) <= 3)
+                .filter(x -> JsonUtility.levenshteinDistance(parts[0], x.getKey()) <= 3)
                 .map(Entry::getValue)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Selezione non disponibile, riprova o digita help."));
@@ -138,46 +139,5 @@ class RegexJson {
 
             return this.third;
         }
-    }
-
-    private static int levenshteinDistance(String input, String match) {
-
-        input = input.toLowerCase();
-        match = match.toLowerCase();
-
-        int[] costs = new int[match.length() + 1];
-
-        for (int i = 0; i <= input.length(); i++) {
-
-            int lastValue = i;
-
-            for (int j = 0; j <= match.length(); j++) {
-
-                if (i == 0) {
-
-                    costs[j] = j;
-
-                } else if (j > 0) {
-
-                    int newValue = costs[j - 1];
-
-                    if (input.charAt(i - 1) != match.charAt(j - 1)) {
-
-                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-                    }
-
-                    costs[j - 1] = lastValue;
-
-                    lastValue = newValue;
-                }
-            }
-
-            if (i > 0) {
-
-                costs[match.length()] = lastValue;
-            }
-        }
-
-        return costs[match.length()];
     }
 }

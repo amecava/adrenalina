@@ -15,6 +15,11 @@ import java.util.stream.Stream;
 
 class ViewInspector {
 
+    private ViewInspector() {
+
+        //
+    }
+
     static int computeDistance(Square fromSquare, Square toSquare, boolean cardinal,
             boolean throughWalls) throws SquareDistanceException {
 
@@ -51,33 +56,26 @@ class ViewInspector {
         return false;
     }
 
-    static boolean roomView(Square fromSquare, List<Target> targetList) throws TargetViewException {
+    static boolean roomView(Square fromSquare, List<Target> targetList) {
 
-        try {
-            int seen = 0;
-            List<Room> targetStream;
+        int seen = 0;
+        List<Room> targetStream;
 
-            // Cast to rooms
-            targetStream = targetList.stream()
-                    .map(x -> (Room) x)
-                    .collect(Collectors.toList());
+        // Cast to rooms
+        targetStream = targetList.stream()
+                .map(x -> (Room) x)
+                .collect(Collectors.toList());
 
-            for (Direction dir : Direction.values()) {
+        for (Direction dir : Direction.values()) {
 
-                if (fromSquare.getConnection(dir) == Connection.DOOR && targetStream
-                        .contains(fromSquare.getAdjacent(dir).getRoom())) {
+            if (fromSquare.getConnection(dir) == Connection.DOOR && targetStream
+                    .contains(fromSquare.getAdjacent(dir).getRoom())) {
 
-                    seen++;
-                }
+                seen++;
             }
-
-            return seen == targetList.size();
-
-            // Launch exception if cast fails
-        } catch (ClassCastException e) {
-
-            throw new TargetViewException("Target view exception!");
         }
+
+        return seen == targetList.size();
     }
 
     static boolean sameDirection(Square fromSquare, List<Target> targetList) {
@@ -108,7 +106,7 @@ class ViewInspector {
             }
             if (seen > 0) {
 
-                return false;
+                break;
             }
         }
 

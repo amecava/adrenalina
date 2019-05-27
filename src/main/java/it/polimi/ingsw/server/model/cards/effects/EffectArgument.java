@@ -69,14 +69,19 @@ public class EffectArgument {
         this.weaponCard = weaponCard;
     }
 
-    public int getArgs() {
+    public double getArgs() {
 
         if (this.destination == null && this.targetList.isEmpty()) {
 
             return 0;
         }
 
-        if (this.destination == null || this.targetList.isEmpty()) {
+        if (this.destination != null && this.targetList.isEmpty()) {
+
+            return 0.5;
+        }
+
+        if (this.destination == null) {
 
             return 1;
         }

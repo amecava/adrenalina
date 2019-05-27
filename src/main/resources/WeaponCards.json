@@ -131,6 +131,7 @@
         "reloadCost": ["RED"],
 
         "primary": 26,
+        "optional1": 27,
 
         "notes": "For example, you can shoot a target, move it onto a square with other targets, then damage everyone including the first target. Or you can deal 2 to a main target, 1 to everyone else on that square, then move the main target. Or you can deal 1 to an isolated target and 1 to everyone on a different square. If you target your own square, you will not be moved or damaged."
     },
@@ -150,7 +151,7 @@
         "id": 15,
 
         "name": "RAILGUN",
-        "reloadCost": ["YELLOW"],
+        "reloadCost": ["YELLOW", "YELLOW", "BLUE"],
 
         "primary": 31,
         "alternative": 32,

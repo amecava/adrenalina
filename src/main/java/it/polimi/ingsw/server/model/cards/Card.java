@@ -5,8 +5,6 @@ import javax.json.JsonObject;
 
 public interface Card {
 
-    CardType getCardType();
-
     String getName();
 
     Color getColor();

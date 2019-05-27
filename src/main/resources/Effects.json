@@ -138,12 +138,11 @@
     },
     {
         "id": 10,
-        "args": 1,
+        "args": 0.5,
         "name": "with phase glide",
         "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect.",
         "targetType": "PLAYER",
 
-        "maxTargets": 1,
         "sameAsPlayer": true,
 
         "minDist": 1,
@@ -396,7 +395,7 @@
             "maxTargets": 1,
             "sameAsFather": [true],
 
-            "atomicEffectList": ["MARK"]
+            "atomicEffectList": ["DAMAGE"]
         },
 
         "cost": ["YELLOW", "YELLOW"],
@@ -408,7 +407,7 @@
         "cardinal": true,
         "differentSquares": true,
 
-        "atomicEffectList": ["MARK"]
+        "atomicEffectList": ["DAMAGE"]
     },
     {
         "id": 26,
@@ -550,7 +549,7 @@
     },
     {
         "id": 34,
-        "args": 1,
+        "args": 0.5,
         "name": "with shadowstep",
         "description": "Move 1 square before or after the basic effect.",
         "targetType": "PLAYER",
@@ -714,6 +713,7 @@
 
         "minDist": 1,
         "maxDist": 1,
+        "throughWalls": true,
 
         "atomicEffectList": ["DAMAGE"]
     },
@@ -739,7 +739,7 @@
 
         "next": {
             "id": 45,
-            "targetType": "RECOIL",
+            "targetType": "MOVE",
 
             "cardinal": true,
 
