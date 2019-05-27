@@ -66,9 +66,22 @@ public class PlasmaGunTest {
             tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
             fail();
         } catch (EffectException | CardException e) {
+            e.printStackTrace();
             fail();
         } catch (PropertiesException e) {
             assertEquals(source.getCurrentPosition(), board.getRoom(3).getSquare(1));
+        }
+
+        effectArgument = new EffectArgument(Arrays.asList(target1));
+
+        // Wrong args
+        try {
+            tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
+            fail();
+        } catch (PropertiesException | CardException e) {
+            fail();
+        } catch (EffectException e) {
+            assertTrue(true);
         }
 
         effectArgument = new EffectArgument(board.getRoom(1).getSquare(2));

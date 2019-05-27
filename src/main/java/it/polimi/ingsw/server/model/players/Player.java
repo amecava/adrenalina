@@ -19,12 +19,10 @@ import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.server.model.players.bridges.ActionStructure;
 import it.polimi.ingsw.server.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.server.model.exceptions.cards.FullHandException;
-import it.polimi.ingsw.server.model.exceptions.cards.SquareTypeException;
+import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.players.bridges.Bridge;
-import it.polimi.ingsw.server.model.players.bridges.Shots;
 import it.polimi.ingsw.server.model.points.PointStructure;
 import it.polimi.ingsw.server.model.cards.Target;
-import it.polimi.ingsw.server.presenter.ClientHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -349,7 +347,7 @@ public class Player implements Target {
     }
 
     public AmmoTile collect()
-            throws SquareTypeException, EmptySquareException, IllegalActionException {
+            throws SquareException, EmptySquareException, IllegalActionException {
 
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null || !this
                 .getCurrentAction().isCollect()) {
@@ -359,7 +357,7 @@ public class Player implements Target {
 
         if (this.currentPosition.isSpawn()) {
 
-            throw new SquareTypeException(
+            throw new SquareException(
                     "Sei in uno square di rigenerazione, seleziona l'id della carta da raccogliere\ned eventualmente l'id della carta da scartare.");
         }
 
@@ -390,7 +388,7 @@ public class Player implements Target {
 
         if (!this.currentPosition.isSpawn()) {
 
-            throw new SquareTypeException("Sei in un quadrato di rigenerazione, non c'è nessuna carta da raccogliere.");
+            throw new SquareException("Sei in un quadrato di rigenerazione, non c'è nessuna carta da raccogliere.");
         }
 
         if (this.weaponCardList.size() == 3) {
@@ -414,7 +412,7 @@ public class Player implements Target {
 
         if (!this.currentPosition.isSpawn()) {
 
-            throw new SquareTypeException("You're not in a spawn square, wrong method call!");
+            throw new SquareException("You're not in a spawn square, wrong method call!");
         }
 
         if (this.weaponCardList.size() != 3) {

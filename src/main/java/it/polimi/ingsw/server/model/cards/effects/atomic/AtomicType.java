@@ -1,7 +1,5 @@
 package it.polimi.ingsw.server.model.cards.effects.atomic;
 
-import java.security.InvalidParameterException;
-
 public enum AtomicType {
 
     DAMAGE,
@@ -24,11 +22,6 @@ public enum AtomicType {
             return this.playerMark;
         }
 
-        if (this.equals(MOVE)) {
-
-            return this.movePlayer;
-        }
-
-        throw new InvalidParameterException();
+        return this.movePlayer;
     }
 }

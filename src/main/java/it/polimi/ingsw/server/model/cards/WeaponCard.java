@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 public class WeaponCard implements Card {
 
@@ -51,12 +49,6 @@ public class WeaponCard implements Card {
         this.map = builder.map;
 
         this.notes = builder.notes;
-    }
-
-    @Override
-    public CardType getCardType() {
-
-        return CardType.WEAPON;
     }
 
     @Override
@@ -158,12 +150,12 @@ public class WeaponCard implements Card {
                 }
             });
 
-            costCopy.forEach(x -> {
+            costCopy.forEach(x ->
                 this.owner.getAmmoCubesList().stream()
                         .filter(y -> y.getColor().equals(x) && !y.isUsed())
                         .findFirst().get()
-                        .setUsed(true);
-            });
+                        .setUsed(true)
+            );
         }
     }
 
@@ -233,7 +225,8 @@ public class WeaponCard implements Card {
                             costCopy.remove(x);
 
                         } else {
-                            throw new IllegalArgumentException("Illegal Argument");
+
+                            throw new IllegalArgumentException();
                         }
                     });
 
@@ -243,7 +236,8 @@ public class WeaponCard implements Card {
                         if (costCopy.stream().filter(y -> y.equals(x)).count() > this.owner
                                 .getAmmoCubesList().stream().filter(y -> !y.isUsed()).map(
                                         AmmoCube::getColor).filter(y -> y.equals(x)).count()) {
-                            throw new IllegalArgumentException("Illegal Argument");
+
+                            throw new IllegalArgumentException();
                         }
                     });
 

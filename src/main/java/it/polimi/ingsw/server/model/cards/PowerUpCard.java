@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model.cards;
 
+import it.polimi.ingsw.server.model.exceptions.cards.CardException;
+import it.polimi.ingsw.server.model.exceptions.cards.CostException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.ammo.Ammo;
 import it.polimi.ingsw.server.model.ammo.AmmoCube;
@@ -24,12 +26,6 @@ public class PowerUpCard implements Card, Ammo {
     private Player owner;
 
     private Effect effect;
-
-    @Override
-    public CardType getCardType() {
-
-        return CardType.POWER_UP;
-    }
 
     @Override
     public String getName() {
@@ -85,14 +81,16 @@ public class PowerUpCard implements Card, Ammo {
                 (this.effectHandler.getActive().contains(this.owner)
                         || effectHandler.getInactive().contains(this.owner))) {
 
-            Player tmPlayer = effectHandler.getActivePlayer();
-            target.appendTarget(tmPlayer);
-            this.effectHandler.setActivePlayer(this.owner);
 
-            this.effectHandler.useEffect(this.effect.getNext(), target);
+                Player player = effectHandler.getActivePlayer();
+                target.appendTarget(player);
 
-            this.effectHandler.setActivePlayer(tmPlayer);
-            this.effectHandler.getActive().remove(tmPlayer);
+                this.effectHandler.setActivePlayer(this.owner);
+
+                this.effectHandler.useEffect(this.effect.getNext(), target);
+
+                this.effectHandler.setActivePlayer(player);
+
 
         } else {
 
@@ -100,8 +98,8 @@ public class PowerUpCard implements Card, Ammo {
         }
     }
 
-    public void useCard(EffectArgument target, AmmoCube ammoCube)
-            throws EffectException, PropertiesException, CardNotLoadedException {
+    public void useCard(EffectArgument target, Color color)
+            throws EffectException, PropertiesException, CardException {
 
         // Launch exception if wrong method call
         if (effect.getArgs() != target.getArgs()) {
@@ -121,12 +119,16 @@ public class PowerUpCard implements Card, Ammo {
             throw new CardNotLoadedException("You can't use a power up right now!");
         }
 
+        AmmoCube ammoCube = this.owner.getAmmoCubesList().stream()
+                .filter(x -> x.getColor().equals(color) && !x.isUsed())
+                .findAny()
+                .orElseThrow(() -> new CostException("Non hai l'ammocube selezionato."));
+
         target.setWeaponCard(false);
 
         this.effectHandler.useEffect(this.effect.getNext(), target);
 
         ammoCube.setUsed(true);
-
     }
 
     @Override

@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.model.points;
 
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
-import it.polimi.ingsw.server.model.players.bridges.Shots;
 import java.util.List;
 
 public class PointStructure {

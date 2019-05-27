@@ -7,12 +7,6 @@ import it.polimi.ingsw.server.model.players.Player;
 public class AtomicMark implements AtomicEffect {
 
     @Override
-    public AtomicType getAtomicType() {
-
-        return AtomicType.MARK;
-    }
-
-    @Override
     public void execute(Player source, EffectArgument target) {
 
         target.getTargetList().stream()

@@ -1,12 +1,9 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
-import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
-import it.polimi.ingsw.server.model.exceptions.cards.EmptySquareException;
-import it.polimi.ingsw.server.model.exceptions.cards.SquareTypeException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
+import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
@@ -21,7 +18,6 @@ import java.rmi.RemoteException;
 import java.util.NoSuchElementException;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 
 public abstract class Presenter implements VirtualPresenter {
 
@@ -182,13 +178,14 @@ public abstract class Presenter implements VirtualPresenter {
                 this.updateLoginGame();
             }
 
-        } catch (LoginException e) {
-
-            this.callRemoteMethod("errorMessage", e.getMessage());
-
         } catch (NoSuchElementException e) {
 
             this.callRemoteMethod("errorMessage", "Non esiste questa partita cazzo.");
+
+        } catch (LoginException | ColorException e) {
+
+            this.callRemoteMethod("errorMessage", e.getMessage());
+
         }
     }
 
@@ -238,9 +235,8 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
-                Color color = Color.valueOf(object.getString("color"));
-
-                this.gameHandler.spawnPlayer(this.player, object.getString("name"), color);
+                this.gameHandler.spawnPlayer(this.player, object.getString("name"),
+                        object.getString("color"));
 
                 this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.\n"
                         + "Adesso puoi selezionare un'azione: scrivi \"selezionaazione \" seguito dal numero dell'azione che vuoi usare.\n"
@@ -256,9 +252,6 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
 
-            } catch (IllegalArgumentException e) {
-
-                this.callRemoteMethod("errorMessage", "Il colore selezionato non esiste.");
             }
         }
     }
@@ -389,11 +382,7 @@ public abstract class Presenter implements VirtualPresenter {
                         "updateBoard",
                         this.gameHandler.toJsonObject().toString());
 
-            } catch (IllegalArgumentException e) {
-
-                this.callRemoteMethod("errorMessage", "Il quadrato che hai scelto non esiste.");
-
-            } catch (IllegalActionException | EffectException | PropertiesException e) {
+            } catch (ColorException | IllegalActionException | CardException | EffectException | PropertiesException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
             }

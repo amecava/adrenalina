@@ -6,12 +6,6 @@ import it.polimi.ingsw.server.model.players.Player;
 public class AtomicDamage implements AtomicEffect {
 
     @Override
-    public AtomicType getAtomicType() {
-
-        return AtomicType.DAMAGE;
-    }
-
-    @Override
     public void execute(Player source, EffectArgument target) {
 
         target.getTargetList().stream()

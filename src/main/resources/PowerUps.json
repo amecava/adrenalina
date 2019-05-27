@@ -148,7 +148,6 @@
                 "args": 1,           
                 "targetType": "PLAYER",
     
-    
                 "atomicEffectList": ["MARK"]
             }
         }
@@ -168,7 +167,6 @@
                 "args": 1,           
                 "targetType": "PLAYER",
     
-    
                 "atomicEffectList": ["MARK"]
             }
         }
@@ -187,7 +185,6 @@
         
                 "args": 1,           
                 "targetType": "PLAYER",
-    
     
                 "atomicEffectList": ["MARK"]
             }
@@ -199,13 +196,13 @@
         "color": "RED",
 
         "effect": {
-            "args": 1,
+            "args": 0.5,
 
             "sameAsPlayer": false,
 
             "next": {
 
-                "args": 1,
+                "args": 0.5,
                 "targetType": "PLAYER",
 
                 "sameAsPlayer": true,
@@ -214,22 +211,20 @@
 
                 "atomicEffectList": ["MOVE"]
             }
-            
         }
-
     }, 
     {
         "name": "TELETRASPORTO",
         "color": "BLUE",
 
         "effect": {
-            "args": 1,
+            "args": 0.5,
 
             "sameAsPlayer": false,
 
             "next": {
 
-                "args": 1,
+                "args": 0.5,
                 "targetType": "PLAYER",
 
                 "sameAsPlayer": true,
@@ -247,13 +242,13 @@
         "color": "YELLOW",
 
         "effect": {
-            "args": 1,
+            "args": 0.5,
 
             "sameAsPlayer": false,
 
             "next": {
 
-                "args": 1,
+                "args": 0.5,
                 "targetType": "PLAYER",
 
                 "sameAsPlayer": true,
@@ -415,7 +410,6 @@
                 "args": 1,           
                 "targetType": "PLAYER",
     
-    
                 "atomicEffectList": ["MARK"]
             }
         }
@@ -435,7 +429,6 @@
                 "args": 1,           
                 "targetType": "PLAYER",
     
-    
                 "atomicEffectList": ["MARK"]
             }
         }
@@ -454,7 +447,6 @@
         
                 "args": 1,           
                 "targetType": "PLAYER",
-    
     
                 "atomicEffectList": ["MARK"]
             }
@@ -466,13 +458,13 @@
         "color": "RED",
 
         "effect": {
-            "args": 1,
+            "args": 0.5,
 
             "sameAsPlayer": false,
 
             "next": {
 
-                "args": 1,
+                "args": 0.5,
                 "targetType": "PLAYER",
 
                 "sameAsPlayer": true,
@@ -490,13 +482,13 @@
         "color": "BLUE",
 
         "effect": {
-            "args": 1,
+            "args": 0.5,
 
             "sameAsPlayer": false,
 
             "next": {
 
-                "args": 1,
+                "args": 0.5,
                 "targetType": "PLAYER",
 
                 "sameAsPlayer": true,
@@ -514,13 +506,13 @@
         "color": "YELLOW",
 
         "effect": {
-            "args": 1,
+            "args": 0.5,
 
             "sameAsPlayer": false,
 
             "next": {
 
-                "args": 1,
+                "args": 0.5,
                 "targetType": "PLAYER",
 
                 "sameAsPlayer": true,

@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.players.bridges;
 import it.polimi.ingsw.server.model.cards.effects.Effect;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 
 public class ActionStructure {
 

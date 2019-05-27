@@ -11,7 +11,7 @@ import javax.json.JsonObject;
 public class Effect {
 
     private int id;
-    private int args;
+    private double args;
     private String name;
     private String description;
     private TargetType targetType;
@@ -74,7 +74,7 @@ public class Effect {
         return this.id;
     }
 
-    public int getArgs() {
+    public double getArgs() {
 
         return this.args;
     }
@@ -179,11 +179,6 @@ public class Effect {
         return this.differentSquares;
     }
 
-    public List<AtomicEffect> getAtomicEffectList() {
-
-        return this.atomicEffectList;
-    }
-
     public void execute(Player source, EffectArgument target) {
 
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
@@ -197,7 +192,7 @@ public class Effect {
         private JsonObject jEffectObject;
 
         private int id;
-        private int args;
+        private double args;
         private String name;
         private String description;
         private TargetType targetType;
@@ -236,7 +231,7 @@ public class Effect {
             }
 
             if (this.jEffectObject.containsKey("args")) {
-                this.args = this.jEffectObject.getInt("args");
+                this.args = this.jEffectObject.getJsonNumber("args").doubleValue();
             }
 
             if (this.jEffectObject.containsKey("name")) {
