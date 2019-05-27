@@ -117,14 +117,36 @@
         "method": "askCollect",
         "value": [
             {
-                "name": "collectId",
-                "regex": "(\\s*)([1-9]|1[0-9]|2[0-4]|)(\\s*)",
-                "error": "Devi scrivere l'id della carta che vuoi raccogliere."
+                "name": "cardIdCollect",
+                "regex": "(\\s*)\\b([0-9]|1[0-9]|2[0-4])\\b(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
             },
             {
-                "name": "discardId",
-                "regex": "(\\s*)([1-9]|1[0-9]|2[0-4]|)(\\s*)",
-                "error": "Devi scrivere l'id della carta che vuoi scartare."
+                "name": "cardIdDiscard",
+                "regex": "(\\s*)\\b([0-9]|1[0-9]|2[0-4])\\b(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
+            }
+        ]
+    },
+    {
+        "input": ["infocarta"],
+        "method": "askCardInfo",
+        "value": [
+            {
+                "name": "cardId",
+                "regex": "(\\s*)\\b([1-9]|1[0-9]|2[0-4])\\b(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
+            }
+        ]
+    },
+    {
+        "input": ["ricarica"],
+        "method": "askReload",
+        "value": [
+            {
+                "name": "reload",
+                "regex": "(\\s*)",
+                "error": "Non scrivere niente dopo reload."
             }
         ]
     },

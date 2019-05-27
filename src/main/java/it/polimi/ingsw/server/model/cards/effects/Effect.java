@@ -6,6 +6,8 @@ import it.polimi.ingsw.server.model.cards.effects.atomic.AtomicType;
 import it.polimi.ingsw.server.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.json.Json;
 import javax.json.JsonObject;
 
 public class Effect {
@@ -190,6 +192,15 @@ public class Effect {
 
             atomicEffect.execute(source, target);
         }
+    }
+
+    public JsonObject toJsonObject() {
+
+        return Json.createObjectBuilder()
+                .add("name", this.name)
+                .add("description", this.description)
+                .add("cost", this.cost.stream().map(Color::toString).collect(Collectors.joining(" ")))
+                .build();
     }
 
     public static class EffectBuilder {

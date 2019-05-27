@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.board;
 
+import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareTypeException;
 import it.polimi.ingsw.server.model.players.Color;
@@ -100,6 +101,44 @@ public class Board {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
+    public JsonObject getInfoCard(String cardId) {
+
+        if (this.weaponDeck.getDeck().stream()
+                .anyMatch(x -> x.getId() == Integer.valueOf(cardId))) {
+
+            return this.weaponDeck.getDeck().stream()
+                    .filter(x -> x.getId() == Integer.valueOf(cardId))
+                    .findAny()
+                    .get()
+                    .toJsonObject();
+        }
+
+        if (this.roomsList.stream().flatMap(x -> x.getSquaresList().stream())
+                .filter(Square::isSpawn)
+                .flatMap(x -> x.getTools().stream())
+                .map(y -> (WeaponCard) y)
+                .anyMatch(z -> z.getId() == Integer.valueOf(cardId))) {
+
+            return this.roomsList.stream().flatMap(x -> x.getSquaresList().stream())
+                    .filter(Square::isSpawn)
+                    .flatMap(x -> x.getTools().stream())
+                    .map(y -> (WeaponCard) y)
+                    .filter(z -> z.getId() == Integer.valueOf(cardId))
+                    .findAny()
+                    .get()
+                    .toJsonObject();
+        }
+
+        return this.roomsList.stream()
+                .flatMap(x -> x.getSquaresList().stream())
+                .flatMap(y -> y.getPlayers().stream())
+                .flatMap(z -> z.getWeaponCardList().stream())
+                .filter(t -> t.getId() == Integer.valueOf(cardId))
+                .findAny()
+                .get()
+                .toJsonObject();
+    }
+
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder builder;
@@ -124,7 +163,6 @@ public class Board {
 
             j++;
             while (!tmpSquare.getConnection(Direction.EAST).equals(Connection.ENDMAP)) {
-
 
                 tmpSquare = tmpSquare.getAdjacent(Direction.EAST);
                 builder.add(tmpSquare.toJsonObject());

@@ -33,6 +33,11 @@ public class WeaponDeck {
                 .findFirst().orElseThrow(NullPointerException::new);
     }
 
+    public List<WeaponCard> getDeck() {
+
+        return this.deck;
+    }
+
     public boolean isEmpty() {
 
         return this.deck.isEmpty();

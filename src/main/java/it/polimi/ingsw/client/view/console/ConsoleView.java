@@ -6,6 +6,7 @@ import it.polimi.ingsw.client.view.connection.SocketConnection;
 import it.polimi.ingsw.virtual.VirtualView;
 import java.io.StringReader;
 import java.net.InetAddress;
+import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -101,11 +102,14 @@ public class ConsoleView implements View, VirtualView {
 
         this.splashScreen();
 
-        Terminal.output("Adrenalina porta i classici videogiochi “spara-tutto” direttamente sul vostro tavolo.");
-        Terminal.output("Costruisci il tuo arsenale per un turno micidiale, la risoluzione dei combattimenti è facile, ma senza dadi..");
+        Terminal.output(
+                "Adrenalina porta i classici videogiochi “spara-tutto” direttamente sul vostro tavolo.");
+        Terminal.output(
+                "Costruisci il tuo arsenale per un turno micidiale, la risoluzione dei combattimenti è facile, ma senza dadi..");
         Terminal.output("Prendi fucile e munizioni ed inizia a sparare!");
         Terminal.output("");
-        Terminal.output("Come prima cosa effettua il login scrivendo la parola chiave \"login\" seguita dal tuo playerId.");
+        Terminal.output(
+                "Come prima cosa effettua il login scrivendo la parola chiave \"login\" seguita dal tuo playerId.");
     }
 
     @Override
@@ -118,12 +122,16 @@ public class ConsoleView implements View, VirtualView {
     public void gameNotStartedScreen() {
 
         this.splashScreen();
-        Terminal.output("Vota l'arena con il comando \"votaarena\" seguito dal numero dell'arena che vuoi utilizzare.");
+        Terminal.output(
+                "Vota l'arena con il comando \"votaarena\" seguito dal numero dell'arena che vuoi utilizzare.");
 
         Terminal.output("");
-        Terminal.output("1: \u001b[34m█ █ █  \u001b[0m  2:\u001b[34m █ █ █ \u001b[32m█\u001b[0m  3: █ █ █ █\u001b[0m  4: █ █ █ █\u001b[0m");
-        Terminal.output("   \u001b[31m█ █ █ \u001b[33m█\u001b[0m     \u001b[31m█ █\u001b[33m █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
-        Terminal.output("   \u001b[37m  █ █ \u001b[33m█\u001b[0m     \u001b[37m  █ \u001b[33m█ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+        Terminal.output(
+                "1: \u001b[34m█ █ █  \u001b[0m  2:\u001b[34m █ █ █ \u001b[32m█\u001b[0m  3: █ █ █ █\u001b[0m  4: █ █ █ █\u001b[0m");
+        Terminal.output(
+                "   \u001b[31m█ █ █ \u001b[33m█\u001b[0m     \u001b[31m█ █\u001b[33m █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+        Terminal.output(
+                "   \u001b[37m  █ █ \u001b[33m█\u001b[0m     \u001b[37m  █ \u001b[33m█ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
         Terminal.output("");
     }
 
@@ -170,7 +178,7 @@ public class ConsoleView implements View, VirtualView {
 
             JsonObject jsonObject = reader.readObject();
 
-            this.id =jsonObject.getString("playerId");
+            this.id = jsonObject.getString("playerId");
 
             if (jsonObject.getBoolean("isGameStarted") && jsonObject.containsKey("gameId")) {
 
@@ -269,37 +277,44 @@ public class ConsoleView implements View, VirtualView {
 
                 case 60:
 
-                    Terminal.output("Raggiunto il numero minimo di giocatori, la partita inizierà dopo un minuto.\n\n\n\n\n");
+                    Terminal.output(
+                            "Raggiunto il numero minimo di giocatori, la partita inizierà dopo un minuto.\n\n\n\n\n");
                     break;
 
                 case 5:
 
-                    Terminal.output("     _____  \n    | ____| \n    | |__   \n    |___ \\  \n     ___) | \n    |____/  ");
+                    Terminal.output(
+                            "     _____  \n    | ____| \n    | |__   \n    |___ \\  \n     ___) | \n    |____/  ");
                     break;
 
                 case 4:
 
-                    Terminal.output("     _  _    \n    | || |   \n    | || |_  \n    |__   _| \n       | |   \n       |_|   ");
+                    Terminal.output(
+                            "     _  _    \n    | || |   \n    | || |_  \n    |__   _| \n       | |   \n       |_|   ");
                     break;
 
                 case 3:
 
-                    Terminal.output("     ____   \n    |___ \\  \n      __) | \n     |__ <  \n     ___) | \n    |____/  ");
+                    Terminal.output(
+                            "     ____   \n    |___ \\  \n      __) | \n     |__ <  \n     ___) | \n    |____/  ");
                     break;
 
                 case 2:
 
-                    Terminal.output("     ___   \n    |__ \\  \n       ) | \n      / /  \n     / /_  \n    |____| ");
+                    Terminal.output(
+                            "     ___   \n    |__ \\  \n       ) | \n      / /  \n     / /_  \n    |____| ");
                     break;
 
                 case 1:
 
-                    Terminal.output("     __  \n    /_ | \n     | | \n     | | \n     | | \n     |_| ");
+                    Terminal.output(
+                            "     __  \n    /_ | \n     | | \n     | | \n     | | \n     |_| ");
                     break;
 
                 case 0:
 
-                    Terminal.output("      ___   \n     / _ \\  \n    | | | | \n    | | | | \n    | |_| | \n     \\___/  ");
+                    Terminal.output(
+                            "      ___   \n     / _ \\  \n    | | | | \n    | | | | \n    | |_| | \n     \\___/  ");
                     break;
 
                 default:
@@ -314,9 +329,104 @@ public class ConsoleView implements View, VirtualView {
     public void completeVoteBoard(String value) {
 
         Terminal.info("Hai votato per giocare con l'arena " + value + ".");
-
     }
 
+    @Override
+    public void completeSelectAction(String value) throws RemoteException {
+
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+
+            JsonObject jSelectedAction = reader.readObject();
+
+            StringBuilder line = new StringBuilder()
+                    .append("Con l'azione selezionata puoi scrivere:\n");
+
+            if (jSelectedAction.getInt("move") != 0) {
+
+                line.append("- \"muovi/corri\" + coloreQuadrato + idQuadrato destinazione\n");
+            }
+            if (jSelectedAction.getBoolean("collect")) {
+
+                line.append(
+                        "-\"raccogli\" + (eventualmente) idCarta da raccogliere + (eventualmente) idCarta da scartare\n");
+
+            }
+            if (jSelectedAction.getBoolean("shoot")) {
+
+                line.append("- \"spara\" + idCarta (da definire)\n");
+            }
+            if (jSelectedAction.getBoolean("reload")) {
+
+                line.append("- \"ricarica\" + idCarta + (eventualmente)");
+            }
+
+            Terminal.info(line.toString());
+        }
+    }
+
+    @Override
+    public void completeCardInfo(String value) {
+
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+
+            JsonObject jCardObject = reader.readObject();
+
+            StringBuilder info = new StringBuilder();
+
+            info.append("Nome: ").append(jCardObject.getString("name")).append(" \n");
+
+            info.append("Effetto primario: ").append(" \n");
+            info.append(" -> Nome: ").append(jCardObject.getJsonObject("primary").getString("name"))
+                    .append(" \n");
+            info.append(" -> Descrizione: ")
+                    .append(jCardObject.getJsonObject("primary").getString("description"))
+                    .append(" \n");
+
+            if (jCardObject.get("alternative") != JsonValue.NULL) {
+
+                info.append("Effetto alternativo: ").append(" \n");
+                info.append(" -> Nome: ")
+                        .append(jCardObject.getJsonObject("alternative").getString("name"))
+                        .append(" \n");
+                info.append(" -> Descrizione: ")
+                        .append(jCardObject.getJsonObject("alternative").getString("description"))
+                        .append(" \n");
+            }
+
+            if (jCardObject.get("optional1") != JsonValue.NULL) {
+
+                info.append("Effetto opzionale: ").append(" \n");
+                info.append(" -> Nome: ")
+                        .append(jCardObject.getJsonObject("optional1").getString("name"))
+                        .append(" \n");
+                info.append(" -> Descrizione: ")
+                        .append(jCardObject.getJsonObject("optional1").getString("description"))
+                        .append(" \n");
+                info.append(" -> Costo: ")
+                        .append(jCardObject.getJsonObject("optional1").getString("cost"))
+                        .append(" \n");
+            }
+
+            if (jCardObject.get("optional2") != JsonValue.NULL) {
+
+                info.append("Effetto opzionale: ").append(" \n");
+                info.append(" -> Nome: ")
+                        .append(jCardObject.getJsonObject("optional2").getString("name"))
+                        .append(" \n");
+                info.append(" -> Descrizione: ")
+                        .append(jCardObject.getJsonObject("optional2").getString("description"))
+                        .append(" \n");
+                info.append(" -> Costo: ")
+                        .append(jCardObject.getJsonObject("optional2").getString("cost"))
+                        .append(" \n");
+            }
+
+            info.append("Note: ").append(jCardObject.getString("notes")).append(" \n");
+
+            Terminal.info(info.toString());
+
+        }
+    }
 
     @Override
     public void updateBoard(String value) {
@@ -331,7 +441,7 @@ public class ConsoleView implements View, VirtualView {
 
             Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
 
-        } catch (IllegalArgumentException e ) {
+        } catch (IllegalArgumentException e) {
 
             Terminal.error("Non sei loggato a nessuna partita.");
         }
@@ -344,7 +454,7 @@ public class ConsoleView implements View, VirtualView {
         Terminal.output("");
         Terminal.output("    _   ___  ___ ___ _  _   _   _    ___ _  _   _   ");
         Terminal.output("   /_\\ |   \\| _ \\ __| \\| | /_\\ | |  |_ _| \\| | /_\\  ");
-        Terminal.output("  / _ \\| |) |   / _|| .` |/ _ \\| |__ | || .` |/ _ \\ ");
-        Terminal.output(" /_/ \\_\\___/|_|_\\___|_|\\_/_/ \\_\\____|___|_|\\_/_/ \\_\\\n");
+        Terminal.output(" \u001b[31m / _ \\| |) |   /\u001b[36m _\u001b[31m||\u001b[36m .` \u001b[31m|/ _ \u001b[36m\\| |__ | || .` |/ _ \\ ");
+        Terminal.output(" \u001b[0m/_/ \\_\\___/|_|_\\___|_|\\_/_/ \\_\\____|___|_|\\_/_/ \\_\\\n");
     }
 }

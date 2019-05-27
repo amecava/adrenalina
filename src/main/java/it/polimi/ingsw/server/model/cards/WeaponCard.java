@@ -187,7 +187,8 @@ public class WeaponCard implements Card {
         return this;
     }
 
-    public void useCard(EffectType effectType, EffectArgument target, List<PowerUpCard> powerUpCardList)
+    public void useCard(EffectType effectType, EffectArgument target,
+            List<PowerUpCard> powerUpCardList)
             throws EffectException, PropertiesException, CardException {
 
         // Launch exception if selected effect not present in map
@@ -213,10 +214,10 @@ public class WeaponCard implements Card {
         this.effectHandler.updateCardUsageVariables(this.map.get(effectType), this);
 
         costCopy.forEach(x ->
-            this.owner.getAmmoCubesList().stream()
-                    .filter(y -> y.getColor().equals(x) && !y.isUsed())
-                    .findFirst().get()
-                    .setUsed(true)
+                this.owner.getAmmoCubesList().stream()
+                        .filter(y -> y.getColor().equals(x) && !y.isUsed())
+                        .findFirst().get()
+                        .setUsed(true)
         );
     }
 
@@ -261,6 +262,16 @@ public class WeaponCard implements Card {
                 .add("id", this.id)
                 .add("isLoaded", this.loaded)
                 .add("notes", (this.notes != null) ? this.notes : " ")
+                .add("primary", this.map.get(EffectType.PRIMARY).toJsonObject())
+                .add("alternative", this.map.containsKey(EffectType.ALTERNATIVE)
+                        ? this.map.get(EffectType.ALTERNATIVE).toJsonObject()
+                        : JsonValue.NULL)
+                .add("optional1", this.map.containsKey(EffectType.OPTIONAL_1)
+                        ? this.map.get(EffectType.OPTIONAL_1).toJsonObject()
+                        : JsonValue.NULL)
+                .add("optional2", this.map.containsKey(EffectType.OPTIONAL_2)
+                        ? this.map.get(EffectType.OPTIONAL_2).toJsonObject()
+                        : JsonValue.NULL)
                 .build();
     }
 

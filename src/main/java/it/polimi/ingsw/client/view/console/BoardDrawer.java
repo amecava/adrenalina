@@ -128,7 +128,7 @@ public class BoardDrawer {
 
         squareLine[20].append(fixLength(48,
                 squareLine[20].length() - 5 - (5 * thisPlayerObject.getJsonArray("ammoCubes")
-                        .size())));
+                        .size()))).append(Color.ansiColor("ALL"));
     }
 
     private static void addMyPowerUps(JsonObject thisPlayerObject) {

@@ -21,6 +21,9 @@ public interface VirtualView extends Remote {
 
     void updateGameNotStartedScreen(String value) throws RemoteException;
     void completeVoteBoard(String value) throws RemoteException;
+    void completeSelectAction(String value) throws RemoteException;
+
+    void completeCardInfo(String value) throws RemoteException;
 
     void updateBoard(String value) throws RemoteException;
 
