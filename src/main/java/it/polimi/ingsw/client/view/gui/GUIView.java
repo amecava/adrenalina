@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -68,12 +69,19 @@ public class GUIView extends Application implements View, VirtualView {
     private static ImageView imageView1;
     private static ImageView imageView2;
     private static ImageView imageView3;
-
+    private static EventHandler<KeyEvent> noSpace;
 
 
     @Override
     public void start(Stage stage) throws Exception {
         //////////////////////////////////////////////////////////////
+        noSpace= new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCharacter().toString().equals(" "))
+                    ((TextField)keyEvent.getSource()).deletePreviousChar();
+            }
+        };
         Image board0Image = new Image("Boards/0 - UPUP.png");
         imageView0 = new ImageView(board0Image);
         imageView0.setFitHeight(240);
@@ -217,6 +225,7 @@ public class GUIView extends Application implements View, VirtualView {
                 new BackgroundFill(Color.rgb(25, 31, 53), CornerRadii.EMPTY, Insets.EMPTY)));
         GridPane gridPane = new GridPane();
         TextField userLogin = new TextField();
+        userLogin.setOnKeyTyped(noSpace);
         Button enter = new Button("enter");
         enter.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -275,11 +284,24 @@ public class GUIView extends Application implements View, VirtualView {
         gameName.setTextFill(Color.WHITE);
         gameName.setWrapText(true);
         TextField insertGameName = new TextField();
+        insertGameName.setOnKeyTyped(noSpace);
         insertGameName.setPrefSize(80, 30);
         Label numeroMorti = new Label("numero morti nella partita: ");
         numeroMorti.setTextFill(Color.WHITE);
         numeroMorti.setWrapText(true);
         TextField insertNumberOdDeaths = new TextField();
+        insertNumberOdDeaths.setOnKeyTyped(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (insertNumberOdDeaths.getCharacters().toString().length()>1){
+                    insertNumberOdDeaths.deletePreviousChar();
+                }
+                else if (!insertNumberOdDeaths.getCharacters().toString().matches("([5-8])")){
+                    insertNumberOdDeaths.deletePreviousChar();
+                    createNotifications("Errore:" ,"metti un numero da 5 a 8");
+                }
+            }
+        });
         insertNumberOdDeaths.setPrefSize(60, 20);
         Label frenzy = new Label("frensia finale");
         frenzy.setTextFill(Color.WHITE);
@@ -296,15 +318,21 @@ public class GUIView extends Application implements View, VirtualView {
         Label selectPlayer = new Label("seleziona giocatore");
         selectPlayer.setTextFill(Color.WHITE);
         TextField insertSelectedPlayer = new TextField();
+        insertSelectedPlayer.setOnKeyTyped(noSpace);
         Button enterGame = new Button("gioca!");
         enterGame.setTextFill(Color.GRAY);
         enterGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "selectGame");
-                JsonQueue.add("gameId", game.getText());
-                JsonQueue.add("character", insertSelectedPlayer.getText());
-                JsonQueue.send();
+                if (insertSelectedPlayer.getCharacters().toString().length()==0){
+                    createNotifications("Errore:", "per favore metti un personaggio valido");
+                }
+                else {
+                    JsonQueue.add("method", "selectGame");
+                    JsonQueue.add("gameId", game.getText());
+                    JsonQueue.add("character", insertSelectedPlayer.getText());
+                    JsonQueue.send();
+                }
             }
         });
         selectedGame.getChildren()
@@ -358,7 +386,36 @@ public class GUIView extends Application implements View, VirtualView {
         BorderPane.setAlignment(selectMap, Pos.TOP_LEFT);
         HBox images1 = new HBox();
         images1.setMouseTransparent(false);
-        Button board0 = new Button("", imageView0);
+        final ScaleTransition stBig = new ScaleTransition();
+        final ScaleTransition stSmall= new ScaleTransition();
+        stBig.setFromX(1.0);
+        stBig.setFromY(1.0);
+        stBig.setToX(1.3);
+        stBig.setToY(1.3);
+        stSmall.setFromX(1.0);
+        stSmall.setToX(1.0);
+        stSmall.setFromY(1.0);
+        stSmall.setToX(1.0);
+        stBig.setDuration(new Duration(50));
+        stSmall.setDuration(new Duration(50));
+        Button board0 = new Button("", imageView2);
+        EventHandler<MouseEvent> bigger = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stBig.setNode((Button)mouseEvent.getSource());
+                stBig.play();
+            }
+        };
+        EventHandler<MouseEvent> smaller = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stSmall.setNode((Button)mouseEvent.getSource());
+                stSmall.play();
+
+            }
+        };
+        board0.setOnMouseExited(smaller);
+        board0.setOnMouseEntered(bigger);
         board0.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -367,7 +424,9 @@ public class GUIView extends Application implements View, VirtualView {
                 JsonQueue.send();
             }
         });
-        Button board1 = new Button("", imageView1);
+        Button board1 = new Button("", imageView0);
+        board1.setOnMouseEntered(bigger);
+        board1.setOnMouseExited(smaller);
         board1.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -376,7 +435,9 @@ public class GUIView extends Application implements View, VirtualView {
                 JsonQueue.send();
             }
         });
-        Button board2 = new Button("", imageView2);
+        Button board2 = new Button("", imageView1);
+        board2.setOnMouseEntered(bigger);
+        board2.setOnMouseExited(smaller);
         board2.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -386,6 +447,8 @@ public class GUIView extends Application implements View, VirtualView {
             }
         });
         Button board3 = new Button("", imageView3);
+        board3.setOnMouseEntered(bigger);
+        board3.setOnMouseExited(smaller);
         board3.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -401,8 +464,6 @@ public class GUIView extends Application implements View, VirtualView {
         VBox images = new VBox();
         images.getChildren().addAll(images1, images2);
         borderPane.setCenter(images);
-        VBox connectedPlayers = new VBox();
-
         Platform.runLater(() -> changeScene(borderPane));
     }
 
@@ -416,22 +477,22 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void broadcast(String value) throws RemoteException {
-        this.createNotifications(value);
+        this.createNotifications("broadcast", value);
     }
 
     @Override
     public void gameBroadcast(String value) throws RemoteException {
-        this.createNotifications(value);
+        this.createNotifications("Game Brodcast", value);
     }
 
     @Override
     public void infoMessage(String value) throws RemoteException {
-        this.createNotifications(value);
+        this.createNotifications("Informazione", value);
     }
 
     @Override
     public void errorMessage(String value) throws RemoteException {
-        this.createNotifications(value);
+        this.createNotifications("Errore:", value);
 
     }
 
@@ -524,47 +585,55 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void updateGameNotStartedScreen(String value) throws RemoteException {
-            VBox playersConnected = new VBox();
-            JsonReader reader = Json.createReader(new StringReader(value));
-            JsonObject readObject = reader.readObject();
-            Label countDown;
-            int count=readObject.getInt("countdown");
-            if (count<60) {
-                 countDown = new Label(
-                        " tra " + count + " secondi inzia il gioco");
-                 countDown.setTextFill(Color.GREENYELLOW);
-                 countDown.setFont(Font.font("verdana", 20));
-                 countDown.setWrapText(true);
-            }
-            else {
-                countDown = new Label("appena si collegano 3 giocatori inizia il count down");
-                countDown.setWrapText(true);
-                countDown.setTextFill(Color.GREENYELLOW);
-                countDown.setFont(Font.font("verdana", 10));
-            }
-            playersConnected.getChildren().addAll(countDown);
-            readObject.getJsonArray("playerList").stream().map(JsonValue::asJsonObject).forEach(x->{
-                HBox player = new HBox();
-                player.setSpacing(5);
-                Label giocatore  = new Label("giocatore : " + x.getString("playerId"));
-                giocatore.setWrapText(true);
-                giocatore.setTextFill(Color.BLACK);
-                Label personaggio = new Label("personaggio :" + x.getString("character"));
-                personaggio.setWrapText(true);
-                personaggio.setTextFill(Color.YELLOW);
-                player.getChildren().addAll(giocatore, personaggio);
-                playersConnected.getChildren().add(player);
-            });
-            Platform.runLater(()->{
-                BorderPane borderPane = (BorderPane) currentStage.getScene().getRoot();
-                borderPane.setRight(playersConnected);
-            });
+        VBox playersConnected = new VBox();
+        playersConnected.setMaxWidth(150);
+        JsonReader reader = Json.createReader(new StringReader(value));
+        JsonObject readObject = reader.readObject();
+        Label countDown;
+
+        int count = readObject.getInt("countdown");
+        if (count < 60) {
+            countDown = new Label(
+                    " tra " + count + " secondi inzia il gioco");
+
+        } else {
+            countDown = new Label("appena si collegano 3 giocatori inizia il count down");
+        }
+        countDown.setMinHeight(200);
+        countDown.setWrapText(true);
+        countDown.setTextFill(Color.GREENYELLOW);
+        countDown.setFont(Font.font("verdana", 15));
+        playersConnected.getChildren().addAll(countDown);
+        readObject.getJsonArray("playerList").stream().map(JsonValue::asJsonObject).forEach(x -> {
+            HBox player = new HBox();
+            player.setMinHeight(100);
+            player.setSpacing(5);
+            Label giocatore = new Label("giocatore : " + x.getString("playerId"));
+            giocatore.setWrapText(true);
+            giocatore.setFont(Font.font("verdana", 10));
+            giocatore.setTextFill(Color.WHITE);
+            Label personaggio = new Label("personaggio: " + x.getString("character"));
+            personaggio.setFont(Font.font("verdana", 10));
+            personaggio.setWrapText(true);
+            personaggio.setTextFill(Color.YELLOW);
+            player.getChildren().addAll(giocatore, personaggio);
+            playersConnected.getChildren().add(player);
+        });
+        Platform.runLater(() -> {
+            BorderPane borderPane = (BorderPane) currentStage.getScene().getRoot();
+            GridPane right = new GridPane();
+            borderPane.setRight(right);
+            right.getChildren().add(playersConnected);
+            right.setAlignment(Pos.TOP_LEFT);
+
+
+        });
 
     }
 
     @Override
     public void completeVoteBoard(String value) throws RemoteException {
-       return;
+        return;
     }
 
     @Override
@@ -584,8 +653,7 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void updateBoard(String value) throws RemoteException {
-        this.boardScreen();
-        Platform.runLater(()-> {
+        Platform.runLater(() -> {
             currentStage.getScene().setRoot(new BorderPane(imageView2));
             imageView2.setFitWidth(1000);
             imageView2.setFitHeight(600);
@@ -598,15 +666,14 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
 
-    private synchronized void createNotifications(String value) {
-        String messageType = new Throwable().getStackTrace()[1].getMethodName();
+    private synchronized void createNotifications(String stringTitle ,String value) {
         Platform.runLater(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.NONE);
             dialog.initStyle(StageStyle.TRANSPARENT);
             dialog.initOwner(currentStage);
             VBox dialogVbox = new VBox();
-            Text title = new Text(messageType);
+            Text title = new Text(stringTitle);
             title.setFont(Font.font("verdana", 20));
             title.setFill(Color.YELLOW);
             Text message = new Text(value);
