@@ -71,6 +71,20 @@ public class Model {
         return player;
     }
 
+    public Player searchPlayer(String name) throws ColorException {
+
+        Color color = Color.ofCharacter(name);
+
+        for (Player player: this.playerList) {
+
+            if (player.getColor().equals(color)) {
+
+                return player;
+            }
+        }
+        throw new ColorException("Il personaggio che hai scelto non sta giocando.");
+    }
+
     public Player getActivePlayer() {
 
         return this.activePlayer;

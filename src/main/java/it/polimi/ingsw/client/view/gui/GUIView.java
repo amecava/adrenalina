@@ -568,6 +568,21 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     @Override
+    public void completeSelectAction(String value) throws RemoteException {
+
+    }
+
+    @Override
+    public void completeEndAction(String value) throws RemoteException {
+
+    }
+
+    @Override
+    public void completeCardInfo(String value) throws RemoteException {
+
+    }
+
+    @Override
     public void updateBoard(String value) throws RemoteException {
         this.boardScreen();
         Platform.runLater(()-> {

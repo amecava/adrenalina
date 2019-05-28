@@ -147,6 +147,11 @@ public class GameHandler {
 
             Color color = Color.ofName(colorName);
 
+            if (color == null) {
+
+                throw new ColorException("Il colore selezionato non esiste.");
+            }
+
             Square destination = this.model.getBoard().findSpawn(color);
 
             this.model.getBoard()

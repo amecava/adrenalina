@@ -109,6 +109,11 @@ public class Board {
 
             Color color = Color.ofName(name);
 
+            if (color == null) {
+
+                throw new ColorException("Il colore selezionato non esiste.");
+            }
+
             return this.roomsList.stream()
                     .filter(x -> x.getColor().equals(color))
                     .flatMap(y -> y.getSquaresList().stream())
@@ -116,7 +121,7 @@ public class Board {
                     .findAny()
                     .orElseThrow(NoSuchElementException::new);
 
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NumberFormatException e) {
 
             throw new SquareException("Il quadrato che hai scelto non esiste.");
         }

@@ -309,6 +309,14 @@ public class Player implements Target {
         this.powerUpsList.add(powerUp);
     }
 
+    public PowerUpCard findPowerUp(String name, Color color) throws CardNotFoundException {
+
+        return this.powerUpsList.stream()
+                .filter(x -> x.getName().equals(name) && x.getColor().equals(color))
+                .findAny()
+                .orElseThrow(() -> new CardNotFoundException("You don't have that power up card!"));
+    }
+
     public PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
 
         PowerUpCard powerUpCard = this.powerUpsList.stream()

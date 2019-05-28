@@ -1,7 +1,10 @@
 package it.polimi.ingsw.server.presenter;
 
+import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
+import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
+import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
@@ -15,6 +18,8 @@ import it.polimi.ingsw.server.presenter.exceptions.SpawnException;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.StringReader;
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -467,18 +472,23 @@ public abstract class Presenter implements VirtualPresenter {
 
         } else {
 
-            String request = object.getString("target");
+            EffectArgument effectArgument = new EffectArgument();
 
-            request.replaceAll("<", " ");
-            request.replaceAll(">", " ");
+            try {
 
-            Pattern p = Pattern.compile("(\\s*)([a-zA-Z_0-9]+)(\\s*)");
+                EffectType effectType = EffectType.ofString(object.getString("effectType"));
 
-            Matcher m = p.matcher(request);
+                EffectParser.target(this.gameHandler, object.getString("target"))
+                        .forEach(effectArgument::appendTarget);
 
-            while (m.lookingAt()) {
+                effectArgument.setDestination(EffectParser.destination(this.gameHandler, object.getString("destination")));
 
-                break;
+                List<PowerUpCard> powerUpCardList = EffectParser.powerUps(this.player, object.getString("powerup"));
+
+            } catch ( ColorException | EffectException | CardException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+
             }
         }
     }

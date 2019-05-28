@@ -166,17 +166,17 @@
             },
             {
                 "name": "target",
-                "regex": "(\\s*)((?<=target))<((\\s*)(\\S+)(\\s*))+>)|((?<!target)(^$))(\\s*)",
+                "regex": "(\\s*)(((?<=target))(\\s*)<((\\s*)(\\S+)(\\s*))+>)|((?<!target)(^$))(\\s*)",
                 "error": "Devi selezionare un numero da 1 a 24."
             },
             {
                 "name": "destination",
-                "regex": "(\\s*)((?<=destination)-((\\s*)(\\S+)(\\s*))+-)|((?<!destination)(^$))(\\s*)",
+                "regex": "(\\s*)(((?<=destinazione))(\\s*)<((\\s*)(\\S+)(\\s*))>)|((?<!destinazione)(^$))(\\s*)",
                 "error": "Devi selezionare un numero da 1 a 24."
             },
             {
                 "name": "powerup",
-                "regex": "(\\s*)((?<=powerup)/((\\s*)(\\S+)(\\s*))+/)|((?<!powerup)(^$))(\\s*)",
+                "regex": "(\\s*)(((?<=powerup))(\\s*)<((\\s*)(\\S+)(\\s*))+>)|((?<!powerup)(^$))(\\s*)",
                 "error": "Devi selezionare un numero da 1 a 24."
             }
         ]

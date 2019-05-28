@@ -60,12 +60,12 @@ public enum Color {
         return map.get(character);
     }
 
-    public static Color ofName(String name) throws ColorException {
+    public static Color ofName(String name) {
 
         return Arrays.stream(values())
                 .filter(x -> JsonUtility.levenshteinDistance(name.toLowerCase(), x.name) <= 1)
                 .findFirst()
-                .orElseThrow(() -> new ColorException("Il colore selezionato non esiste."));
+                .orElse(null);
     }
 
     public static Color ofCharacter(String characterName) throws ColorException {
