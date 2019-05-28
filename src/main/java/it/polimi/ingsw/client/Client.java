@@ -2,11 +2,13 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.view.console.ConsoleView;
 import it.polimi.ingsw.client.view.View;
+import it.polimi.ingsw.client.view.gui.GUIView;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,20 +40,32 @@ public class Client {
 
         } else {
 
-            //this.view = new GUIView();
+            this.view = new GUIView();
+
+            new Thread(GUIView::initialize).start();
         }
 
-        this.view.searchingForServer();
+        this.view.initialScreen(this.discoveryPort, this.rmiPort, this.socketPort);
 
-        Runnable connection = this.view.selectConnection(
-                Client.discoverServer(discoveryPort), this.rmiPort, this.socketPort);
+        synchronized (View.queue) {
 
-        this.view.connectingToServer();
+            while (View.queue.peek() == null) {
 
-        connection.run();
+                try {
+
+                    View.queue.wait();
+
+                } catch (InterruptedException e) {
+
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+
+        View.queue.remove().run();
     }
 
-    private static InetAddress discoverServer(int port) throws IOException {
+    public static InetAddress discoverServer(int port) throws IOException {
 
         InetAddress inetAddress = null;
 

@@ -1,9 +1,11 @@
 package it.polimi.ingsw.client.view.console;
 
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
 import it.polimi.ingsw.virtual.VirtualView;
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
@@ -51,48 +53,64 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void searchingForServer() {
+    public void initialScreen(int discoveryPort, int rmiPort, int socketPort) {
 
         Terminal.output("Ricerca del server ADRENALINA.");
-    }
 
-    @Override
-    public Runnable selectConnection(InetAddress inetAddress, int rmiPort, int socketPort) {
+        try {
 
-        Terminal.output("");
-        Terminal.output("Seleziona il tipo di connessione da utilizzare:");
-        Terminal.output("    1. RMI");
-        Terminal.output("    2. Socket");
+            InetAddress inetAddress = Client.discoverServer(discoveryPort);
 
-        while (true) {
+            Terminal.output("");
+            Terminal.output("Seleziona il tipo di connessione da utilizzare:");
+            Terminal.output("    1. RMI");
+            Terminal.output("    2. Socket");
 
-            String line = Terminal.input().toLowerCase();
+            boolean found = false;
 
-            if (line.contains("rmi") && !line.contains("socket")) {
+            while (!found) {
 
-                return new RmiConnection(inetAddress, rmiPort, this);
+                String line = Terminal.input().toLowerCase();
 
-            } else if (line.contains("socket") && !line.contains("rmi")) {
+                if (line.contains("rmi") && !line.contains("socket")) {
 
-                return new SocketConnection(inetAddress, socketPort, this);
+                    synchronized (queue) {
 
-            } else {
+                        queue.add(new RmiConnection(inetAddress, rmiPort, this));
 
-                this.errorMessage("Selezione non disponibile, riprova.");
+                        found = true;
+
+                        queue.notifyAll();
+                    }
+
+                } else if (line.contains("socket") && !line.contains("rmi")) {
+
+                    synchronized (queue) {
+
+                        queue.add(new SocketConnection(inetAddress, socketPort, this));
+
+                        found = true;
+
+                        queue.notifyAll();
+                    }
+                } else {
+
+                    this.errorMessage("Selezione non disponibile, riprova.");
+                }
             }
+
+            Terminal.clearScreen();
+            Terminal.clearResponse();
+
+            Terminal.output("");
+            Terminal.output("Connessione in corso...");
+
+        } catch (IOException e) {
+
+            Terminal.clearScreen();
+
+            Terminal.output("Server ADRENALINA non disponibile");
         }
-    }
-
-    @Override
-    public void connectingToServer() {
-
-        Terminal.clearScreen();
-        Terminal.clearResponse();
-
-        this.searchingForServer();
-
-        Terminal.output("");
-        Terminal.output("Connessione in corso...");
     }
 
     @Override

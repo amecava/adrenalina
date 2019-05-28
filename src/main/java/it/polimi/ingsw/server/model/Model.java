@@ -56,14 +56,15 @@ public class Model {
 
     public Player addPlayer(String playerId, String character) throws LoginException, ColorException {
 
+        Color color = Color.ofCharacter(character);
 
         if (this.playerList.stream()
-                .anyMatch(x -> x.getColor().equals(Color.getColor(character)))) {
+                .anyMatch(x -> x.getColor().equals(color))) {
 
             throw new LoginException("Il personaggio selezionato è già stato preso.");
         }
 
-        Player player = new Player(playerId, Color.ofCharacter(character));
+        Player player = new Player(playerId, color);
 
         this.playerList.add(player);
 
