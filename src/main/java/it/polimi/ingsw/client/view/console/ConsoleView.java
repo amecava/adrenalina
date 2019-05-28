@@ -353,7 +353,7 @@ public class ConsoleView implements View, VirtualView {
             }
             if (jSelectedAction.getBoolean("shoot")) {
 
-                line.append("- \"spara\" + idCarta (da definire)\n");
+                line.append("- \"selezionaarma\" + idCarta (da definire)\n");
             }
             if (jSelectedAction.getBoolean("reload")) {
 
@@ -425,6 +425,17 @@ public class ConsoleView implements View, VirtualView {
 
             Terminal.info(info.toString());
 
+        }
+    }
+
+    @Override
+    public void completeEndAction(String value) throws RemoteException {
+
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+
+            JsonObject jActionBridgeObject = reader.readObject();
+
+            Terminal.info("Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + "azioni.");
         }
     }
 

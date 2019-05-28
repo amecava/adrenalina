@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 public class WeaponCard implements Card {
 

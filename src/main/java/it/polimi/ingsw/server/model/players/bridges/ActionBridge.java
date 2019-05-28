@@ -211,6 +211,7 @@ class ActionBridge {
 
         return Json.createObjectBuilder()
                 .add("possibleActionsArray", arrayBuilder.build())
+                .add("remainingActions", this.remainingActions)
                 .add("isFirstPlayer", firstPlayer)
                 .build();
     }

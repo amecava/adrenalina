@@ -27,7 +27,8 @@ public class BoardDrawer {
         jDrawSquares = Json.createReader(in).readArray();
     }
 
-    public static StringBuilder[] drawBoard(JsonObject jsonObject, String playerId) throws IllegalArgumentException {
+    public static StringBuilder[] drawBoard(JsonObject jsonObject, String playerId)
+            throws IllegalArgumentException {
 
         JsonObject thisPlayerObject = jsonObject.getJsonArray("playerList").stream()
                 .map(JsonValue::asJsonObject)
@@ -118,7 +119,6 @@ public class BoardDrawer {
                 .getString("character")).toString()))
                 .append("Le tue munizioni: ");
 
-
         thisPlayerObject.getJsonArray("ammoCubes").stream()
                 .map(x -> x.toString().substring(1, x.toString().length() - 1))
                 .forEach(x -> {
@@ -128,7 +128,7 @@ public class BoardDrawer {
 
         squareLine[20].append(fixLength(48,
                 squareLine[20].length() - 5 - (5 * thisPlayerObject.getJsonArray("ammoCubes")
-                        .size()))).append(Color.ansiColor("ALL"));
+                        .size()))).append(Color.ansiColorOf("ALL"));
     }
 
     private static void addMyPowerUps(JsonObject thisPlayerObject) {
@@ -209,7 +209,7 @@ public class BoardDrawer {
         } else if ((jsonArray.getJsonArray(row).getJsonObject(squareInRow).containsKey("isSpawn")
                 && jsonArray.getJsonArray(row).getJsonObject(squareInRow).getBoolean("isSpawn"))) {
 
-            for (JsonValue cards: jsonArray.getJsonArray(row)
+            for (JsonValue cards : jsonArray.getJsonArray(row)
                     .getJsonObject(squareInRow)
                     .getJsonArray("tools")) {
 
@@ -220,28 +220,36 @@ public class BoardDrawer {
 
         } else {
 
-            for (String color : jsonArray.getJsonArray(row)
+            for (JsonValue card : jsonArray.getJsonArray(row)
                     .getJsonObject(squareInRow)
-                    .getJsonArray("tools")
-                    .getJsonObject(0)
-                    .getJsonArray("colors").stream()
-                    .map(x -> x.toString().substring(1, x.toString().length() - 1))
-                    .map(Color::ansiColorOf)
-                    .collect(Collectors.toList())) {
+                    .getJsonArray("tools")) {
 
-                cubesSubString
-                        .append(color)
-                        .append("◆");
+                card.asJsonObject().getJsonArray("colors").stream()
+                        .map(x -> x.toString().substring(1, x.toString().length() - 1))
+                        .map(Color::ansiColorOf)
+                        .forEach(y -> {
+
+                            cubesSubString.append(y);
+                            cubesSubString.append("◆");
+                        });
             }
 
-            cubesSubString.append(fixLength(10, (int) jsonArray.getJsonArray(row)
+            if (jsonArray.getJsonArray(row)
                     .getJsonObject(squareInRow)
-                    .getJsonArray("tools")
-                    .getJsonObject(0)
-                    .getJsonArray("colors").stream()
-                    .map(x -> x.toString()).count() + 1));
-        }
+                    .getJsonArray("tools").isEmpty()) {
 
+                cubesSubString.append(fixLength(10, 1));
+
+            } else {
+
+                cubesSubString.append(fixLength(10, (int) jsonArray.getJsonArray(row)
+                        .getJsonObject(squareInRow)
+                        .getJsonArray("tools")
+                        .getJsonObject(0)
+                        .getJsonArray("colors").stream()
+                        .map(x -> x.toString()).count() + 1));
+            }
+        }
 
         if ((Connection.valueOf(jsonArray.getJsonArray(row)
                 .getJsonObject(squareInRow).getString("eastConnection"))

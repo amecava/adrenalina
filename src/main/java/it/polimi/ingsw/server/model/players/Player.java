@@ -407,24 +407,24 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null
                 || !this.getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("You can't collect!");
+            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona l'azione giusta.");
         }
 
         if (!this.currentPosition.isSpawn()) {
 
-            throw new SquareException("You're not in a spawn square, wrong method call!");
+            throw new SquareException("Non sei in un quadrato di rigenerazione, non devi scartare nessuna carta.");
         }
 
         if (this.weaponCardList.size() != 3) {
 
-            throw new FullHandException("You don't have three cards, wrong method call");
+            throw new FullHandException("Non puoi scartare una carta per raccoglierne una se non ne hai già tre in mano");
         }
 
         this.addWeaponCard((WeaponCard) this.currentPosition.collectWeaponCard(
                 this.weaponCardList.stream()
                         .filter(x -> x.getId() == playerCardId)
                         .findAny()
-                        .orElseThrow(() -> new CardNotFoundException("You don't have that card!")),
+                        .orElseThrow(() -> new CardNotFoundException("Non hai la carta selezionata.")),
                 squareCardId));
 
         this.getCurrentAction().endAction(2, false);
@@ -454,13 +454,13 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isShoot() == null || !this
                 .getCurrentAction().isShoot()) {
 
-            throw new IllegalActionException("You can't shoot!");
+            throw new IllegalActionException("Non puoi sparare adesso.");
         }
 
         this.bridge.setCurrentWeaponCard(this.weaponCardList.stream()
                 .filter(x -> x.getId() == cardId)
                 .findAny()
-                .orElseThrow(() -> new CardNotFoundException("You don't have that card!"))
+                .orElseThrow(() -> new CardNotFoundException("Non hai la carta selezionata, selezionane una valida."))
                 .activateCard());
 
         this.getCurrentAction().endAction(4, false);

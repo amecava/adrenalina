@@ -118,13 +118,77 @@
         "value": [
             {
                 "name": "cardIdCollect",
-                "regex": "(\\s*)\\b([0-9]|1[0-9]|2[0-4])\\b(\\s*)",
+                "regex": "(\\s*)([1-9]+|)(\\s*)",
                 "error": "Devi selezionare un numero da 1 a 24."
             },
             {
                 "name": "cardIdDiscard",
-                "regex": "(\\s*)\\b([0-9]|1[0-9]|2[0-4])\\b(\\s*)",
+                "regex": "(\\s*)([1-9]+|)(\\s*)",
                 "error": "Devi selezionare un numero da 1 a 24."
+            }
+        ]
+    },
+    {
+        "input": ["usapowerup"],
+        "method": "askUsePowerUp",
+        "value": [
+            {
+                "name": "name",
+                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "error": "Devi scrivere il nome di un power up."
+            },
+            {
+                "name": "color",
+                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "error": "Devi scrivere anche il colore del power up che vuoi usare."
+            }
+        ]
+    },
+    {
+        "input": ["selezionaarma"],
+        "method": "askActivateWeapon",
+        "value": [
+            {
+                "name": "cardId",
+                "regex": "(\\s*)\\b([1-9]|1[0-9]|2[0-4])\\b(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
+            }
+        ]
+    },
+    {
+        "input": ["usaeffetto"],
+        "method": "askUseEffect",
+        "value": [
+            {
+                "name": "effectType",
+                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "error": "Devi selezionare un effetto: primario/alternativo/opzionale."
+            },
+            {
+                "name": "target",
+                "regex": "(\\s*)((?<=target))<((\\s*)(\\S+)(\\s*))+>)|((?<!target)(^$))(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
+            },
+            {
+                "name": "destination",
+                "regex": "(\\s*)((?<=destination)-((\\s*)(\\S+)(\\s*))+-)|((?<!destination)(^$))(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
+            },
+            {
+                "name": "powerup",
+                "regex": "(\\s*)((?<=powerup)/((\\s*)(\\S+)(\\s*))+/)|((?<!powerup)(^$))(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
+            }
+        ]
+    },
+    {
+        "input": ["fineazione"],
+        "method": "endAction",
+        "value": [
+            {
+                "name": "cardId",
+                "regex": "(\\s*)(\\s*)(\\s*)",
+                "error": "Non scrivere niente dopo fineazione."
             }
         ]
     },

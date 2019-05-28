@@ -85,7 +85,7 @@ class RegexJson {
 
         while (m.lookingAt()) {
 
-            builder.add(patterns.get(i).getFirst(), m.group(2));
+            builder.add(patterns.get(i).getFirst(), m.group(2) != null ? m.group(2) : "");
 
             value = value.substring(m.end());
 

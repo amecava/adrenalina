@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.model.board;
 
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
-import it.polimi.ingsw.server.model.exceptions.cards.SquareTypeException;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.players.Color;

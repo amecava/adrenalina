@@ -100,7 +100,6 @@
         <configuration>
           <mainClass>it.polimi.ingsw.client.view.gui.GUIView</mainClass>
         </configuration>
-
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

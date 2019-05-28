@@ -242,7 +242,7 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.\n"
                         + "Adesso puoi selezionare un'azione: scrivi \"selezionaazione \" seguito dal numero dell'azione che vuoi usare.\n"
-                        + "1 - ricarica 2 - corri 3 - raccogli 4 - spara");
+                        + "1 - corri 2 - raccogli 3 - spara 4 - ricarica");
 
                 ClientHandler.gameBroadcast(
                         this.gameHandler,
@@ -285,6 +285,12 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("infoMessage", "Turno finito.");
 
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateBoard",
+                        this.gameHandler.toJsonObject().toString());
+
             } catch (EndGameException e) {
 
                 //TODO end game
@@ -317,10 +323,13 @@ public abstract class Presenter implements VirtualPresenter {
                 this.player
                         .selectAction(Integer.valueOf(object.getString("actionNumber")));
 
-                this.callRemoteMethod("completeSelectAction", this.player.toJsonObject().getJsonObject("bridge")
-                        .getJsonObject("actionBridge")
-                        .getJsonArray("possibleActionsArray")
-                        .getJsonObject(Integer.valueOf(object.getString("actionNumber")) - 1).toString());
+                this.callRemoteMethod("completeSelectAction",
+                        this.player.toJsonObject().getJsonObject("bridge")
+                                .getJsonObject("actionBridge")
+                                .getJsonArray("possibleActionsArray")
+                                .getJsonObject(
+                                        Integer.valueOf(object.getString("actionNumber")) - 1)
+                                .toString());
 
             } catch (IllegalActionException e) {
 
@@ -384,32 +393,19 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
-                Pattern p = Pattern.compile("(\\s*)((\\S+)?)(\\s*)((\\S+)?)(\\s*)");
-                Matcher m = p.matcher(object.getString("string"));
+                if (object.getString("cardIdCollect").equals("")) {
 
-                if (m.find()) {
+                    this.gameHandler.getModel().getBoard().getAmmoTilesDeck()
+                            .addTile(this.player.collect());
 
-                    Pattern intP = Pattern.compile("\\b([0-9]|1[0-9]|2[0-4])\\b");
-                    Matcher intMatcher = intP.matcher(object.getString(m.group(2)));
+                } else if (object.getString("cardIdDiscard").equals("")) {
 
-                    if (!intMatcher.find()) {
+                    this.player.collect(Integer.parseInt(object.getString("cardIdCollect")));
 
-                        this.gameHandler.getModel().getBoard().getAmmoTilesDeck()
-                                .addTile(this.player.collect());
-                    } else {
+                } else {
 
-                        intMatcher = intP.matcher(object.getString(m.group(5)));
-
-                        if (!intMatcher.find()) {
-
-                            this.player.collect(Integer.parseInt(m.group(2)));
-
-                        } else {
-
-                            this.player.collect(Integer.parseInt(m.group(2)),
-                                    Integer.parseInt(m.group(5)));
-                        }
-                    }
+                    this.player.collect(Integer.parseInt(object.getString("cardIdCollect")),
+                            Integer.parseInt(object.getString("cardIdDiscard")));
                 }
 
                 ClientHandler.gameBroadcast(
@@ -419,11 +415,112 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
 
-            } catch (IllegalActionException | CardException e) {
+            } catch (IllegalActionException |
+                    CardException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
 
             }
+        }
+    }
+
+    @Override
+    public void askActivateWeapon(String value) throws RemoteException {
+
+        JsonObject object = this.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            try {
+
+                this.player.activateCard(Integer.parseInt(object.getString("cardId")));
+
+                this.callRemoteMethod("infoMessage", "Hai selezionato la carta da usare.");
+
+            } catch (CardException | IllegalActionException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void askUseEffect(String value) throws RemoteException {
+
+        JsonObject object = this.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            String request = object.getString("target");
+
+            request.replaceAll("<", " ");
+            request.replaceAll(">", " ");
+
+            Pattern p = Pattern.compile("(\\s*)([a-zA-Z_0-9]+)(\\s*)");
+
+            Matcher m = p.matcher(request);
+
+            while (m.lookingAt()) {
+
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void askUsePowerUp(String value) throws RemoteException {
+
+        JsonObject object = this.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            //TODO
+        }
+
+    }
+
+    @Override
+    public void endAction(String value) throws RemoteException {
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            this.player.endAction();
+
+            this.callRemoteMethod("completeEndAction",
+                    this.player.toJsonObject().getJsonObject("bridge").getJsonObject("actionBridge")
+                            .toString());
         }
     }
 

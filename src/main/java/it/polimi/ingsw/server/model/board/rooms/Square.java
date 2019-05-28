@@ -153,7 +153,8 @@ public class Square implements Target {
                         .map(x -> (WeaponCard) x)
                         .filter(y -> y.getId() == id)
                         .findAny().orElseThrow(() ->
-                        new EmptySquareException("La carta che vuoi raccogliere non è in questo quadrato."))));
+                        new EmptySquareException(
+                                "La carta che vuoi raccogliere non è in questo quadrato."))));
     }
 
     public Card collectWeaponCard(WeaponCard playerCard, int squareCardId)
@@ -190,7 +191,8 @@ public class Square implements Target {
                 .add("color", this.room.getColor().toString())
                 .add("isSpawn", this.spawn)
                 .add("tools", toolsBuilder.build())
-                .add("playersIn",(this.players.isEmpty()) ? JsonValue.NULL : playersBuilder.build())
+                .add("playersIn",
+                        (this.players.isEmpty()) ? JsonValue.NULL : playersBuilder.build())
                 .add("eastConnection", this.connection.get(Direction.EAST).toString())
                 .build();
     }
