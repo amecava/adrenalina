@@ -506,6 +506,7 @@ public class BoardDrawer {
             if (x.getBoolean("used")) {
 
                 line.append("x");
+
             } else {
 
                 line.append(x.getInt("value"));

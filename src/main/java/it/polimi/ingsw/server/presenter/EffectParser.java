@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.board.rooms.Square;
+import it.polimi.ingsw.server.model.cards.Card;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
@@ -16,6 +17,34 @@ import java.util.List;
 
 class EffectParser {
 
+    static Color color(String line) throws ColorException {
+
+
+        line = line.trim();
+
+        if (line.equals("")) {
+
+            throw new ColorException("Seleziona un colore valido.");
+        }
+
+
+        return Color.ofName(line);
+    }
+
+    static int cardId(String line) throws CardException {
+
+        line = line.replaceAll("\\s+", " ");
+
+        if (line.equals(" ")) {
+
+            throw new CardException("Seleziona un id valido.");
+        }
+
+        line = line.trim();
+
+        return Integer.parseInt(line);
+    }
+
     static List<Target> target(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
 
@@ -23,10 +52,14 @@ class EffectParser {
 
         try {
 
-            request.replaceAll("\\s*<\\s*", "");
-            request.replaceAll("\\s*>\\s*", "");
+            request = request.replaceAll("\\s+", " ");
 
-            request.replaceAll("\\s+", " ");
+            if (request.equals(" ")) {
+
+                return targetList;
+            }
+
+            request = request.trim();
 
             String[] args = request.split(" ");
 
@@ -72,15 +105,14 @@ class EffectParser {
 
         try {
 
-            if (request.equals("")) {
+            request = request.replaceAll("\\s+", " ");
+
+            if (request.equals(" ")) {
 
                 return null;
             }
 
-            request.replaceAll("\\s*<\\s*", "");
-            request.replaceAll("\\s*>\\s*", "");
-
-            request.replaceAll("\\s+", "");
+            request = request.trim();
 
             if (request.contains("-")) {
 
@@ -107,10 +139,14 @@ class EffectParser {
 
         try {
 
-            request.replaceAll("\\s*<\\s*", "");
-            request.replaceAll("\\s*>\\s*", "");
+            request = request.replaceAll("\\s+", " ");
 
-            request.replaceAll("\\s+", " ");
+            if (request.equals(" ")) {
+
+                return list;
+            }
+
+            request = request.trim();
 
             String[] args = request.split(" ");
 
@@ -118,12 +154,13 @@ class EffectParser {
 
                 if (x.contains("-")) {
 
-                    if (x.length() != 2) {
+                    String[] square = x.split("-");
+
+                    if (square.length != 2) {
 
                         throw new CardException("Istruzione non valida");
                     }
 
-                    String[] square = x.split("-");
 
                     Color color = Color.ofName(square[1]);
 
@@ -140,6 +177,22 @@ class EffectParser {
         }
 
         return list;
+    }
+
+    static EffectType effectType(String line) throws EffectException{
+
+        line.replaceAll("\\s*", "");
+        line.replaceAll("|", "");
+
+        return EffectType.ofString(line);
+    }
+
+    static String updateString(String line) {
+
+        line = line.substring(line.indexOf("|"));
+
+
+        return line.substring(line.indexOf("|") + 1);
     }
 
 }

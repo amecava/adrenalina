@@ -106,6 +106,7 @@ class DamageBridge {
         return Json.createObjectBuilder()
                 .add("shots", shotsBuilder.build())
                 .add("marks", marksBuilder.build())
+                .add("isFinalFrenzy", this.killStreakCount)
                 .build();
     }
 }

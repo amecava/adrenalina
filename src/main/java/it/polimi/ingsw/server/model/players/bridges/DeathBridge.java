@@ -27,6 +27,11 @@ class DeathBridge {
     void addKill() {
 
         this.kills++;
+
+        for (int i = 0; i < kills; i++) {
+
+            this.pointsOfDeaths.get(i).getValueSetUsed();
+        }
     }
 
     void setFrenzy() {

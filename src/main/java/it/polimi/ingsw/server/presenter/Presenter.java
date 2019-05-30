@@ -4,6 +4,7 @@ import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
+import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
@@ -448,7 +449,10 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.player.activateCard(Integer.parseInt(object.getString("cardId")));
 
-                this.callRemoteMethod("infoMessage", "Hai selezionato la carta da usare.");
+                this.callRemoteMethod("infoMessage", "Hai selezionato la carta da usare, "
+                        + "adesso per usare un effetto puoi scrivere:\n"
+                        + "usaeffetto tipoEffetto | Target(un personaggio, un quadrato o una stanza) | destinazione(colore-idQiuadrato) | eventualiPowerup(nome-colore)\n"
+                        + "Esempio: usaeffetto primario | sprog dozer (oppure \"rosso\" per selezionare un'intera stanza) | rosso-1 | mirino-rosso");
 
             } catch (CardException | IllegalActionException e) {
 
@@ -476,21 +480,53 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
-                EffectType effectType = EffectType.ofString(object.getString("effectType"));
+                String line = object.getString("line");
 
-                EffectParser.target(this.gameHandler, object.getString("target"))
+                EffectType effectType = EffectParser
+                        .effectType(line.substring(0, line.indexOf("|")));
+
+                line = EffectParser.updateString(line);
+
+                EffectParser.target(this.gameHandler, line.substring(0, line.indexOf("|")))
                         .forEach(effectArgument::appendTarget);
 
-                effectArgument.setDestination(EffectParser.destination(this.gameHandler, object.getString("destination")));
+                line = EffectParser.updateString(line);
 
-                List<PowerUpCard> powerUpCardList = EffectParser.powerUps(this.player, object.getString("powerup"));
+                effectArgument.setDestination(EffectParser
+                        .destination(this.gameHandler, line.substring(0, line.indexOf("|"))));
 
-            } catch ( ColorException | EffectException | CardException e) {
+                line = EffectParser.updateString(line);
+
+                line = line.replaceAll("|", "");
+
+                List<PowerUpCard> powerUpCardList = EffectParser
+                        .powerUps(this.player, line);
+
+                this.player.useCard(effectType, effectArgument, powerUpCardList);
+
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateBoard",
+                        this.gameHandler.toJsonObject().toString());
+
+                /*
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> quelli che sono nella targetList,
+                        "infoMessage",
+                        this.gameHandler.toJsonObject().toString());
+                 */
+
+                this.callRemoteMethod("infoMessage",
+                        "Hai sparato con successo, adesso puoi usare un effetto opzionale oppure finire l'azione.");
+
+            } catch (ColorException | EffectException | CardException | IllegalActionException | PropertiesException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
-
             }
         }
+
     }
 
     @Override
@@ -508,9 +544,107 @@ public abstract class Presenter implements VirtualPresenter {
 
         } else {
 
-            //TODO
-        }
+            try {
 
+                String line = object.getString("name");
+
+                if (!line.contains("|")) {
+
+                    this.callRemoteMethod("errorMessage", "Per favore, per usare un power up scrivi:\n"
+                            + "usapowerup nomePowerUp-colorePowerUp | eventualeTarget | eventualeColore.");
+                }else {
+
+                    EffectArgument effectArgument = new EffectArgument();
+
+                    PowerUpCard powerUp = EffectParser.powerUps(this.player, line.substring(0, line.indexOf("|"))).get(0);
+
+                    line = EffectParser.updateString(line);
+
+                    EffectParser.target(this.gameHandler, line.substring(0, line.indexOf("|")))
+                            .forEach(effectArgument::appendTarget);
+
+                    line = EffectParser.updateString(line);
+                    line = line.replaceAll("|", "");
+                    line = line.trim();
+
+                    Color color = Color.ofName(line);
+
+                    if (color == null) {
+
+                        powerUp.useCard(effectArgument);
+
+                    } else {
+
+                        powerUp.useCard(effectArgument, color);
+                    }
+
+                    ClientHandler.gameBroadcast(
+                            this.gameHandler,
+                            x -> true,
+                            "updateBoard",
+                            this.gameHandler.toJsonObject().toString());
+                }
+
+
+            } catch (ColorException | EffectException | CardException | PropertiesException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void askReload(String value) throws RemoteException {
+
+        JsonObject object = this.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            try {
+
+                String line = object.getString("line");
+
+                if (!line.contains("|")) {
+
+                    this.callRemoteMethod("errorMessage", "Per favore, per usare un power up scrivi:\n"
+                            + "usapowerup nomePowerUp-colorePowerUp | eventualeTarget | eventualeColore.");
+                }else {
+
+                    int id = EffectParser.cardId(line.substring(0, line.indexOf("|")));
+
+                    line = EffectParser.updateString(line);
+                    line = line.replaceAll("|", "");
+
+                    this.player.reload(id, EffectParser
+                            .powerUps(this.player, line));
+
+                    ClientHandler.gameBroadcast(
+                            this.gameHandler,
+                            x -> true,
+                            "updateBoard",
+                            this.gameHandler.toJsonObject().toString());
+
+                    this.callRemoteMethod("infoMessage",
+                            "Carta ricaricata! Adesso puoi solo finire il tuo turno con il comando \"fineturno\".");
+                }
+
+            } catch (CardException | IllegalActionException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+
+            } catch (NumberFormatException e) {
+
+                this.callRemoteMethod("errorMessage", "Seleziona un id valido.");
+            }
+        }
     }
 
     @Override

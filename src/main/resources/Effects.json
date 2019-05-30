@@ -275,6 +275,8 @@
             "atomicEffectList": ["MOVE", "DAMAGE"]
         },
 
+        "cost": ["RED"],
+
         "maxTargets": 2,
         "sameAsFather": [false, false],
         "sameAsPlayer": true,

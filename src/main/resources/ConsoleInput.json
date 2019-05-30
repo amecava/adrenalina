@@ -134,13 +134,8 @@
         "value": [
             {
                 "name": "name",
-                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "regex": "(\\s*)(.*)(\\s*)",
                 "error": "Devi scrivere il nome di un power up."
-            },
-            {
-                "name": "color",
-                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
-                "error": "Devi scrivere anche il colore del power up che vuoi usare."
             }
         ]
     },
@@ -160,24 +155,9 @@
         "method": "askUseEffect",
         "value": [
             {
-                "name": "effectType",
-                "regex": "(\\s*)([a-zA-Z_0-9]+)(\\s*)",
+                "name": "line",
+                "regex": "(\\s*)(.*)(\\s*)",
                 "error": "Devi selezionare un effetto: primario/alternativo/opzionale."
-            },
-            {
-                "name": "target",
-                "regex": "(\\s*)(((?<=target))(\\s*)<((\\s*)(\\S+)(\\s*))+>)|((?<!target)(^$))(\\s*)",
-                "error": "Devi selezionare un numero da 1 a 24."
-            },
-            {
-                "name": "destination",
-                "regex": "(\\s*)(((?<=destinazione))(\\s*)<((\\s*)(\\S+)(\\s*))>)|((?<!destinazione)(^$))(\\s*)",
-                "error": "Devi selezionare un numero da 1 a 24."
-            },
-            {
-                "name": "powerup",
-                "regex": "(\\s*)(((?<=powerup))(\\s*)<((\\s*)(\\S+)(\\s*))+>)|((?<!powerup)(^$))(\\s*)",
-                "error": "Devi selezionare un numero da 1 a 24."
             }
         ]
     },
@@ -208,9 +188,9 @@
         "method": "askReload",
         "value": [
             {
-                "name": "reload",
-                "regex": "(\\s*)",
-                "error": "Non scrivere niente dopo reload."
+                "name": "line",
+                "regex": "(\\s*)(.*)(\\s*)",
+                "error": "Devi selezionare un numero da 1 a 24."
             }
         ]
     },

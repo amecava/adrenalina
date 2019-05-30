@@ -314,7 +314,7 @@ public class Player implements Target {
         return this.powerUpsList.stream()
                 .filter(x -> x.getName().equals(name) && x.getColor().equals(color))
                 .findAny()
-                .orElseThrow(() -> new CardNotFoundException("You don't have that power up card!"));
+                .orElseThrow(() -> new CardNotFoundException("Non hai in mano il powerup che hai selezionato."));
     }
 
     public PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
@@ -444,13 +444,13 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isReload() == null
                 || !this.getCurrentAction().isReload()) {
 
-            throw new IllegalActionException(" please select the action you would like to use!!!");
+            throw new IllegalActionException("Prima seleziona quale azione vuoi usare (se vuoi ricaricare, seleziona la numero 4).");
         }
 
         this.weaponCardList.stream()
                 .filter(x -> x.getId() == cardId)
                 .findAny()
-                .orElseThrow(() -> new CardNotFoundException("You don't have that card!"))
+                .orElseThrow(() -> new CardNotFoundException("Hai chiesto di ricaricare un'arma che non hai, scegline una valida."))
                 .reloadWeapon(powerUpCardList);
 
         this.getCurrentAction().endAction(2, false);
@@ -480,7 +480,7 @@ public class Player implements Target {
 
         if (this.bridge.getCurrentWeaponCard() == null) {
 
-            throw new IllegalActionException("No current card selected!");
+            throw new IllegalActionException("Prima scrivi quale carta vuoi utilizzare.");
         }
 
         this.bridge.getCurrentWeaponCard().useCard(effectType, effectTarget, powerUpCardList);
@@ -521,6 +521,7 @@ public class Player implements Target {
         return Json.createObjectBuilder()
                 .add("playerId", this.playerId)
                 .add("character", this.getColor().getCharacter())
+                .add("points", this.getPoints())
                 .add("isActivePlayer", this.activePlayer)
                 .add("bridge", this.bridge.toJsonObject())
                 .add("weapons", weaponsBuilder.build())

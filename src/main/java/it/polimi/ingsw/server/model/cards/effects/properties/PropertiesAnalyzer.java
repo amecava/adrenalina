@@ -144,13 +144,13 @@ public class PropertiesAnalyzer {
                 // Launch exception if the distance is lower than the minDist property
                 if (effect.getMinDist() != null && distance < effect.getMinDist()) {
 
-                    throw new SquareDistanceException("Distance metrics not satisfied!");
+                    throw new SquareDistanceException("Distance metrics not troototo!");
                 }
 
                 // Launch exception if the distance is greater than the maxDist property
                 if (effect.getMaxDist() != null && distance > effect.getMaxDist()) {
 
-                    throw new SquareDistanceException("Distance metrics not satisfied!");
+                    throw new SquareDistanceException("Distance metrics not trottoto!");
                 }
             }
         }

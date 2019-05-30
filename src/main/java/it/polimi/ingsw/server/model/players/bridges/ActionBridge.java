@@ -212,6 +212,7 @@ class ActionBridge {
         return Json.createObjectBuilder()
                 .add("possibleActionsArray", arrayBuilder.build())
                 .add("remainingActions", this.remainingActions)
+                .add("adrenalinLevel", this.adrenalin.toString())
                 .add("isFirstPlayer", firstPlayer)
                 .build();
     }

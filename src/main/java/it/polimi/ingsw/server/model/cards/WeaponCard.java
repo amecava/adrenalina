@@ -187,7 +187,7 @@ public class WeaponCard implements Card {
         // Launch exception if selected effect not present in map
         if (!this.map.containsKey(effectType)) {
 
-            throw new EffectException("Effect not present!");
+            throw new EffectException("L'effetto selezionato non esiste.");
         }
 
         // Launch exception if card already used and effectType not optional
@@ -195,7 +195,7 @@ public class WeaponCard implements Card {
                 || (effectType.equals(EffectType.PRIMARY) && map.containsKey(EffectType.ALTERNATIVE)
                 && this.map.get(EffectType.ALTERNATIVE).isUsed())) {
 
-            throw new EffectUsedException("Effect can't be used!");
+            throw new EffectUsedException("Non puoi usare l'effetto selezionato adesso.");
         }
 
         List<Color> costCopy = new ArrayList<>(this.map.get(effectType).getCost());
@@ -245,7 +245,7 @@ public class WeaponCard implements Card {
 
         } catch (IllegalArgumentException e) {
 
-            throw new CostException("Cost exception");
+            throw new CostException("Non hai abbastanza risorse per ricaricare.");
         }
     }
 

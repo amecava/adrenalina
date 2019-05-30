@@ -409,6 +409,13 @@ public class ConsoleView implements View, VirtualView {
                 info.append(" -> Descrizione: ")
                         .append(jCardObject.getJsonObject("alternative").getString("description"))
                         .append(" \n");
+
+                if (jCardObject.getJsonObject("alternative").get("cost") != null) {
+
+                    info.append(" -> Costo: ")
+                            .append(jCardObject.getJsonObject("alternative").getString("cost"))
+                            .append(" \n");
+                }
             }
 
             if (jCardObject.get("optional1") != JsonValue.NULL) {
@@ -453,7 +460,13 @@ public class ConsoleView implements View, VirtualView {
 
             JsonObject jActionBridgeObject = reader.readObject();
 
-            Terminal.info("Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + "azioni.");
+            if (jActionBridgeObject.getInt("remainingActions") == 1) {
+
+                Terminal.info("Ti rimane una sola azione.");
+            } else {
+
+                Terminal.info("Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + " azioni.");
+            }
         }
     }
 
