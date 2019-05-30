@@ -80,7 +80,7 @@ public class GameHandler {
 
                 try {
 
-                    for (int i = 60; i >= 0; i--) {
+                    for (int i = 10; i >= 0; i--) {
 
                         this.gameStarted = i;
 
@@ -110,7 +110,7 @@ public class GameHandler {
                             startGame();
                         }
                     },
-                    62000
+                    12000
             );
         }
 

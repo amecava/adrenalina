@@ -10,7 +10,9 @@ import java.io.StringReader;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
@@ -20,6 +22,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,6 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -59,6 +63,9 @@ import javax.json.JsonValue;
 
 public class GUIView extends Application implements View, VirtualView {
 
+    private static Map<Integer, Image> weaponsMap = new HashMap();
+    private static Map<String, Image> powerUpsMap = new HashMap<>();
+    private static Map<String, Image> bridgesMap = new HashMap<>();
     private Scene currentScene;
     private Scene nextScene;
     private static Stage currentStage;
@@ -70,18 +77,117 @@ public class GUIView extends Application implements View, VirtualView {
     private static ImageView imageView2;
     private static ImageView imageView3;
     private static EventHandler<KeyEvent> noSpace;
+    private static EventHandler<MouseEvent> bigger;
+    private static EventHandler<MouseEvent> smaller;
+    private static ScaleTransition stBig;
+    private static ScaleTransition stSmall;
+
+
+    private String playerIdView;
 
 
     @Override
     public void start(Stage stage) throws Exception {
         //////////////////////////////////////////////////////////////
-        noSpace= new EventHandler<KeyEvent>() {
+        System.out.println("opss 1");
+
+        weaponsMap.put(0, new Image("cardsImages/AD_weapons_IT_0225.png"));
+        weaponsMap.put(1, new Image("cardsImages/1.png"));
+        weaponsMap.put(2, new Image("cardsImages/2.png"));
+        weaponsMap.put(3, new Image("cardsImages/3.png"));
+        weaponsMap.put(4, new Image("cardsImages/4.png"));
+        weaponsMap.put(5, new Image("cardsImages/5.png"));
+        weaponsMap.put(6, new Image("cardsImages/6.png"));
+        weaponsMap.put(7, new Image("cardsImages/7.png"));
+        weaponsMap.put(8, new Image("cardsImages/8.png"));
+        weaponsMap.put(9, new Image("cardsImages/9.png"));
+        weaponsMap.put(10, new Image("cardsImages/10.png"));
+        weaponsMap.put(11, new Image("cardsImages/11.png"));
+        weaponsMap.put(12, new Image("cardsImages/12.png"));
+        weaponsMap.put(13, new Image("cardsImages/13.png"));
+        weaponsMap.put(14, new Image("cardsImages/14.png"));
+        weaponsMap.put(15, new Image("cardsImages/15.png"));
+        weaponsMap.put(16, new Image("cardsImages/16.png"));
+        weaponsMap.put(17, new Image("cardsImages/17.png"));
+        weaponsMap.put(18, new Image("cardsImages/18.png"));
+        weaponsMap.put(19, new Image("cardsImages/19.png"));
+        weaponsMap.put(20, new Image("cardsImages/20.png"));
+        weaponsMap.put(21, new Image("cardsImages/21.png"));
+        System.out.println("opss 2 ");
+
+
+        powerUpsMap.put("GRANATAVENOM BLUE", new Image("cardsImages/GRANATAVENOMBLUE.png"));
+        System.out.println("cazzo");
+        powerUpsMap.put("GRANATAVENOM RED", new Image("cardsImages/GRANATAVENOMRED.png"));
+        powerUpsMap.put("GRANATAVENOM YELLOW", new Image("cardsImages/GRANATAVENOMYELLOW.png"));
+        powerUpsMap.put("TELETRASPORTO BLUE", new Image("cardsImages/TELETRASPORTOBLUE.png"));
+        powerUpsMap.put("TELETRASPORTO RED", new Image("cardsImages/TELETRASPORTORED.png"));
+        powerUpsMap.put("TELETRASPORTO YELLOW", new Image("cardsImages/TELETRASPORTOYELLOW.png"));
+        powerUpsMap.put("MIRINO BLUE", new Image("cardsImages/MIRINOBLUE.png"));
+        powerUpsMap.put("MIRINO RED", new Image("cardsImages/MIRINORED.png"));
+        powerUpsMap.put("MIRINO YELLOW", new Image("cardsImages/MIRINOYELLOW.png"));
+        powerUpsMap.put("RAGGIOCINETICO BLUE", new Image("cardsImages/RAGGIOCINETICOBLUE.png"));
+        powerUpsMap.put("RAGGIOCINETICO RED", new Image("cardsImages/RAGGIOCINETICORED.png"));
+        powerUpsMap.put("RAGGIOCINETICO YELLOW", new Image("cardsImages/RAGGIOCINETICOYELLOW.png"));
+
+        System.out.println(" ops 2.5 ");
+        bridgesMap.put("Bansheefalse", new Image("playerboards/Bansheefalse.png"));
+        bridgesMap.put("Bansheetrue", new Image("playerboards/Bansheetrue.png"));
+
+        bridgesMap.put("Dozerfalse", new Image("playerboards/Dozerfalse.png"));
+        bridgesMap.put("Dozertrue", new Image("playerboards/Dozertrue.png"));
+
+        bridgesMap.put("Violettafalse", new Image("playerboards/Violettafalse.png"));
+        bridgesMap.put("Violettatrue", new Image("playerboards/Violettatrue.png"));
+
+        bridgesMap.put("Sprogfalse", new Image("playerboards/Sprogfalse.png"));
+        bridgesMap.put("Sprogtrue", new Image("playerboards/Sprogtrue.png"));
+
+        bridgesMap.put(":D-strutt-OR3false",
+                new Image("playerboards/D-strutt-OR3_false_frenesia.png"));
+        bridgesMap
+                .put(":D-strutt-OR3true", new Image("playerboards/D-strutt-OR3_true_frenesia.png"));
+        System.out.println("opss 3 ");
+        //////////////////////////////////////////////////////////////
+        noSpace = new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCharacter().toString().equals(" "))
-                    ((TextField)keyEvent.getSource()).deletePreviousChar();
+                if (keyEvent.getCharacter().toString().equals(" ")) {
+                    ((TextField) keyEvent.getSource()).deletePreviousChar();
+                }
             }
         };
+        ////////////////////////////////////////////////////////////////
+        stBig = new ScaleTransition();
+        stSmall = new ScaleTransition();
+        stBig.setFromX(1.0);
+        stBig.setFromY(1.0);
+        stBig.setToX(1.2);
+        stBig.setToY(1.2);
+        stSmall.setFromX(1.0);
+        stSmall.setToX(1.0);
+        stSmall.setFromY(1.0);
+        stSmall.setToX(1.0);
+        stBig.setDuration(new Duration(20));
+        stSmall.setDuration(new Duration(20));
+        bigger = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stBig.setNode((Button) mouseEvent.getSource());
+                stBig.play();
+                currentStage.getScene().setCursor(Cursor.HAND);
+            }
+        };
+        smaller = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stSmall.setNode((Button) mouseEvent.getSource());
+                stSmall.play();
+                currentStage.getScene().setCursor(Cursor.DEFAULT);
+
+            }
+        };
+        ////////////////////////////////////////////////////////////
         Image board0Image = new Image("Boards/0 - UPUP.png");
         imageView0 = new ImageView(board0Image);
         imageView0.setFitHeight(240);
@@ -104,7 +210,7 @@ public class GUIView extends Application implements View, VirtualView {
         imageView.setPreserveRatio(false);
         BorderPane borderPane = new BorderPane();
         GridPane immagePane = new GridPane();
-        immagePane.getChildren().add(imageView);
+        immagePane.getChildren().addAll(imageView);
         imageView.fitWidthProperty().bind(immagePane.widthProperty());
         imageView.fitHeightProperty().bind(immagePane.heightProperty());
         this.currentScene = new Scene(borderPane);
@@ -227,6 +333,8 @@ public class GUIView extends Application implements View, VirtualView {
         TextField userLogin = new TextField();
         userLogin.setOnKeyTyped(noSpace);
         Button enter = new Button("enter");
+        enter.setOnMouseEntered(bigger);
+        enter.setOnMouseExited(smaller);
         enter.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -278,6 +386,8 @@ public class GUIView extends Application implements View, VirtualView {
         HBox show = new HBox();
         show.setSpacing(20);
         Button createGame = new Button("Crea Partita");
+        createGame.setOnMouseEntered(bigger);
+        createGame.setOnMouseExited(smaller);
         createGame.setMinWidth(200);
         createGame.setTextFill(Color.BLACK);
         Label gameName = new Label("nome partita: ");
@@ -293,12 +403,11 @@ public class GUIView extends Application implements View, VirtualView {
         insertNumberOdDeaths.setOnKeyTyped(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
-                if (insertNumberOdDeaths.getCharacters().toString().length()>1){
+                if (insertNumberOdDeaths.getCharacters().toString().length() > 1) {
                     insertNumberOdDeaths.deletePreviousChar();
-                }
-                else if (!insertNumberOdDeaths.getCharacters().toString().matches("([5-8])")){
+                } else if (!insertNumberOdDeaths.getCharacters().toString().matches("([5-8])")) {
                     insertNumberOdDeaths.deletePreviousChar();
-                    createNotifications("Errore:" ,"metti un numero da 5 a 8");
+                    createNotifications("Errore:", "metti un numero da 5 a 8");
                 }
             }
         });
@@ -308,6 +417,8 @@ public class GUIView extends Application implements View, VirtualView {
         frenzy.setWrapText(true);
         CheckBox checkBoxFrenzy = new CheckBox();
         Button confirmGame = new Button("crea!");
+        confirmGame.setOnMouseEntered(bigger);
+        confirmGame.setOnMouseExited(smaller);
         confirmGame.setMinWidth(50);
         /////////////////////////////////////////////
         selectedGame = new VBox();
@@ -320,14 +431,15 @@ public class GUIView extends Application implements View, VirtualView {
         TextField insertSelectedPlayer = new TextField();
         insertSelectedPlayer.setOnKeyTyped(noSpace);
         Button enterGame = new Button("gioca!");
+        enterGame.setOnMouseEntered(bigger);
+        enterGame.setOnMouseExited(smaller);
         enterGame.setTextFill(Color.GRAY);
         enterGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if (insertSelectedPlayer.getCharacters().toString().length()==0){
+                if (insertSelectedPlayer.getCharacters().toString().length() == 0) {
                     createNotifications("Errore:", "per favore metti un personaggio valido");
-                }
-                else {
+                } else {
                     JsonQueue.add("method", "selectGame");
                     JsonQueue.add("gameId", game.getText());
                     JsonQueue.add("character", insertSelectedPlayer.getText());
@@ -386,34 +498,7 @@ public class GUIView extends Application implements View, VirtualView {
         BorderPane.setAlignment(selectMap, Pos.TOP_LEFT);
         HBox images1 = new HBox();
         images1.setMouseTransparent(false);
-        final ScaleTransition stBig = new ScaleTransition();
-        final ScaleTransition stSmall= new ScaleTransition();
-        stBig.setFromX(1.0);
-        stBig.setFromY(1.0);
-        stBig.setToX(1.3);
-        stBig.setToY(1.3);
-        stSmall.setFromX(1.0);
-        stSmall.setToX(1.0);
-        stSmall.setFromY(1.0);
-        stSmall.setToX(1.0);
-        stBig.setDuration(new Duration(50));
-        stSmall.setDuration(new Duration(50));
         Button board0 = new Button("", imageView2);
-        EventHandler<MouseEvent> bigger = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                stBig.setNode((Button)mouseEvent.getSource());
-                stBig.play();
-            }
-        };
-        EventHandler<MouseEvent> smaller = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                stSmall.setNode((Button)mouseEvent.getSource());
-                stSmall.play();
-
-            }
-        };
         board0.setOnMouseExited(smaller);
         board0.setOnMouseEntered(bigger);
         board0.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -510,13 +595,14 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void completeLogin(String value) throws RemoteException {
-
+        this.playerIdView = this.jsonDeserialize(value).getString("playerId");
+        this.createNotifications("login completato!", "benvenuto " + this.playerIdView);
         this.gamesListScreen();
     }
 
     @Override
     public void completeDisconnect(String value) throws RemoteException {
-        return;
+        this.createNotifications("disconnesso", " sei stato disconnesso dal server");
     }
 
     @Override
@@ -581,7 +667,8 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void completeCreateGame(String value) throws RemoteException {
-        return;
+        this.createNotifications("partita creata!",
+                "ora seleziona la partita nella quale vuoi entrare");
     }
 
     @Override
@@ -598,7 +685,7 @@ public class GUIView extends Application implements View, VirtualView {
         Label countDown;
 
         int count = readObject.getInt("countdown");
-        if (count < 60) {
+        if (count < 10) {
             countDown = new Label(
                     " tra " + count + " secondi inzia il gioco");
 
@@ -612,7 +699,7 @@ public class GUIView extends Application implements View, VirtualView {
         playersConnected.getChildren().addAll(countDown);
         readObject.getJsonArray("playerList").stream().map(JsonValue::asJsonObject).forEach(x -> {
             HBox player = new HBox();
-            player.setMinHeight(100);
+            player.setMinHeight(60);
             player.setSpacing(5);
             Label giocatore = new Label("giocatore : " + x.getString("playerId"));
             giocatore.setWrapText(true);
@@ -639,7 +726,7 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void completeVoteBoard(String value) throws RemoteException {
-        return;
+        this.createNotifications("voto mappa", " hai votato correttamente");
     }
 
     @Override
@@ -659,11 +746,174 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void updateBoard(String value) throws RemoteException {
-        Platform.runLater(() -> {
-            currentStage.getScene().setRoot(new BorderPane(imageView2));
-            imageView2.setFitWidth(1000);
-            imageView2.setFitHeight(600);
-        });
+
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+
+            JsonObject jGameHandlerObject = reader.readObject();
+
+            int board = jGameHandlerObject.getJsonObject("board").getInt("boardId");
+            System.out.println(board);
+
+            Platform.runLater(() -> {
+                ImageView boardImage = new ImageView();
+                ((BorderPane) currentStage.getScene().getRoot()).getChildren().clear();
+                switch (board) {
+                    case 0: {
+                        boardImage = imageView2;
+                        break;
+                    }
+                    case 1:
+                        boardImage = imageView0;
+                        break;
+
+                    case 2:
+                        boardImage = imageView1;
+                        break;
+
+                    case 3:
+                        boardImage = imageView3;
+                        break;
+
+
+                }
+                /////////////////////////////////////////////////////centro
+                VBox pannelloCentrale = new VBox();
+                BorderPane borderPane = new BorderPane();
+                borderPane.setBackground(new Background(
+                        new BackgroundFill(Color.rgb(25, 31, 53), CornerRadii.EMPTY, Insets.EMPTY)));
+                GridPane imagePane = new GridPane();
+                boardImage.setFitWidth(990);
+                boardImage.setFitHeight(565);
+                imagePane.setPrefHeight(990);
+                imagePane.setPrefWidth(565);
+                AnchorPane anchorPane = new AnchorPane();
+                anchorPane.setPrefSize(990, 565);
+                VBox squares = new VBox();
+                AnchorPane.setTopAnchor(squares, 120.0);
+                AnchorPane.setBottomAnchor(squares, 25.0);
+                AnchorPane.setLeftAnchor(squares, 160.0);
+                AnchorPane.setRightAnchor(squares, 145.0);
+                HBox line;
+                for (int j = 0; j < 3; j++) {
+                    line = new HBox();
+                    for (int i = 0; i < 4; i++) {
+                        line.setSpacing(0);
+                        ButtonSquare buttonSquare = new ButtonSquare(java.awt.Color.blue, 20);
+                        buttonSquare.setPrefHeight(125);
+                        buttonSquare.setPrefWidth(175);
+                        line.getChildren().add(buttonSquare);
+                    }
+                    squares.getChildren().add(line);
+                }
+                anchorPane.getChildren().add(squares);
+                imagePane.getChildren().addAll(boardImage, anchorPane);
+                //////////////////////////////////////////////////// spacchetto json model
+                HBox cards = new HBox();
+                cards.setPrefWidth(990);
+                cards.setPrefHeight((565 / 3)+10);
+                JsonObject thisPlayerObject = jGameHandlerObject.getJsonArray("playerList").stream()
+                        .map(JsonValue::asJsonObject)
+                        .filter(x -> x.getString("playerId").equals(playerIdView)).findAny()
+                        .orElseThrow(IllegalArgumentException::new);
+                thisPlayerObject.getJsonArray("weapons").stream()
+                        .map(JsonValue::asJsonObject)
+                        .forEach(x -> {
+                            ImageView card;
+
+                            if (x.getBoolean("isLoaded")) {
+                                card = new ImageView(weaponsMap.get(x.getInt("id")));
+                            } else {
+                                card = new ImageView(weaponsMap.get(0));
+                            }
+                            card.setFitWidth(130);
+                            card.setFitHeight((565 / 3)+10);
+                            ButtonSquare imageButton = new ButtonSquare(x.getInt("id"), card);
+                            imageButton.setOnMouseEntered(bigger);
+                            imageButton.setOnMouseExited(smaller);
+                            cards.getChildren().add(imageButton);
+                        });
+
+                thisPlayerObject.getJsonArray("powerUps").stream()
+                        .map(JsonValue::asJsonObject)
+                        .forEach(x -> {
+                            ImageView powerUp = new ImageView(
+                                    powerUpsMap.get(new StringBuilder()
+                                            .append(x.getString("name"))
+                                            .append(" ")
+                                            .append(x.getString("color"))
+                                            .toString()));
+
+                            powerUp.setFitWidth(130);
+                            powerUp.setFitHeight((565 / 3) - 20);
+                            ButtonSquare powerUpButton = new ButtonSquare(0, powerUp);
+                            powerUpButton.setOnMouseEntered(bigger);
+                            powerUpButton.setOnMouseExited(smaller);
+                            cards.getChildren().add(powerUpButton);
+                        });
+                pannelloCentrale.getChildren().addAll(imagePane, cards);
+                pannelloCentrale.setSpacing(0);
+                borderPane.setCenter(pannelloCentrale);
+                /////////////////////////////////////////////////destra
+                VBox bridges = new VBox();
+                bridges.setSpacing(0);
+                jGameHandlerObject.getJsonArray("playerList").stream()
+                        .map(JsonValue::asJsonObject)
+                        .forEach(x -> {
+
+                            ImageView bridge = new ImageView(bridgesMap.get(new StringBuilder()
+                                    .append(x.getString("character"))
+                                    .append(x.getJsonObject("bridge")
+                                            .getJsonObject("damageBridge")
+                                            .getBoolean("isFinalFrenzy"))
+                                    .toString()));
+
+                            bridge.setFitWidth(990/3 +150);
+                            bridge.setFitHeight(565/5);
+                            bridges.getChildren().add(bridge);
+
+
+                        });
+                HBox actions = new HBox();
+                Button selezionaAzione= new Button("seleziona azione");
+                selezionaAzione.setOnMouseEntered(bigger);
+                selezionaAzione.setOnMouseExited(smaller);
+                selezionaAzione.setTextFill(Color.BLACK);
+                Button fineAzione= new Button("fine azione");
+                fineAzione.setOnMouseEntered(bigger);
+                fineAzione.setOnMouseExited(smaller);
+                fineAzione.setTextFill(Color.BLACK);
+                actions.getChildren().addAll(selezionaAzione, fineAzione);
+                bridges.getChildren().add(actions);
+                HBox turns= new HBox();
+                Button spawn= new Button("spawn");
+                spawn.setOnMouseEntered(bigger);
+                spawn.setOnMouseExited(smaller);
+                spawn.setTextFill(Color.BLACK);
+                Button infoCarta= new Button("info carta");
+                infoCarta.setOnMouseExited(smaller);
+                infoCarta.setOnMouseEntered(bigger);
+                infoCarta.setTextFill(Color.BLACK);
+                turns.getChildren().addAll(spawn, infoCarta);
+                bridges.getChildren().add(turns);
+                HBox cardsInfo= new HBox();
+                Button powerUp= new Button("usa powerUp");
+                powerUp.setOnMouseEntered(bigger);
+                powerUp.setOnMouseExited(smaller);
+                powerUp.setTextFill(Color.BLACK);
+                Button infoCarte= new Button("info carte");
+                infoCarte.setTextFill(Color.BLACK);
+                infoCarta.setOnMouseExited(smaller);
+                infoCarta.setOnMouseEntered(bigger);
+                cardsInfo.getChildren().addAll(powerUp, infoCarte);
+                bridges.getChildren().add(cardsInfo);
+                borderPane.setRight(bridges);
+
+                /////////////////////////////////////////////////
+                changeScene(borderPane);
+                currentStage.setFullScreen(true);
+
+            });
+        }
     }
 
     JsonObject jsonDeserialize(String line) {
@@ -672,7 +922,7 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
 
-    private synchronized void createNotifications(String stringTitle ,String value) {
+    private synchronized void createNotifications(String stringTitle, String value) {
         Platform.runLater(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.NONE);
