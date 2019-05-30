@@ -4,8 +4,6 @@ import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
-import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
-import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
@@ -16,16 +14,18 @@ import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.server.presenter.exceptions.SpawnException;
+import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualPresenter;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 public abstract class Presenter implements VirtualPresenter {
 
@@ -33,6 +33,22 @@ public abstract class Presenter implements VirtualPresenter {
 
     private Player player;
     private GameHandler gameHandler;
+
+    static final Map<String, JsonObject> state = new HashMap<>();
+
+    static {
+
+        InputStream in = Presenter.class.getClassLoader().getResourceAsStream("GameState.json");
+
+        JsonArray object = Json.createReader(in).readArray();
+
+        object.stream()
+                .map(JsonValue::asJsonObject)
+                .forEach(x ->
+
+                    state.put(x.getString("state"), x)
+                );
+    }
 
     abstract void disconnectPresenter();
 
@@ -66,7 +82,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void selectPlayerId(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (!this.playerId.equals("Client")) {
 
@@ -111,6 +127,8 @@ public abstract class Presenter implements VirtualPresenter {
                             .add("isGameStarted", this.gameHandler == null)
                             .build().toString());
 
+            this.callRemoteMethod("updateState", state.get("noGameState").toString());
+
             ClientHandler.broadcast(
                     (x) -> !x.getPlayerId().equals(this.playerId),
                     "broadcast",
@@ -123,7 +141,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void askCreateGame(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.playerId.equals("Client")) {
 
@@ -149,7 +167,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void selectGame(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         try {
 
@@ -183,6 +201,8 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.callRemoteMethod("completeSelectGame", this.gameHandler.getGameId());
 
+                this.callRemoteMethod("updateState", state.get("gameNotStartedState").toString());
+
                 this.updateLoginGame();
             }
 
@@ -200,7 +220,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void voteBoard(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -229,7 +249,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void spawn(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -246,9 +266,16 @@ public abstract class Presenter implements VirtualPresenter {
                 this.gameHandler.spawnPlayer(this.player, object.getString("name"),
                         object.getString("color"));
 
-                this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.\n"
-                        + "Adesso puoi selezionare un'azione: scrivi \"selezionaazione \" seguito dal numero dell'azione che vuoi usare.\n"
-                        + "1 - corri 2 - raccogli 3 - spara 4 - ricarica");
+                this.callRemoteMethod("infoMessage", "Lo spawn è andato a buon fine.\n");
+
+                if (this.player.isActivePlayer()) {
+
+                    this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+
+                } else {
+
+                    this.callRemoteMethod("updateState", state.get("notActivePlayerState").toString());
+                }
 
                 ClientHandler.gameBroadcast(
                         this.gameHandler,
@@ -307,7 +334,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void selectAction(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -337,6 +364,8 @@ public abstract class Presenter implements VirtualPresenter {
                                         Integer.valueOf(object.getString("actionNumber")) - 1)
                                 .toString());
 
+                this.callRemoteMethod("updateState", state.get("actionState").toString());
+
             } catch (IllegalActionException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
@@ -349,7 +378,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void moveAction(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -385,7 +414,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void askCollect(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -433,7 +462,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void askActivateWeapon(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -454,6 +483,8 @@ public abstract class Presenter implements VirtualPresenter {
                         + "usaeffetto tipoEffetto | Target(un personaggio, un quadrato o una stanza) | destinazione(colore-idQiuadrato) | eventualiPowerup(nome-colore)\n"
                         + "Esempio: usaeffetto primario | sprog dozer (oppure \"rosso\" per selezionare un'intera stanza) | rosso-1 | mirino-rosso");
 
+                this.callRemoteMethod("updateState", state.get("shootState").toString());
+
             } catch (CardException | IllegalActionException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
@@ -464,7 +495,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void askUseEffect(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -532,7 +563,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void askUsePowerUp(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -596,7 +627,7 @@ public abstract class Presenter implements VirtualPresenter {
     @Override
     public void askReload(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -665,13 +696,15 @@ public abstract class Presenter implements VirtualPresenter {
             this.callRemoteMethod("completeEndAction",
                     this.player.toJsonObject().getJsonObject("bridge").getJsonObject("actionBridge")
                             .toString());
+
+            this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
         }
     }
 
     @Override
     public void askCardInfo(String value) throws RemoteException {
 
-        JsonObject object = this.jsonDeserialize(value);
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
         if (this.gameHandler == null) {
 
@@ -715,10 +748,5 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
             }
         }
-    }
-
-    JsonObject jsonDeserialize(String line) {
-
-        return Json.createReader(new StringReader(line)).readObject();
     }
 }

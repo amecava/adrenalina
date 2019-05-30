@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -18,12 +19,14 @@ import javax.json.JsonValue;
 
 class RegexJson {
 
+    private static final List<String> commands = new ArrayList<>();
+
     private static Map<String, String> inputMethod = new HashMap<>();
     private static Map<String, List<Triple<String, Pattern, String>>> regexConnection = new HashMap<>();
 
     static {
 
-        InputStream in = ConsoleView.class.getClassLoader().getResourceAsStream("ConsoleInput.json");
+        InputStream in = ConsoleView.class.getClassLoader().getResourceAsStream("Commands.json");
 
         JsonArray object = Json.createReader(in).readArray();
 
@@ -39,7 +42,7 @@ class RegexJson {
 
     static {
 
-        InputStream in = RegexJson.class.getClassLoader().getResourceAsStream("ConsoleInput.json");
+        InputStream in = RegexJson.class.getClassLoader().getResourceAsStream("Commands.json");
 
         JsonArray object = Json.createReader(in).readArray();
 
@@ -63,6 +66,23 @@ class RegexJson {
                 });
     }
 
+    static void updateState(JsonArray array) {
+
+        commands.clear();
+
+        array.stream()
+                .map(JsonValue::toString)
+                .forEach(x -> commands.add(x.substring(1, x.length() - 1)));
+    }
+
+    static List<String> getCommands() {
+
+        return inputMethod.entrySet().stream()
+                .filter(x -> commands.stream().anyMatch(y -> y.equals(x.getValue())))
+                .map(Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
     static JsonObject toJsonObject(String[] parts) {
 
         JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -72,6 +92,11 @@ class RegexJson {
                 .map(Entry::getValue)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Selezione non disponibile, riprova o digita help."));
+
+        if (commands.stream().noneMatch(x -> x.equals(method))) {
+
+            throw new NoSuchElementException("Non puoi effettuare questa operazione in questo momento.");
+        }
 
         builder.add("method", method);
 

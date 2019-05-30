@@ -174,4 +174,118 @@ class GranataVenomTest {
         assertEquals(source.getMarks().size(), 3);
 
     }
+
+    @Test
+    void granataVenom3() {
+
+        Board board = new Board.BoardBuilder(this.effectHandler).build(0);
+        WeaponDeck weaponDeck = board.getWeaponDeck();
+
+        Player source = new Player("source", Color.GRAY);
+        Player target1 = new Player("target1", Color.GREEN);
+        Player target2 = new Player("target2", Color.RED);
+
+        EffectArgument effectArgument;
+
+        source.movePlayer(board.getRoom(0).getSquare(0));
+        target1.movePlayer(board.getRoom(0).getSquare(0));
+        target2.movePlayer(board.getRoom(0).getSquare(0));
+
+        WeaponCard tester = weaponDeck.getCard(6);
+        tester.setOwner(source);
+
+        effectHandler.setActivePlayer(source);
+
+        // Ok
+        try {
+            tester.activateCard();
+            assertTrue(true);
+        } catch (CardException e) {
+            fail();
+        }
+
+        target1.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
+        board.getPowerUpDeck().getDeck().remove(target1.getPowerUpsList().get(0));
+        target2.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
+
+        effectArgument = new EffectArgument();
+
+        // Damage
+        try {
+
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
+            assertEquals(target1.getShots().size(), 1);
+            assertEquals(target2.getShots().size(), 1);
+
+        } catch (CardException | PropertiesException | EffectException e) {
+            fail();
+        }
+
+        // Test synchronized effect handler
+        for (int i = 0; i < 5; i++) {
+
+            source.getAmmoCubesList().forEach(x -> x.setUsed(false));
+
+            try {
+                tester.reloadWeapon(new ArrayList<>());
+                assertTrue(true);
+            } catch (CostException e) {
+
+                fail();
+            }
+
+            Thread damage = new Thread(() -> {
+
+                // Damage
+                try {
+
+                    tester.useCard(EffectType.PRIMARY, new EffectArgument(), new ArrayList<>());
+
+                } catch (CardException | PropertiesException | EffectException e) {
+                    e.printStackTrace();
+                    fail();
+                }
+            });
+
+            Thread granata1 = new Thread(() -> {
+
+                try {
+
+                    target1.getPowerUpsList().get(0).useCard(new EffectArgument());
+
+                } catch (CardException | PropertiesException | EffectException e) {
+                    e.printStackTrace();
+                    fail();
+                }
+            });
+
+            Thread granata2 = new Thread(() -> {
+
+                try {
+
+                    target2.getPowerUpsList().get(0).useCard(new EffectArgument());
+
+                } catch (CardException | PropertiesException | EffectException e) {
+                    e.printStackTrace();
+                    fail();
+                }
+            });
+
+            damage.start();
+            granata1.start();
+            granata2.start();
+
+            try {
+                damage.join();
+            } catch (InterruptedException e) {
+
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        assertEquals(target1.getShots().size(), 6);
+        assertEquals(target2.getShots().size(), 6);
+        assertEquals(source.getMarks().size(), 6);
+
+    }
 }

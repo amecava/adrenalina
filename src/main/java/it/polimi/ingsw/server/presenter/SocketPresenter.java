@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
+import it.polimi.ingsw.virtual.JsonUtility;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -118,7 +119,7 @@ public class SocketPresenter extends Presenter implements Runnable {
 
             while (Thread.currentThread().isAlive()) {
 
-                JsonObject object = this.jsonDeserialize(this.in.nextLine());
+                JsonObject object = JsonUtility.jsonDeserialize(this.in.nextLine());
 
                 synchronized (this) {
 

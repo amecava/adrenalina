@@ -26,12 +26,12 @@ public class EffectHandler {
     private List<Target> active = new ArrayList<>();
     private List<Target> inactive = new ArrayList<>();
 
-    public synchronized Player getActivePlayer() {
+    public Player getActivePlayer() {
 
         return this.activePlayer;
     }
 
-    public synchronized void setActivePlayer(Player activePlayer) {
+    public void setActivePlayer(Player activePlayer) {
 
         this.activePlayer = activePlayer;
         this.activeSquare = activePlayer.getCurrentPosition();
@@ -47,56 +47,61 @@ public class EffectHandler {
         return this.inactive;
     }
 
-    public synchronized void useEffect(Effect effect, EffectArgument target)
+    public void useEffect(Effect effect, EffectArgument target)
             throws EffectException, PropertiesException {
 
-        // Launch exception if atomic target is null
-        if (target == null) {
+        synchronized (EffectHandler.class) {
 
-            throw new EffectException("Null pointer effect argument.");
-        }
+            // Launch exception if atomic target is null
+            if (target == null) {
 
-        // Launch exception if effect already used
-        if (effect.isUsed()) {
+                throw new EffectException("Null pointer effect argument.");
+            }
 
-            throw new EffectUsedException("Hai già usato questo effetto.");
-        }
+            // Launch exception if effect already used
+            if (effect.isUsed()) {
 
-        // Launch exception if effect is not activated
-        if (effect.getActivated() != null && !effect.getActivated()) {
+                throw new EffectUsedException("Hai già usato questo effetto.");
+            }
 
-            throw new EffectNotActivatedException(
-                    "Non puoi usare questo effetto in questo momento.");
-        }
+            // Launch exception if effect is not activated
+            if (effect.getActivated() != null && !effect.getActivated()) {
 
-        // Launch exception if wrong method call
-        if (effect.getArgs() != target.getArgs()) {
+                throw new EffectNotActivatedException(
+                        "Non puoi usare questo effetto in questo momento.");
+            }
 
-            throw new EffectCallException("Il numerod di parametri che hai scritto è sbagliato.");
-        }
+            // Launch exception if wrong method call
+            if (effect.getArgs() != target.getArgs()) {
 
-        // Launch exception if wrong target type
-        if (target.getTargetList().stream().anyMatch(x ->
-                x.getTargetType() != effect.getTargetType())) {
+                throw new EffectCallException(
+                        "Il numerod di parametri che hai scritto è sbagliato.");
+            }
 
-            throw new TargetTypeException("Il target che hai selezionato non è valido.");
-        }
+            // Launch exception if wrong target type
+            if (target.getTargetList().stream().anyMatch(x ->
+                    x.getTargetType() != effect.getTargetType())) {
 
-        // Create properties related target list
-        this.target = this.createPropertiesRelatedTarget(effect, target);
+                throw new TargetTypeException("Il target che hai selezionato non è valido.");
+            }
 
-        // Check properties and execute effect
-        this.checkProperties(effect, this.target).execute(this.activePlayer, this.target);
+            // Create properties related target list
+            this.target = this.createPropertiesRelatedTarget(effect, target);
 
-        // Update class variables after effect execution
-        this.updateActiveInactiveVariables(effect);
+            // Check properties and execute effect
+            this.checkProperties(effect, this.target).execute(this.activePlayer, this.target);
 
-        // Execute sequence types of effects
-        if (effect.getNext() != null && !effect.getNext().getTargetType().equals(TargetType.MOVE)
-                && !effect.getNext().getTargetType().equals(TargetType.RECOIL)) {
+            // Update class variables after effect execution
+            this.updateActiveInactiveVariables(effect);
 
-            this.target = this.createTargetForNoArgumentsEffects(effect.getNext(), target);
-            effect.getNext().execute(this.activePlayer, this.target);
+            // Execute sequence types of effects
+            if (effect.getNext() != null && !effect.getNext().getTargetType()
+                    .equals(TargetType.MOVE)
+                    && !effect.getNext().getTargetType().equals(TargetType.RECOIL)) {
+
+                this.target = this.createTargetForNoArgumentsEffects(effect.getNext(), target);
+                effect.getNext().execute(this.activePlayer, this.target);
+            }
         }
     }
 

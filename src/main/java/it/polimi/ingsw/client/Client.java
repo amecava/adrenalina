@@ -8,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,13 +46,13 @@ public class Client {
 
         this.view.initialScreen(this.discoveryPort, this.rmiPort, this.socketPort);
 
-        synchronized (View.queue) {
+        synchronized (View.connection) {
 
-            while (View.queue.peek() == null) {
+            while (View.connection.peek() == null) {
 
                 try {
 
-                    View.queue.wait();
+                    View.connection.wait();
 
                 } catch (InterruptedException e) {
 
@@ -62,7 +61,7 @@ public class Client {
             }
         }
 
-        View.queue.remove().run();
+        View.connection.remove().run();
     }
 
     public static InetAddress discoverServer(int port) throws IOException {

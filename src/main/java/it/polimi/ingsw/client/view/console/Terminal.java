@@ -69,6 +69,7 @@ class Terminal {
                 if (messages) {
 
                     Arrays.stream(broadcast).forEach(Terminal::println);
+                    println("Comandi: " + RegexJson.getCommands() + "\n");
                 }
 
                 println(response);

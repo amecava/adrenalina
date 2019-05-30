@@ -118,12 +118,12 @@
         "value": [
             {
                 "name": "cardIdCollect",
-                "regex": "(\\s*)([1-9]+|)(\\s*)",
+                "regex": "(\\s*)([0-9]+|)(\\s*)",
                 "error": "Devi selezionare un numero da 1 a 24."
             },
             {
                 "name": "cardIdDiscard",
-                "regex": "(\\s*)([1-9]+|)(\\s*)",
+                "regex": "(\\s*)([0-9]+|)(\\s*)",
                 "error": "Devi selezionare un numero da 1 a 24."
             }
         ]

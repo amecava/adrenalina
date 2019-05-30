@@ -182,9 +182,9 @@ public class GUIView extends Application implements View, VirtualView {
             socketConnection.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    synchronized (View.queue) {
-                        View.queue.add(new SocketConnection(inetAddress, socketPort, GUIView.this));
-                        View.queue.notifyAll();
+                    synchronized (View.connection) {
+                        View.connection.add(new SocketConnection(inetAddress, socketPort, GUIView.this));
+                        View.connection.notifyAll();
                     }
                 }
             });
@@ -192,9 +192,9 @@ public class GUIView extends Application implements View, VirtualView {
             rmiConnection.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    synchronized (View.queue) {
-                        View.queue.add(new RmiConnection(inetAddress, rmiPort, GUIView.this));
-                        View.queue.notifyAll();
+                    synchronized (View.connection) {
+                        View.connection.add(new RmiConnection(inetAddress, rmiPort, GUIView.this));
+                        View.connection.notifyAll();
                     }
                 }
             });
@@ -475,6 +475,12 @@ public class GUIView extends Application implements View, VirtualView {
 
     /////////////////////////////////////////////////////////////////////////
 
+
+    @Override
+    public void updateState(String value) throws RemoteException {
+
+    }
+
     @Override
     public void broadcast(String value) throws RemoteException {
         this.createNotifications("broadcast", value);
@@ -517,7 +523,7 @@ public class GUIView extends Application implements View, VirtualView {
     public void updateGameList(String value) throws RemoteException {
 
         try (JsonReader reader = Json.createReader(new StringReader(value))) {
-            JsonArray jsonArray = reader.readArray();
+            JsonArray jsonArray = reader.readObject().getJsonArray("gameList");
             VBox games = new VBox();
             games.setSpacing(40);
             jsonArray.stream().map(JsonValue::asJsonObject).forEach(x -> {

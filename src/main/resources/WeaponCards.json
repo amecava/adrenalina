@@ -89,7 +89,7 @@
         "id": 9,
 
         "name": "FURNACE",
-        "reloadCost": ["RED"],
+        "reloadCost": ["RED", "BLUE"],
 
         "primary": 19,
         "alternative": 20

@@ -182,6 +182,15 @@ public class GameHandler {
 
         ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer(), "infoMessage",
                 "È il tuo turno, digita aiuto per vedere la lista di comandi.");
+
+        ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() == null, "updateState",
+                Presenter.state.get("spawnState").toString());
+
+        ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() != null, "updateState",
+                Presenter.state.get("activePlayerState").toString());
+
+        ClientHandler.gameBroadcast(this, x -> !x.getKey().isActivePlayer(), "updateState",
+                Presenter.state.get("notActivePlayerState").toString());
     }
 
     public void endOfTurn() throws EndGameException {
@@ -213,6 +222,9 @@ public class GameHandler {
                         ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(),
                                 "infoMessage",
                                 "Devi fare il respawn.");
+
+                        ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(), "updateState",
+                                Presenter.state.get("spawnState").toString());
 
                         GameHandler.this.wait();
                     }

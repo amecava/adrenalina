@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 
 public class ClientHandler {
 
@@ -29,6 +30,15 @@ public class ClientHandler {
     static synchronized void addClient(Presenter presenter) {
 
         clientList.add(presenter);
+
+        try {
+
+            presenter.callRemoteMethod("updateState", Presenter.state.get("loginState").toString());
+
+        } catch (RemoteException e) {
+
+            //
+        }
 
         LOGGER.log(Level.INFO, "Client connected to server.");
     }
@@ -172,12 +182,12 @@ public class ClientHandler {
                 .anyMatch(x -> x.equals(playerId));
     }
 
-    static synchronized JsonArray getGameHandlerJsonArray() {
+    static synchronized JsonObject getGameHandlerJsonArray() {
 
         JsonArrayBuilder builder = Json.createArrayBuilder();
 
         map.keySet().forEach(x -> builder.add(x.toJsonObject()));
 
-        return builder.build();
+        return Json.createObjectBuilder().add("gameList", builder.build()).build();
     }
 }

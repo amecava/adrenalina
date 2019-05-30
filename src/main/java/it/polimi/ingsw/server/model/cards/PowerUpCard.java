@@ -81,16 +81,17 @@ public class PowerUpCard implements Card, Ammo {
                 (this.effectHandler.getActive().contains(this.owner)
                         || effectHandler.getInactive().contains(this.owner))) {
 
+                synchronized (EffectHandler.class) {
 
-                Player player = effectHandler.getActivePlayer();
-                target.appendTarget(player);
+                    Player player = effectHandler.getActivePlayer();
+                    target.appendTarget(player);
 
-                this.effectHandler.setActivePlayer(this.owner);
+                    this.effectHandler.setActivePlayer(this.owner);
 
-                this.effectHandler.useEffect(this.effect.getNext(), target);
+                    this.effectHandler.useEffect(this.effect.getNext(), target);
 
-                this.effectHandler.setActivePlayer(player);
-
+                    this.effectHandler.setActivePlayer(player);
+                }
 
         } else {
 

@@ -4,18 +4,15 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
+import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.InetAddress;
-import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 public class ConsoleView implements View, VirtualView {
@@ -74,24 +71,24 @@ public class ConsoleView implements View, VirtualView {
 
                 if (line.contains("rmi") && !line.contains("socket")) {
 
-                    synchronized (queue) {
+                    synchronized (connection) {
 
-                        queue.add(new RmiConnection(inetAddress, rmiPort, this));
+                        connection.add(new RmiConnection(inetAddress, rmiPort, this));
 
                         found = true;
 
-                        queue.notifyAll();
+                        connection.notifyAll();
                     }
 
                 } else if (line.contains("socket") && !line.contains("rmi")) {
 
-                    synchronized (queue) {
+                    synchronized (connection) {
 
-                        queue.add(new SocketConnection(inetAddress, socketPort, this));
+                        connection.add(new SocketConnection(inetAddress, socketPort, this));
 
                         found = true;
 
-                        queue.notifyAll();
+                        connection.notifyAll();
                     }
                 } else {
 
@@ -160,6 +157,14 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
+    public void updateState(String value) {
+
+        JsonObject object = JsonUtility.jsonDeserialize(value);
+
+        RegexJson.updateState(object.getJsonArray("methods"));
+    }
+
+    @Override
     public void broadcast(String value) {
 
         Terminal.broadcast(value);
@@ -192,22 +197,18 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public void completeLogin(String value) {
 
-        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+        JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
 
-            JsonObject jsonObject = reader.readObject();
+        this.id = jsonObject.getString("playerId");
 
-            this.id = jsonObject.getString("playerId");
+        if (jsonObject.getBoolean("isGameStarted") && jsonObject.containsKey("gameId")) {
 
-            if (jsonObject.getBoolean("isGameStarted") && jsonObject.containsKey("gameId")) {
+            this.infoMessage("Login effettuato come " + jsonObject.getString("playerId") +
+                    "e riconnesso alla partita " + jsonObject.getString("gameId"));
+        } else {
 
-                this.infoMessage("Login effettuato come " + jsonObject.getString("playerId") +
-                        "e riconnesso alla partita " + jsonObject.getString("gameId"));
-            } else {
-
-                this.infoMessage("Login effettuato come " + jsonObject.getString("playerId"));
-            }
+            this.infoMessage("Login effettuato come " + jsonObject.getString("playerId"));
         }
-
     }
 
     @Override
@@ -219,41 +220,41 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public void updateGameList(String value) {
 
-        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+        JsonObject object = JsonUtility.jsonDeserialize(value);
 
-            JsonArray jsonArray = reader.readArray();
+        JsonArray jsonArray = object.getJsonArray("gameList");
 
-            this.gamesListScreen();
+        this.gamesListScreen();
 
-            if (jsonArray.isEmpty()) {
+        if (jsonArray.isEmpty()) {
 
-                Terminal.output("Non sono ancora state create partite.");
-                Terminal.output("Creane una con il comando \"creapartita nomePartita(nome) "
-                        + "numeroMorti(numero intero) frenesia(o niente se vuoi giocare senza)\".");
+            Terminal.output("Non sono ancora commands create partite.");
+            Terminal.output("Creane una con il comando \"creapartita nomePartita(nome) "
+                    + "numeroMorti(numero intero) frenesia(o niente se vuoi giocare senza)\".");
 
-            } else {
+        } else {
 
-                jsonArray.stream()
-                        .map(JsonValue::asJsonObject)
-                        .forEach(x -> {
+            jsonArray.stream()
+                    .map(JsonValue::asJsonObject)
+                    .forEach(x -> {
 
-                            Terminal.output("Nome partita: " + x.getString("gameId")
-                                    + ", Numero morti: " + x.getInt("numberOfDeaths")
-                                    + ", Frenesia finale: " + (x.getBoolean("frenzy") ? "Sì"
-                                    : "No"));
+                        Terminal.output("Nome partita: " + x.getString("gameId")
+                                + ", Numero morti: " + x.getInt("numberOfDeaths")
+                                + ", Frenesia finale: " + (x.getBoolean("frenzy") ? "Sì"
+                                : "No"));
 
-                            Terminal.output(
-                                    "---> Giocatori connessi: " + x.getJsonArray("playerList")
-                                            .stream()
-                                            .map(JsonValue::asJsonObject)
-                                            .map(y -> y.getString("playerId") + ": " + y
-                                                    .getString("character") + (
-                                                    y.getBoolean("connected")
-                                                            ? "" : " (disconnesso)"))
-                                            .collect(Collectors.toList()));
-                        });
-            }
+                        Terminal.output(
+                                "---> Giocatori connessi: " + x.getJsonArray("playerList")
+                                        .stream()
+                                        .map(JsonValue::asJsonObject)
+                                        .map(y -> y.getString("playerId") + ": " + y
+                                                .getString("character") + (
+                                                y.getBoolean("connected")
+                                                        ? "" : " (disconnesso)"))
+                                        .collect(Collectors.toList()));
+                    });
         }
+
     }
 
     @Override
@@ -273,73 +274,71 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public void updateGameNotStartedScreen(String value) {
 
-        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+        JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
 
-            JsonObject jsonObject = reader.readObject();
+        this.gameNotStartedScreen();
 
-            this.gameNotStartedScreen();
+        Terminal.output("Giocatori connessi: " + jsonObject.getJsonArray("playerList")
+                .stream()
+                .map(JsonValue::asJsonObject)
+                .map(y -> y.getString("playerId") + ": " + y
+                        .getString("character") + (y.getBoolean("connected")
+                        ? "" : " (disconnesso)"))
+                .collect(Collectors.toList()));
 
-            Terminal.output("Giocatori connessi: " + jsonObject.getJsonArray("playerList")
-                    .stream()
-                    .map(JsonValue::asJsonObject)
-                    .map(y -> y.getString("playerId") + ": " + y
-                            .getString("character") + (y.getBoolean("connected")
-                            ? "" : " (disconnesso)"))
-                    .collect(Collectors.toList()));
+        Terminal.output("");
 
-            Terminal.output("");
+        int countdown = jsonObject.getInt("countdown");
 
-            int countdown = jsonObject.getInt("countdown");
+        switch (countdown) {
 
-            switch (countdown) {
+            case 60:
 
-                case 60:
+                Terminal.output(
+                        "Raggiunto il numero minimo di giocatori, la partita inizierà dopo un minuto.\n\n\n\n\n");
+                break;
 
-                    Terminal.output(
-                            "Raggiunto il numero minimo di giocatori, la partita inizierà dopo un minuto.\n\n\n\n\n");
-                    break;
+            case 5:
 
-                case 5:
+                Terminal.output(
+                        "     _____  \n    | ____| \n    | |__   \n    |___ \\  \n     ___) | \n    |____/  ");
+                break;
 
-                    Terminal.output(
-                            "     _____  \n    | ____| \n    | |__   \n    |___ \\  \n     ___) | \n    |____/  ");
-                    break;
+            case 4:
 
-                case 4:
+                Terminal.output(
+                        "     _  _    \n    | || |   \n    | || |_  \n    |__   _| \n       | |   \n       |_|   ");
+                break;
 
-                    Terminal.output(
-                            "     _  _    \n    | || |   \n    | || |_  \n    |__   _| \n       | |   \n       |_|   ");
-                    break;
+            case 3:
 
-                case 3:
+                Terminal.output(
+                        "     ____   \n    |___ \\  \n      __) | \n     |__ <  \n     ___) | \n    |____/  ");
+                break;
 
-                    Terminal.output(
-                            "     ____   \n    |___ \\  \n      __) | \n     |__ <  \n     ___) | \n    |____/  ");
-                    break;
+            case 2:
 
-                case 2:
+                Terminal.output(
+                        "     ___   \n    |__ \\  \n       ) | \n      / /  \n     / /_  \n    |____| ");
+                break;
 
-                    Terminal.output(
-                            "     ___   \n    |__ \\  \n       ) | \n      / /  \n     / /_  \n    |____| ");
-                    break;
+            case 1:
 
-                case 1:
+                Terminal.output(
+                        "     __  \n    /_ | \n     | | \n     | | \n     | | \n     |_| ");
+                break;
 
-                    Terminal.output(
-                            "     __  \n    /_ | \n     | | \n     | | \n     | | \n     |_| ");
-                    break;
+            case 0:
 
-                case 0:
+                Terminal.output(
+                        "      ___   \n     / _ \\  \n    | | | | \n    | | | | \n    | |_| | \n     \\___/  ");
+                break;
 
-                    Terminal.output(
-                            "      ___   \n     / _ \\  \n    | | | | \n    | | | | \n    | |_| | \n     \\___/  ");
-                    break;
+            default:
 
-                default:
-
-                    Terminal.output("La partita inizierà tra " + countdown + " secondi.\n\n\n\n\n");
-            }
+                Terminal.output("La partita inizierà tra " + countdown + " secondi.\n\n\n\n\n");
         }
+
 
     }
 
@@ -350,143 +349,130 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void completeSelectAction(String value) throws RemoteException {
+    public void completeSelectAction(String value) {
 
-        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+        JsonObject jSelectedAction = JsonUtility.jsonDeserialize(value);
 
-            JsonObject jSelectedAction = reader.readObject();
+        StringBuilder line = new StringBuilder()
+                .append("Con l'azione selezionata puoi scrivere:\n");
 
-            StringBuilder line = new StringBuilder()
-                    .append("Con l'azione selezionata puoi scrivere:\n");
+        if (jSelectedAction.getInt("move") != 0) {
 
-            if (jSelectedAction.getInt("move") != 0) {
-
-                line.append("- \"muovi/corri\" + coloreQuadrato + idQuadrato destinazione\n");
-            }
-            if (jSelectedAction.getBoolean("collect")) {
-
-                line.append(
-                        "-\"raccogli\" + (eventualmente) idCarta da raccogliere + (eventualmente) idCarta da scartare\n");
-
-            }
-            if (jSelectedAction.getBoolean("shoot")) {
-
-                line.append("- \"selezionaarma\" + idCarta (da definire)\n");
-            }
-            if (jSelectedAction.getBoolean("reload")) {
-
-                line.append("- \"ricarica\" + idCarta + (eventualmente)");
-            }
-
-            Terminal.info(line.toString());
+            line.append("- \"muovi/corri\" + coloreQuadrato + idQuadrato destinazione\n");
         }
+        if (jSelectedAction.getBoolean("collect")) {
+
+            line.append(
+                    "-\"raccogli\" + (eventualmente) idCarta da raccogliere + (eventualmente) idCarta da scartare\n");
+
+        }
+        if (jSelectedAction.getBoolean("shoot")) {
+
+            line.append("- \"selezionaarma\" + idCarta (da definire)\n");
+        }
+        if (jSelectedAction.getBoolean("reload")) {
+
+            line.append("- \"ricarica\" + idCarta + (eventualmente)");
+        }
+
+        Terminal.info(line.toString());
+
     }
 
     @Override
     public void completeCardInfo(String value) {
 
-        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+        JsonObject jCardObject = JsonUtility.jsonDeserialize(value);
 
-            JsonObject jCardObject = reader.readObject();
+        StringBuilder info = new StringBuilder();
 
-            StringBuilder info = new StringBuilder();
+        info.append("Nome: ").append(jCardObject.getString("name")).append(" \n");
 
-            info.append("Nome: ").append(jCardObject.getString("name")).append(" \n");
+        info.append("Effetto primario: ").append(" \n");
+        info.append(" -> Nome: ").append(jCardObject.getJsonObject("primary").getString("name"))
+                .append(" \n");
+        info.append(" -> Descrizione: ")
+                .append(jCardObject.getJsonObject("primary").getString("description"))
+                .append(" \n");
 
-            info.append("Effetto primario: ").append(" \n");
-            info.append(" -> Nome: ").append(jCardObject.getJsonObject("primary").getString("name"))
+        if (jCardObject.get("alternative") != JsonValue.NULL) {
+
+            info.append("Effetto alternativo: ").append(" \n");
+            info.append(" -> Nome: ")
+                    .append(jCardObject.getJsonObject("alternative").getString("name"))
                     .append(" \n");
             info.append(" -> Descrizione: ")
-                    .append(jCardObject.getJsonObject("primary").getString("description"))
+                    .append(jCardObject.getJsonObject("alternative").getString("description"))
                     .append(" \n");
 
-            if (jCardObject.get("alternative") != JsonValue.NULL) {
+            if (jCardObject.getJsonObject("alternative").get("cost") != null) {
 
-                info.append("Effetto alternativo: ").append(" \n");
-                info.append(" -> Nome: ")
-                        .append(jCardObject.getJsonObject("alternative").getString("name"))
-                        .append(" \n");
-                info.append(" -> Descrizione: ")
-                        .append(jCardObject.getJsonObject("alternative").getString("description"))
-                        .append(" \n");
-
-                if (jCardObject.getJsonObject("alternative").get("cost") != null) {
-
-                    info.append(" -> Costo: ")
-                            .append(jCardObject.getJsonObject("alternative").getString("cost"))
-                            .append(" \n");
-                }
-            }
-
-            if (jCardObject.get("optional1") != JsonValue.NULL) {
-
-                info.append("Effetto opzionale: ").append(" \n");
-                info.append(" -> Nome: ")
-                        .append(jCardObject.getJsonObject("optional1").getString("name"))
-                        .append(" \n");
-                info.append(" -> Descrizione: ")
-                        .append(jCardObject.getJsonObject("optional1").getString("description"))
-                        .append(" \n");
                 info.append(" -> Costo: ")
-                        .append(jCardObject.getJsonObject("optional1").getString("cost"))
+                        .append(jCardObject.getJsonObject("alternative").getString("cost"))
                         .append(" \n");
             }
-
-            if (jCardObject.get("optional2") != JsonValue.NULL) {
-
-                info.append("Effetto opzionale: ").append(" \n");
-                info.append(" -> Nome: ")
-                        .append(jCardObject.getJsonObject("optional2").getString("name"))
-                        .append(" \n");
-                info.append(" -> Descrizione: ")
-                        .append(jCardObject.getJsonObject("optional2").getString("description"))
-                        .append(" \n");
-                info.append(" -> Costo: ")
-                        .append(jCardObject.getJsonObject("optional2").getString("cost"))
-                        .append(" \n");
-            }
-
-            info.append("Note: ").append(jCardObject.getString("notes")).append(" \n");
-
-            Terminal.info(info.toString());
-
         }
+
+        if (jCardObject.get("optional1") != JsonValue.NULL) {
+
+            info.append("Effetto opzionale: ").append(" \n");
+            info.append(" -> Nome: ")
+                    .append(jCardObject.getJsonObject("optional1").getString("name"))
+                    .append(" \n");
+            info.append(" -> Descrizione: ")
+                    .append(jCardObject.getJsonObject("optional1").getString("description"))
+                    .append(" \n");
+            info.append(" -> Costo: ")
+                    .append(jCardObject.getJsonObject("optional1").getString("cost"))
+                    .append(" \n");
+        }
+
+        if (jCardObject.get("optional2") != JsonValue.NULL) {
+
+            info.append("Effetto opzionale: ").append(" \n");
+            info.append(" -> Nome: ")
+                    .append(jCardObject.getJsonObject("optional2").getString("name"))
+                    .append(" \n");
+            info.append(" -> Descrizione: ")
+                    .append(jCardObject.getJsonObject("optional2").getString("description"))
+                    .append(" \n");
+            info.append(" -> Costo: ")
+                    .append(jCardObject.getJsonObject("optional2").getString("cost"))
+                    .append(" \n");
+        }
+
+        info.append("Note: ").append(jCardObject.getString("notes")).append(" \n");
+
+        Terminal.info(info.toString());
+
+
     }
 
     @Override
-    public void completeEndAction(String value) throws RemoteException {
+    public void completeEndAction(String value) {
 
-        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+        JsonObject jActionBridgeObject = JsonUtility.jsonDeserialize(value);
 
-            JsonObject jActionBridgeObject = reader.readObject();
+        if (jActionBridgeObject.getInt("remainingActions") == 1) {
 
-            if (jActionBridgeObject.getInt("remainingActions") == 1) {
+            Terminal.info("Ti rimane una sola azione.");
+        } else {
 
-                Terminal.info("Ti rimane una sola azione.");
-            } else {
-
-                Terminal.info("Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + " azioni.");
-            }
+            Terminal.info("Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + " azioni.");
         }
+
     }
 
     @Override
     public void updateBoard(String value) {
 
-        try (JsonReader reader = Json.createReader(new StringReader(value))) {
+        JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
 
-            this.boardScreen();
+        this.boardScreen();
 
-            JsonObject jsonObject = reader.readObject();
+        StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject, this.id);
 
-            StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject, this.id);
-
-            Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
-
-        } catch (IllegalArgumentException e) {
-
-            Terminal.error("Non sei loggato a nessuna partita.");
-        }
+        Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
     }
 
     private void splashScreen() {

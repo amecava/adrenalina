@@ -1,0 +1,42 @@
+[
+    {
+        "state": "loginState",
+
+        "methods": ["remoteDisconnect", "selectPlayerId"]
+    },
+    {
+        "state": "noGameState",
+
+        "methods": ["remoteDisconnect", "askCreateGame", "selectGame"]
+    },
+    {
+        "state": "gameNotStartedState",
+
+        "methods": ["remoteDisconnect", "voteBoard"]
+    },
+    {
+        "state": "spawnState",
+
+        "methods": ["remoteDisconnect", "askCardInfo", "spawn"]
+    },
+    {
+        "state": "activePlayerState",
+
+        "methods": ["remoteDisconnect", "askCardInfo", "selectAction", "askUsePowerUp", "endOfTurn"]
+    },
+    {
+        "state": "notActivePlayerState",
+
+        "methods": ["remoteDisconnect", "askCardInfo", "askUsePowerUp"]
+    },
+    {
+        "state": "actionState",
+
+        "methods": ["remoteDisconnect", "askCardInfo", "moveAction", "askCollect", "askActivateWeapon", "endAction", "askReload"]
+    },
+    {
+        "state": "shootState",
+
+        "methods": ["remoteDisconnect", "askCardInfo", "askUseEffect", "endAction"]
+    }
+]

@@ -1,10 +1,19 @@
 package it.polimi.ingsw.virtual;
 
+import java.io.StringReader;
+import javax.json.Json;
+import javax.json.JsonObject;
+
 public class JsonUtility {
 
     private JsonUtility() {
 
         //
+    }
+
+    public static JsonObject jsonDeserialize(String line) {
+
+        return Json.createReader(new StringReader(line)).readObject();
     }
 
     public static int levenshteinDistance(String input, String match) {

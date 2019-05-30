@@ -6,7 +6,7 @@ import javax.json.JsonObject;
 
 public interface View {
 
-    Queue<Runnable> queue = new ConcurrentLinkedQueue<>();
+    Queue<Runnable> connection = new ConcurrentLinkedQueue<>();
 
     JsonObject userInput();
 
