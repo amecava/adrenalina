@@ -27,8 +27,8 @@ public class PlasmaGunTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
 
         EffectArgument effectArgument;
 
@@ -116,8 +116,8 @@ public class PlasmaGunTest {
         try {
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(0), Color.GRAY);
-            assertSame(target1.getShots().get(1), Color.GRAY);
+            assertSame(target1.getShots().get(0), Color.GRIGIO);
+            assertSame(target1.getShots().get(1), Color.GRIGIO);
             assertSame(target1.getShots().size(), 2);
         } catch (EffectException | PropertiesException | CardException e) {
             fail();
@@ -141,7 +141,7 @@ public class PlasmaGunTest {
         try {
             tester.useCard(EffectType.OPTIONAL_2, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(2), Color.GRAY);
+            assertSame(target1.getShots().get(2), Color.GRIGIO);
             assertSame(target1.getShots().size(), 3);
         } catch (EffectException | PropertiesException | CardException e) {
             fail();

@@ -363,7 +363,7 @@ public class ConsoleView implements View, VirtualView {
         if (jSelectedAction.getBoolean("collect")) {
 
             line.append(
-                    "-\"raccogli\" + (eventualmente) idCarta da raccogliere + (eventualmente) idCarta da scartare\n");
+                    "- \"raccogli\" + (eventualmente) idCarta da raccogliere + (eventualmente) idCarta da scartare\n");
 
         }
         if (jSelectedAction.getBoolean("shoot")) {
@@ -456,6 +456,7 @@ public class ConsoleView implements View, VirtualView {
         if (jActionBridgeObject.getInt("remainingActions") == 1) {
 
             Terminal.info("Ti rimane una sola azione.");
+
         } else {
 
             Terminal.info("Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + " azioni.");

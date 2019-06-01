@@ -54,17 +54,17 @@ public class Player implements Target {
         this.bridge = new Bridge(playerColor);
         this.pointStructure = new PointStructure(this);
 
-        this.ammoCubesList.add(new AmmoCube(Color.RED, false));
-        this.ammoCubesList.add(new AmmoCube(Color.BLUE, false));
-        this.ammoCubesList.add(new AmmoCube(Color.YELLOW, false));
+        this.ammoCubesList.add(new AmmoCube(Color.ROSSO, false));
+        this.ammoCubesList.add(new AmmoCube(Color.BLU, false));
+        this.ammoCubesList.add(new AmmoCube(Color.GIALLO, false));
 
-        this.ammoCubesList.add(new AmmoCube(Color.RED, true));
-        this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
-        this.ammoCubesList.add(new AmmoCube(Color.YELLOW, true));
+        this.ammoCubesList.add(new AmmoCube(Color.ROSSO, true));
+        this.ammoCubesList.add(new AmmoCube(Color.BLU, true));
+        this.ammoCubesList.add(new AmmoCube(Color.GIALLO, true));
 
-        this.ammoCubesList.add(new AmmoCube(Color.RED, true));
-        this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
-        this.ammoCubesList.add(new AmmoCube(Color.YELLOW, true));
+        this.ammoCubesList.add(new AmmoCube(Color.ROSSO, true));
+        this.ammoCubesList.add(new AmmoCube(Color.BLU, true));
+        this.ammoCubesList.add(new AmmoCube(Color.GIALLO, true));
     }
 
     @Override

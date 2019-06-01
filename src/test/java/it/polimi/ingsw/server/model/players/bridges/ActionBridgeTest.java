@@ -17,9 +17,9 @@ class ActionBridgeTest {
 
     @Test
     void ActionTest() {
-        Player player1 = new Player("jacopo", Color.BLUE);
-        Player player2 = new Player("Amedeo", Color.GREEN);
-        Player player3 = new Player("federico", Color.YELLOW);
+        Player player1 = new Player("jacopo", Color.BLU);
+        Player player2 = new Player("Amedeo", Color.VERDE);
+        Player player3 = new Player("federico", Color.GIALLO);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);

@@ -2,9 +2,7 @@ package it.polimi.ingsw.server.model.cards.weapons;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.server.model.ammo.AmmoCube;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
-import it.polimi.ingsw.server.model.exceptions.cards.CostException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.server.model.players.Color;
@@ -17,7 +15,6 @@ import it.polimi.ingsw.server.model.exceptions.cards.CardException;
 import it.polimi.ingsw.server.model.players.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class SledgehammerTest {
@@ -30,9 +27,9 @@ class SledgehammerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
 
         EffectArgument effectArgument;
 
@@ -93,9 +90,9 @@ class SledgehammerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
 
         EffectArgument effectArgument;
 

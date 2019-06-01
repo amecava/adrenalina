@@ -46,7 +46,7 @@ public abstract class Presenter implements VirtualPresenter {
                 .map(JsonValue::asJsonObject)
                 .forEach(x ->
 
-                    state.put(x.getString("state"), x)
+                        state.put(x.getString("state"), x)
                 );
     }
 
@@ -274,7 +274,8 @@ public abstract class Presenter implements VirtualPresenter {
 
                 } else {
 
-                    this.callRemoteMethod("updateState", state.get("notActivePlayerState").toString());
+                    this.callRemoteMethod("updateState",
+                            state.get("notActivePlayerState").toString());
                 }
 
                 ClientHandler.gameBroadcast(
@@ -547,6 +548,7 @@ public abstract class Presenter implements VirtualPresenter {
                         x -> quelli che sono nella targetList,
                         "infoMessage",
                         this.gameHandler.toJsonObject().toString());
+
                  */
 
                 this.callRemoteMethod("infoMessage",
@@ -581,13 +583,15 @@ public abstract class Presenter implements VirtualPresenter {
 
                 if (!line.contains("|")) {
 
-                    this.callRemoteMethod("errorMessage", "Per favore, per usare un power up scrivi:\n"
-                            + "usapowerup nomePowerUp-colorePowerUp | eventualeTarget | eventualeColore.");
-                }else {
+                    this.callRemoteMethod("errorMessage",
+                            "Per favore, per usare un power up scrivi:\n"
+                                    + "usapowerup nomePowerUp-colorePowerUp | eventualeTarget | eventualeColore.");
+                } else {
 
                     EffectArgument effectArgument = new EffectArgument();
 
-                    PowerUpCard powerUp = EffectParser.powerUps(this.player, line.substring(0, line.indexOf("|"))).get(0);
+                    PowerUpCard powerUp = EffectParser
+                            .powerUps(this.player, line.substring(0, line.indexOf("|"))).get(0);
 
                     line = EffectParser.updateString(line);
 
@@ -645,9 +649,10 @@ public abstract class Presenter implements VirtualPresenter {
 
                 if (!line.contains("|")) {
 
-                    this.callRemoteMethod("errorMessage", "Per favore, per usare un power up scrivi:\n"
-                            + "usapowerup nomePowerUp-colorePowerUp | eventualeTarget | eventualeColore.");
-                }else {
+                    this.callRemoteMethod("errorMessage",
+                            "Per favore, per usare un power up scrivi:\n"
+                                    + "usapowerup nomePowerUp-colorePowerUp | eventualeTarget | eventualeColore.");
+                } else {
 
                     int id = EffectParser.cardId(line.substring(0, line.indexOf("|")));
 

@@ -18,13 +18,13 @@ class DeathsTest {
 
         EffectHandler effectHandler = new EffectHandler();
         List<Player> playerList = new ArrayList<>();
-        Player player1 = new Player("Jacopo", Color.BLUE);
+        Player player1 = new Player("Jacopo", Color.BLU);
         playerList.add(player1);
-        Player player2 = new Player("Federico", Color.YELLOW);
+        Player player2 = new Player("Federico", Color.GIALLO);
         playerList.add(player2);
-        Player player3 = new Player("Amedeo", Color.GREEN);
+        Player player3 = new Player("Amedeo", Color.VERDE);
         playerList.add(player3);
-        Player player4 = new Player(" giulia ", Color.VIOLET);
+        Player player4 = new Player(" giulia ", Color.VIOLA);
         playerList.add(player4);
 
         PointHandler pointHandler = new PointHandler(playerList, 2);

@@ -18,10 +18,10 @@ class BoardTest {
 
         Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
 
-        assertEquals(board.getRoom(0).getColor(), Color.BLUE);
-        assertEquals(board.getRoom(1).getColor(), Color.RED);
-        assertEquals(board.getRoom(2).getColor(), Color.WHITE);
-        assertEquals(board.getRoom(3).getColor(), Color.YELLOW);
+        assertEquals(board.getRoom(0).getColor(), Color.BLU);
+        assertEquals(board.getRoom(1).getColor(), Color.ROSSO);
+        assertEquals(board.getRoom(2).getColor(), Color.BIANCO);
+        assertEquals(board.getRoom(3).getColor(), Color.GIALLO);
 
         assertEquals(
                 board.getRoom(1).getSquare(2).getAdjacent(Direction.EAST),
@@ -99,7 +99,7 @@ class BoardTest {
 
         try {
 
-            assertEquals(board.findSpawn(Color.RED).getRoom().getColor(), Color.RED);
+            assertEquals(board.findSpawn(Color.ROSSO).getRoom().getColor(), Color.ROSSO);
 
         } catch (SquareException e) {
 
@@ -108,7 +108,7 @@ class BoardTest {
 
         try {
 
-            board.findSpawn(Color.VIOLET);
+            board.findSpawn(Color.VIOLA);
 
             fail();
 
@@ -127,7 +127,7 @@ class BoardTest {
 
             Square square = board.findSquare("rosso", "0");
 
-            assertEquals(square.getRoom().getColor(), Color.RED);
+            assertEquals(square.getRoom().getColor(), Color.ROSSO);
 
         } catch (SquareException | ColorException e) {
 
@@ -138,7 +138,7 @@ class BoardTest {
 
             Square square = board.findSquare("ROSSO", "0");
 
-            assertEquals(square.getRoom().getColor(), Color.RED);
+            assertEquals(square.getRoom().getColor(), Color.ROSSO);
 
         } catch (SquareException | ColorException e) {
 
@@ -149,7 +149,7 @@ class BoardTest {
 
             Square square = board.findSquare("roso", "0");
 
-            assertEquals(square.getRoom().getColor(), Color.RED);
+            assertEquals(square.getRoom().getColor(), Color.ROSSO);
 
         } catch (SquareException | ColorException e) {
 

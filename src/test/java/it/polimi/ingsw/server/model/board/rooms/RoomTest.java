@@ -13,7 +13,7 @@ class RoomTest {
     @Test
     void getCurrentPosition() {
 
-        Room room = new Room(Color.RED);
+        Room room = new Room(Color.ROSSO);
 
         try {
             room.getCurrentPosition();
@@ -27,7 +27,7 @@ class RoomTest {
     @Test
     void getPlayers() {
         EffectHandler effectHandler = new EffectHandler();
-        Room room = new Room(Color.RED);
+        Room room = new Room(Color.ROSSO);
 
         Square square1 = new Square(0, false);
         Square square2 = new Square(1, true);
@@ -35,9 +35,9 @@ class RoomTest {
         room.addSquare(square1);
         room.addSquare(square2);
 
-        Player player1 = new Player("jacopo", Color.BLUE);
-        Player player2 = new Player("Amedeo", Color.GREEN);
-        Player player3 = new Player("federico", Color.YELLOW);
+        Player player1 = new Player("jacopo", Color.BLU);
+        Player player2 = new Player("Amedeo", Color.VERDE);
+        Player player3 = new Player("federico", Color.GIALLO);
 
         assertTrue(room.getPlayers().isEmpty());
 

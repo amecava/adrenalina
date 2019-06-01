@@ -27,9 +27,9 @@ public class VortexCannonTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
 
         EffectArgument effectArgument;
 
@@ -91,8 +91,8 @@ public class VortexCannonTest {
         try {
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(0), Color.GRAY);
-            assertSame(target1.getShots().get(1), Color.GRAY);
+            assertSame(target1.getShots().get(0), Color.GRIGIO);
+            assertSame(target1.getShots().get(1), Color.GRIGIO);
 
             assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target1));
             assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
@@ -109,10 +109,10 @@ public class VortexCannonTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target2", Color.RED);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
+        Player target3 = new Player("target2", Color.ROSSO);
 
         EffectArgument effectArgument;
 
@@ -132,8 +132,8 @@ public class VortexCannonTest {
         try {
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
 
-            assertSame(target1.getShots().get(0), Color.GRAY);
-            assertSame(target1.getShots().get(1), Color.GRAY);
+            assertSame(target1.getShots().get(0), Color.GRIGIO);
+            assertSame(target1.getShots().get(1), Color.GRIGIO);
 
             assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target1));
             assertEquals(target1.getCurrentPosition(), board.getRoom(1).getSquare(2));
@@ -175,8 +175,8 @@ public class VortexCannonTest {
         try {
             tester.useCard(EffectType.OPTIONAL_1, effectArgument, new ArrayList<>());
 
-            assertSame(target2.getShots().get(0), Color.GRAY);
-            assertSame(target3.getShots().get(0), Color.GRAY);
+            assertSame(target2.getShots().get(0), Color.GRIGIO);
+            assertSame(target3.getShots().get(0), Color.GRIGIO);
 
             assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target2));
             assertTrue(board.getRoom(1).getSquare(2).getPlayers().contains(target3));

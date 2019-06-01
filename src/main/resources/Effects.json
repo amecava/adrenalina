@@ -20,7 +20,7 @@
         "description": "Deal 1 mark to a different target you can see.",
         "targetType": "PLAYER",
 
-        "cost": ["RED"],
+        "cost": ["ROSSO"],
         "activated": false,
 
         "maxTargets": 1,
@@ -50,7 +50,7 @@
         "description": "Deal 1 additional damage to one of those targets.",
         "targetType": "PLAYER",
 
-        "cost": ["YELLOW"],
+        "cost": ["GIALLO"],
         "activated": false,
 
         "maxTargets": 1,
@@ -65,7 +65,7 @@
         "description": "Deal 1 additional damage to the other of those targets and/or deal 1 damage to a different target you can see.",
         "targetType": "PLAYER",
 
-        "cost": ["BLUE"],
+        "cost": ["BLU"],
         "activated": false,
 
         "maxTargets": 2,
@@ -97,7 +97,7 @@
 
         "optionalId": [8],
 
-        "cost": ["BLUE"],
+        "cost": ["BLU"],
         "activated": false,
 
         "maxTargets": 1,
@@ -113,7 +113,7 @@
         "description": "Deal 2 damage to a third target that your second target can see. You cannot use this effect unless you first use the chain reaction.",
         "targetType": "PLAYER",
 
-        "cost": ["BLUE"],
+        "cost": ["BLU"],
         "activated": false,
 
         "maxTargets": 1,
@@ -157,7 +157,7 @@
         "description": "Deal 1 additional damage to your target.",
         "targetType": "PLAYER",
 
-        "cost": ["BLUE"],
+        "cost": ["BLU"],
         "activated": false,
 
         "sameAsFather": [true],
@@ -196,7 +196,7 @@
         "description": "Deal 2 damage to every other player on your square.",
         "targetType": "SQUARE",
 
-        "cost": ["BLUE", "RED"],
+        "cost": ["BLU", "ROSSO"],
 
         "sameAsPlayer": true,
 
@@ -229,7 +229,7 @@
         "description": "Choose a target 0, 1, or 2 moves away from you. Move the target to your square and deal 3 damage to it.",
         "targetType": "PLAYER",
 
-        "cost": ["RED", "YELLOW"],
+        "cost": ["ROSSO", "GIALLO"],
 
         "maxTargets": 1,
         "sameAsPlayer": true,
@@ -275,7 +275,7 @@
             "atomicEffectList": ["MOVE", "DAMAGE"]
         },
 
-        "cost": ["RED"],
+        "cost": ["ROSSO"],
 
         "maxTargets": 2,
         "sameAsFather": [false, false],
@@ -400,7 +400,7 @@
             "atomicEffectList": ["DAMAGE"]
         },
 
-        "cost": ["YELLOW", "YELLOW"],
+        "cost": ["GIALLO", "GIALLO"],
 
         "maxTargets": 2,
 
@@ -438,7 +438,7 @@
         "description": "Deal 1 damage to every player on a square you can see. You can use this before or after the basic effect's move.",
         "targetType": "SQUARE",
 
-        "cost": ["RED"],
+        "cost": ["ROSSO"],
 
         "maxTargets": 1,
         "targetView": true,
@@ -475,7 +475,7 @@
         "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect.",
         "targetType": "PLAYER",
 
-        "cost": ["BLUE"],
+        "cost": ["BLU"],
 
         "maxTargets": 1,
         "sameAsPlayer": true,
@@ -501,7 +501,7 @@
             "atomicEffectList": ["DAMAGE"]
         },
 
-        "cost": ["YELLOW"],
+        "cost": ["GIALLO"],
         "activated": false,
 
         "sameAsFather": [true]
@@ -571,7 +571,7 @@
         "description": "Deal 2 damage to a different target on your square. The shadowstep may be used before or after this effect.",
         "targetType": "PLAYER",
 
-        "cost": ["YELLOW"],
+        "cost": ["GIALLO"],
         "activated": false,
 
         "maxTargets": 1,
@@ -678,7 +678,7 @@
             "atomicEffectList": ["MOVE"]
         },
 
-        "cost": ["BLUE"],
+        "cost": ["BLU"],
 
         "maxTargets": 2,
 
@@ -711,7 +711,7 @@
         "description": "Deal 1 damage to all targets that are exactly 1 move away.",
         "targetType": "SQUARE",
 
-        "cost": ["YELLOW"],
+        "cost": ["GIALLO"],
 
         "minDist": 1,
         "maxDist": 1,
@@ -748,7 +748,7 @@
             "atomicEffectList": ["MOVE", "DAMAGE", "DAMAGE", "DAMAGE"]
         },
 
-        "cost": ["RED"],
+        "cost": ["ROSSO"],
 
         "maxTargets": 1,
         "sameAsPlayer": true,

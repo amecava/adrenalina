@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.cards.powerups;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.server.model.board.Board;
-import it.polimi.ingsw.server.model.cards.Card;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
@@ -28,10 +27,10 @@ class MirinoTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target3", Color.YELLOW);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
+        Player target3 = new Player("target3", Color.GIALLO);
 
         EffectArgument effectArgument;
 
@@ -88,7 +87,7 @@ class MirinoTest {
         // No shots
         try {
 
-            source.getPowerUpsList().get(0).useCard(effectArgument, Color.RED);
+            source.getPowerUpsList().get(0).useCard(effectArgument, Color.ROSSO);
             fail();
 
         } catch (CardException | EffectException e) {
@@ -117,7 +116,7 @@ class MirinoTest {
         // Not active
         try {
 
-            source.getPowerUpsList().get(0).useCard(effectArgument, Color.RED);
+            source.getPowerUpsList().get(0).useCard(effectArgument, Color.ROSSO);
             fail();
 
         } catch (PropertiesException | EffectException e) {
@@ -133,7 +132,7 @@ class MirinoTest {
         // Ok
         try {
 
-            source.getPowerUpsList().get(0).useCard(effectArgument, Color.RED);
+            source.getPowerUpsList().get(0).useCard(effectArgument, Color.ROSSO);
             assertEquals(target1.getShots().size(), 3);
 
         } catch (CardException | PropertiesException | EffectException e) {
@@ -147,10 +146,10 @@ class MirinoTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target3", Color.YELLOW);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
+        Player target3 = new Player("target3", Color.GIALLO);
 
         EffectArgument effectArgument;
 
@@ -191,7 +190,7 @@ class MirinoTest {
         // No shots
         try {
 
-            source.getPowerUpsList().get(0).useCard(effectArgument, Color.RED);
+            source.getPowerUpsList().get(0).useCard(effectArgument, Color.ROSSO);
             fail();
 
         } catch (CardException | EffectException e) {
@@ -218,7 +217,7 @@ class MirinoTest {
         // Ok
         try {
 
-            source.getPowerUpsList().get(0).useCard(effectArgument, Color.RED);
+            source.getPowerUpsList().get(0).useCard(effectArgument, Color.ROSSO);
             assertEquals(target1.getShots().size(), 2);
 
         } catch (CardException | PropertiesException | EffectException e) {

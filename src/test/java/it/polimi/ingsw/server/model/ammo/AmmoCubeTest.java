@@ -10,15 +10,15 @@ class AmmoCubeTest {
     @Test
     void getColor() {
 
-        AmmoCube tester = new AmmoCube(Color.YELLOW, false);
+        AmmoCube tester = new AmmoCube(Color.GIALLO, false);
 
-        assertEquals(tester.getColor(), Color.YELLOW);
+        assertEquals(tester.getColor(), Color.GIALLO);
     }
 
     @Test
     void isUsed() {
 
-        AmmoCube tester = new AmmoCube(Color.YELLOW, false);
+        AmmoCube tester = new AmmoCube(Color.GIALLO, false);
 
         assertFalse(tester.isUsed());
     }
@@ -26,7 +26,7 @@ class AmmoCubeTest {
     @Test
     void setUsed() {
 
-        AmmoCube tester = new AmmoCube(Color.YELLOW, false);
+        AmmoCube tester = new AmmoCube(Color.GIALLO, false);
 
         assertFalse(tester.isUsed());
 

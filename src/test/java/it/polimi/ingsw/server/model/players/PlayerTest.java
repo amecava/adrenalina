@@ -24,7 +24,7 @@ class PlayerTest {
 
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         player.movePlayer(board.getRoom(0).getSquare(0));
 
@@ -49,7 +49,7 @@ class PlayerTest {
 
         Card tester;
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         player.movePlayer(board.getRoom(1).getSquare(2));
 
@@ -59,12 +59,12 @@ class PlayerTest {
 
             //tests collect method first
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.YELLOW).count());
+                    .filter(y -> y.getColor() == Color.GIALLO).count());
             assertEquals(1, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.BLUE).count());
+                    .filter(y -> y.getColor() == Color.BLU).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.RED).count());
-            assertEquals(Arrays.asList(Color.YELLOW, Color.RED, Color.YELLOW),
+                    .filter(y -> y.getColor() == Color.ROSSO).count());
+            assertEquals(Arrays.asList(Color.GIALLO, Color.ROSSO, Color.GIALLO),
                     ((AmmoTile) tester).getAmmoCubesList());
 
         } catch (SquareException | EmptySquareException e) {
@@ -81,12 +81,12 @@ class PlayerTest {
 
             //tests that the player keeps his activated ammo cubes after moving and earns new ones
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.YELLOW).count());
+                    .filter(y -> y.getColor() == Color.GIALLO).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.BLUE).count());
+                    .filter(y -> y.getColor() == Color.BLU).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.RED).count());
-            assertEquals(Arrays.asList(Color.YELLOW, Color.BLUE),
+                    .filter(y -> y.getColor() == Color.ROSSO).count());
+            assertEquals(Arrays.asList(Color.GIALLO, Color.BLU),
                     ((AmmoTile) tester).getAmmoCubesList());
 
         } catch (SquareException | EmptySquareException e) {
@@ -103,12 +103,12 @@ class PlayerTest {
 
             //tests that if every cube is activated everything works fine
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.YELLOW).count());
+                    .filter(y -> y.getColor() == Color.GIALLO).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.BLUE).count());
+                    .filter(y -> y.getColor() == Color.BLU).count());
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.RED).count());
-            assertEquals(Arrays.asList(Color.YELLOW, Color.RED),
+                    .filter(y -> y.getColor() == Color.ROSSO).count());
+            assertEquals(Arrays.asList(Color.GIALLO, Color.ROSSO),
                     ((AmmoTile) tester).getAmmoCubesList());
 
         } catch (SquareException | EmptySquareException e) {
@@ -159,7 +159,7 @@ class PlayerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         board.fillBoard();
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         player.movePlayer(board.getRoom(0).getSquare(2));
 
@@ -285,7 +285,7 @@ class PlayerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         board.fillBoard();
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         try {
 

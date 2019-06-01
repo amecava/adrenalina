@@ -4,7 +4,7 @@
         "rooms": [
             {
                 "roomId": 0,
-                "roomColor": "BLUE",
+                "roomColor": "BLU",
                 "squares": [
                     {
                         "squareId": 0,
@@ -90,7 +90,7 @@
             },
             {
                 "roomId": 1,
-                "roomColor": "RED",
+                "roomColor": "ROSSO",
                 "squares": [
                     {
                         "squareId": 0,
@@ -182,7 +182,7 @@
             },
             {
                 "roomId": 2,
-                "roomColor": "WHITE",
+                "roomColor": "BIANCO",
                 "squares": [
                     {
                         "squareId": 0,
@@ -242,7 +242,7 @@
             },
             {
                 "roomId": 3,
-                "roomColor": "YELLOW",
+                "roomColor": "GIALLO",
                 "squares": [
                     {
                         "squareId": 0,
@@ -306,7 +306,7 @@
         "rooms":[
             {
                 "roomId": 0,
-                "roomColor":"BLUE",
+                "roomColor":"BLU",
 
                 "squares": [
                     {
@@ -395,7 +395,7 @@
             },
             {
                 "roomId": 1,
-                "roomColor": "RED",
+                "roomColor": "ROSSO",
 
                 "squares": [
                     {
@@ -459,7 +459,7 @@
             },
             {
                 "roomId": 2,
-                "roomColor": "WHITE",
+                "roomColor": "BIANCO",
 
                 "squares": [
                     {
@@ -492,7 +492,7 @@
             },
             {
                 "roomId": 3,
-                "roomColor": "GREEN",
+                "roomColor": "VERDE",
 
                 "squares": [
                     {
@@ -526,7 +526,7 @@
             },
             {
                 "roomId": 4,
-                "roomColor": "YELLOW",
+                "roomColor": "GIALLO",
 
                 "squares": [
                     {
