@@ -141,10 +141,16 @@ public class PropertiesAnalyzer {
                         .computeDistance(activeSquare, target.getCurrentPosition(),
                                 effect.isCardinal(), effect.isThroughWalls());
 
+                System.out.println(effect.isCardinal());
+                System.out.println(effect.isThroughWalls());
+                System.out.println(ViewInspector
+                        .computeDistance(activeSquare, target.getCurrentPosition(),
+                                effect.isCardinal(), effect.isThroughWalls()));
+
                 // Launch exception if the distance is lower than the minDist property
                 if (effect.getMinDist() != null && distance < effect.getMinDist()) {
 
-                    throw new SquareDistanceException("Distance metrics not troototo!");
+                    throw new SquareDistanceException("Distance metrics not troototoooooo!");
                 }
 
                 // Launch exception if the distance is greater than the maxDist property

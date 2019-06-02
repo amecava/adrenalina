@@ -25,7 +25,7 @@ public interface VirtualPresenter extends Remote {
     void endAction(String value) throws RemoteException;
 
     void askCardInfo(String value) throws RemoteException;
-    //void askPowerUpInfo(String value) throws RemoteException;
+    void askInfoPowerUp(String value) throws RemoteException;
 
     void endOfTurn(String value) throws RemoteException;
 }

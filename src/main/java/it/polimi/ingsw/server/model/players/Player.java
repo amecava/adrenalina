@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.TargetType;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
+import it.polimi.ingsw.server.model.exceptions.cards.CostException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
 import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
@@ -23,9 +24,11 @@ import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.players.bridges.Bridge;
 import it.polimi.ingsw.server.model.points.PointStructure;
 import it.polimi.ingsw.server.model.cards.Target;
+import it.polimi.ingsw.virtual.JsonUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -312,9 +315,10 @@ public class Player implements Target {
     public PowerUpCard findPowerUp(String name, Color color) throws CardNotFoundException {
 
         return this.powerUpsList.stream()
-                .filter(x -> x.getName().equals(name) && x.getColor().equals(color))
+                .filter(x -> JsonUtility.levenshteinDistance(name, x.getName()) <= 3 && x.getColor().equals(color))
                 .findAny()
-                .orElseThrow(() -> new CardNotFoundException("Non hai in mano il powerup che hai selezionato."));
+                .orElseThrow(() -> new CardNotFoundException(
+                        "Non hai in mano il powerup che hai selezionato."));
     }
 
     public PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
@@ -327,6 +331,13 @@ public class Player implements Target {
         powerUpCard.setOwner(null);
 
         return this.powerUpsList.remove(this.powerUpsList.indexOf(powerUpCard));
+    }
+
+    public PowerUpCard removePowerUp(PowerUpCard card) {
+
+        card.setOwner(null);
+
+        return this.powerUpsList.remove(this.powerUpsList.indexOf(card));
     }
 
     public void removePlayerFromBoard() {
@@ -360,7 +371,8 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null || !this
                 .getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona l'azione giusta.");
+            throw new IllegalActionException(
+                    "Non puoi raccogliere adesso, seleziona l'azione giusta.");
         }
 
         if (this.currentPosition.isSpawn()) {
@@ -386,54 +398,113 @@ public class Player implements Target {
         return tmpTile;
     }
 
-    public void collect(int cardId) throws CardException, IllegalActionException {
+    private void checkResources(List<Color> costCopy, List<PowerUpCard> ammoList) throws CostException {
+
+        try {
+
+            ammoList.stream()
+                    .map(PowerUpCard::getColor)
+                    .forEach(x -> {
+
+                        if (costCopy.contains(x)) {
+
+                            costCopy.remove(x);
+
+                        } else {
+
+                            throw new IllegalArgumentException();
+                        }
+                    });
+
+            costCopy.stream()
+                    .distinct()
+                    .forEach(x -> {
+                        if (costCopy.stream().filter(y -> y.equals(x)).count() > this
+                                .getAmmoCubesList().stream().filter(y -> !y.isUsed()).map(
+                                        AmmoCube::getColor).filter(y -> y.equals(x)).count()) {
+
+                            throw new IllegalArgumentException();
+                        }
+                    });
+
+        } catch (IllegalArgumentException e) {
+
+            throw new CostException("Non hai abbastanza risorse.");
+        }
+    }
+
+    public void collect(int cardId, List<PowerUpCard> powerUpCards) throws CardException, IllegalActionException {
 
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null
                 || !this.getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona l'azione giusta.");
+            throw new IllegalActionException(
+                    "Non puoi raccogliere adesso, seleziona l'azione giusta.");
         }
 
         if (!this.currentPosition.isSpawn()) {
 
-            throw new SquareException("Sei in un quadrato di rigenerazione, non c'è nessuna carta da raccogliere.");
+            throw new SquareException(
+                    "Sei in un quadrato di rigenerazione, non c'è nessuna carta da raccogliere.");
         }
 
         if (this.weaponCardList.size() == 3) {
 
-            throw new FullHandException("Hai già tre carte in mano, devi selezionare l'id della carta che vui scartare.");
+            throw new FullHandException(
+                    "Hai già tre carte in mano, devi selezionare l'id della carta che vui scartare.");
         }
+
+        List<Color> costCopy = new ArrayList<>(this.currentPosition.getCostOfCard(cardId));
+
+        costCopy.remove(0);
+
+        this.checkResources(costCopy, powerUpCards);
+
+        costCopy.forEach(x ->
+                this.getAmmoCubesList().stream()
+                        .filter(y -> y.getColor().equals(x) && !y.isUsed())
+                        .findFirst().get()
+                        .setUsed(true)
+        );
 
         this.addWeaponCard((WeaponCard) this.currentPosition.collectWeaponCard(cardId));
 
         this.getCurrentAction().endAction(2, false);
     }
 
-    public void collect(int playerCardId, int squareCardId)
+    public void collect(int squareCardId, int playerCardId, List<PowerUpCard> powerUpCards)
             throws CardException, IllegalActionException {
 
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null
                 || !this.getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona l'azione giusta.");
+            throw new IllegalActionException(
+                    "Non puoi raccogliere adesso, seleziona l'azione giusta.");
         }
 
         if (!this.currentPosition.isSpawn()) {
 
-            throw new SquareException("Non sei in un quadrato di rigenerazione, non devi scartare nessuna carta.");
+            throw new SquareException(
+                    "Non sei in un quadrato di rigenerazione, non devi scartare nessuna carta.");
         }
 
         if (this.weaponCardList.size() != 3) {
 
-            throw new FullHandException("Non puoi scartare una carta per raccoglierne una se non ne hai già tre in mano");
+            throw new FullHandException(
+                    "Non puoi scartare una carta per raccoglierne una se non ne hai già tre in mano");
         }
 
+        WeaponCard card = this.weaponCardList.stream()
+                .filter(x -> x.getId() == playerCardId)
+                .findAny()
+                .orElseThrow(() -> new CardNotFoundException("Non hai la carta selezionata."));
+
         this.addWeaponCard((WeaponCard) this.currentPosition.collectWeaponCard(
-                this.weaponCardList.stream()
-                        .filter(x -> x.getId() == playerCardId)
-                        .findAny()
-                        .orElseThrow(() -> new CardNotFoundException("Non hai la carta selezionata.")),
+                card,
                 squareCardId));
+
+        this.weaponCardList.remove(card);
+        card.setOwner(null);
 
         this.getCurrentAction().endAction(2, false);
     }
@@ -444,13 +515,15 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isReload() == null
                 || !this.getCurrentAction().isReload()) {
 
-            throw new IllegalActionException("Prima seleziona quale azione vuoi usare (se vuoi ricaricare, seleziona la numero 4).");
+            throw new IllegalActionException(
+                    "Prima seleziona quale azione vuoi usare (se vuoi ricaricare, seleziona la numero 4).");
         }
 
         this.weaponCardList.stream()
                 .filter(x -> x.getId() == cardId)
                 .findAny()
-                .orElseThrow(() -> new CardNotFoundException("Hai chiesto di ricaricare un'arma che non hai, scegline una valida."))
+                .orElseThrow(() -> new CardNotFoundException(
+                        "Hai chiesto di ricaricare un'arma che non hai, scegline una valida."))
                 .reloadWeapon(powerUpCardList);
 
         this.getCurrentAction().endAction(2, false);
@@ -468,7 +541,8 @@ public class Player implements Target {
         this.bridge.setCurrentWeaponCard(this.weaponCardList.stream()
                 .filter(x -> x.getId() == cardId)
                 .findAny()
-                .orElseThrow(() -> new CardNotFoundException("Non hai la carta selezionata, selezionane una valida."))
+                .orElseThrow(() -> new CardNotFoundException(
+                        "Non hai la carta selezionata, selezionane una valida."))
                 .activateCard());
 
         this.getCurrentAction().endAction(4, false);

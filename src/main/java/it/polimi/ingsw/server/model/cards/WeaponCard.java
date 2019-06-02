@@ -245,7 +245,7 @@ public class WeaponCard implements Card {
 
         } catch (IllegalArgumentException e) {
 
-            throw new CostException("Non hai abbastanza risorse per ricaricare.");
+            throw new CostException("Non hai abbastanza risorse.");
         }
     }
 

@@ -23,6 +23,8 @@ class ViewInspector {
     static int computeDistance(Square fromSquare, Square toSquare, boolean cardinal,
             boolean throughWalls) throws SquareDistanceException {
 
+        System.out.println("fromSquare " + fromSquare.getRoom().getColor() + " " + fromSquare.getSquareId());
+        System.out.println("toSquare " + toSquare.getRoom().getColor() + " " + toSquare.getSquareId());
         // Return compute cardinal distance if cardinal true
         if (cardinal) {
 

@@ -95,7 +95,7 @@ class RegexJson {
 
         if (commands.stream().noneMatch(x -> x.equals(method))) {
 
-            throw new NoSuchElementException("Non puoi effettuare questa operazione in questo momento.");
+            throw new NoSuchElementException("C'è un tempo e un luogo per ogni cosa, ma non ora.");
         }
 
         builder.add("method", method);
