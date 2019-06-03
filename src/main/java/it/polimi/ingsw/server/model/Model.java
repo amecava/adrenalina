@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.model.board.Board;
+import it.polimi.ingsw.server.model.points.Deaths;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.server.model.points.PointHandler;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
@@ -16,21 +18,21 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-public class Model {
+public class Model implements Serializable {
 
     private List<Player> playerList = new ArrayList<>();
 
     private Board board;
+    private Deaths deaths;
 
-    private PointHandler pointHandler;
     private EffectHandler effectHandler = new EffectHandler();
 
     private Player activePlayer;
 
     public Model(int numberOfDeaths, boolean frenzy) {
 
-        this.pointHandler = new PointHandler(this.playerList, numberOfDeaths);
-        this.pointHandler.setFrenzy(frenzy);
+        this.deaths = new Deaths(numberOfDeaths);
+        this.deaths.setFrenzy(frenzy);
     }
 
 
@@ -137,12 +139,12 @@ public class Model {
                     x.addPowerUp(this.board.getPowerUp());
                 });
 
-        this.pointHandler.checkIfDead();
-        this.pointHandler.countKills();
+        PointHandler.checkIfDead(this.playerList);
+        PointHandler.countKills(this.deaths, this.playerList);
 
-        if (this.pointHandler.checkEndGame()) {
+        if (PointHandler.checkEndGame(this.deaths, this.playerList)) {
 
-            throw new EndGameException(this.pointHandler.endGame());
+            throw new EndGameException(PointHandler.endGame(this.deaths, this.playerList));
         }
 
         this.board.fillBoard();
@@ -157,8 +159,8 @@ public class Model {
                 .forEach(builder::add);
 
         return Json.createObjectBuilder()
-                .add("numberOfDeaths", this.pointHandler.getNumberOfDeaths())
-                .add("frenzy", this.pointHandler.isFrenzy())
+                .add("numberOfDeaths", this.deaths.getNumberOfDeaths())
+                .add("frenzy", this.deaths.isFrenzy())
                 .add("playerList", builder.build())
                 .add("board", this.board != null ? this.board.toJsonObject() : JsonValue.NULL);
     }

@@ -1341,5 +1341,8 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void updateState(String value) throws RemoteException {
         return;
+    @Override
+    public void completePowerUpInfo(String value) throws RemoteException {
+
     }
 }

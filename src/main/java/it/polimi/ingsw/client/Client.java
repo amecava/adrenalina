@@ -105,7 +105,8 @@ public class Client {
 
             Client client = new Client(4560, 4561, 4562);
 
-            if (args[0].equals("c") || args[0].equals("g")) {
+            if (args.length == 1 &&
+                    (args[0].equals("c") || args[0].equals("g"))) {
 
                 client.start(args[0].equals("c"));
 

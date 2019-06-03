@@ -17,26 +17,26 @@
     {
         "state": "spawnState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "spawn"]
+        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "spawn"]
     },
     {
         "state": "activePlayerState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "selectAction", "askUsePowerUp", "endOfTurn"]
+        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "selectAction", "askUsePowerUp", "endOfTurn"]
     },
     {
         "state": "notActivePlayerState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "askUsePowerUp"]
+        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "askUsePowerUp"]
     },
     {
         "state": "actionState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "moveAction", "askCollect", "askActivateWeapon", "endAction", "askReload"]
+        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "moveAction", "askCollect", "askActivateWeapon", "endAction", "askReload"]
     },
     {
         "state": "shootState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "askUseEffect", "endAction"]
+        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "askUseEffect", "endAction"]
     }
 ]

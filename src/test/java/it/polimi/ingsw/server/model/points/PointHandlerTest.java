@@ -24,7 +24,7 @@ class PointHandlerTest {
         playerList.add(player1);
         playerList.add(player2);
         playerList.add(player3);
-        PointHandler pointHandler = new PointHandler(playerList, 4);
+        Deaths deaths = new Deaths(4);
         for (int i = 0; i < 5; i++) {
             player1.markPlayer(player2.getColor());
             player1.damagePlayer(player3.getColor(), true);
@@ -34,11 +34,11 @@ class PointHandlerTest {
         player1.damagePlayer(player2.getColor(), true);
         player1.damagePlayer(player2.getColor(), true);
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
-            if (pointHandler.checkEndGame()) {
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
         } catch (EndGameException e) {
 
@@ -66,7 +66,7 @@ class PointHandlerTest {
         playerList.add(player2);
         playerList.add(player3);
         playerList.add(player4);
-        PointHandler pointHandler = new PointHandler(playerList, 4);
+        Deaths deaths = new Deaths(4);
 
         for (int i = 0; i < 5; i++) {
 
@@ -87,12 +87,12 @@ class PointHandlerTest {
         player1.markPlayer(Color.AZZURRO);
 
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
         } catch (EndGameException e) {
 
@@ -105,11 +105,11 @@ class PointHandlerTest {
             player1.damagePlayer(player3.getColor(), true);
         }
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
-            if (pointHandler.checkEndGame()) {
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
 
         }  catch (EndGameException e) {
@@ -137,7 +137,7 @@ class PointHandlerTest {
         playerList.add(player4);
         playerList.add(player5);
         playerList.add(player6);
-        PointHandler pointHandler = new PointHandler(playerList, 2);
+        Deaths deaths = new Deaths(2);
         player1.setPoints(20);
         player2.setPoints(20);
         player3.setPoints(15);
@@ -153,12 +153,12 @@ class PointHandlerTest {
             player2.damagePlayer(player1.getColor(), true);
         }
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
         } catch (EndGameException e) {
             fail();
@@ -167,12 +167,12 @@ class PointHandlerTest {
             player1.damagePlayer(player2.getColor(), true);
         }
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
 
             fail();
@@ -203,18 +203,18 @@ class PointHandlerTest {
         playerList.add(player4);
         playerList.add(player5);
         playerList.add(player6);
-        PointHandler pointHandler = new PointHandler(playerList, 3);
+        Deaths deaths = new Deaths(3);
         for (int i = 1; i <= 12; i++) {
             player2.damagePlayer(player1.getColor(), true);
             player3.damagePlayer(player1.getColor(), true);
         }
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
         } catch (EndGameException e) {
             fail();
@@ -228,12 +228,12 @@ class PointHandlerTest {
         }
         player1.damagePlayer(player4.getColor(), true);
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
 
         } catch (EndGameException e) {

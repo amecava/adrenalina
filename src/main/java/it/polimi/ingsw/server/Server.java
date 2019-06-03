@@ -132,6 +132,11 @@ public class Server {
 
         try {
 
+            Runtime.getRuntime().addShutdownHook(
+
+                    new Thread(() -> ClientHandler.save("data.ser"))
+            );
+
             LOGGER.log(Level.INFO, "Creating server...");
 
             System.setProperty("java.rmi.server.hostname",
@@ -141,6 +146,8 @@ public class Server {
 
             discovery.setDaemon(true);
             discovery.start();
+
+            ClientHandler.load("data.ser");
 
             new Thread(() -> Server.rmiServer(4561)).start();
             new Thread(() -> Server.socketServer(4562)).start();

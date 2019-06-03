@@ -6,7 +6,9 @@ import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.TargetType;
 import it.polimi.ingsw.server.model.exceptions.cards.EmptySquareException;
+import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -18,7 +20,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-public class Square implements Target {
+public class Square implements Target, Serializable {
 
     private int squareId;
     private Room room;
@@ -146,6 +148,18 @@ public class Square implements Target {
         throw new EmptySquareException("Hai già raccolto le munizioni in questo quadrato.");
     }
 
+    public List<Color> getCostOfCard(int id) throws EmptySquareException{
+
+        return this.tools.stream()
+                .map(x -> (WeaponCard) x)
+                .filter(y -> y.getId() == id)
+                .findAny()
+                .orElseThrow(() ->
+                        new EmptySquareException(
+                                "La carta che vuoi raccogliere non è in questo quadrato."))
+                .getReloadCost();
+    }
+
     public Card collectWeaponCard(int id) throws EmptySquareException {
 
         return this.tools.remove(this.tools.indexOf(
@@ -167,7 +181,6 @@ public class Square implements Target {
                         .findAny().orElseThrow(() ->
                         new EmptySquareException("The card you selected is not in this square")));
 
-        playerCard.setOwner(null);
         this.tools.add(playerCard);
 
         return this.tools.remove(index);

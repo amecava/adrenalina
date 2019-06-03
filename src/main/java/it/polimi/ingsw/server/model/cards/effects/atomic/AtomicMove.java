@@ -2,8 +2,9 @@ package it.polimi.ingsw.server.model.cards.effects.atomic;
 
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 
-public class AtomicMove implements AtomicEffect {
+public class AtomicMove implements AtomicEffect, Serializable {
 
     @Override
     public void execute(Player source, EffectArgument target) {

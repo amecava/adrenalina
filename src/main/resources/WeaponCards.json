@@ -48,7 +48,7 @@
         "id": 5,
 
         "name": "WHISPER",
-        "reloadCost": ["BLU", "GIALLO"],
+        "reloadCost": ["BLU", "BLU" , "GIALLO"],
 
         "primary": 12,
 

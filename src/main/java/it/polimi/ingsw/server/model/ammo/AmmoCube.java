@@ -1,8 +1,9 @@
 package it.polimi.ingsw.server.model.ammo;
 
 import it.polimi.ingsw.server.model.players.Color;
+import java.io.Serializable;
 
-public class AmmoCube implements Ammo {
+public class AmmoCube implements Ammo, Serializable {
 
     private Color color;
 

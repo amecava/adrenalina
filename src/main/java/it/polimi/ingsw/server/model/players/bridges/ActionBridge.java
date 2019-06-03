@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.model.players.bridges;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
@@ -11,7 +12,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-class ActionBridge {
+class ActionBridge implements Serializable {
 
     private Adrenalin adrenalin;
     private ActionStructure currentAction;
@@ -61,6 +62,11 @@ class ActionBridge {
     ActionStructure getCurrentAction() {
 
         return this.currentAction;
+    }
+
+    boolean isShooting() {
+
+        return this.currentWeaponCard != null;
     }
 
     boolean isFirstPlayer() {

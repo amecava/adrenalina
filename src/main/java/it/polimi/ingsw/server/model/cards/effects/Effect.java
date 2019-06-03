@@ -4,13 +4,14 @@ import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.cards.effects.atomic.AtomicEffect;
 import it.polimi.ingsw.server.model.cards.effects.atomic.AtomicType;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class Effect {
+public class Effect implements Serializable {
 
     private int id;
     private double args;

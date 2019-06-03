@@ -1,10 +1,11 @@
 package it.polimi.ingsw.server.model.players.bridges;
 
 import it.polimi.ingsw.server.model.cards.effects.Effect;
+import java.io.Serializable;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class ActionStructure {
+public class ActionStructure implements Serializable {
 
     private int id;
 

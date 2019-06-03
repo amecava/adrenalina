@@ -13,6 +13,7 @@ import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.server.presenter.exceptions.SpawnException;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.json.JsonObject;
 
-public class GameHandler {
+public class GameHandler implements Serializable {
 
     private String gameId;
     private int gameStarted = 60;
@@ -34,33 +35,33 @@ public class GameHandler {
 
     private Model model;
 
-    public GameHandler(String gameId, int numberOfDeaths, boolean frenzy) {
+    GameHandler(String gameId, int numberOfDeaths, boolean frenzy) {
 
         this.gameId = gameId;
         this.model = new Model(numberOfDeaths, frenzy);
     }
 
-    public String getGameId() {
+    String getGameId() {
 
         return this.gameId;
     }
 
-    public boolean isGameStarted() {
+    boolean isGameStarted() {
 
         return this.gameStarted == 0;
     }
 
-    public List<Player> getPlayerList() {
+    List<Player> getPlayerList() {
 
         return this.model.getPlayerList();
     }
 
-    public Model getModel() {
+    Model getModel() {
 
         return this.model;
     }
 
-    public void createBoard() {
+    private void createBoard() {
 
         this.model.createBoard(this.votes.values().stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
@@ -70,7 +71,7 @@ public class GameHandler {
                 .orElse(ThreadLocalRandom.current().nextInt(0, 4)));
     }
 
-    public Player addPlayer(String playerId, String character) throws LoginException, ColorException {
+    Player addPlayer(String playerId, String character) throws LoginException, ColorException {
 
         Player player = this.model.addPlayer(playerId, character);
 
@@ -117,7 +118,7 @@ public class GameHandler {
         return player;
     }
 
-    public void voteBoard(String playerId, int board) throws BoardVoteException {
+    void voteBoard(String playerId, int board) throws BoardVoteException {
 
         if (this.votes.containsKey(playerId)) {
 
@@ -127,7 +128,7 @@ public class GameHandler {
         this.votes.put(playerId, board);
     }
 
-    public void randomSpawn(Player player) {
+    private void randomSpawn(Player player) {
 
         try {
 
@@ -141,7 +142,7 @@ public class GameHandler {
         }
     }
 
-    public void spawnPlayer(Player player, String cardId, String colorName) throws SpawnException {
+    void spawnPlayer(Player player, String cardId, String colorName) throws SpawnException {
 
         try {
 
@@ -176,7 +177,7 @@ public class GameHandler {
         }
     }
 
-    public synchronized void nextPlayer() {
+    private synchronized void nextPlayer() {
 
         this.model.nextPlayer();
 
@@ -193,7 +194,7 @@ public class GameHandler {
                 Presenter.state.get("notActivePlayerState").toString());
     }
 
-    public void endOfTurn() throws EndGameException {
+    void endOfTurn() throws EndGameException {
 
         this.model.endOfTurn();
 
@@ -241,7 +242,7 @@ public class GameHandler {
         }).start();
     }
 
-    public void startGame() {
+    private void startGame() {
 
         this.createBoard();
         this.model.getBoard().fillBoard();

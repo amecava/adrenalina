@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
+import it.polimi.ingsw.server.model.points.Deaths;
 import it.polimi.ingsw.server.model.points.PointHandler;
 import it.polimi.ingsw.server.model.players.Player;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ class DeathsTest {
         Player player4 = new Player(" giulia ", Color.VIOLA);
         playerList.add(player4);
 
-        PointHandler pointHandler = new PointHandler(playerList, 2);
+        Deaths deaths = new Deaths(2);
 
         for (int i = 0; i < 8; i++) {
             player3.damagePlayer(player2.getColor(), true);
@@ -36,11 +37,11 @@ class DeathsTest {
             player3.damagePlayer(player1.getColor(), true);
         }
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
-            if (pointHandler.checkEndGame()) {
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
         } catch (EndGameException e) {
             fail();
@@ -58,12 +59,12 @@ class DeathsTest {
         player1.damagePlayer(player3.getColor(), true);
         player2.damagePlayer(player3.getColor(), true);
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
             fail();
         } catch (EndGameException e) {

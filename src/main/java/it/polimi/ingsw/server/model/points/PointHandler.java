@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model.points;
 
 import it.polimi.ingsw.server.model.players.Color;
-import it.polimi.ingsw.server.model.board.Deaths;
 import it.polimi.ingsw.server.model.players.bridges.Adrenalin;
 import it.polimi.ingsw.server.model.players.bridges.Bridge;
 import it.polimi.ingsw.server.model.players.Player;
@@ -12,44 +11,18 @@ import java.util.stream.Collectors;
 
 public class PointHandler {
 
-    private Deaths deaths;
+    private PointHandler() {
 
-    private Player firstFrenzyPlayer;
-    private boolean frenzyEnabled;
-
-    private List<Player> playerList;
-
-    private PointSorter pointSorter = new PointSorter();
-    private List<PointStructure> pointStructures = new ArrayList<>();
-
-    public PointHandler(List<Player> playerList, int numberOfDeaths) {
-
-        this.playerList = playerList;
-        this.deaths = new Deaths(numberOfDeaths);
+        //
     }
 
-    public int getNumberOfDeaths() {
+    public static void checkIfDead(List<Player> playerList) {
 
-        return deaths.getNumberOfDeaths();
-    }
-
-    public boolean isFrenzy() {
-
-        return this.frenzyEnabled;
-    }
-
-    public void setFrenzy(boolean frenzy) {
-
-        this.frenzyEnabled = frenzy;
-    }
-
-    public void checkIfDead() {
-
-        this.playerList.forEach(x -> {
+        playerList.forEach(x -> {
 
             if (x.isDead()) {
 
-                this.deathUpdate(x.getBridge());
+                deathUpdate(x.getBridge(), playerList);
             } else {
 
                 x.checkAdrenalin();
@@ -57,23 +30,28 @@ public class PointHandler {
         });
     }
 
-    public void countKills() {
-        boolean foundLastShot;
-        Color killShot;
+    public static void countKills(Deaths deaths, List<Player> playerList) {
 
         for (Player player : playerList) {
+
             if (!player.getBridge().getColor().equals(Color.ALL) && player.isDead()) {
 
-                killShot = player.getShots().get(player.getShots().size() - 1);
-                foundLastShot = player.getShots().size() >= 12;
-                deaths.addKill(killShot, foundLastShot);
-                if (this.firstFrenzyPlayer != null && !(player.getBridge().isKillStreakCount())) {
+                deaths.addKill(
+                        player.getShots().get(player.getShots().size() - 1),
+                        player.getShots().size() >= 12);
+
+                if (deaths.getFirstFrenzyPlayer() != null && !(player.getBridge().isKillStreakCount())) {
+
                     player.getBridge().setFrenzy();
                     player.getBridge().setKillStreakCount();
+
                 } else {
+
                     player.setPointsUsed();
                     player.addKill();
-                    if (this.firstFrenzyPlayer == null) {
+
+                    if (deaths.getFirstFrenzyPlayer() == null) {
+
                         player.getBridge().setAdrenalin(Adrenalin.NORMAL);
                     }
                 }
@@ -81,74 +59,73 @@ public class PointHandler {
         }
     }
 
-    public boolean checkEndGame() {
+    public static boolean checkEndGame(Deaths deaths, List<Player> playerList) {
 
         if (!deaths.isGameEnded()) {
 
             return false;
         }
 
-        if (frenzyEnabled) {
+        if (deaths.isFrenzy()) {
 
-            Player activePlayer = this.playerList.stream()
+            Player activePlayer = playerList.stream()
                     .filter(Player::isActivePlayer)
                     .findFirst()
                     .orElseThrow(NoSuchElementException::new);
 
-            if (this.firstFrenzyPlayer == null) {
+            if (deaths.getFirstFrenzyPlayer() == null) {
 
                 // Sets end game true so that adrenalin doesn't change !!
-                this.playerList.forEach(
+                playerList.forEach(
                         x -> x.setFrenzyActions(true));
 
                 // Flips the damage bridge and gives new points for each kill
                 //also there isn't the first blood damage!!
-                this.playerList.stream()
+                playerList.stream()
                         .filter(x -> x.getShots().isEmpty())
                         .forEach(Player::setFrenzy);
 
-                Player tempPlayer = this.getNextPlayer(activePlayer);
+                Player tempPlayer = getNextPlayer(playerList, activePlayer);
 
                 while (!tempPlayer.isFirstPlayer()) {
 
                     tempPlayer.setAdrenalin(Adrenalin.FIRSTFRENZY);
-                    tempPlayer = this.getNextPlayer(tempPlayer);
+                    tempPlayer = getNextPlayer(playerList, tempPlayer);
                 }
 
                 while (tempPlayer != activePlayer) {
 
                     tempPlayer.setAdrenalin(Adrenalin.SECONDFRENZY);
-                    tempPlayer = this.getNextPlayer(tempPlayer);
+                    tempPlayer = getNextPlayer(playerList, tempPlayer);
                 }
 
-                this.firstFrenzyPlayer = this.getNextPlayer(activePlayer);
+                deaths.setFirstFrenzyPlayer(getNextPlayer(playerList, activePlayer));
 
                 return false;
 
             }
 
-            return this.getNextPlayer(activePlayer) == firstFrenzyPlayer;
+            return getNextPlayer(playerList, activePlayer) == deaths.getFirstFrenzyPlayer();
         }
 
         return true;
     }
 
-    public List<List<Player>> endGame() {
+    public static List<List<Player>> endGame(Deaths deaths, List<Player> playerList) {
 
-        this.playerList.forEach(x -> this.deathUpdate(x.getBridge()));
-        this.deathUpdate(this.deaths);
+        playerList.forEach(x -> deathUpdate(x.getBridge(), playerList));
+        deathUpdate(deaths, playerList);
 
         int i = 0;
         int j = 0;
 
         List<List<Player>> winnerList = new ArrayList<>();
 
-        this.pointStructures = this.playerList.stream()
-                .map(x -> x.createPointStructure(this.deaths.getKillStreak())
+        List<PointStructure> pointStructures = playerList.stream()
+                .map(x -> x.createPointStructure(deaths.getKillStreak())
                         .setNumberDamage(x.getPoints()))
+                .sorted(new PointSorter())
                 .collect(Collectors.toList());
-
-        this.pointStructures.sort(new PointSorter());
 
         while (i < pointStructures.size()) {
 
@@ -172,7 +149,7 @@ public class PointHandler {
         return winnerList;
     }
 
-    private Player getNextPlayer(Player player) {
+    private static Player getNextPlayer(List<Player> playerList, Player player) {
 
         int nextPlayer = playerList.indexOf(player) + 1;
 
@@ -181,19 +158,18 @@ public class PointHandler {
             nextPlayer = 0;
         }
 
-        return this.playerList.get(nextPlayer);
+        return playerList.get(nextPlayer);
     }
 
-    private void deathUpdate(Bridge bridge) {
+    private static void deathUpdate(Bridge bridge, List<Player> playerList) {
 
         boolean foundFirstBlood = false;
         boolean foundLastBlood = false;
 
-        this.pointStructures = this.playerList.stream()
+        List<PointStructure> pointStructures = playerList.stream()
                 .map(x -> x.createPointStructure(bridge.getShots()))
+                .sorted(new PointSorter())
                 .collect(Collectors.toList());
-
-        this.pointStructures.sort(this.pointSorter);
 
         for (PointStructure pointStructure : pointStructures) {
 
@@ -216,6 +192,5 @@ public class PointHandler {
                 }
             }
         }
-
     }
 }

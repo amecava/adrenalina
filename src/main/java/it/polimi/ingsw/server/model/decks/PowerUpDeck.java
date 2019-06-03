@@ -3,13 +3,14 @@ package it.polimi.ingsw.server.model.decks;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 
-public class PowerUpDeck {
+public class PowerUpDeck implements Serializable {
 
     private List<PowerUpCard> deck;
 
