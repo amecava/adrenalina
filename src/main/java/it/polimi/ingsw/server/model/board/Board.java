@@ -224,7 +224,6 @@ public class Board {
         return Json.createObjectBuilder()
                 .add("boardId", this.boardId)
                 .add("arrays", builder.build())
-                .add("playerList", players.build())
                 .build();
     }
 

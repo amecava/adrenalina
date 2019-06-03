@@ -189,6 +189,7 @@ public class Square implements Target {
 
         return objectBuilder
                 .add("color", this.room.getColor().toString())
+                .add("squareId", this.squareId)
                 .add("isSpawn", this.spawn)
                 .add("tools", toolsBuilder.build())
                 .add("playersIn",
