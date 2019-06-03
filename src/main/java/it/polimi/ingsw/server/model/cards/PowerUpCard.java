@@ -13,10 +13,11 @@ import it.polimi.ingsw.server.model.exceptions.effects.EffectCallException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class PowerUpCard implements Card, Ammo {
+public class PowerUpCard implements Card, Ammo, Serializable {
 
     private EffectHandler effectHandler;
 

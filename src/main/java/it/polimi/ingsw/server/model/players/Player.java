@@ -23,6 +23,7 @@ import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.players.bridges.Bridge;
 import it.polimi.ingsw.server.model.points.PointStructure;
 import it.polimi.ingsw.server.model.cards.Target;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +31,10 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
-public class Player implements Target {
+public class Player implements Target, Serializable {
 
     private String playerId;
+
     private boolean connected = true;
     private boolean activePlayer = false;
 
@@ -55,15 +57,15 @@ public class Player implements Target {
         this.pointStructure = new PointStructure(this);
 
         this.ammoCubesList.add(new AmmoCube(Color.RED, false));
+        this.ammoCubesList.add(new AmmoCube(Color.RED, true));
+        this.ammoCubesList.add(new AmmoCube(Color.RED, true));
+
         this.ammoCubesList.add(new AmmoCube(Color.BLUE, false));
+        this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
+        this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
+
         this.ammoCubesList.add(new AmmoCube(Color.YELLOW, false));
-
-        this.ammoCubesList.add(new AmmoCube(Color.RED, true));
-        this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
         this.ammoCubesList.add(new AmmoCube(Color.YELLOW, true));
-
-        this.ammoCubesList.add(new AmmoCube(Color.RED, true));
-        this.ammoCubesList.add(new AmmoCube(Color.BLUE, true));
         this.ammoCubesList.add(new AmmoCube(Color.YELLOW, true));
     }
 
@@ -202,9 +204,14 @@ public class Player implements Target {
         }
     }
 
-    private ActionStructure getCurrentAction() {
+    public ActionStructure getCurrentAction() {
 
         return this.bridge.getCurrentAction();
+    }
+
+    public boolean isShooting() {
+
+        return this.bridge.isShooting();
     }
 
     public boolean isFirstPlayer() {
@@ -297,7 +304,7 @@ public class Player implements Target {
         return this.weaponCardList;
     }
 
-    public void addWeaponCard(WeaponCard weaponCard) {
+    void addWeaponCard(WeaponCard weaponCard) {
 
         weaponCard.setOwner(this);
         this.weaponCardList.add(weaponCard);
@@ -317,7 +324,7 @@ public class Player implements Target {
                 .orElseThrow(() -> new CardNotFoundException("Non hai in mano il powerup che hai selezionato."));
     }
 
-    public PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
+    private PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
 
         PowerUpCard powerUpCard = this.powerUpsList.stream()
                 .filter(x -> x.getName().equals(name) && x.getColor().equals(color))
@@ -360,7 +367,7 @@ public class Player implements Target {
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null || !this
                 .getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona l'azione giusta.");
+            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona un'altra azione.");
         }
 
         if (this.currentPosition.isSpawn()) {

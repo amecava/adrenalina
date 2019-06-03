@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.players.Player;
+import it.polimi.ingsw.server.model.points.Deaths;
 import it.polimi.ingsw.server.model.points.PointHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,18 +25,18 @@ class ActionBridgeTest {
         playerList.add(player1);
         playerList.add(player2);
         playerList.add(player3);
-        PointHandler pointHandler = new PointHandler(playerList, 4);
+        Deaths deaths = new Deaths(4);
         for (int i = 0; i < 2; i++) {
             player1.damagePlayer(player2.getColor(), true);
             player3.damagePlayer(player2.getColor(), true);
         }
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
 
         } catch (EndGameException e) {
@@ -47,12 +48,12 @@ class ActionBridgeTest {
             player3.damagePlayer(player2.getColor(), true);
         }
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
 
         } catch (EndGameException e) {
@@ -69,12 +70,12 @@ class ActionBridgeTest {
         }
         player3.damagePlayer(player1.getColor(), true);
         try {
-            pointHandler.checkIfDead();
-            pointHandler.countKills();
+            PointHandler.checkIfDead(playerList);
+            PointHandler.countKills(deaths, playerList);
 
-            if (pointHandler.checkEndGame()) {
+            if (PointHandler.checkEndGame(deaths, playerList)) {
 
-                throw new EndGameException(pointHandler.endGame());
+                throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
 
         } catch (EndGameException e) {

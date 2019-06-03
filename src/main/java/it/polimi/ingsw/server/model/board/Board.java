@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model.board;
 
 import it.polimi.ingsw.server.model.cards.WeaponCard;
-import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.players.Color;
@@ -16,6 +15,7 @@ import it.polimi.ingsw.server.model.decks.WeaponDeck;
 import it.polimi.ingsw.server.model.board.rooms.Room;
 import it.polimi.ingsw.server.model.players.Player;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,7 +25,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-public class Board {
+public class Board implements Serializable {
 
     private int boardId;
 
@@ -135,7 +135,7 @@ public class Board {
             return this.weaponDeck.getDeck().stream()
                     .filter(x -> x.getId() == Integer.valueOf(cardId))
                     .findAny()
-                    .get()
+                    .orElseThrow(NoSuchElementException::new)
                     .toJsonObject();
         }
 
@@ -151,7 +151,7 @@ public class Board {
                     .map(y -> (WeaponCard) y)
                     .filter(z -> z.getId() == Integer.valueOf(cardId))
                     .findAny()
-                    .get()
+                    .orElseThrow(NoSuchElementException::new)
                     .toJsonObject();
         }
 
@@ -161,7 +161,7 @@ public class Board {
                 .flatMap(z -> z.getWeaponCardList().stream())
                 .filter(t -> t.getId() == Integer.valueOf(cardId))
                 .findAny()
-                .get()
+                .orElseThrow(NoSuchElementException::new)
                 .toJsonObject();
     }
 

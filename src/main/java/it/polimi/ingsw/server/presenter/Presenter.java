@@ -102,9 +102,9 @@ public abstract class Presenter implements VirtualPresenter {
                     .getPlayer(this.gameHandler,
                             x -> x.getPlayerId().equals(object.getString("playerId")));
 
-            ClientHandler.putPlayerPresenter(this.gameHandler, this.player, this);
-
             this.playerId = object.getString("playerId");
+
+            ClientHandler.putPlayerPresenter(this.gameHandler, this.player, this);
 
             this.callRemoteMethod("completeLogin",
                     Json.createObjectBuilder(object)
@@ -115,6 +115,8 @@ public abstract class Presenter implements VirtualPresenter {
 
             ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
                     this.playerId + ": riconnesso al server.");
+
+            this.reconnectPlayer();
 
             this.updateLoginGame();
 
@@ -719,6 +721,35 @@ public abstract class Presenter implements VirtualPresenter {
             this.callRemoteMethod("completeCardInfo", this.gameHandler.getModel().getBoard()
                     .getInfoCard(object.getString("cardId")).toString());
 
+        }
+    }
+
+    private void reconnectPlayer() throws RemoteException {
+
+        if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("updateState", state.get("gameNotStartedState").toString());
+
+        } else if ((this.player.isActivePlayer() && this.player.getCurrentPosition() == null)
+                || this.player.isRespawn()) {
+
+            this.callRemoteMethod("updateState", state.get("spawnState").toString());
+
+        } else if (!this.player.isActivePlayer()) {
+
+            this.callRemoteMethod("updateState", state.get("notActivePlayerState").toString());
+
+        } else if (this.player.isShooting()) {
+
+            this.callRemoteMethod("updateState", state.get("shootState").toString());
+
+        } else if (this.player.getCurrentAction() != null) {
+
+            this.callRemoteMethod("updateState", state.get("actionState").toString());
+
+        } else {
+
+            this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
         }
     }
 

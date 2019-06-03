@@ -2,10 +2,11 @@ package it.polimi.ingsw.server.model.cards.effects;
 
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.Target;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EffectArgument {
+public class EffectArgument implements Serializable {
 
     private Square destination;
     private List<Target> targetList;

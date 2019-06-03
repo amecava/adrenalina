@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.players.bridges;
 
 import it.polimi.ingsw.server.model.players.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +9,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
-class DamageBridge {
+class DamageBridge implements Serializable {
 
     private boolean killStreakCount = false;
 

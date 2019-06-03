@@ -4,6 +4,7 @@ import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.cards.effects.TargetType;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
-public class Room implements Target {
+public class Room implements Target, Serializable {
 
     private Color color;
 

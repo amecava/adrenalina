@@ -4,13 +4,14 @@ import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.Effect;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 
-public class WeaponDeck {
+public class WeaponDeck implements Serializable {
 
     private List<WeaponCard> deck;
 

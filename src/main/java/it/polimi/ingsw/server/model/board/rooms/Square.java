@@ -7,6 +7,7 @@ import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.TargetType;
 import it.polimi.ingsw.server.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-public class Square implements Target {
+public class Square implements Target, Serializable {
 
     private int squareId;
     private Room room;

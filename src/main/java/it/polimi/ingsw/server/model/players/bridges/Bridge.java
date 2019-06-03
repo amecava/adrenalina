@@ -3,11 +3,12 @@ package it.polimi.ingsw.server.model.players.bridges;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
+import java.io.Serializable;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class Bridge {
+public class Bridge implements Serializable {
 
     private Color color;
 
@@ -106,6 +107,11 @@ public class Bridge {
     public ActionStructure getCurrentAction() {
 
         return this.actionBridge.getCurrentAction();
+    }
+
+    public boolean isShooting() {
+
+        return this.actionBridge.isShooting();
     }
 
     public boolean isFirstPlayer() {

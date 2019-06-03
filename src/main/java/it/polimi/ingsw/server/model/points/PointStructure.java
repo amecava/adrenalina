@@ -2,9 +2,10 @@ package it.polimi.ingsw.server.model.points;
 
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 import java.util.List;
 
-public class PointStructure {
+public class PointStructure implements Serializable {
 
     private Player player;
 
@@ -17,39 +18,34 @@ public class PointStructure {
         this.player = player;
     }
 
-    public Player getPlayer() {
+    Player getPlayer() {
 
         return this.player;
     }
 
-    public int getNumberDamage() {
+    int getNumberDamage() {
 
         return this.numberDamage;
     }
 
-    public PointStructure setNumberDamage(int numberDamage) {
+    PointStructure setNumberDamage(int numberDamage) {
 
         this.numberDamage = numberDamage;
 
         return this;
     }
 
-    public int getFirstDamage() {
+    int getFirstDamage() {
 
         return this.firstDamage;
     }
 
-    public void setFirstDamage(int firstDamage) {
-
-        this.firstDamage = firstDamage;
-    }
-
-    public int getLastDamage() {
+    int getLastDamage() {
 
         return this.lastDamage;
     }
 
-    public void setLastDamage(int lastDamage) {
+    void setLastDamage(int lastDamage) {
 
         this.lastDamage = lastDamage;
     }

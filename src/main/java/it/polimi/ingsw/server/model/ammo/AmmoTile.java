@@ -4,13 +4,14 @@ import it.polimi.ingsw.server.model.cards.Card;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.decks.PowerUpDeck;
 import it.polimi.ingsw.server.model.players.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
-public class AmmoTile implements Card {
+public class AmmoTile implements Card, Serializable {
 
     private PowerUpDeck powerUpDeck;
     private List<Color> ammoCubesList;
@@ -81,7 +82,6 @@ public class AmmoTile implements Card {
 
             return new AmmoTile(this);
         }
-
     }
 }
 

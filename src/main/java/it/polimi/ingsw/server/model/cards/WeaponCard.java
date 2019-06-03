@@ -14,6 +14,7 @@ import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectUsedException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.server.model.players.Player;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -22,7 +23,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-public class WeaponCard implements Card {
+public class WeaponCard implements Card, Serializable {
 
     private Player owner;
     private EffectHandler effectHandler;

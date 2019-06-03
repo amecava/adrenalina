@@ -3,13 +3,14 @@ package it.polimi.ingsw.server.model.decks;
 import it.polimi.ingsw.server.model.ammo.AmmoTile;
 import it.polimi.ingsw.server.model.cards.Card;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 
-public class AmmoTilesDeck {
+public class AmmoTilesDeck implements Serializable {
 
     private List<AmmoTile> ammoTilesList;
 

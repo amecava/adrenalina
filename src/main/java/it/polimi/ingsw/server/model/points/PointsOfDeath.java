@@ -1,9 +1,10 @@
 package it.polimi.ingsw.server.model.points;
 
+import java.io.Serializable;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class PointsOfDeath {
+public class PointsOfDeath implements Serializable {
 
     private int value;
     private boolean used = false;
