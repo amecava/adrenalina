@@ -28,8 +28,8 @@ class GranataVenomTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
 
         EffectArgument effectArgument;
 
@@ -85,8 +85,8 @@ class GranataVenomTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
 
         EffectArgument effectArgument;
 
@@ -181,9 +181,9 @@ class GranataVenomTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.RED);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.ROSSO);
 
         EffectArgument effectArgument;
 

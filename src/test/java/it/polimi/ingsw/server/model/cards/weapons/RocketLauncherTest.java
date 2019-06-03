@@ -27,12 +27,12 @@ public class RocketLauncherTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target2", Color.RED);
-        Player target4 = new Player("target2", Color.BLUE);
-        Player target5 = new Player("target2", Color.YELLOW);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
+        Player target3 = new Player("target2", Color.ROSSO);
+        Player target4 = new Player("target2", Color.BLU);
+        Player target5 = new Player("target2", Color.GIALLO);
 
         EffectArgument effectArgument;
 
@@ -118,12 +118,12 @@ public class RocketLauncherTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target2", Color.RED);
-        Player target4 = new Player("target2", Color.BLUE);
-        Player target5 = new Player("target2", Color.YELLOW);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
+        Player target3 = new Player("target2", Color.ROSSO);
+        Player target4 = new Player("target2", Color.BLU);
+        Player target5 = new Player("target2", Color.GIALLO);
 
         EffectArgument effectArgument;
 

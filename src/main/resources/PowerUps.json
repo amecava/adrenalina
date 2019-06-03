@@ -1,7 +1,7 @@
 [
     {
         "name": "MIRINO",
-        "color": "RED",
+        "color": "ROSSO",
 
         "effect": {
             "args": 1, 
@@ -23,7 +23,7 @@
     }, 
     {
         "name": "MIRINO",
-        "color": "BLUE",
+        "color": "BLU",
 
         "effect": {
             "args": 1, 
@@ -45,7 +45,7 @@
     },
     {
         "name": "MIRINO",
-        "color": "YELLOW",
+        "color": "GIALLO",
 
         "effect": {
             "args": 1, 
@@ -67,7 +67,7 @@
     },
     {
         "name": "RAGGIOCINETICO",
-        "color": "RED",
+        "color": "ROSSO",
         
         "effect": {
             "args": 2,
@@ -90,7 +90,7 @@
     }, 
     {
         "name": "RAGGIOCINETICO",
-        "color": "BLUE",
+        "color": "BLU",
         
         "effect": {
             "args": 2,
@@ -113,7 +113,7 @@
     },
     {
         "name": "RAGGIOCINETICO",
-        "color": "YELLOW",
+        "color": "GIALLO",
         
         "effect": {
             "args": 2,
@@ -136,7 +136,7 @@
     },
     {
         "name": "GRANATAVENOM",
-        "color": "RED",
+        "color": "ROSSO",
 
         "effect": {
             "args": 0,   
@@ -155,7 +155,7 @@
     }, 
     {
         "name": "GRANATAVENOM",
-        "color": "BLUE",
+        "color": "BLU",
 
         "effect": {
             "args": 0,   
@@ -174,7 +174,7 @@
     },
     {
         "name": "GRANATAVENOM",
-        "color": "YELLOW",
+        "color": "GIALLO",
 
         "effect": {
             "args": 0,   
@@ -193,7 +193,7 @@
     },
     {
         "name": "TELETRASPORTO",
-        "color": "RED",
+        "color": "ROSSO",
 
         "effect": {
             "args": 0.5,
@@ -215,271 +215,7 @@
     }, 
     {
         "name": "TELETRASPORTO",
-        "color": "BLUE",
-
-        "effect": {
-            "args": 0.5,
-
-            "sameAsPlayer": false,
-
-            "next": {
-
-                "args": 0.5,
-                "targetType": "PLAYER",
-
-                "sameAsPlayer": true,
-
-                "maxTargets": 1,
-
-                "atomicEffectList": ["MOVE"]
-            }
-            
-        }
-
-    },
-    {
-        "name": "TELETRASPORTO",
-        "color": "YELLOW",
-
-        "effect": {
-            "args": 0.5,
-
-            "sameAsPlayer": false,
-
-            "next": {
-
-                "args": 0.5,
-                "targetType": "PLAYER",
-
-                "sameAsPlayer": true,
-
-                "maxTargets": 1,
-
-                "atomicEffectList": ["MOVE"]
-            }
-            
-        }
-
-    },
-    {
-        "name": "MIRINO",
-        "color": "RED",
-
-        "effect": {
-            "args": 1, 
-            "cost": ["ALL"],
-            
-            "sameAsPlayer": false,
-            
-            "next":{
-                "args": 1, 
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "sameAsFather": [true],
-
-                "atomicEffectList": ["DAMAGE"]
-            }
-        }
-    }, 
-    {
-        "name": "MIRINO",
-        "color": "BLUE",
-
-        "effect": {
-            "args": 1, 
-            "cost": ["ALL"],
-            
-            "sameAsPlayer": false,
-            
-            "next":{
-                "args": 1, 
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "sameAsFather": [true],
-
-                "atomicEffectList": ["DAMAGE"]
-            }
-        }
-    },
-    {
-        "name": "MIRINO",
-        "color": "YELLOW",
-
-        "effect": {
-            "args": 1, 
-            "cost": ["ALL"],
-            
-            "sameAsPlayer": false,
-            
-            "next":{
-                "args": 1, 
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "sameAsFather": [true],
-
-                "atomicEffectList": ["DAMAGE"]
-            }
-        }
-    },
-    {
-        "name": "RAGGIOCINETICO",
-        "color": "RED",
-        
-        "effect": {
-            "args": 2,
-            
-            "sameAsPlayer": false,
-
-            "next": {
-                "args": 2,
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "minDist": 1,
-                "maxDist": 2,
-                "cardinal": true,
-
-                "atomicEffectList": ["MOVE"]
-            }
-        }
-    }, 
-    {
-        "name": "RAGGIOCINETICO",
-        "color": "BLUE",
-        
-        "effect": {
-            "args": 2,
-            
-            "sameAsPlayer": false,
-
-            "next": {
-                "args": 2,
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "minDist": 1,
-                "maxDist": 2,
-                "cardinal": true,
-
-                "atomicEffectList": ["MOVE"]
-            }
-        }
-    },
-    {
-        "name": "RAGGIOCINETICO",
-        "color": "YELLOW",
-        
-        "effect": {
-            "args": 2,
-            
-            "sameAsPlayer": false,
-
-            "next": {
-                "args": 2,
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "minDist": 1,
-                "maxDist": 2,
-                "cardinal": true,
-
-                "atomicEffectList": ["MOVE"]
-            }
-        }
-    },
-    {
-        "name": "GRANATAVENOM",
-        "color": "RED",
-
-        "effect": {
-            "args": 0,   
-
-            "sameAsPlayer": true,
-
-            "next": {
-        
-                "args": 1,           
-                "targetType": "PLAYER",
-    
-                "atomicEffectList": ["MARK"]
-            }
-        }
-
-    }, 
-    {
-        "name": "GRANATAVENOM",
-        "color": "BLUE",
-
-        "effect": {
-            "args": 0,   
-
-            "sameAsPlayer": true,
-
-            "next": {
-        
-                "args": 1,           
-                "targetType": "PLAYER",
-    
-                "atomicEffectList": ["MARK"]
-            }
-        }
-
-    },
-    {
-        "name": "GRANATAVENOM",
-        "color": "YELLOW",
-
-        "effect": {
-            "args": 0,   
-
-            "sameAsPlayer": true,
-
-            "next": {
-        
-                "args": 1,           
-                "targetType": "PLAYER",
-    
-                "atomicEffectList": ["MARK"]
-            }
-        }
-
-    },
-    {
-        "name": "TELETRASPORTO",
-        "color": "RED",
-
-        "effect": {
-            "args": 0.5,
-
-            "sameAsPlayer": false,
-
-            "next": {
-
-                "args": 0.5,
-                "targetType": "PLAYER",
-
-                "sameAsPlayer": true,
-
-                "maxTargets": 1,
-
-                "atomicEffectList": ["MOVE"]
-            }
-            
-        }
-
-    }, 
-    {
-        "name": "TELETRASPORTO",
-        "color": "BLUE",
+        "color": "BLU",
 
         "effect": {
             "args": 0.5,
@@ -503,7 +239,271 @@
     },
     {
         "name": "TELETRASPORTO",
-        "color": "YELLOW",
+        "color": "GIALLO",
+
+        "effect": {
+            "args": 0.5,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 0.5,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    },
+    {
+        "name": "MIRINO",
+        "color": "ROSSO",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ALL"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    }, 
+    {
+        "name": "MIRINO",
+        "color": "BLU",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ALL"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
+    {
+        "name": "MIRINO",
+        "color": "GIALLO",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ALL"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
+    {
+        "name": "RAGGIOCINETICO",
+        "color": "ROSSO",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    }, 
+    {
+        "name": "RAGGIOCINETICO",
+        "color": "BLU",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
+        "name": "RAGGIOCINETICO",
+        "color": "GIALLO",
+        
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
+        "name": "GRANATAVENOM",
+        "color": "ROSSO",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    }, 
+    {
+        "name": "GRANATAVENOM",
+        "color": "BLU",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
+        "name": "GRANATAVENOM",
+        "color": "GIALLO",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
+        "name": "TELETRASPORTO",
+        "color": "ROSSO",
+
+        "effect": {
+            "args": 0.5,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 0.5,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    }, 
+    {
+        "name": "TELETRASPORTO",
+        "color": "BLU",
+
+        "effect": {
+            "args": 0.5,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 0.5,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    },
+    {
+        "name": "TELETRASPORTO",
+        "color": "GIALLO",
 
         "effect": {
             "args": 0.5,

@@ -5,12 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
-import it.polimi.ingsw.server.model.cards.effects.atomic.AtomicType;
 import it.polimi.ingsw.server.model.cards.effects.Effect;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
-import it.polimi.ingsw.server.model.cards.effects.atomic.AtomicEffect;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 class WeaponDeckTest {
@@ -29,7 +26,7 @@ class WeaponDeckTest {
 
         assertEquals(1, tester.getId());
         assertEquals(
-                Arrays.asList(Color.BLUE, Color.BLUE),
+                Arrays.asList(Color.BLU, Color.BLU),
                 tester.getReloadCost()
         );
 

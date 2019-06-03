@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.server.model.ammo.AmmoTile;
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.Card;
+import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
@@ -12,19 +13,21 @@ import it.polimi.ingsw.server.model.exceptions.cards.CardException;
 import it.polimi.ingsw.server.model.exceptions.cards.EmptySquareException;
 import it.polimi.ingsw.server.model.exceptions.cards.FullHandException;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 class PlayerTest {
 
     EffectHandler effectHandler = new EffectHandler();
+    private PowerUpCard PowerUpCard;
 
     @Test
     void movePlayer() {
 
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         player.movePlayer(board.getRoom(0).getSquare(0));
 
@@ -49,7 +52,7 @@ class PlayerTest {
 
         Card tester;
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         player.movePlayer(board.getRoom(1).getSquare(2));
 
@@ -59,12 +62,12 @@ class PlayerTest {
 
             //tests collect method first
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.YELLOW).count());
+                    .filter(y -> y.getColor() == Color.GIALLO).count());
             assertEquals(1, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.BLUE).count());
+                    .filter(y -> y.getColor() == Color.BLU).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.RED).count());
-            assertEquals(Arrays.asList(Color.YELLOW, Color.RED, Color.YELLOW),
+                    .filter(y -> y.getColor() == Color.ROSSO).count());
+            assertEquals(Arrays.asList(Color.GIALLO, Color.ROSSO, Color.GIALLO),
                     ((AmmoTile) tester).getAmmoCubesList());
 
         } catch (SquareException | EmptySquareException e) {
@@ -81,12 +84,12 @@ class PlayerTest {
 
             //tests that the player keeps his activated ammo cubes after moving and earns new ones
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.YELLOW).count());
+                    .filter(y -> y.getColor() == Color.GIALLO).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.BLUE).count());
+                    .filter(y -> y.getColor() == Color.BLU).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.RED).count());
-            assertEquals(Arrays.asList(Color.YELLOW, Color.BLUE),
+                    .filter(y -> y.getColor() == Color.ROSSO).count());
+            assertEquals(Arrays.asList(Color.GIALLO, Color.BLU),
                     ((AmmoTile) tester).getAmmoCubesList());
 
         } catch (SquareException | EmptySquareException e) {
@@ -103,12 +106,12 @@ class PlayerTest {
 
             //tests that if every cube is activated everything works fine
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.YELLOW).count());
+                    .filter(y -> y.getColor() == Color.GIALLO).count());
             assertEquals(2, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.BLUE).count());
+                    .filter(y -> y.getColor() == Color.BLU).count());
             assertEquals(3, player.getAmmoCubesList().stream().filter(x -> !x.isUsed())
-                    .filter(y -> y.getColor() == Color.RED).count());
-            assertEquals(Arrays.asList(Color.YELLOW, Color.RED),
+                    .filter(y -> y.getColor() == Color.ROSSO).count());
+            assertEquals(Arrays.asList(Color.GIALLO, Color.ROSSO),
                     ((AmmoTile) tester).getAmmoCubesList());
 
         } catch (SquareException | EmptySquareException e) {
@@ -159,7 +162,7 @@ class PlayerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         board.fillBoard();
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         player.movePlayer(board.getRoom(0).getSquare(2));
 
@@ -167,7 +170,7 @@ class PlayerTest {
         try {
 
             player.movePlayer(board.getRoom(0).getSquare(2));
-            player.collect(15);
+            player.collect(15, new ArrayList<PowerUpCard>());
 
             fail();
 
@@ -187,7 +190,7 @@ class PlayerTest {
         try {
 
             player.movePlayer(board.getRoom(0).getSquare(1));
-            player.collect(1);
+            player.collect(1, new ArrayList<PowerUpCard>());
 
             fail();
 
@@ -212,7 +215,7 @@ class PlayerTest {
             player.addWeaponCard(board.getWeaponDeck().getCard());
             player.addWeaponCard(board.getWeaponDeck().getCard());
 
-            player.collect(2);
+            player.collect(2, new ArrayList<PowerUpCard>());
 
             fail();
 
@@ -235,7 +238,7 @@ class PlayerTest {
 
             player.movePlayer(board.getRoom(0).getSquare(2));
 
-            player.collect(1);
+            player.collect(1, new ArrayList<PowerUpCard>());
 
             assertEquals("LOCK RIFLE", player.getWeaponCardList().get(0).getName());
         } catch (SquareException | FullHandException | EmptySquareException e) {
@@ -251,17 +254,17 @@ class PlayerTest {
 
             player.movePlayer(board.getRoom(0).getSquare(2));
 
-            player.collect(2);
+            player.collect(2, new ArrayList<PowerUpCard>());
 
             assertEquals("MACHINE GUN", player.getWeaponCardList().get(1).getName());
 
-            player.collect(3);
+            player.collect(3, new ArrayList<PowerUpCard>());
 
             assertEquals("T.H.O.R.", player.getWeaponCardList().get(2).getName());
 
             player.getWeaponCardList().clear();
 
-            player.collect(4);
+            player.collect(4, new ArrayList<PowerUpCard>());
 
             fail();
 
@@ -285,7 +288,7 @@ class PlayerTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         board.fillBoard();
 
-        Player player = new Player("player", Color.GRAY);
+        Player player = new Player("player", Color.GRIGIO);
 
         try {
 
@@ -295,7 +298,7 @@ class PlayerTest {
             player.addWeaponCard(board.getWeaponDeck().getCard());
             player.addWeaponCard(board.getWeaponDeck().getCard());
 
-            player.collect(15, 2);
+            player.collect(15, 2, new ArrayList<PowerUpCard>());
 
             fail();
 
@@ -317,7 +320,7 @@ class PlayerTest {
             player.addWeaponCard(board.getWeaponDeck().getCard());
             player.addWeaponCard(board.getWeaponDeck().getCard());
 
-            player.collect(15, 3);
+            player.collect(15, 3, new ArrayList<PowerUpCard>());
 
             assertTrue(player.getWeaponCardList().stream().map(x -> (WeaponCard) x)
                     .anyMatch(y -> y.getId() == 3));

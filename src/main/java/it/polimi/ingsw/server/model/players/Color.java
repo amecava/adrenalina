@@ -8,14 +8,14 @@ import java.util.Map;
 
 public enum Color {
 
-    YELLOW("Giallo", "\u001b[33m", ":D-strutt-OR3"),
-    LIGHTBLUE("Azzurro", "\u001b[36m", "Banshee"),
-    GRAY("Grigio", "\u001b[37m", "Dozer"),
-    VIOLET("Viola", "\u001b[35m", "Violetta"),
-    GREEN("Verde", "\u001b[32m", "Sprog"),
-    RED("Rosso", "\u001b[31m"),
-    BLUE("Blu", "\u001b[34m"),
-    WHITE("Bianco", "\u001b[37m"),
+    GIALLO("Giallo", "\u001b[33m", ":D-strutt-OR3"),
+    AZZURRO("Azzurro", "\u001b[36m", "Banshee"),
+    GRIGIO("Grigio", "\u001b[37m", "Dozer"),
+    VIOLA("Viola", "\u001b[35m", "Violetta"),
+    VERDE("Verde", "\u001b[32m", "Sprog"),
+    ROSSO("Rosso", "\u001b[31m"),
+    BLU("Blu", "\u001b[34m"),
+    BIANCO("Bianco", "\u001b[37m"),
     ALL("All", "\u001b[0m");
 
     private final String name;
@@ -67,6 +67,7 @@ public enum Color {
                 .findFirst()
                 .orElse(null);
     }
+
 
     public static Color ofCharacter(String characterName) throws ColorException {
 

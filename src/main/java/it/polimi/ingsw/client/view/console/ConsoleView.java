@@ -8,6 +8,7 @@ import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -363,7 +364,7 @@ public class ConsoleView implements View, VirtualView {
         if (jSelectedAction.getBoolean("collect")) {
 
             line.append(
-                    "-\"raccogli\" + (eventualmente) idCarta da raccogliere + (eventualmente) idCarta da scartare\n");
+                    "- \"raccogli\" + (eventualmente) idCarta da raccogliere + (eventualmente) idCarta da scartare\n");
 
         }
         if (jSelectedAction.getBoolean("shoot")) {
@@ -444,8 +445,19 @@ public class ConsoleView implements View, VirtualView {
         info.append("Note: ").append(jCardObject.getString("notes")).append(" \n");
 
         Terminal.info(info.toString());
+    }
 
+    @Override
+    public void completePowerUpInfo(String value) throws RemoteException {
 
+        JsonObject jPowerUpObject = JsonUtility.jsonDeserialize(value);
+
+        Terminal.info(new StringBuilder()
+                .append("Nome: ")
+                .append(jPowerUpObject.getString("name"))
+                .append("\n")
+                .append("Info specifiche da scrivere ... ")
+                .toString());
     }
 
     @Override
@@ -456,9 +468,11 @@ public class ConsoleView implements View, VirtualView {
         if (jActionBridgeObject.getInt("remainingActions") == 1) {
 
             Terminal.info("Ti rimane una sola azione.");
+
         } else {
 
-            Terminal.info("Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + " azioni.");
+            Terminal.info(
+                    "Ti rimangono " + jActionBridgeObject.getInt("remainingActions") + " azioni.");
         }
 
     }
@@ -482,7 +496,8 @@ public class ConsoleView implements View, VirtualView {
         Terminal.output("");
         Terminal.output("    _   ___  ___ ___ _  _   _   _    ___ _  _   _   ");
         Terminal.output("   /_\\ |   \\| _ \\ __| \\| | /_\\ | |  |_ _| \\| | /_\\  ");
-        Terminal.output(" \u001b[31m / _ \\| |) |   /\u001b[36m _\u001b[31m||\u001b[36m .` \u001b[31m|/ _ \u001b[36m\\| |__ | || .` |/ _ \\ ");
+        Terminal.output(
+                " \u001b[31m / _ \\| |) |   /\u001b[36m _\u001b[31m||\u001b[36m .` \u001b[31m|/ _ \u001b[36m\\| |__ | || .` |/ _ \\ ");
         Terminal.output(" \u001b[0m/_/ \\_\\___/|_|_\\___|_|\\_/_/ \\_\\____|___|_|\\_/_/ \\_\\\n");
     }
 }

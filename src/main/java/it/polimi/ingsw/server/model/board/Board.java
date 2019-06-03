@@ -14,6 +14,7 @@ import it.polimi.ingsw.server.model.decks.PowerUpDeck;
 import it.polimi.ingsw.server.model.decks.WeaponDeck;
 import it.polimi.ingsw.server.model.board.rooms.Room;
 import it.polimi.ingsw.server.model.players.Player;
+import it.polimi.ingsw.virtual.JsonUtility;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -165,6 +166,18 @@ public class Board implements Serializable {
                 .toJsonObject();
     }
 
+    public JsonObject getInfoPowerUp(String powerUpName) {
+
+        if (this.getPowerUpDeck().getDeck().stream().anyMatch(x -> JsonUtility
+                .levenshteinDistance(powerUpName, x.getName()) <= 3)) {
+
+            return this.getPowerUpDeck().getDeck().stream().filter(x -> JsonUtility
+                    .levenshteinDistance(powerUpName, x.getName()) <= 3).findAny().get().toJsonObject();
+        }
+
+        return null;
+    }
+
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder builder;
@@ -224,7 +237,6 @@ public class Board implements Serializable {
         return Json.createObjectBuilder()
                 .add("boardId", this.boardId)
                 .add("arrays", builder.build())
-                .add("playerList", players.build())
                 .build();
     }
 

@@ -153,7 +153,7 @@ class ViewInspectorTest {
 
         test.clear();
         test.add(four);
-        Player testPlayer = new Player("test", Color.GRAY);
+        Player testPlayer = new Player("test", Color.GRIGIO);
         testPlayer.movePlayer(six);
         test.add(testPlayer);
 

@@ -27,6 +27,7 @@ public interface VirtualView extends Remote {
     void completeEndAction(String value) throws RemoteException;
 
     void completeCardInfo(String value) throws RemoteException;
+    void completePowerUpInfo(String value) throws RemoteException;
 
     void updateBoard(String value) throws RemoteException;
 

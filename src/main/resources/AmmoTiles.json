@@ -1,146 +1,146 @@
 [
     {
-        "cubes": ["YELLOW", "RED"],      
+        "cubes": ["GIALLO", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "BLUE"],            
+        "cubes": ["GIALLO", "BLU"],
         "powerUp": true
     },
     {
-        "cubes": ["BLUE", "BLUE"],          
+        "cubes": ["BLU", "BLU"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "RED", "YELLOW"],           
+        "cubes": ["GIALLO", "ROSSO", "GIALLO"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "RED", "RED"],     
+        "cubes": ["GIALLO", "ROSSO", "ROSSO"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "BLUE"],            
+        "cubes": ["GIALLO", "BLU"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "RED"],      
+        "cubes": ["GIALLO", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "RED", "RED"],     
+        "cubes": ["GIALLO", "ROSSO", "ROSSO"],
         "powerUp": false
     },
     {
-        "cubes": ["BLUE", "RED"],           
+        "cubes": ["BLU", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "BLUE", "BLUE"],            
+        "cubes": ["GIALLO", "BLU", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "YELLOW"],          
+        "cubes": ["GIALLO", "GIALLO"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "RED", "YELLOW"],           
+        "cubes": ["GIALLO", "ROSSO", "GIALLO"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "BLUE", "BLUE"],            
+        "cubes": ["GIALLO", "BLU", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "BLUE"],            
+        "cubes": ["GIALLO", "BLU"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "YELLOW", "BLUE"],          
+        "cubes": ["GIALLO", "GIALLO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["BLUE", "BLUE"],          
+        "cubes": ["BLU", "BLU"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "RED"],      
+        "cubes": ["GIALLO", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "BLUE", "BLUE"],            
+        "cubes": ["GIALLO", "BLU", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "YELLOW", "BLUE"],          
+        "cubes": ["GIALLO", "GIALLO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["RED", "RED"],            
+        "cubes": ["ROSSO", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["RED", "RED", "BLUE"],            
+        "cubes": ["ROSSO", "ROSSO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["BLUE", "RED", "BLUE"],           
+        "cubes": ["BLU", "ROSSO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["BLUE", "RED"],           
+        "cubes": ["BLU", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "RED", "RED"],     
+        "cubes": ["GIALLO", "ROSSO", "ROSSO"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "RED", "YELLOW"],           
+        "cubes": ["GIALLO", "ROSSO", "GIALLO"],
         "powerUp": false
     },
     {
-        "cubes": ["BLUE", "RED", "BLUE"],           
+        "cubes": ["BLU", "ROSSO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "YELLOW"],          
+        "cubes": ["GIALLO", "GIALLO"],
         "powerUp": true
     },
     {
-        "cubes": ["RED", "RED", "BLUE"],             
+        "cubes": ["ROSSO", "ROSSO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "RED"],      
+        "cubes": ["GIALLO", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["RED", "RED"],            
+        "cubes": ["ROSSO", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["BLUE", "RED", "BLUE"],           
+        "cubes": ["BLU", "ROSSO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["BLUE", "RED"],           
+        "cubes": ["BLU", "ROSSO"],
         "powerUp": true
     },
     {
-        "cubes": ["RED", "RED", "BLUE"],            
+        "cubes": ["ROSSO", "ROSSO", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["YELLOW", "BLUE"],            
+        "cubes": ["GIALLO", "BLU"],
         "powerUp": true
     },
     {
-        "cubes": ["YELLOW", "YELLOW", "BLUE"],          
+        "cubes": ["GIALLO", "GIALLO", "BLU"],
         "powerUp": false
     }, 
     {
-        "cubes": ["BLUE", "RED"],           
+        "cubes": ["BLU", "ROSSO"],
         "powerUp": true
     }
 ]

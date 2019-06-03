@@ -30,10 +30,10 @@ class RailgunTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target3", Color.BLUE);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
+        Player target3 = new Player("target3", Color.BLU);
 
         EffectArgument effectArgument;
 
@@ -123,11 +123,11 @@ class RailgunTest {
 
         try {
             tester.reloadWeapon(Arrays.asList(board.getPowerUpDeck().getDeck().stream()
-                    .filter(x -> x.getColor().equals(Color.BLUE)).findAny().get()));
+                    .filter(x -> x.getColor().equals(Color.BLU)).findAny().get()));
             assertEquals(source.getAmmoCubesList().stream().filter(AmmoCube::isUsed).count(),
                     tester.getReloadCost().size() - 1);
             assertEquals(source.getAmmoCubesList().stream()
-                    .filter(x -> x.getColor().equals(Color.BLUE) && x.isUsed()).count(), 0);
+                    .filter(x -> x.getColor().equals(Color.BLU) && x.isUsed()).count(), 0);
         } catch (CostException e) {
             fail();
         }
@@ -139,10 +139,10 @@ class RailgunTest {
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
 
-        Player source = new Player("source", Color.GRAY);
-        Player target1 = new Player("target1", Color.GREEN);
-        Player target2 = new Player("target2", Color.LIGHTBLUE);
-        Player target3 = new Player("target3", Color.BLUE);
+        Player source = new Player("source", Color.GRIGIO);
+        Player target1 = new Player("target1", Color.VERDE);
+        Player target2 = new Player("target2", Color.AZZURRO);
+        Player target3 = new Player("target3", Color.BLU);
 
         EffectArgument effectArgument;
 

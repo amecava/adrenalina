@@ -1,12 +1,11 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.board.rooms.Square;
-import it.polimi.ingsw.server.model.cards.Card;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.Target;
+import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
-import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
@@ -17,32 +16,76 @@ import java.util.List;
 
 class EffectParser {
 
-    static Color color(String line) throws ColorException {
+    private static final String TIPO = "tipo";
+    private static final String TARGET = "target";
+    private static final String DESTINAZIONE = "destinazione";
+    private static final String POWER_UP = "powerup";
+    private static final String AMMOCOLOR = "paga";
+    private static final String CARD_ID = "id";
 
 
-        line = line.trim();
 
-        if (line.equals("")) {
+    static EffectArgument effectArgument(GameHandler gameHandler, String request)
+            throws SquareException, ColorException {
+
+        EffectArgument effectArgument = new EffectArgument();
+
+        target(gameHandler, request)
+                .forEach(effectArgument::appendTarget);
+
+        effectArgument.setDestination(
+                destination(gameHandler, request));
+
+        return effectArgument;
+    }
+
+    static Color paymentCube(String line) throws ColorException {
+
+        int startPar;
+        int endPar;
+
+        if (!line.contains(AMMOCOLOR)) {
+
+            return null;
+        }
+
+        line = line
+                .substring(line.indexOf(AMMOCOLOR), line.indexOf(")", line.indexOf(AMMOCOLOR)) + 1);
+        line = line.replaceAll("paga(\\s*)", "paga");
+
+        startPar = line.indexOf(AMMOCOLOR) + AMMOCOLOR.length();
+        endPar = line.indexOf(")");
+
+        line = line.substring(startPar + 1, endPar).trim();
+
+        if (line.equals("") || line.equals(" ")) {
 
             throw new ColorException("Seleziona un colore valido.");
         }
 
-
         return Color.ofName(line);
     }
 
-    static int cardId(String line) throws CardException {
+    static int cardId(String request) throws CardException, NumberFormatException {
 
-        line = line.replaceAll("\\s+", " ");
+        int startPar;
+        int endPar;
 
-        if (line.equals(" ")) {
+        String cardLine = request.substring(request.indexOf(CARD_ID),
+                request.indexOf(")", request.indexOf(CARD_ID)) + 1);
+        cardLine = cardLine.replaceAll("id(\\s*)", "id");
+
+        startPar = cardLine.indexOf(CARD_ID) + CARD_ID.length();
+        endPar = cardLine.indexOf(")");
+
+        cardLine = cardLine.substring(startPar + 1, endPar).trim();
+
+        if (request.equals(" ") || request.equals("")) {
 
             throw new CardException("Seleziona un id valido.");
         }
 
-        line = line.trim();
-
-        return Integer.parseInt(line);
+        return Integer.parseInt(cardLine);
     }
 
     static List<Target> target(GameHandler gameHandler, String request)
@@ -50,18 +93,31 @@ class EffectParser {
 
         List<Target> targetList = new ArrayList<>();
 
+        if (!request.contains(TARGET)) {
+
+            return targetList;
+        }
+
         try {
 
-            request = request.replaceAll("\\s+", " ");
+            int startPar;
+            int endPar;
 
-            if (request.equals(" ")) {
+            String targetLine = request.substring(request.indexOf(TARGET),
+                    request.indexOf(")", request.indexOf(TARGET)) + 1);
+            targetLine = targetLine.replaceAll("target(\\s*)", "target");
+
+            startPar = targetLine.indexOf(TARGET) + TARGET.length();
+            endPar = targetLine.indexOf(")");
+
+            targetLine = targetLine.substring(startPar + 1, endPar).trim();
+
+            if (targetLine.equals(" ") || targetLine.equals("")) {
 
                 return targetList;
             }
 
-            request = request.trim();
-
-            String[] args = request.split(" ");
+            String[] args = targetLine.split(" ");
 
             for (String x : args) {
 
@@ -103,20 +159,34 @@ class EffectParser {
     static Square destination(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
 
+        if (!request.contains(DESTINAZIONE)) {
+
+            return null;
+        }
+
         try {
 
-            request = request.replaceAll("\\s+", " ");
+            int startPar;
+            int endPar;
 
-            if (request.equals(" ")) {
+            String destinationLine = request
+                    .substring(request.indexOf(DESTINAZIONE),
+                            request.indexOf(")", request.indexOf(DESTINAZIONE)) + 1);
+            destinationLine = destinationLine.replaceAll("destinazione(\\s*)", "destinazione");
+
+            startPar = destinationLine.indexOf(DESTINAZIONE) + DESTINAZIONE.length();
+            endPar = destinationLine.indexOf(")");
+
+            destinationLine = destinationLine.substring(startPar + 1, endPar).trim();
+
+            if (destinationLine.equals(" ") || destinationLine.equals("")) {
 
                 return null;
             }
 
-            request = request.trim();
+            if (destinationLine.contains("-")) {
 
-            if (request.contains("-")) {
-
-                String[] square = request.split("-");
+                String[] square = destinationLine.split("-");
 
                 if (square.length == 2) {
 
@@ -137,18 +207,32 @@ class EffectParser {
 
         List<PowerUpCard> list = new ArrayList<>();
 
+        if (!request.contains(POWER_UP)) {
+
+            return list;
+        }
+
         try {
 
-            request = request.replaceAll("\\s+", " ");
+            int startPar;
+            int endPar;
 
-            if (request.equals(" ")) {
+            String powerUpsLine = request
+                    .substring(request.indexOf(POWER_UP),
+                            request.indexOf(")", request.indexOf(POWER_UP)) + 1);
+            powerUpsLine = powerUpsLine.replaceAll("powerup(\\s*)", "powerup");
+
+            startPar = powerUpsLine.indexOf(POWER_UP) + POWER_UP.length();
+            endPar = powerUpsLine.indexOf(")");
+
+            powerUpsLine = powerUpsLine.substring(startPar + 1, endPar).trim();
+
+            if (powerUpsLine.equals(" ") || powerUpsLine.equals("")) {
 
                 return list;
             }
 
-            request = request.trim();
-
-            String[] args = request.split(" ");
+            String[] args = powerUpsLine.split(" ");
 
             for (String x : args) {
 
@@ -161,12 +245,11 @@ class EffectParser {
                         throw new CardException("Istruzione non valida");
                     }
 
-
                     Color color = Color.ofName(square[1]);
 
                     list.add(player.findPowerUp(square[0], color));
 
-                } else  {
+                } else {
 
                     throw new CardException("Istruzione non valida");
                 }
@@ -179,20 +262,22 @@ class EffectParser {
         return list;
     }
 
-    static EffectType effectType(String line) throws EffectException{
+    //  tipo(cose) target(cose) destinazione(cose) powerup(cose)
 
-        line.replaceAll("\\s*", "");
-        line.replaceAll("|", "");
+    static EffectType effectType(String line) throws EffectException {
 
-        return EffectType.ofString(line);
+        int startPar;
+        int endPar;
+
+        line = line.substring(line.indexOf(TIPO), line.indexOf(")", line.indexOf(TIPO)) + 1);
+        line = line.replaceAll("tipo(\\s*)", "tipo");
+
+        startPar = line.indexOf(TIPO) + TIPO.length();
+        endPar = line.indexOf(")");
+
+        line = line.substring(startPar + 1, endPar).trim();
+
+        return EffectType.ofName(line);
+
     }
-
-    static String updateString(String line) {
-
-        line = line.substring(line.indexOf("|"));
-
-
-        return line.substring(line.indexOf("|") + 1);
-    }
-
 }

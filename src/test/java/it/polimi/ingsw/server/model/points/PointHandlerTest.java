@@ -17,9 +17,9 @@ class PointHandlerTest {
     @Test
     void deathUpdate() {
 
-        Player player1 = new Player("jacopo", Color.BLUE);
-        Player player2 = new Player("Amedeo", Color.GREEN);
-        Player player3 = new Player("federico", Color.YELLOW);
+        Player player1 = new Player("jacopo", Color.BLU);
+        Player player2 = new Player("Amedeo", Color.VERDE);
+        Player player3 = new Player("federico", Color.GIALLO);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);
@@ -57,10 +57,10 @@ class PointHandlerTest {
     @Test
     void multipleDeaths() {
 
-        Player player1 = new Player("jacopo", Color.VIOLET);
-        Player player2 = new Player("Amedeo", Color.GREEN);
-        Player player3 = new Player("federico", Color.YELLOW);
-        Player player4 = new Player("Giulia ", Color.LIGHTBLUE);
+        Player player1 = new Player("jacopo", Color.VIOLA);
+        Player player2 = new Player("Amedeo", Color.VERDE);
+        Player player3 = new Player("federico", Color.GIALLO);
+        Player player4 = new Player("Giulia ", Color.AZZURRO);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);
@@ -83,8 +83,8 @@ class PointHandlerTest {
         player1.damagePlayer(player3.getColor(), true);
         player1.damagePlayer(player3.getColor(), true);
 
-        player1.markPlayer(Color.LIGHTBLUE);
-        player1.markPlayer(Color.LIGHTBLUE);
+        player1.markPlayer(Color.AZZURRO);
+        player1.markPlayer(Color.AZZURRO);
 
         try {
             PointHandler.checkIfDead(playerList);
@@ -124,12 +124,12 @@ class PointHandlerTest {
     @Test
     void getWinner() {
 
-        Player player1 = new Player("jacopo", Color.VIOLET);
-        Player player2 = new Player("Amedeo", Color.GREEN);
-        Player player3 = new Player("federico", Color.YELLOW);
-        Player player4 = new Player("Giulia ", Color.LIGHTBLUE);
-        Player player5 = new Player("Martina ", Color.RED);
-        Player player6 = new Player("Veronica ", Color.BLUE);
+        Player player1 = new Player("jacopo", Color.VIOLA);
+        Player player2 = new Player("Amedeo", Color.VERDE);
+        Player player3 = new Player("federico", Color.GIALLO);
+        Player player4 = new Player("Giulia ", Color.AZZURRO);
+        Player player5 = new Player("Martina ", Color.ROSSO);
+        Player player6 = new Player("Veronica ", Color.BLU);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);
@@ -190,12 +190,12 @@ class PointHandlerTest {
 
     @Test
     void multipleKills() {
-        Player player1 = new Player("jacopo", Color.VIOLET);
-        Player player2 = new Player("Amedeo", Color.GREEN);
-        Player player3 = new Player("federico", Color.YELLOW);
-        Player player4 = new Player("Giulia ", Color.LIGHTBLUE);
-        Player player5 = new Player("Martina ", Color.RED);
-        Player player6 = new Player("Veronica ", Color.BLUE);
+        Player player1 = new Player("jacopo", Color.VIOLA);
+        Player player2 = new Player("Amedeo", Color.VERDE);
+        Player player3 = new Player("federico", Color.GIALLO);
+        Player player4 = new Player("Giulia ", Color.AZZURRO);
+        Player player5 = new Player("Martina ", Color.ROSSO);
+        Player player6 = new Player("Veronica ", Color.BLU);
         List<Player> playerList = new ArrayList<>();
         playerList.add(player1);
         playerList.add(player2);
