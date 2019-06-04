@@ -159,9 +159,10 @@ public class Model implements Serializable {
                 .forEach(builder::add);
 
         return Json.createObjectBuilder()
-                .add("numberOfDeaths", this.deaths.getNumberOfDeaths())
+                .add("numberOfDeaths", this.deaths.getNumberOfDeaths())// no color???
                 .add("frenzy", this.deaths.isFrenzy())
                 .add("playerList", builder.build())
-                .add("board", this.board != null ? this.board.toJsonObject() : JsonValue.NULL);
+                .add("board", this.board != null ? this.board.toJsonObject() : JsonValue.NULL)
+                .add("deaths", this.deaths.toJsonDeaths());
     }
 }

@@ -5,6 +5,8 @@ import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.model.players.bridges.Bridge;
 import java.io.Serializable;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 public class Deaths extends Bridge implements Serializable {
 
@@ -65,5 +67,14 @@ public class Deaths extends Bridge implements Serializable {
     boolean isGameEnded() {
 
         return this.getShots().size() >= this.numberOfDeaths;
+    }
+
+    public JsonObject toJsonDeaths() {
+
+        return Json.createObjectBuilder(this.toJsonObject())
+                .add("numberOfDeaths", this.numberOfDeaths)
+                .add("frenzyEnabled", this.frenzyEnabled)
+                .add("firstFrenzyPlayer", this.firstFrenzyPlayer != null ? this.firstFrenzyPlayer.getPlayerId() : "")
+                .build();
     }
 }
