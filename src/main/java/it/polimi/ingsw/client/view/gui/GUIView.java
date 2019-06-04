@@ -6,17 +6,18 @@ import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
 import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
@@ -27,7 +28,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -47,6 +47,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
@@ -74,6 +78,8 @@ public class GUIView extends Application implements View, VirtualView {
     private static Map<String, Image> powerUpsMap = new HashMap<>();
     private static Map<String, Image> bridgesMap = new HashMap<>();
     private static Map<String, Image> playersMap = new HashMap<>();
+    private static Map<String, Image> ammoTilesMap = new HashMap<>();
+
     private Scene currentScene;
     private Scene nextScene;
     public static Stage currentStage;
@@ -84,13 +90,14 @@ public class GUIView extends Application implements View, VirtualView {
     private static ImageView imageView1;
     private static ImageView imageView2;
     private static ImageView imageView3;
+    private static Image background;
     private static EventHandler<KeyEvent> noSpace;
     private static EventHandler<MouseEvent> bigger;
     private static EventHandler<MouseEvent> smaller;
     private static ScaleTransition stBig;
     private static ScaleTransition stSmall;
     private static JsonArray jsonArray;
-    private List<ButtonSquare> sqaureList = new ArrayList<>();
+    private List<ButtonSquare> squareList = new ArrayList<>();
     private List<ButtonPowerUp> powerUpList = new ArrayList<>();
     private List<ButtonWeapon> weaponsList = new ArrayList<>();
     private List<ButtonWeapon> weaponsInSpawnSquare = new ArrayList<>();
@@ -129,6 +136,21 @@ public class GUIView extends Application implements View, VirtualView {
         weaponsMap.put(19, new Image("cardsImages/19.png"));
         weaponsMap.put(20, new Image("cardsImages/20.png"));
         weaponsMap.put(21, new Image("cardsImages/21.png"));
+
+        background = new Image("players/background.png");
+
+        ammoTilesMap.put("BLUBLU", new Image("ammoTiles/BLUBLU.png"));
+        ammoTilesMap.put("BLUGIALLOGIALLO", new Image("ammoTiles/BLUGIALLOGIALLO.png"));
+        ammoTilesMap.put("BLUROSSOROSSO", new Image("ammoTiles/BLUROSSOROSSO.png"));
+        ammoTilesMap.put("GIALLOBLU", new Image("ammoTiles/GIALLOBLU.png"));
+        ammoTilesMap.put("GIALLOBLUBLU", new Image("ammoTiles/GIALLOBLUBLU.png"));
+        ammoTilesMap.put("GIALLOGIALLO", new Image("ammoTiles/GIALLOGIALLO.png"));
+        ammoTilesMap.put("GIALLOROSSO", new Image("ammoTiles/GIALLOROSSO.png"));
+        ammoTilesMap.put("GIALLOROSSOROSSO", new Image("ammoTiles/GIALLOROSSOROSSO.png"));
+        ammoTilesMap.put("ROSSOBLU", new Image("ammoTiles/ROSSOBLU.png"));
+        ammoTilesMap.put("ROSSOBLUBLU", new Image("ammoTiles/ROSSOBLUBLU.png"));
+        ammoTilesMap.put("ROSSOGIALLOGIALLO", new Image("ammoTiles/ROSSOGIALLOGIALLO.png"));
+        ammoTilesMap.put("ROSSOROSSO", new Image("ammoTiles/ROSSOROSSO.png"));
 
         powerUpsMap.put("GRANATAVENOM BLU", new Image("cardsImages/GRANATAVENOMBLUE.png"));
         powerUpsMap.put("GRANATAVENOM ROSSO", new Image("cardsImages/GRANATAVENOMRED.png"));
@@ -235,8 +257,11 @@ public class GUIView extends Application implements View, VirtualView {
         imageView.fitHeightProperty().bind(immagePane.heightProperty());
         this.currentScene = new Scene(borderPane);
         currentStage = stage;
-        currentStage.setMinWidth(1000);
-        currentStage.setMinHeight(600);
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = gd.getDisplayMode().getWidth();
+        int height = gd.getDisplayMode().getHeight();
+        currentStage.setMinWidth(width);
+        currentStage.setMinHeight(height);
         currentStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
@@ -245,9 +270,8 @@ public class GUIView extends Application implements View, VirtualView {
         });
         currentStage.setScene(currentScene);
         borderPane.setCenter(immagePane);
+        currentStage.setResizable(false);
         currentStage.show();
-
-
     }
 
     public static void initialize() {
@@ -771,51 +795,56 @@ public class GUIView extends Application implements View, VirtualView {
             VBox text = new VBox();
             text.setSpacing(7);
             Label name = new Label();
-            name.setText("nome :" + jsonCard.getString("name"));
+            name.setText("Nome :" + jsonCard.getString("name"));
             name.setTextFill(Color.YELLOW);
             text.getChildren().add(name);
             Label carica = new Label();
-            carica.setText("carica: " + (jsonCard.getBoolean("isLoaded") ? "vero" : "falso"));
+            carica.setText("Carica: " + (jsonCard.getBoolean("isLoaded") ? "Sì" : "No"));
             carica.setTextFill(Color.YELLOW);
             text.getChildren().add(carica);
+
             if (jsonCard.getString("notes") != null) {
                 Label notes = new Label();
                 notes.setMinHeight(30);
-                notes.setText("note: " + jsonCard.getString("notes"));
+                notes.setText("Note: " + jsonCard.getString("notes"));
                 notes.setWrapText(true);
                 text.getChildren().add(notes);
                 notes.setTextFill(Color.YELLOW);
             }
+
             JsonObject primary = jsonCard.getJsonObject("primary");
             Label effettoprimario = new Label();
-            effettoprimario.setText("effetto primario :" + primary.getString("name"));
+            effettoprimario.setText("Effetto primario :" + primary.getString("name"));
             effettoprimario.setTextFill(Color.YELLOW);
             text.getChildren().add(effettoprimario);
             Label descrizionePrimario = new Label();
             descrizionePrimario.setMinHeight(30);
             descrizionePrimario
-                    .setText(" descrizione effetto primario: " + primary.getString("description"));
+                    .setText("Descrizione effetto primario: " + primary.getString("description"));
             descrizionePrimario.setWrapText(true);
             descrizionePrimario.setTextFill(Color.YELLOW);
             text.getChildren().add(descrizionePrimario);
+
             if (jsonCard.get("alternative") != JsonValue.NULL) {
                 JsonObject alternativo = jsonCard.getJsonObject("alternative");
                 Label effettoAlternativo = new Label();
-                effettoAlternativo.setText("effetto alternativo :" + primary.getString("name"));
+                effettoAlternativo.setText("Effetto alternativo :" + primary.getString("name"));
                 effettoAlternativo.setTextFill(Color.YELLOW);
                 text.getChildren().add(effettoAlternativo);
                 Label descrizioneAlternativo = new Label();
                 descrizionePrimario.setMinHeight(30);
                 descrizionePrimario.setText(
-                        " descrizione effetto alternativo: " + primary.getString("description"));
+                        "Descrizione effetto alternativo: " + primary.getString("description"));
                 descrizioneAlternativo.setWrapText(true);
                 descrizioneAlternativo.setTextFill(Color.YELLOW);
                 text.getChildren().add(descrizioneAlternativo);
             }
+
             if (jsonCard.get("optional1") != JsonValue.NULL) {
+
                 JsonObject optional1 = jsonCard.getJsonObject("optional1");
                 Label effettoOptional1 = new Label();
-                effettoOptional1.setText("effetto optional 1 :" + primary.getString("name"));
+                effettoOptional1.setText("Effetto opzionale 1:" + optional1.getString("name"));
 
                 effettoOptional1.setTextFill(Color.YELLOW);
                 text.getChildren().add(effettoOptional1);
@@ -824,16 +853,17 @@ public class GUIView extends Application implements View, VirtualView {
                 descrizioneOptional1.setTextFill(Color.YELLOW);
                 descrizioneOptional1.setMinHeight(30);
                 descrizioneOptional1.setText(
-                        " descrizione effetto alternativo: " + primary.getString("description"));
+                        "Descrizione effetto opzionale 1: " + optional1.getString("description"));
                 descrizioneOptional1.setWrapText(true);
                 text.getChildren().add(descrizioneOptional1);
             }
 
             if (jsonCard.get("optional2") != JsonValue.NULL) {
+
                 JsonObject optional2 = jsonCard.getJsonObject("optional2");
                 Label effettoOptional2 = new Label();
 
-                effettoOptional2.setText("effetto optional 2 :" + primary.getString("name"));
+                effettoOptional2.setText("Effetto opzionale 2:" + optional2.getString("name"));
 
                 effettoOptional2.setTextFill(Color.YELLOW);
                 text.getChildren().add(effettoOptional2);
@@ -842,11 +872,12 @@ public class GUIView extends Application implements View, VirtualView {
                 descrizioneEffettoOptional2.setMinHeight(30);
                 descrizioneEffettoOptional2.setTextFill(Color.YELLOW);
                 descrizioneEffettoOptional2.setText(
-                        " descrizione effetto alternativo: " + primary.getString("description"));
+                        "Descrizione effetto opzionale 2: " + optional2.getString("description"));
                 descrizioneEffettoOptional2.setWrapText(true);
                 text.getChildren().add(descrizioneEffettoOptional2);
             }
-            Button exit = new Button("exit");
+
+            Button exit = new Button("Exit");
             exit.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -869,8 +900,6 @@ public class GUIView extends Application implements View, VirtualView {
             });
             infocard.show();
             delay.play();
-
-
         });
     }
 
@@ -903,12 +932,13 @@ public class GUIView extends Application implements View, VirtualView {
 
             }
             /////////////////////////////////////////////////////centro set quadrati!
-            this.sqaureList.clear();
+            this.squareList.clear();
             VBox pannelloCentrale = new VBox();
             BorderPane borderPane = new BorderPane();
             borderPane.setBackground(new Background(
-                    new BackgroundFill(Color.rgb(25, 31, 53), CornerRadii.EMPTY,
-                            Insets.EMPTY)));
+                    new BackgroundImage(background, BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
             GridPane imagePane = new GridPane();
             boardImage.setFitWidth(990);
             boardImage.setFitHeight(565);
@@ -924,9 +954,11 @@ public class GUIView extends Application implements View, VirtualView {
             HBox line;
             line = new HBox();
             line.setSpacing(0);
+
             JsonObject jsonBoard = jsonArray.stream().map(JsonValue::asJsonObject)
                     .filter(x -> x.getInt("id") == board).findFirst()
                     .orElseThrow(IllegalArgumentException::new);
+
             jsonBoard.getJsonArray("values").stream().map(JsonValue::asJsonObject)
                     .forEach(x -> {
                                 ButtonSquare buttonSquare = new ButtonSquare(true);
@@ -941,14 +973,14 @@ public class GUIView extends Application implements View, VirtualView {
                                     buttonSquare.setOnMouseEntered(new EventHandler<MouseEvent>() {
                                         @Override
                                         public void handle(MouseEvent mouseEvent) {
-                                            ((ButtonSquare)(mouseEvent.getSource())).setOpacity(0.3);
+                                            ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.3);
                                             currentStage.getScene().setCursor(Cursor.HAND);
                                         }
                                     });
                                     buttonSquare.setOnMouseExited(new EventHandler<MouseEvent>() {
                                         @Override
                                         public void handle(MouseEvent mouseEvent) {
-                                            ((ButtonSquare)(mouseEvent.getSource())).setOpacity(0.0);
+                                            ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.0);
                                             currentStage.getScene().setCursor(Cursor.DEFAULT);
                                         }
                                     });
@@ -963,7 +995,7 @@ public class GUIView extends Application implements View, VirtualView {
                                 stackPane.setPrefHeight(125);
                                 stackPane.setPrefWidth(175);
                                 stackPane.getChildren().add(buttonSquare);
-                                sqaureList.add(buttonSquare);
+                                squareList.add(buttonSquare);
                                 line.getChildren().add(stackPane);
                                 if (line.getChildren().size() == 4) {
                                     HBox row = new HBox();
@@ -1007,95 +1039,142 @@ public class GUIView extends Application implements View, VirtualView {
 
                 String color = x.getString("color");
 
-                x.getJsonArray("tools").stream().map(JsonValue::asJsonObject).forEach(y -> {
-                    ImageView cardImage = new ImageView(weaponsMap.get(y.getInt("id")));
-                    ButtonWeapon rotatedButton = null;
-                    ImageView definiteRotateImage = null;
-                    switch (color) {
-                        case "ROSSO":
-                            cardImage.setRotate(90);
-                            SnapshotParameters params = new SnapshotParameters();
-                            params.setFill(Color.TRANSPARENT);
-                            Image rotatedImage = cardImage.snapshot(params, null);
-                            definiteRotateImage = new ImageView(rotatedImage);
-                            definiteRotateImage.setFitWidth(120);
-                            definiteRotateImage.setFitHeight(65);
-                            rotatedButton = new ButtonWeapon(y.getInt("id"), y.getString("name"),
-                                    definiteRotateImage);
-                            rotatedButton.setColorOfSpawn("rosso");
-                            weaponsSx.getChildren().add(rotatedButton);
-                            break;
+                x.getJsonArray("tools").stream()
+                        .map(JsonValue::asJsonObject)
+                        .forEach(y -> {
 
-                        case "BLU":
-                            cardImage.setRotate(180);
-                            SnapshotParameters paramsBlue = new SnapshotParameters();
-                            paramsBlue.setFill(Color.TRANSPARENT);
-                            Image rotatedImage180 = cardImage.snapshot(paramsBlue, null);
-                            definiteRotateImage = new ImageView(rotatedImage180);
-                            definiteRotateImage.setFitWidth(85);
-                            definiteRotateImage.setFitHeight(100);
-                            rotatedButton = new ButtonWeapon(y.getInt("id"), y.getString("name"),
-                                    definiteRotateImage);
-                            rotatedButton.setColorOfSpawn("blu");
+                            ImageView cardImage = new ImageView(weaponsMap.get(y.getInt("id")));
+                            ButtonWeapon rotatedButton = null;
+                            ImageView definiteRotateImage = null;
 
-                            weaponsTop.getChildren().add(rotatedButton);
-                            break;
+                            switch (color) {
 
-                        case "GIALLO":
-                            cardImage.setRotate(270);
-                            SnapshotParameters paramsGiallo = new SnapshotParameters();
-                            paramsGiallo.setFill(Color.TRANSPARENT);
-                            Image rotatedImage270 = cardImage.snapshot(paramsGiallo, null);
-                            definiteRotateImage = new ImageView(rotatedImage270);
-                            definiteRotateImage.setFitHeight(65);
-                            definiteRotateImage.setFitWidth(120);
-                            rotatedButton = new ButtonWeapon(y.getInt("id"), y.getString("name"),
-                                    definiteRotateImage);
-                            rotatedButton.setColorOfSpawn("giallo");
-                            weaponsDx.getChildren().add(rotatedButton);
-                            break;
+                                case "ROSSO":
 
-                    }
-                    weaponsInSpawnSquare.add(rotatedButton);
-                    rotatedButton.setOnMouseEntered(bigger);
-                    rotatedButton.setOnMouseExited(smaller);
+                                    cardImage.setRotate(90);
+                                    SnapshotParameters params = new SnapshotParameters();
+                                    params.setFill(Color.TRANSPARENT);
+                                    Image rotatedImage = cardImage.snapshot(params, null);
+                                    definiteRotateImage = new ImageView(rotatedImage);
+                                    definiteRotateImage.setFitWidth(120);
+                                    definiteRotateImage.setFitHeight(65);
+                                    rotatedButton = new ButtonWeapon(y.getInt("id"),
+                                            y.getString("name"),
+                                            definiteRotateImage);
+                                    rotatedButton.setColorOfSpawn("rosso");
+                                    weaponsSx.getChildren().add(rotatedButton);
 
-                });
+                                    break;
+
+                                case "BLU":
+
+                                    cardImage.setRotate(180);
+                                    SnapshotParameters paramsBlue = new SnapshotParameters();
+                                    paramsBlue.setFill(Color.TRANSPARENT);
+                                    Image rotatedImage180 = cardImage.snapshot(paramsBlue, null);
+                                    definiteRotateImage = new ImageView(rotatedImage180);
+                                    definiteRotateImage.setFitWidth(85);
+                                    definiteRotateImage.setFitHeight(100);
+                                    rotatedButton = new ButtonWeapon(y.getInt("id"),
+                                            y.getString("name"),
+                                            definiteRotateImage);
+                                    rotatedButton.setColorOfSpawn("blu");
+
+                                    weaponsTop.getChildren().add(rotatedButton);
+
+                                    break;
+
+                                case "GIALLO":
+
+                                    cardImage.setRotate(270);
+                                    SnapshotParameters paramsGiallo = new SnapshotParameters();
+                                    paramsGiallo.setFill(Color.TRANSPARENT);
+                                    Image rotatedImage270 = cardImage.snapshot(paramsGiallo, null);
+                                    definiteRotateImage = new ImageView(rotatedImage270);
+                                    definiteRotateImage.setFitHeight(65);
+                                    definiteRotateImage.setFitWidth(120);
+                                    rotatedButton = new ButtonWeapon(y.getInt("id"),
+                                            y.getString("name"),
+                                            definiteRotateImage);
+                                    rotatedButton.setColorOfSpawn("giallo");
+                                    weaponsDx.getChildren().add(rotatedButton);
+
+                                    break;
+
+                            }
+                            weaponsInSpawnSquare.add(rotatedButton);
+                            rotatedButton.setOnMouseEntered(bigger);
+                            rotatedButton.setOnMouseExited(smaller);
+
+                        });
 
             });
 
-           anchorPane.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop);
+            anchorPane.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop);
 
             imagePane.getChildren().addAll(boardImage, anchorPane);
             anchorPane.setMouseTransparent(false);
 
-            ////////////////////////////////////////////////////  metto giocatori nei quadrati!!
+            ////////////////////////////////////////////////////  metto giocatori e ammotiles nei quadrati!!
             jGameHandlerObject.getJsonObject("board").getJsonArray("arrays").stream()
                     .flatMap(x -> x.asJsonArray().stream())
                     .map(JsonValue::asJsonObject)
                     .filter(x -> !x.containsKey("empty"))
-                    .filter(y -> y.get("playersIn") != JsonValue.NULL)
                     .forEach(z -> {
 
                         String color = z.getString("color").toLowerCase();
                         String id = String.valueOf(z.getInt("squareId"));
 
                         HBox playersInSquare = new HBox();
-                        playersInSquare.setPrefSize(175, 125);
+                        //was 175 125
+                        //playersInSquare.setPrefSize(175, 125);
 
-                        z.getJsonArray("playersIn").stream().map(JsonValue::asJsonObject)
-                                .forEach(t -> {
-                                    ImageView giocatore1 = new ImageView(
-                                            playersMap.get(t.getString("character")));
-                                    giocatore1.setFitHeight(110);
-                                    playersInSquare.getChildren().add(giocatore1);
-                                    double scale = playersInSquare.getChildren().size() == 1 ? 1.5
-                                            : playersInSquare.getChildren().size();
+                        HBox tilesInSquare = new HBox();
 
-                                    playersInSquare.getChildren().stream()
-                                            .forEach(m -> ((ImageView) m).setFitWidth(175 / scale));
-                                });
-                        ButtonSquare tmp = this.sqaureList.stream().filter(k -> k.getPresent())
+                        if (!z.getBoolean("isSpawn")) {
+
+                            z.getJsonArray("tools").stream()
+                                    .map(JsonValue::asJsonObject)
+                                    .forEach(s -> {
+
+                                        ImageView tile = new ImageView(
+                                                ammoTilesMap.get(s.getJsonArray("colors").stream()
+                                                        .map(JsonValue::toString)
+                                                        .map(p -> p.substring(1, p.length() - 1))
+                                                        .collect(Collectors.joining())));
+
+                                        tile.setFitHeight(45);
+                                        tile.setFitWidth(45);
+                                        tilesInSquare.getChildren().add(tile);
+                                    });
+                        }
+
+                        if (z.get("playersIn") != JsonValue.NULL) {
+
+                            z.getJsonArray("playersIn").stream()
+                                    .map(JsonValue::asJsonObject)
+                                    .forEach(t -> {
+
+                                        ImageView player = new ImageView(
+                                                playersMap.get(t.getString("character")));
+
+                                        playersInSquare.getChildren().add(player);
+
+                                        double scale =
+                                                playersInSquare.getChildren().size() == 1 ? 1.5
+                                                        : playersInSquare.getChildren().size();
+
+                                        playersInSquare.getChildren().stream()
+                                                .forEach(m -> {
+                                                    ((ImageView) m)
+                                                            .setFitWidth(105 / scale);
+                                                    ((ImageView) m)
+                                                            .setFitHeight(125 / scale);
+                                                });
+                                    });
+                        }
+
+                        ButtonSquare tmp = this.squareList.stream().filter(k -> k.getPresent())
                                 .filter(s -> s.getColor().equals(color) && s.getButtonSquareId()
                                         .equals(id))
                                 .findAny()
@@ -1103,6 +1182,8 @@ public class GUIView extends Application implements View, VirtualView {
 
                         StackPane pane = (StackPane) tmp.getParent();
                         pane.getChildren().clear();
+                        tilesInSquare.setAlignment(Pos.BOTTOM_CENTER);
+                        pane.getChildren().addAll(tilesInSquare);
                         pane.getChildren().addAll(playersInSquare, tmp);
                     });
 
@@ -1132,7 +1213,7 @@ public class GUIView extends Application implements View, VirtualView {
                         card.setFitWidth(130);
                         card.setFitHeight((565 / 3) + 15);
                         ButtonWeapon imageButton = new ButtonWeapon(
-                                Integer.parseInt(x.getString("id")),
+                                x.getInt("id"),
                                 x.getString("name"),
                                 card);
                         weaponsList.add(imageButton);
@@ -1164,9 +1245,9 @@ public class GUIView extends Application implements View, VirtualView {
             pannelloCentrale.setSpacing(0);
             borderPane.setCenter(pannelloCentrale);
             /////////////////////////////////////////////////destra
-            AnchorPane rightAnchorPane= new AnchorPane();
+            AnchorPane rightAnchorPane = new AnchorPane();
             VBox bridges = new VBox();
-            AnchorPane.setTopAnchor(bridges,0.0);
+            AnchorPane.setTopAnchor(bridges, 0.0);
             bridges.setSpacing(0);
             jGameHandlerObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
@@ -1187,7 +1268,8 @@ public class GUIView extends Application implements View, VirtualView {
 
                     });
             VBox collectiveButtons = new VBox();
-            AnchorPane.setTopAnchor(collectiveButtons,(double)(5-bridges.getChildren().size())*(565/5));
+            AnchorPane.setTopAnchor(collectiveButtons,
+                    (double) (5 - bridges.getChildren().size()) * (565 / 5));
             AnchorPane.setLeftAnchor(collectiveButtons, 10.0);
             collectiveButtons.setSpacing(14);
             HBox actions = new HBox();
@@ -1333,7 +1415,7 @@ public class GUIView extends Application implements View, VirtualView {
         this.powerUpList.forEach(x -> x.setOnMouseClicked(null));
         this.weaponsList.forEach(x -> x.setInfoCard());
         this.weaponsInSpawnSquare.forEach(x -> x.setInfoCard());
-        this.sqaureList.forEach(x -> x.setOnMouseClicked(null));
+        this.squareList.forEach(x -> x.setOnMouseClicked(null));
 
 
     }
@@ -1341,8 +1423,11 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void updateState(String value) throws RemoteException {
         return;
+    }
+
     @Override
     public void completePowerUpInfo(String value) throws RemoteException {
 
     }
+
 }

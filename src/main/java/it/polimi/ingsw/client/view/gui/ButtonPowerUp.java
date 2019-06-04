@@ -1,7 +1,12 @@
 package it.polimi.ingsw.client.view.gui;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 
 public class ButtonPowerUp extends Button {
     String name;
@@ -12,6 +17,7 @@ public class ButtonPowerUp extends Button {
         this.name = name;
         this.color = color;
         super.setGraphic(card);
+        this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     public String getName() {

@@ -9,7 +9,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 
-
 public class ButtonSquare extends Button {
 
     String color;
@@ -17,12 +16,10 @@ public class ButtonSquare extends Button {
     Boolean present;
     boolean isSpawn;
 
-
-
     public ButtonSquare(String color, String id) {
         this.color = color;
         this.id = id;
-        this.present=true;
+        this.present = true;
         this.setOpacity(0.0);
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -36,8 +33,9 @@ public class ButtonSquare extends Button {
             }
         });
     }
-    public ButtonSquare(boolean present ){
-        this.present= present;
+
+    public ButtonSquare(boolean present) {
+        this.present = present;
         this.setOpacity(0.0);
     }
 
