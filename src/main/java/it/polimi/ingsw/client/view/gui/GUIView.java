@@ -28,6 +28,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -36,6 +38,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
@@ -80,6 +83,7 @@ public class GUIView extends Application implements View, VirtualView {
     private static Map<String, Image> playersMap = new HashMap<>();
     private static Map<String, Image> ammoTilesMap = new HashMap<>();
 
+    private static Map<String, Image> dropsMap = new HashMap<>();
     private Scene currentScene;
     private Scene nextScene;
     public static Stage currentStage;
@@ -101,6 +105,8 @@ public class GUIView extends Application implements View, VirtualView {
     private List<ButtonPowerUp> powerUpList = new ArrayList<>();
     private List<ButtonWeapon> weaponsList = new ArrayList<>();
     private List<ButtonWeapon> weaponsInSpawnSquare = new ArrayList<>();
+    private static ProgressBar progressBar;
+    private static boolean ramLoaded=false;
 
 
     private String playerIdView;
@@ -108,154 +114,15 @@ public class GUIView extends Application implements View, VirtualView {
     //todo every button should be bigger when ohvered
     @Override
     public void start(Stage stage) throws Exception {
-        //////////////////////////////////////////////////////////////
-        InputStream in = GUIView.class.getClassLoader().getResourceAsStream("Boards/Board.json");
-
-        jsonArray = Json.createReader(in).readArray();
-        //////////////////////////////////////////////////////////////
-
-        weaponsMap.put(0, new Image("cardsImages/AD_weapons_IT_0225.png"));
-        weaponsMap.put(1, new Image("cardsImages/1.png"));
-        weaponsMap.put(2, new Image("cardsImages/2.png"));
-        weaponsMap.put(3, new Image("cardsImages/3.png"));
-        weaponsMap.put(4, new Image("cardsImages/4.png"));
-        weaponsMap.put(5, new Image("cardsImages/5.png"));
-        weaponsMap.put(6, new Image("cardsImages/6.png"));
-        weaponsMap.put(7, new Image("cardsImages/7.png"));
-        weaponsMap.put(8, new Image("cardsImages/8.png"));
-        weaponsMap.put(9, new Image("cardsImages/9.png"));
-        weaponsMap.put(10, new Image("cardsImages/10.png"));
-        weaponsMap.put(11, new Image("cardsImages/11.png"));
-        weaponsMap.put(12, new Image("cardsImages/12.png"));
-        weaponsMap.put(13, new Image("cardsImages/13.png"));
-        weaponsMap.put(14, new Image("cardsImages/14.png"));
-        weaponsMap.put(15, new Image("cardsImages/15.png"));
-        weaponsMap.put(16, new Image("cardsImages/16.png"));
-        weaponsMap.put(17, new Image("cardsImages/17.png"));
-        weaponsMap.put(18, new Image("cardsImages/18.png"));
-        weaponsMap.put(19, new Image("cardsImages/19.png"));
-        weaponsMap.put(20, new Image("cardsImages/20.png"));
-        weaponsMap.put(21, new Image("cardsImages/21.png"));
-
-        background = new Image("players/background.png");
-
-        ammoTilesMap.put("BLUBLU", new Image("ammoTiles/BLUBLU.png"));
-        ammoTilesMap.put("BLUGIALLOGIALLO", new Image("ammoTiles/BLUGIALLOGIALLO.png"));
-        ammoTilesMap.put("BLUROSSOROSSO", new Image("ammoTiles/BLUROSSOROSSO.png"));
-        ammoTilesMap.put("GIALLOBLU", new Image("ammoTiles/GIALLOBLU.png"));
-        ammoTilesMap.put("GIALLOBLUBLU", new Image("ammoTiles/GIALLOBLUBLU.png"));
-        ammoTilesMap.put("GIALLOGIALLO", new Image("ammoTiles/GIALLOGIALLO.png"));
-        ammoTilesMap.put("GIALLOROSSO", new Image("ammoTiles/GIALLOROSSO.png"));
-        ammoTilesMap.put("GIALLOROSSOROSSO", new Image("ammoTiles/GIALLOROSSOROSSO.png"));
-        ammoTilesMap.put("ROSSOBLU", new Image("ammoTiles/ROSSOBLU.png"));
-        ammoTilesMap.put("ROSSOBLUBLU", new Image("ammoTiles/ROSSOBLUBLU.png"));
-        ammoTilesMap.put("ROSSOGIALLOGIALLO", new Image("ammoTiles/ROSSOGIALLOGIALLO.png"));
-        ammoTilesMap.put("ROSSOROSSO", new Image("ammoTiles/ROSSOROSSO.png"));
-
-        powerUpsMap.put("GRANATAVENOM BLU", new Image("cardsImages/GRANATAVENOMBLUE.png"));
-        powerUpsMap.put("GRANATAVENOM ROSSO", new Image("cardsImages/GRANATAVENOMRED.png"));
-        powerUpsMap.put("GRANATAVENOM GIALLO", new Image("cardsImages/GRANATAVENOMYELLOW.png"));
-        powerUpsMap.put("TELETRASPORTO BLU", new Image("cardsImages/TELETRASPORTOBLUE.png"));
-        powerUpsMap.put("TELETRASPORTO ROSSO", new Image("cardsImages/TELETRASPORTORED.png"));
-        powerUpsMap.put("TELETRASPORTO GIALLO", new Image("cardsImages/TELETRASPORTOYELLOW.png"));
-        powerUpsMap.put("MIRINO BLU", new Image("cardsImages/MIRINOBLUE.png"));
-        powerUpsMap.put("MIRINO ROSSO", new Image("cardsImages/MIRINORED.png"));
-        powerUpsMap.put("MIRINO GIALLO", new Image("cardsImages/MIRINOYELLOW.png"));
-        powerUpsMap.put("RAGGIOCINETICO BLU", new Image("cardsImages/RAGGIOCINETICOBLUE.png"));
-        powerUpsMap.put("RAGGIOCINETICO ROSSO", new Image("cardsImages/RAGGIOCINETICORED.png"));
-        powerUpsMap.put("RAGGIOCINETICO GIALLO", new Image("cardsImages/RAGGIOCINETICOYELLOW.png"));
-
-        bridgesMap.put("Bansheefalse", new Image("playerboards/Bansheefalse.png"));
-        bridgesMap.put("Bansheetrue", new Image("playerboards/Bansheetrue.png"));
-
-        bridgesMap.put("Dozerfalse", new Image("playerboards/Dozerfalse.png"));
-        bridgesMap.put("Dozertrue", new Image("playerboards/Dozertrue.png"));
-
-        bridgesMap.put("Violettafalse", new Image("playerboards/Violettafalse.png"));
-        bridgesMap.put("Violettatrue", new Image("playerboards/Violettatrue.png"));
-
-        bridgesMap.put("Sprogfalse", new Image("playerboards/Sprogfalse.png"));
-        bridgesMap.put("Sprogtrue", new Image("playerboards/Sprogtrue.png"));
-
-        bridgesMap.put(":D-strutt-OR3false",
-                new Image("playerboards/D-strutt-OR3_false_frenesia.png"));
-        bridgesMap
-                .put(":D-strutt-OR3true", new Image("playerboards/D-strutt-OR3_true_frenesia.png"));
-
-        playersMap.put(":D-strutt-OR3", new Image("players/distruttore.png"));
-        playersMap.put("Sprog", new Image("players/sprog.png"));
-        playersMap.put("Violetta", new Image("players/violetta.png"));
-        playersMap.put("Dozer", new Image("players/dozer.png"));
-        playersMap.put("Banshee", new Image("players/banshee.png"));
-        playersMap.put("adrenalinaText", new Image("players/adrenaline_text.png"));
-        playersMap.put("adrenalinaIcon", new Image("players/adrenaline_icon.png"));
-
-        //////////////////////////////////////////////////////////////event handler for no spaces
-        noSpace = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCharacter().toString().equals(" ")) {
-                    ((TextField) keyEvent.getSource()).deletePreviousChar();
-                }
-            }
-        };
-        ////////////////////////////////////////////////////////////////
-        stBig = new ScaleTransition();
-        stSmall = new ScaleTransition();
-        stBig.setFromX(1.0);
-        stBig.setFromY(1.0);
-        stBig.setToX(1.2);
-        stBig.setToY(1.2);
-        stSmall.setFromX(1.0);
-        stSmall.setToX(1.0);
-        stSmall.setFromY(1.0);
-        stSmall.setToX(1.0);
-        stBig.setDuration(new Duration(20));
-        stSmall.setDuration(new Duration(20));
-        bigger = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                stBig.setNode((Button) mouseEvent.getSource());
-                stBig.play();
-                currentStage.getScene().setCursor(Cursor.HAND);
-            }
-        };
-        smaller = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                stSmall.setNode((Button) mouseEvent.getSource());
-                stSmall.play();
-                currentStage.getScene().setCursor(Cursor.DEFAULT);
-
-            }
-        };
-        ////////////////////////////////////////////////////////////
-        Image board0Image = new Image("Boards/0 - UPUP.png");
-        imageView0 = new ImageView(board0Image);
-        imageView0.setFitHeight(240);
-        imageView0.setFitWidth(300);
-        Image board1Image = new Image("Boards/1 - DOWNDOWN.png");
-        imageView1 = new ImageView(board1Image);
-        imageView1.setFitHeight(240);
-        imageView1.setFitWidth(300);
-        Image board2Image = new Image("Boards/2 - UPDOWN.png");
-        imageView2 = new ImageView(board2Image);
-        imageView2.setFitWidth(300);
-        imageView2.setFitHeight(240);
-        Image board3Image = new Image("Boards/3 - DOWNUP.png");
-        imageView3 = new ImageView(board3Image);
-        imageView3.setFitWidth(300);
-        imageView3.setFitHeight(240);
-        /////////////////////////////////////////////////////////////
+        StackPane imageAndStatusBar= new StackPane();
         Image gameImage = new Image("adrenalina.jpg");
         ImageView imageView = new ImageView(gameImage);
         imageView.setPreserveRatio(false);
-        BorderPane borderPane = new BorderPane();
-        GridPane immagePane = new GridPane();
-        immagePane.getChildren().addAll(imageView);
-        imageView.fitWidthProperty().bind(immagePane.widthProperty());
-        imageView.fitHeightProperty().bind(immagePane.heightProperty());
-        this.currentScene = new Scene(borderPane);
+        imageView.fitWidthProperty().bind(imageAndStatusBar.widthProperty());
+        imageView.fitHeightProperty().bind(imageAndStatusBar.heightProperty());
+        progressBar= new ProgressBar();
+        imageAndStatusBar.getChildren().addAll(imageView, progressBar);
+        this.currentScene = new Scene(imageAndStatusBar);
         currentStage = stage;
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
@@ -283,6 +150,148 @@ public class GUIView extends Application implements View, VirtualView {
         while (currentStage == null || !currentStage.isShowing()) {
             ;
         }
+        if(!ramLoaded){
+            double progress=0;
+            progressBar.setProgress(progress);
+            InputStream in = GUIView.class.getClassLoader().getResourceAsStream("Boards/Board.json");
+
+            jsonArray = Json.createReader(in).readArray();
+            //////////////////////////////////////////////////////////////
+
+            weaponsMap.put(0, new Image("cardsImages/AD_weapons_IT_0225.png"));
+            weaponsMap.put(1, new Image("cardsImages/1.png"));
+            weaponsMap.put(2, new Image("cardsImages/2.png"));
+            weaponsMap.put(3, new Image("cardsImages/3.png"));
+            weaponsMap.put(4, new Image("cardsImages/4.png"));
+            weaponsMap.put(5, new Image("cardsImages/5.png"));
+            weaponsMap.put(6, new Image("cardsImages/6.png"));
+            weaponsMap.put(7, new Image("cardsImages/7.png"));
+            weaponsMap.put(8, new Image("cardsImages/8.png"));
+            weaponsMap.put(9, new Image("cardsImages/9.png"));
+            weaponsMap.put(10, new Image("cardsImages/10.png"));
+            weaponsMap.put(11, new Image("cardsImages/11.png"));
+            weaponsMap.put(12, new Image("cardsImages/12.png"));
+            weaponsMap.put(13, new Image("cardsImages/13.png"));
+            weaponsMap.put(14, new Image("cardsImages/14.png"));
+            weaponsMap.put(15, new Image("cardsImages/15.png"));
+            weaponsMap.put(16, new Image("cardsImages/16.png"));
+            weaponsMap.put(17, new Image("cardsImages/17.png"));
+            weaponsMap.put(18, new Image("cardsImages/18.png"));
+            weaponsMap.put(19, new Image("cardsImages/19.png"));
+            weaponsMap.put(20, new Image("cardsImages/20.png"));
+            weaponsMap.put(21, new Image("cardsImages/21.png"));
+            progressBar.setProgress(progress+0.2);
+
+
+            powerUpsMap.put("GRANATAVENOM BLU", new Image("cardsImages/GRANATAVENOMBLUE.png"));
+            powerUpsMap.put("GRANATAVENOM ROSSO", new Image("cardsImages/GRANATAVENOMRED.png"));
+            powerUpsMap.put("GRANATAVENOM GIALLO", new Image("cardsImages/GRANATAVENOMYELLOW.png"));
+            powerUpsMap.put("TELETRASPORTO BLU", new Image("cardsImages/TELETRASPORTOBLUE.png"));
+            powerUpsMap.put("TELETRASPORTO ROSSO", new Image("cardsImages/TELETRASPORTORED.png"));
+            powerUpsMap.put("TELETRASPORTO GIALLO", new Image("cardsImages/TELETRASPORTOYELLOW.png"));
+            powerUpsMap.put("MIRINO BLU", new Image("cardsImages/MIRINOBLUE.png"));
+            powerUpsMap.put("MIRINO ROSSO", new Image("cardsImages/MIRINORED.png"));
+            powerUpsMap.put("MIRINO GIALLO", new Image("cardsImages/MIRINOYELLOW.png"));
+            powerUpsMap.put("RAGGIOCINETICO BLU", new Image("cardsImages/RAGGIOCINETICOBLUE.png"));
+            powerUpsMap.put("RAGGIOCINETICO ROSSO", new Image("cardsImages/RAGGIOCINETICORED.png"));
+            powerUpsMap.put("RAGGIOCINETICO GIALLO", new Image("cardsImages/RAGGIOCINETICOYELLOW.png"));
+            progressBar.setProgress(progress+0.2);
+
+            bridgesMap.put("Bansheefalse", new Image("playerboards/Bansheefalse.png"));
+            bridgesMap.put("Bansheetrue", new Image("playerboards/Bansheetrue.png"));
+
+            bridgesMap.put("Dozerfalse", new Image("playerboards/Dozerfalse.png"));
+            bridgesMap.put("Dozertrue", new Image("playerboards/Dozertrue.png"));
+
+            bridgesMap.put("Violettafalse", new Image("playerboards/Violettafalse.png"));
+            bridgesMap.put("Violettatrue", new Image("playerboards/Violettatrue.png"));
+
+            bridgesMap.put("Sprogfalse", new Image("playerboards/Sprogfalse.png"));
+            bridgesMap.put("Sprogtrue", new Image("playerboards/Sprogtrue.png"));
+
+            bridgesMap.put(":D-strutt-OR3false",
+                    new Image("playerboards/D-strutt-OR3_false_frenesia.png"));
+            bridgesMap
+                    .put(":D-strutt-OR3true", new Image("playerboards/D-strutt-OR3_true_frenesia.png"));
+            progressBar.setProgress(progress+0.2);
+
+            playersMap.put(":D-strutt-OR3", new Image("players/distruttore.png"));
+            playersMap.put("Sprog", new Image("players/sprog.png"));
+            playersMap.put("Violetta", new Image("players/violetta.png"));
+            playersMap.put("Dozer", new Image("players/dozer.png"));
+            playersMap.put("Banshee", new Image("players/banshee.png"));
+            playersMap.put("adrenalinaText", new Image("players/adrenaline_text.png"));
+            playersMap.put("adrenalinaIcon", new Image("players/adrenaline_icon.png"));
+            progressBar.setProgress(progress+0.2);
+
+            dropsMap.put("Giallo", new Image("Drop/drop-yellow.png"));
+            dropsMap.put("Verde", new Image("Drop/drop-green.png"));
+            dropsMap.put("Azzurro", new Image("Drop/drop-blue.png"));
+            dropsMap.put("Viola", new Image("Drop/drop-violet.png"));
+            dropsMap.put("Grigio", new Image("Drop/drop-gray.png"));
+            dropsMap.put("morte", new Image("Drop/teschio.jpg"));
+
+            //////////////////////////////////////////////////////////////event handler for no spaces
+            noSpace = new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent keyEvent) {
+                    if (keyEvent.getCharacter().toString().equals(" ")) {
+                        ((TextField) keyEvent.getSource()).deletePreviousChar();
+                    }
+                }
+            };
+            progressBar.setProgress(1.0);
+
+            ////////////////////////////////////////////////////////////////
+            stBig = new ScaleTransition();
+            stSmall = new ScaleTransition();
+            stBig.setFromX(1.0);
+            stBig.setFromY(1.0);
+            stBig.setToX(1.2);
+            stBig.setToY(1.2);
+            stSmall.setFromX(1.0);
+            stSmall.setToX(1.0);
+            stSmall.setFromY(1.0);
+            stSmall.setToX(1.0);
+            stBig.setDuration(new Duration(20));
+            stSmall.setDuration(new Duration(20));
+            bigger = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    stBig.setNode((Button) mouseEvent.getSource());
+                    stBig.play();
+                    currentStage.getScene().setCursor(Cursor.HAND);
+                }
+            };
+            smaller = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    stSmall.setNode((Button) mouseEvent.getSource());
+                    stSmall.play();
+                    currentStage.getScene().setCursor(Cursor.DEFAULT);
+
+                }
+            };
+            ////////////////////////////////////////////////////////////
+            Image board0Image = new Image("Boards/0 - UPUP.png");
+            imageView0 = new ImageView(board0Image);
+            imageView0.setFitHeight(240);
+            imageView0.setFitWidth(300);
+            Image board1Image = new Image("Boards/1 - DOWNDOWN.png");
+            imageView1 = new ImageView(board1Image);
+            imageView1.setFitHeight(240);
+            imageView1.setFitWidth(300);
+            Image board2Image = new Image("Boards/2 - UPDOWN.png");
+            imageView2 = new ImageView(board2Image);
+            imageView2.setFitWidth(300);
+            imageView2.setFitHeight(240);
+            Image board3Image = new Image("Boards/3 - DOWNUP.png");
+            imageView3 = new ImageView(board3Image);
+            imageView3.setFitWidth(300);
+            imageView3.setFitHeight(240);
+            ramLoaded=true;
+        }
+
         currentStage.getScene().setRoot(parent);
 
 
@@ -1186,6 +1195,24 @@ public class GUIView extends Application implements View, VirtualView {
                         pane.getChildren().addAll(tilesInSquare);
                         pane.getChildren().addAll(playersInSquare, tmp);
                     });
+            //////////////////////////////////centro metto morti nella plncia morti board
+            HBox killsOfAllPlayers= new HBox();
+            jGameHandlerObject.getJsonObject("deaths").getJsonArray("deathBridgeArray").stream()
+                    .map(JsonValue::asJsonObject)
+                    .forEach(x -> {
+                        ImageView killshot = new ImageView(
+                                dropsMap.get(x.toString().substring(1, x.toString().length() - 1)));
+                        killshot.setFitWidth(40);
+                        killshot.setFitHeight(40);
+                        killsOfAllPlayers.getChildren().add(killshot);
+
+                    });
+            AnchorPane.setLeftAnchor(killsOfAllPlayers, 70.0);
+            AnchorPane.setTopAnchor(killsOfAllPlayers, 30.0);
+            anchorPane.getChildren().add(killsOfAllPlayers);
+
+
+            //////////////////////////////////////////////////////
 
             /////////////////////////////////////////////////////////////////////////// centro spacchetto json model-carte
             weaponsList.clear();
@@ -1260,13 +1287,57 @@ public class GUIView extends Application implements View, VirtualView {
                                                 .getJsonObject("damageBridge")
                                                 .getBoolean("isFinalFrenzy"))
                                         .toString()));
-
+                        bridge.setId(x.getString("character"));
                         bridge.setFitWidth(990 / 3 + 150);
                         bridge.setFitHeight(565 / 5);
                         bridges.getChildren().add(bridge);
 
 
                     });
+            rightAnchorPane.getChildren().add(bridges);
+            /////////////////////////////metto segnalini danno su giocatori e segnalini morti
+            jGameHandlerObject.getJsonArray("playerList").stream()
+                    .map(JsonValue::asJsonObject)
+                    .forEach(x -> {
+                        String character = x.getString("character");
+                        Node characterBridge = bridges.getChildren().stream()
+                                .filter(k -> k.getId().equals(character)).findFirst().get();
+                        HBox shots = new HBox();
+                        HBox kills = new HBox();
+                        int numberOfBridge = bridges.getChildren().indexOf(characterBridge);
+                        x.getJsonObject("bridge").getJsonArray("deathBridgeArray").stream()
+                                .map(JsonValue::asJsonObject).filter(z->z.getBoolean("used")).forEach(z -> {
+
+                            ImageView kill = new ImageView(dropsMap.get("morte"));
+                            kill.setFitHeight(25);
+                            kill.setFitWidth(25);
+                            kills.getChildren().add(kill);
+                            System.out.println("sono qui");
+                        });
+                        x.getJsonObject("bridge").getJsonObject("damageBridge")
+                                .getJsonArray("shots").stream().map(JsonValue::asJsonObject)
+                                .forEach(z -> {
+                                    System.out.println(
+                                            z.toString().substring(1, z.toString().length() - 1));
+                                    ImageView shot = new ImageView(dropsMap.get(
+                                            z.toString().substring(1, z.toString().length() - 1)));
+
+                                    shot.setFitHeight(35);
+                                    shot.setFitWidth(25);
+                                    shots.getChildren().add(shot);
+
+                                });
+                        System.out.println(character + "size kills " + kills.getChildren().size());
+                        AnchorPane.setTopAnchor(kills,
+                                (double) numberOfBridge * (565 / 5) + 115 - 30);
+                        AnchorPane.setLeftAnchor(kills, 103.0);
+                        AnchorPane.setTopAnchor(shots, (double) numberOfBridge * (565 / 5) + 35);
+                        AnchorPane.setLeftAnchor(shots, 40.0);
+                        AnchorPane.setRightAnchor(shots, 120.0);
+                        rightAnchorPane.getChildren().addAll(shots, kills);
+                        System.out.println(kills.isVisible());
+                    });
+
             VBox collectiveButtons = new VBox();
             AnchorPane.setTopAnchor(collectiveButtons,
                     (double) (5 - bridges.getChildren().size()) * (565 / 5));
@@ -1357,14 +1428,55 @@ public class GUIView extends Application implements View, VirtualView {
             infoCarte.setTextFill(Color.BLACK);
             infoCarte.setOnMouseExited(smaller);
             infoCarte.setOnMouseEntered(bigger);
-            cardsInfo.getChildren().addAll(powerUp, infoCarte);
-            collectiveButtons.getChildren().add(cardsInfo);
+            infoCarte.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    Stage infoCarteStage = new Stage();
+                    BorderPane centre = new BorderPane();
+                    ScrollPane images = new ScrollPane();
+                    HBox twoCrads = new HBox();
+                    twoCrads.setSpacing(80);
+                    VBox allcards = new VBox();
+                    allcards.setSpacing(30);
+                    for (int i = 1; i < 22; i++) {
+                        ImageView card = new ImageView(weaponsMap.get(i));
+                        card.setFitWidth(150);
+                        card.setFitHeight(250);
+                        ButtonWeapon buttonWeapon = new ButtonWeapon(i, "name", card);
+                        buttonWeapon.setOnMouseEntered(bigger);
+                        buttonWeapon.setOnMouseExited(smaller);
+                        buttonWeapon.setInfoCard();
+                        twoCrads.getChildren().add(buttonWeapon);
+
+                        if (twoCrads.getChildren().size() == 2) {
+                            allcards.getChildren().add(twoCrads);
+                            twoCrads = new HBox();
+                            twoCrads.setSpacing(80);
+                        }
+                    }
+                    images.setContent(allcards);
+                    images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+                    Scene imagesScene = new Scene(new StackPane(images), 450, 500);
+                    infoCarteStage.setScene(imagesScene);
+                    infoCarteStage.show();
+
+
+                }
+
+            });
+            cardsInfo.getChildren().
+
+                    addAll(powerUp, infoCarte);
+            collectiveButtons.getChildren().
+
+                    add(cardsInfo);
             AnchorPane.setTopAnchor(collectiveButtons, 565.0);
-            rightAnchorPane.getChildren().addAll(bridges, collectiveButtons);
+            rightAnchorPane.getChildren().addAll(collectiveButtons);
             borderPane.setRight(rightAnchorPane);
 
             /////////////////////////////////////////////////
             changeScene(borderPane);
+
             Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
             if (primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() > 1950) {
                 currentStage.sizeToScene();
@@ -1427,7 +1539,7 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void completePowerUpInfo(String value) throws RemoteException {
-
+        return;
     }
 
 }
