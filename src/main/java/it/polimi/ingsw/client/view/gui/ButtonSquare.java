@@ -16,8 +16,9 @@ public class ButtonSquare extends Button {
     String id;
     Boolean present;
     boolean isSpawn;
+    boolean currentPosition=false;
 
-
+    private static EventHandler<MouseEvent> eventHandler;
 
     public ButtonSquare(String color, String id) {
         this.color = color;
@@ -25,20 +26,21 @@ public class ButtonSquare extends Button {
         this.present=true;
         this.setOpacity(0.0);
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println(
-                        ButtonSquare.this.getButtonSquareId() + "  "
-                                + ButtonSquare.this.getColor()
-                                + "is spawn: "
-                                + ButtonSquare.this.isSpawn);
-            }
-        });
+        this.setOnMouseClicked(eventHandler);
     }
     public ButtonSquare(boolean present ){
         this.present= present;
         this.setOpacity(0.0);
+    }
+
+    public static void setOnMouse(EventHandler<MouseEvent> mouseEvent){
+
+        eventHandler = mouseEvent;
+    }
+
+    public void update() {
+
+        this.setOnMouseClicked(eventHandler);
     }
 
     public String getColor() {
@@ -73,5 +75,10 @@ public class ButtonSquare extends Button {
 
     public void setSpawn(boolean spawn) {
         isSpawn = spawn;
+    }
+
+
+    public void setCurrentPosition (boolean iscurrentPosition){
+        this.currentPosition=iscurrentPosition;
     }
 }

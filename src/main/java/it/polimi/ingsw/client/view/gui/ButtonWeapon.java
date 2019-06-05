@@ -12,28 +12,25 @@ public class ButtonWeapon extends Button {
     boolean loaded = true;
     String colorOfSpawn;
 
+    private static EventHandler<MouseEvent> eventHandler;
+
     public ButtonWeapon(int id, String name, ImageView card) {
         this.cardId = id;
         this.name = name;
         super.setGraphic(card);
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                ButtonWeapon.this.setInfoCard();
-            }
-        });
+        this.setOnMouseClicked(eventHandler);
     }
 
-    public void setInfoCard() {
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "askCardInfo");
-                JsonQueue.add("cardId", Integer.toString(ButtonWeapon.this.cardId));
-                JsonQueue.send();
-            }
-        });
+    public static void setOnMouse(EventHandler<MouseEvent> mouseEvent){
+
+        eventHandler = mouseEvent;
     }
+
+    public void update() {
+
+        this.setOnMouseClicked(eventHandler);
+    }
+
 
     public int getCardId() {
         return cardId;

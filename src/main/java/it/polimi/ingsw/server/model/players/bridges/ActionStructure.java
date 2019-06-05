@@ -163,6 +163,7 @@ public class ActionStructure implements Serializable {
                 .add("collect", collect != null)
                 .add("reload", reload != null)
                 .add("shoot", shoot != null)
+                .add("id", this.id)
                 .build();
     }
 }
