@@ -167,13 +167,46 @@
         ]
     },
     {
-        "input": ["usaeffetto"],
-        "method": "askUseEffect",
+        "input": ["usaprimario"],
+        "method": "askUsePrimary",
         "value": [
             {
                 "name": "line",
                 "regex": "(\\s*)(.*)(\\s*)",
-                "error": "Devi selezionare un effetto: primario/alternativo/opzionale."
+                "error": "Error."
+            }
+        ]
+    },
+    {
+        "input": ["usaalternativo"],
+        "method": "askUseAlternative",
+        "value": [
+            {
+                "name": "line",
+                "regex": "(\\s*)(.*)(\\s*)",
+                "error": "Error."
+            }
+        ]
+    },
+    {
+        "input": ["usaopzionaleprimo"],
+        "method": "askUseOptional1",
+        "value": [
+            {
+                "name": "line",
+                "regex": "(\\s*)(.*)(\\s*)",
+                "error": "Error."
+            }
+        ]
+    },
+    {
+        "input": ["usaopzionalesecondo"],
+        "method": "askUseOptional2",
+        "value": [
+            {
+                "name": "line",
+                "regex": "(\\s*)(.*)(\\s*)",
+                "error": "Error."
             }
         ]
     },

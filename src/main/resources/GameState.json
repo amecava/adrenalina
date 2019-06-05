@@ -2,41 +2,49 @@
     {
         "state": "loginState",
 
-        "methods": ["remoteDisconnect", "selectPlayerId"]
+        "info": ["remoteDisconnect"],
+        "methods": ["selectPlayerId"]
     },
     {
         "state": "noGameState",
 
-        "methods": ["remoteDisconnect", "askCreateGame", "selectGame"]
+        "info": ["remoteDisconnect"],
+        "methods": ["askCreateGame", "selectGame"]
     },
     {
         "state": "gameNotStartedState",
 
-        "methods": ["remoteDisconnect", "voteBoard"]
+        "info": ["remoteDisconnect"],
+        "methods": ["voteBoard"]
     },
     {
         "state": "spawnState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "spawn"]
+        "info": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp"],
+        "methods": ["spawn"]
     },
     {
         "state": "activePlayerState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "selectAction", "askUsePowerUp", "endOfTurn"]
+        "info": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp"],
+        "methods": ["selectAction", "askUsePowerUp", "endOfTurn"]
     },
     {
         "state": "notActivePlayerState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "askUsePowerUp"]
+        "info": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp"],
+        "methods": ["askUsePowerUp"]
     },
     {
         "state": "actionState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "moveAction", "askCollect", "askActivateWeapon", "endAction", "askReload"]
+        "info": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp"],
+        "methods": ["endAction"]
     },
     {
         "state": "shootState",
 
-        "methods": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp", "askUseEffect", "endAction"]
+        "info": ["remoteDisconnect", "askCardInfo", "askInfoPowerUp"],
+        "methods": ["endAction"]
     }
 ]

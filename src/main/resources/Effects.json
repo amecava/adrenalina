@@ -276,6 +276,7 @@
         },
 
         "cost": ["ROSSO"],
+        "activated": false,
 
         "maxTargets": 2,
         "sameAsFather": [false, false],

@@ -11,6 +11,7 @@ import it.polimi.ingsw.server.model.decks.WeaponDeck;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
 import it.polimi.ingsw.server.model.exceptions.cards.CostException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
@@ -49,7 +50,8 @@ class GranataVenomTest {
             fail();
         }
 
-        target1.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
+        target1.addPowerUp(board.getPowerUpDeck().getDeck().stream()
+                .filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
 
         effectArgument = new EffectArgument(Arrays.asList(target1));
 
@@ -106,7 +108,8 @@ class GranataVenomTest {
             fail();
         }
 
-        target1.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
+        target1.addPowerUp(board.getPowerUpDeck().getDeck().stream()
+                .filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
 
         effectArgument = new EffectArgument(Arrays.asList(target1));
 
@@ -125,20 +128,15 @@ class GranataVenomTest {
 
             source.getAmmoCubesList().forEach(x -> x.setUsed(false));
 
-            try {
-                tester.reloadWeapon(new ArrayList<>());
-                assertTrue(true);
-            } catch (CostException e) {
-
-                fail();
-            }
+            tester.getMap().values().forEach(x -> x.setUsed(false));
 
             Thread damage = new Thread(() -> {
 
                 // Damage
                 try {
 
-                    tester.useCard(EffectType.PRIMARY, new EffectArgument(Arrays.asList(target1)), new ArrayList<>());
+                    tester.useCard(EffectType.PRIMARY, new EffectArgument(Arrays.asList(target1)),
+                            new ArrayList<>());
 
                 } catch (CardException | PropertiesException | EffectException e) {
                     e.printStackTrace();
@@ -153,7 +151,6 @@ class GranataVenomTest {
                     target1.getPowerUpsList().get(0).useCard(new EffectArgument());
 
                 } catch (CardException | PropertiesException | EffectException e) {
-                    e.printStackTrace();
                     fail();
                 }
             });
@@ -204,9 +201,11 @@ class GranataVenomTest {
             fail();
         }
 
-        target1.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
+        target1.addPowerUp(board.getPowerUpDeck().getDeck().stream()
+                .filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
         board.getPowerUpDeck().getDeck().remove(target1.getPowerUpsList().get(0));
-        target2.addPowerUp(board.getPowerUpDeck().getDeck().stream().filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
+        target2.addPowerUp(board.getPowerUpDeck().getDeck().stream()
+                .filter(x -> x.getName().equals("GRANATAVENOM")).findAny().get());
 
         effectArgument = new EffectArgument();
 
@@ -229,7 +228,7 @@ class GranataVenomTest {
             try {
                 tester.reloadWeapon(new ArrayList<>());
                 assertTrue(true);
-            } catch (CostException e) {
+            } catch (CostException | IllegalActionException e) {
 
                 fail();
             }

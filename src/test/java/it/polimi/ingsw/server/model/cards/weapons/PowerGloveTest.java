@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.model.cards.weapons;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
@@ -111,9 +112,9 @@ class PowerGloveTest {
         try {
             tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException | CardException e) {
+        } catch (PropertiesException | EffectException e) {
             fail();
-        } catch (EffectException e) {
+        } catch (CardException e) {
             assertTrue(true);
         }
     }
@@ -216,9 +217,9 @@ class PowerGloveTest {
         try {
             tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
             fail();
-        } catch (PropertiesException | CardException e) {
+        } catch (PropertiesException | EffectException e) {
             fail();
-        } catch (EffectException e) {
+        } catch (CardException e) {
             assertTrue(true);
         }
 
@@ -229,7 +230,7 @@ class PowerGloveTest {
             tester.reloadWeapon(new ArrayList<>());
 
             assertTrue(tester.isLoaded());
-        } catch (CostException e) {
+        } catch (CostException | IllegalActionException e) {
             fail();
         }
 

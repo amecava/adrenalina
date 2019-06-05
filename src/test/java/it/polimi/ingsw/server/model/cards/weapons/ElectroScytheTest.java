@@ -136,9 +136,9 @@ class ElectroScytheTest {
         try {
             tester.useCard(EffectType.ALTERNATIVE, effectArgument, new ArrayList<>());
             fail();
-        } catch (CardException | PropertiesException e) {
+        } catch (EffectException | PropertiesException e) {
             fail();
-        } catch (EffectException e) {
+        } catch (CardException e) {
             assertTrue(true);
         }
     }

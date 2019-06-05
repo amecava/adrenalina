@@ -9,7 +9,6 @@ import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
-import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
@@ -18,9 +17,7 @@ import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import javax.json.Json;
@@ -60,12 +57,12 @@ public abstract class Presenter implements VirtualPresenter {
         return this.playerId;
     }
 
-    public Player getPlayer() {
+    Player getPlayer() {
 
         return this.player;
     }
 
-    public GameHandler getGameHandler() {
+    GameHandler getGameHandler() {
 
         return this.gameHandler;
     }
@@ -357,8 +354,7 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
-                this.player
-                        .selectAction(Integer.valueOf(object.getString("actionNumber")));
+                this.player.selectAction(Integer.valueOf(object.getString("actionNumber")));
 
                 this.callRemoteMethod("completeSelectAction",
                         this.player.toJsonObject().getJsonObject("bridge")
@@ -368,7 +364,7 @@ public abstract class Presenter implements VirtualPresenter {
                                         Integer.valueOf(object.getString("actionNumber")) - 1)
                                 .toString());
 
-                this.callRemoteMethod("updateState", state.get("actionState").toString());
+                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
 
             } catch (IllegalActionException e) {
 
@@ -407,6 +403,8 @@ public abstract class Presenter implements VirtualPresenter {
                         x -> true,
                         "updateBoard",
                         this.gameHandler.toJsonObject().toString());
+
+                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
 
             } catch (ColorException | IllegalActionException | CardException | EffectException | PropertiesException e) {
 
@@ -466,6 +464,8 @@ public abstract class Presenter implements VirtualPresenter {
                         "updateBoard",
                         this.gameHandler.toJsonObject().toString());
 
+                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
+
 
             } catch (IllegalActionException |
                     CardException e) {
@@ -500,7 +500,7 @@ public abstract class Presenter implements VirtualPresenter {
                         + "usaeffetto tipoEffetto | Target(un personaggio, un quadrato o una stanza) | destinazione(colore-idQiuadrato) | eventualiPowerup(nome-colore)\n"
                         + "Esempio: usaeffetto primario | sprog dozer (oppure \"rosso\" per selezionare un'intera stanza) | rosso-1 | mirino-rosso");
 
-                this.callRemoteMethod("updateState", state.get("shootState").toString());
+                this.callRemoteMethod("updateState", StateHandler.createShootState(this.player, state.get("shootState")).toString());
 
             } catch (CardException | IllegalActionException e) {
 
@@ -510,51 +510,27 @@ public abstract class Presenter implements VirtualPresenter {
     }
 
     @Override
-    public void askUseEffect(String value) throws RemoteException {
+    public void askUsePrimary(String value) throws RemoteException {
 
-        JsonObject object = JsonUtility.jsonDeserialize(value);
+        this.askUseEffect(EffectType.PRIMARY, value);
+    }
 
-        if (this.gameHandler == null) {
+    @Override
+    public void askUseAlternative(String value) throws RemoteException {
 
-            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+        this.askUseEffect(EffectType.ALTERNATIVE, value);
+    }
 
-        } else if (!this.gameHandler.isGameStarted()) {
+    @Override
+    public void askUseOptional1(String value) throws RemoteException {
 
-            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+        this.askUseEffect(EffectType.OPTIONAL_1, value);
+    }
 
-        } else {
+    @Override
+    public void askUseOptional2(String value) throws RemoteException {
 
-            try {
-
-                String line = object.getString("line");
-
-                if (!(line.contains("tipo"))) {
-
-                    this.callRemoteMethod("errorMessage",
-                            "Devi inserire quale effetto vuoi utilizzare (primario/secondario/opzionale)");
-
-                } else {
-
-                    this.player.useCard(EffectParser.effectType(line),
-                            EffectParser.effectArgument(this.gameHandler, line),
-                            EffectParser.powerUps(this.player, line));
-
-                    ClientHandler.gameBroadcast(
-                            this.gameHandler,
-                            x -> true,
-                            "updateBoard",
-                            this.gameHandler.toJsonObject().toString());
-
-                    this.callRemoteMethod("infoMessage",
-                            "L'effetto è stato eseguito con successo.");
-
-                }
-            } catch (ColorException | EffectException | CardException | IllegalActionException | PropertiesException e) {
-
-                this.callRemoteMethod("errorMessage", e.getMessage());
-            }
-        }
-
+        this.askUseEffect(EffectType.OPTIONAL_2, value);
     }
 
     @Override
@@ -655,6 +631,8 @@ public abstract class Presenter implements VirtualPresenter {
                 this.callRemoteMethod("infoMessage",
                         "Carta ricaricata! Adesso puoi solo finire il tuo turno con il comando \"fineturno\".");
 
+                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
+
             } catch (CardException | IllegalActionException e) {
 
                 this.callRemoteMethod("errorMessage", e.getMessage());
@@ -753,6 +731,45 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    private void askUseEffect(EffectType effectType, String value) throws RemoteException {
+
+        JsonObject object = JsonUtility.jsonDeserialize(value);
+
+        if (this.gameHandler == null) {
+
+            this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
+
+        } else if (!this.gameHandler.isGameStarted()) {
+
+            this.callRemoteMethod("errorMessage", "La partita non è ancora iniziata.");
+
+        } else {
+
+            try {
+
+                this.player.useCard(effectType,
+                        EffectParser.effectArgument(this.gameHandler, object.getString("line")),
+                        EffectParser.powerUps(this.player, object.getString("line")));
+
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateBoard",
+                        this.gameHandler.toJsonObject().toString());
+
+                this.callRemoteMethod("infoMessage",
+                        "L'effetto è stato eseguito con successo.");
+
+                this.callRemoteMethod("updateState", StateHandler.createShootState(this.player, state.get("shootState")).toString());
+
+            } catch (ColorException | EffectException | CardException | IllegalActionException | PropertiesException e) {
+
+                this.callRemoteMethod("errorMessage", e.getMessage());
+            }
+        }
+
+    }
+
     private void reconnectPlayer() throws RemoteException {
 
         if (!this.gameHandler.isGameStarted()) {
@@ -770,11 +787,11 @@ public abstract class Presenter implements VirtualPresenter {
 
         } else if (this.player.isShooting()) {
 
-            this.callRemoteMethod("updateState", state.get("shootState").toString());
+            this.callRemoteMethod("updateState", StateHandler.createShootState(this.player, state.get("shootState")).toString());
 
         } else if (this.player.getCurrentAction() != null) {
 
-            this.callRemoteMethod("updateState", state.get("actionState").toString());
+            this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
 
         } else {
 

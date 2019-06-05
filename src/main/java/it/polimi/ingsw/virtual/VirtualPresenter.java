@@ -19,7 +19,10 @@ public interface VirtualPresenter extends Remote {
     void moveAction(String value) throws RemoteException;
     void askCollect(String value) throws RemoteException;
     void askActivateWeapon(String value) throws RemoteException;
-    void askUseEffect(String value) throws RemoteException;
+    void askUsePrimary(String value) throws RemoteException;
+    void askUseAlternative(String value) throws RemoteException;
+    void askUseOptional1(String value) throws RemoteException;
+    void askUseOptional2(String value) throws RemoteException;
     void askUsePowerUp(String value) throws RemoteException;
     void askReload(String value) throws RemoteException;
     void endAction(String value) throws RemoteException;
