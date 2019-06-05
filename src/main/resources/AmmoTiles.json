@@ -12,7 +12,7 @@
         "powerUp": true
     },
     {
-        "cubes": ["GIALLO", "ROSSO", "GIALLO"],
+        "cubes": ["ROSSO", "GIALLO", "GIALLO"],
         "powerUp": false
     },
     {
@@ -32,7 +32,7 @@
         "powerUp": false
     },
     {
-        "cubes": ["BLU", "ROSSO"],
+        "cubes": ["ROSSO", "BLU"],
         "powerUp": true
     },
     {
@@ -44,7 +44,7 @@
         "powerUp": true
     },
     {
-        "cubes": ["GIALLO", "ROSSO", "GIALLO"],
+        "cubes": ["ROSSO", "GIALLO", "GIALLO"],
         "powerUp": false
     },
     {
@@ -56,7 +56,7 @@
         "powerUp": true
     },
     {
-        "cubes": ["GIALLO", "GIALLO", "BLU"],
+        "cubes": ["BLU", "GIALLO", "GIALLO"],
         "powerUp": false
     },
     {
@@ -72,7 +72,7 @@
         "powerUp": false
     },
     {
-        "cubes": ["GIALLO", "GIALLO", "BLU"],
+        "cubes": ["BLU", "GIALLO", "GIALLO"],
         "powerUp": false
     },
     {
@@ -80,15 +80,15 @@
         "powerUp": true
     },
     {
-        "cubes": ["ROSSO", "ROSSO", "BLU"],
+        "cubes": ["BLU", "ROSSO", "ROSSO"],
         "powerUp": false
     },
     {
-        "cubes": ["BLU", "ROSSO", "BLU"],
+        "cubes": ["ROSSO", "BLU", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["BLU", "ROSSO"],
+        "cubes": ["ROSSO", "BLU"],
         "powerUp": true
     },
     {
@@ -96,11 +96,11 @@
         "powerUp": false
     },
     {
-        "cubes": ["GIALLO", "ROSSO", "GIALLO"],
+        "cubes": ["ROSSO", "GIALLO", "GIALLO"],
         "powerUp": false
     },
     {
-        "cubes": ["BLU", "ROSSO", "BLU"],
+        "cubes": ["ROSSO", "BLU", "BLU"],
         "powerUp": false
     },
     {
@@ -108,7 +108,7 @@
         "powerUp": true
     },
     {
-        "cubes": ["ROSSO", "ROSSO", "BLU"],
+        "cubes": ["BLU", "ROSSO", "ROSSO"],
         "powerUp": false
     },
     {
@@ -120,15 +120,15 @@
         "powerUp": true
     },
     {
-        "cubes": ["BLU", "ROSSO", "BLU"],
+        "cubes": ["ROSSO", "BLU", "BLU"],
         "powerUp": false
     },
     {
-        "cubes": ["BLU", "ROSSO"],
+        "cubes": ["ROSSO", "BLU"],
         "powerUp": true
     },
     {
-        "cubes": ["ROSSO", "ROSSO", "BLU"],
+        "cubes": [ "BLU", "ROSSO", "ROSSO"],
         "powerUp": false
     },
     {
@@ -136,11 +136,11 @@
         "powerUp": true
     },
     {
-        "cubes": ["GIALLO", "GIALLO", "BLU"],
+        "cubes": ["BLU", "GIALLO", "GIALLO"],
         "powerUp": false
     }, 
     {
-        "cubes": ["BLU", "ROSSO"],
+        "cubes": ["ROSSO", "BLU"],
         "powerUp": true
     }
 ]
