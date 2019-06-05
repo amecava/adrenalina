@@ -29,7 +29,6 @@ import it.polimi.ingsw.virtual.JsonUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -210,6 +209,11 @@ public class Player implements Target, Serializable {
     public ActionStructure getCurrentAction() {
 
         return this.bridge.getCurrentAction();
+    }
+
+    public WeaponCard getCurrentWeaponCard() {
+
+        return this.bridge.getCurrentWeaponCard();
     }
 
     public boolean isShooting() {

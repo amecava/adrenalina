@@ -16,14 +16,17 @@ import java.util.List;
 
 class EffectParser {
 
+    private EffectParser() {
+
+        //
+    }
+
     private static final String TIPO = "tipo";
     private static final String TARGET = "target";
     private static final String DESTINAZIONE = "destinazione";
     private static final String POWER_UP = "powerup";
     private static final String AMMOCOLOR = "paga";
     private static final String CARD_ID = "id";
-
-
 
     static EffectArgument effectArgument(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
@@ -66,28 +69,6 @@ class EffectParser {
         return Color.ofName(line);
     }
 
-    static int cardId(String request) throws CardException, NumberFormatException {
-
-        int startPar;
-        int endPar;
-
-        String cardLine = request.substring(request.indexOf(CARD_ID),
-                request.indexOf(")", request.indexOf(CARD_ID)) + 1);
-        cardLine = cardLine.replaceAll("id(\\s*)", "id");
-
-        startPar = cardLine.indexOf(CARD_ID) + CARD_ID.length();
-        endPar = cardLine.indexOf(")");
-
-        cardLine = cardLine.substring(startPar + 1, endPar).trim();
-
-        if (request.equals(" ") || request.equals("")) {
-
-            throw new CardException("Seleziona un id valido.");
-        }
-
-        return Integer.parseInt(cardLine);
-    }
-
     static List<Target> target(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
 
@@ -125,12 +106,12 @@ class EffectParser {
 
                 if (x.contains("-")) {
 
-                    if (x.length() != 2) {
+                    String[] square = x.split("-");
+
+                    if (square.length != 2) {
 
                         throw new SquareException("Istruzione non valida");
                     }
-
-                    String[] square = x.split("-");
 
                     targetList.add(gameHandler.getModel().getBoard()
                             .findSquare(square[0], square[1]));
@@ -260,24 +241,5 @@ class EffectParser {
         }
 
         return list;
-    }
-
-    //  tipo(cose) target(cose) destinazione(cose) powerup(cose)
-
-    static EffectType effectType(String line) throws EffectException {
-
-        int startPar;
-        int endPar;
-
-        line = line.substring(line.indexOf(TIPO), line.indexOf(")", line.indexOf(TIPO)) + 1);
-        line = line.replaceAll("tipo(\\s*)", "tipo");
-
-        startPar = line.indexOf(TIPO) + TIPO.length();
-        endPar = line.indexOf(")");
-
-        line = line.substring(startPar + 1, endPar).trim();
-
-        return EffectType.ofName(line);
-
     }
 }

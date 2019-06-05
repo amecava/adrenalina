@@ -162,7 +162,7 @@ public class ConsoleView implements View, VirtualView {
 
         JsonObject object = JsonUtility.jsonDeserialize(value);
 
-        RegexJson.updateState(object.getJsonArray("methods"));
+        RegexJson.updateState(object);
     }
 
     @Override

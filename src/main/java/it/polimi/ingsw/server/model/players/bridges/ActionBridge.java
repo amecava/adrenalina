@@ -89,12 +89,12 @@ class ActionBridge implements Serializable {
         this.frenzyActions = frenzyActions;
     }
 
-    public boolean isRespawn() {
+    boolean isRespawn() {
 
         return this.respawn;
     }
 
-    public void setRespawn(boolean respawn) {
+    void setRespawn(boolean respawn) {
 
         this.respawn = respawn;
     }
@@ -119,7 +119,7 @@ class ActionBridge implements Serializable {
         this.currentWeaponCard = weaponCard;
     }
 
-    public List<ActionStructure> getActions() {
+    List<ActionStructure> getActions() {
 
         return this.possibleActions;
     }
@@ -146,8 +146,11 @@ class ActionBridge implements Serializable {
 
             this.currentAction = null;
         }
-        if (this.currentWeaponCard!=null)
+        if (this.currentWeaponCard!=null) {
+
+            this.currentWeaponCard.setLoaded(false);
             this.currentWeaponCard = null;
+        }
     }
 
     private ActionStructure findAction(int id) {

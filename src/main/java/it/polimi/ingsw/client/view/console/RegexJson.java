@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.view.console;
 import it.polimi.ingsw.virtual.JsonUtility;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import javax.json.JsonValue;
 
 class RegexJson {
 
+    private static final List<String> info = new ArrayList<>();
     private static final List<String> commands = new ArrayList<>();
 
     private static Map<String, String> inputMethod = new HashMap<>();
@@ -56,23 +58,36 @@ class RegexJson {
                             .map(JsonValue::asJsonObject)
                             .forEach(y ->
 
-                                regexConnection.get(x.getString("method"))
-                                        .add(new Triple<>(
-                                                y.getString("name"),
-                                                Pattern.compile(y.getString("regex")),
-                                                y.getString("error")
-                                         ))
+                                    regexConnection.get(x.getString("method"))
+                                            .add(new Triple<>(
+                                                    y.getString("name"),
+                                                    Pattern.compile(y.getString("regex")),
+                                                    y.getString("error")
+                                            ))
                             );
                 });
     }
 
-    static void updateState(JsonArray array) {
+    static void updateState(JsonObject object) {
 
+        info.clear();
         commands.clear();
 
-        array.stream()
+        object.getJsonArray("info").stream()
+                .map(JsonValue::toString)
+                .forEach(x -> info.add(x.substring(1, x.length() - 1)));
+
+        object.getJsonArray("methods").stream()
                 .map(JsonValue::toString)
                 .forEach(x -> commands.add(x.substring(1, x.length() - 1)));
+    }
+
+    static List<String> getInfo() {
+
+        return inputMethod.entrySet().stream()
+                .filter(x -> info.stream().anyMatch(y -> y.equals(x.getValue())))
+                .map(Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     static List<String> getCommands() {
@@ -91,9 +106,11 @@ class RegexJson {
                 .filter(x -> JsonUtility.levenshteinDistance(parts[0], x.getKey()) <= 3)
                 .map(Entry::getValue)
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Selezione non disponibile, riprova o digita help."));
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Selezione non disponibile, riprova o digita help."));
 
-        if (commands.stream().noneMatch(x -> x.equals(method))) {
+        if (info.stream().noneMatch(x -> x.equals(method))
+                && commands.stream().noneMatch(x -> x.equals(method))) {
 
             throw new NoSuchElementException("C'è un tempo e un luogo per ogni cosa, ma non ora.");
         }

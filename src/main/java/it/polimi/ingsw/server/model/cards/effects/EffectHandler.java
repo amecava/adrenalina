@@ -110,11 +110,6 @@ public class EffectHandler implements Serializable {
 
         effect.setUsed(true);
 
-        // Unload card if effect executed and no exceptions launched
-        if (card.isLoaded()) {
-            card.setLoaded(false);
-        }
-
         // Activate all optional effects related to the executed effect
         effect.getOptionalId().forEach(x ->
                 card.getOptionalList().forEach(y -> {
@@ -123,6 +118,15 @@ public class EffectHandler implements Serializable {
                     }
                 })
         );
+
+        if (card.getMap().values().stream().allMatch(Effect::isUsed) || (
+                card.getMap().containsKey(EffectType.ALTERNATIVE) && (
+                        card.getMap().get(EffectType.PRIMARY).isUsed() || card.getMap()
+                                .get(EffectType.ALTERNATIVE).isUsed()))) {
+
+            // Unload card if all effects used and no exceptions launched
+            card.setLoaded(false);
+        }
     }
 
     private void updateActiveInactiveVariables(Effect effect) {

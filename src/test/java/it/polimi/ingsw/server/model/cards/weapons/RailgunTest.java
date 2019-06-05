@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.ammo.AmmoCube;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CostException;
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.board.Board;
@@ -93,7 +94,7 @@ class RailgunTest {
 
         try {
             tester.reloadWeapon(new ArrayList<>());
-        } catch (CostException e) {
+        } catch (CostException | IllegalActionException e) {
 
             assertEquals(before.stream().filter(x -> !x.isUsed()).count(),
                     source.getAmmoCubesList().stream().filter(x -> !x.isUsed()).count());
@@ -105,7 +106,7 @@ class RailgunTest {
             tester.reloadWeapon(new ArrayList<>());
             assertEquals(source.getAmmoCubesList().stream().filter(AmmoCube::isUsed).count(),
                     tester.getReloadCost().size());
-        } catch (CostException e) {
+        } catch (CostException | IllegalActionException e) {
             fail();
         }
 
@@ -128,7 +129,7 @@ class RailgunTest {
                     tester.getReloadCost().size() - 1);
             assertEquals(source.getAmmoCubesList().stream()
                     .filter(x -> x.getColor().equals(Color.BLU) && x.isUsed()).count(), 0);
-        } catch (CostException e) {
+        } catch (CostException | IllegalActionException e) {
             fail();
         }
     }
@@ -204,7 +205,7 @@ class RailgunTest {
 
         try {
             tester.reloadWeapon(new ArrayList<>());
-        } catch (CostException e) {
+        } catch (CostException | IllegalActionException e) {
 
             assertEquals(before.stream().filter(x -> !x.isUsed()).count(),
                     source.getAmmoCubesList().stream().filter(x -> !x.isUsed()).count());
@@ -216,7 +217,7 @@ class RailgunTest {
             tester.reloadWeapon(new ArrayList<>());
             assertEquals(source.getAmmoCubesList().stream().filter(AmmoCube::isUsed).count(),
                     tester.getReloadCost().size());
-        } catch (CostException e) {
+        } catch (CostException | IllegalActionException e) {
             fail();
         }
 

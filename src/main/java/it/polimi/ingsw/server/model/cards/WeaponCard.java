@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.cards;
 
+import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.ammo.AmmoCube;
 import it.polimi.ingsw.server.model.cards.effects.Effect;
@@ -122,43 +123,44 @@ public class WeaponCard implements Card, Serializable {
         return optionalList;
     }
 
-    public void reloadWeapon(List<PowerUpCard> powerUpCardList) throws CostException {
+    public void reloadWeapon(List<PowerUpCard> powerUpCardList) throws IllegalActionException, CostException {
 
-        // If the card is not loaded
-        if (!this.loaded) {
+        if (this.isLoaded()) {
 
-            List<Color> costCopy = new ArrayList<>(this.reloadCost);
+            throw new IllegalActionException("La carta è già carica");
+        }
 
-            this.checkCost(costCopy, powerUpCardList);
+        List<Color> costCopy = new ArrayList<>(this.reloadCost);
 
-            // Set card loaded flag to true
-            this.loaded = true;
+        this.checkCost(costCopy, powerUpCardList);
 
-            // Set primary effect used flag to false
-            this.map.get(EffectType.PRIMARY).setUsed(false);
+        // Set card loaded flag to true
+        this.loaded = true;
 
-            // Set alternative effect used flag to false if present
-            if (this.map.containsKey(EffectType.ALTERNATIVE)) {
+        // Set primary effect used flag to false
+        this.map.get(EffectType.PRIMARY).setUsed(false);
 
-                this.map.get(EffectType.ALTERNATIVE).setUsed(false);
+        // Set alternative effect used flag to false if present
+        if (this.map.containsKey(EffectType.ALTERNATIVE)) {
+
+            this.map.get(EffectType.ALTERNATIVE).setUsed(false);
+        }
+
+        // Deactivate optionals if they've been activated and set used flag to false
+        this.getOptionalList().forEach(x -> {
+            x.setUsed(false);
+
+            if (x.getActivated() != null) {
+                x.setActivated(false);
             }
+        });
 
-            // Deactivate optionals if they've been activated and set used flag to false
-            this.getOptionalList().forEach(x -> {
-                x.setUsed(false);
-
-                if (x.getActivated() != null) {
-                    x.setActivated(false);
-                }
-            });
-
-            costCopy.forEach(x ->
+        costCopy.forEach(x ->
                 this.owner.getAmmoCubesList().stream()
                         .filter(y -> y.getColor().equals(x) && !y.isUsed())
                         .findFirst().get()
                         .setUsed(true)
-            );
-        }
+        );
     }
 
     public WeaponCard activateCard() throws CardException {
@@ -184,6 +186,11 @@ public class WeaponCard implements Card, Serializable {
     public void useCard(EffectType effectType, EffectArgument target,
             List<PowerUpCard> powerUpCardList)
             throws EffectException, PropertiesException, CardException {
+
+        if (!this.isLoaded()) {
+
+            throw new CardNotLoadedException("La carta non è carica.");
+        }
 
         // Launch exception if selected effect not present in map
         if (!this.map.containsKey(effectType)) {
