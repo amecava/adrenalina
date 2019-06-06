@@ -24,6 +24,8 @@ public class ButtonWeapon extends Button {
         this.name = name;
         super.setGraphic(card);
         this.setOnMouseClicked(eventHandler);
+        this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+
     }
 
     public static void setOnMouse(EventHandler<MouseEvent> mouseEvent){

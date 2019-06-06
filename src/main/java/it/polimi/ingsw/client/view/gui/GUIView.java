@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
+import java.security.Guard;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +85,7 @@ public class GUIView extends Application implements View, VirtualView {
     private static Map<String, Image> playersMap = new HashMap<>();
     private static Map<String, Image> ammoTilesMap = new HashMap<>();
     private static Map<String, Image> dropsMap = new HashMap<>();
+    private static Map<String, Image> possibleActionsMap = new HashMap<>();
 
     private static ImageView imageView0;
     private static ImageView imageView1;
@@ -100,6 +102,7 @@ public class GUIView extends Application implements View, VirtualView {
     private ScrollPane gameList;
 
     private VBox selectedGame;
+    private VBox collectiveButtons = new VBox();
 
     private List<Stage> notifications = new ArrayList<>();
 
@@ -116,9 +119,11 @@ public class GUIView extends Application implements View, VirtualView {
     private List<ButtonPowerUp> powerUpList = new ArrayList<>();
     private List<ButtonWeapon> weaponsList = new ArrayList<>();
     private List<ButtonWeapon> weaponsInSpawnSquare = new ArrayList<>();
+    private List<Integer> actionsList = new ArrayList<>();
 
     private static ProgressBar progressBar;
     private static boolean ramLoaded = false;
+    private String character;
 
     private String playerIdView;
 
@@ -266,6 +271,73 @@ public class GUIView extends Application implements View, VirtualView {
             dropsMap.put("VIOLA", new Image("Drop/drop-violet.png"));
             dropsMap.put("GRIGIO", new Image("Drop/drop-gray.png"));
             dropsMap.put("morte", new Image("Drop/teschio.jpg"));
+
+            possibleActionsMap.put("Banshee0", new Image("azioniDisponibili/Banshee0.png"));
+            possibleActionsMap.put("Banshee1", new Image("azioniDisponibili/Banshee1.png"));
+            possibleActionsMap.put("Banshee2", new Image("azioniDisponibili/Banshee2.png"));
+            possibleActionsMap.put("Banshee3", new Image("azioniDisponibili/Banshee3.png"));
+            possibleActionsMap.put("Banshee4", new Image("azioniDisponibili/Banshee4.png"));
+            possibleActionsMap.put("Banshee5", new Image("azioniDisponibili/Banshee5.png"));
+            possibleActionsMap.put("Banshee6", new Image("azioniDisponibili/Banshee6.png"));
+            possibleActionsMap.put("Banshee7", new Image("azioniDisponibili/Banshee7.png"));
+            possibleActionsMap.put("Banshee8", new Image("azioniDisponibili/Banshee8.png"));
+            possibleActionsMap.put("Banshee9", new Image("azioniDisponibili/Banshee9.png"));
+            possibleActionsMap.put("Banshee10", new Image("azioniDisponibili/Banshee10.png"));
+            possibleActionsMap
+                    .put(":D-strutt-OR30", new Image("azioniDisponibili/D-strutt-OR30.png"));
+            possibleActionsMap
+                    .put(":D-strutt-OR31", new Image("azioniDisponibili/D-strutt-OR31.png"));
+            possibleActionsMap
+                    .put(":D-strutt-OR32", new Image("azioniDisponibili/D-strutt-OR32.png"));
+            possibleActionsMap
+                    .put(":D-strutt-OR33", new Image("azioniDisponibili/D-strutt-OR33.png"));
+            possibleActionsMap
+                    .put(":D-strutt-OR34", new Image("azioniDisponibili/D-strutt-OR34.png"));
+            possibleActionsMap
+                    .put(":D-strutt-OR35", new Image("azioniDisponibili/D-strutt-OR35.png"));
+            //possibleActionsMap
+            // .put(":D-strutt-OR36", new Image("azioniDisponibili/D-strutt-OR36.png"));
+            //possibleActionsMap
+            // .put(":D-strutt-OR37", new Image("azioniDisponibili/D-strutt-OR38.png"));
+            //possibleActionsMap
+            //.put(":D-strutt-OR38", new Image("azioniDisponibili/D-strutt-OR38.png"));
+            //possibleActionsMap
+            // .put(":D-strutt-OR39", new Image("azioniDisponibili/D-strutt-OR39.png"));
+            //possibleActionsMap
+            //  .put(":D-strutt-OR310", new Image("azioniDisponibili/D-strutt-OR310.png"));
+            possibleActionsMap.put("Dozer0", new Image("azioniDisponibili/Dozer0.png"));
+            possibleActionsMap.put("Dozer1", new Image("azioniDisponibili/Dozer1.png"));
+            possibleActionsMap.put("Dozer2", new Image("azioniDisponibili/Dozer2.png"));
+            possibleActionsMap.put("Dozer3", new Image("azioniDisponibili/Dozer3.png"));
+            possibleActionsMap.put("Dozer4", new Image("azioniDisponibili/Dozer4.png"));
+            possibleActionsMap.put("Dozer5", new Image("azioniDisponibili/Dozer5.png"));
+            //possibleActionsMap.put("Dozer6", new Image("azioniDisponibili/Dozer6.png"));
+            //possibleActionsMap.put("Dozer7", new Image("azioniDisponibili/Dozer7.png"));
+            //possibleActionsMap.put("Dozer8", new Image("azioniDisponibili/Dozer8.png"));
+            //possibleActionsMap.put("Dozer9", new Image("azioniDisponibili/Dozer9.png"));
+            //possibleActionsMap.put("Dozer10", new Image("azioniDisponibili/Dozer10.png"));
+            possibleActionsMap.put("Sprog0", new Image("azioniDisponibili/Sprog0.png"));
+            possibleActionsMap.put("Sprog1", new Image("azioniDisponibili/Sprog1.png"));
+            possibleActionsMap.put("Sprog2", new Image("azioniDisponibili/Sprog2.png"));
+            possibleActionsMap.put("Sprog3", new Image("azioniDisponibili/Sprog3.png"));
+            possibleActionsMap.put("Sprog4", new Image("azioniDisponibili/Sprog4.png"));
+            possibleActionsMap.put("Sprog5", new Image("azioniDisponibili/Sprog5.png"));
+            //possibleActionsMap.put("Sprog6", new Image("azioniDisponibili/Sprog6.png"));
+            //possibleActionsMap.put("Sprog7", new Image("azioniDisponibili/Sprog7.png"));
+            //possibleActionsMap.put("Sprog8", new Image("azioniDisponibili/Sprog8.png"));
+            //possibleActionsMap.put("Sprog9", new Image("azioniDisponibili/Sprog9.png"));
+            //possibleActionsMap.put("Spro10", new Image("azioniDisponibili/Sprog10.png"));
+            possibleActionsMap.put("Violetta0", new Image("azioniDisponibili/Violetta0.png"));
+            possibleActionsMap.put("Violetta1", new Image("azioniDisponibili/Violetta1.png"));
+            possibleActionsMap.put("Violetta2", new Image("azioniDisponibili/Violetta2.png"));
+            possibleActionsMap.put("Violetta3", new Image("azioniDisponibili/Violetta3.png"));
+            possibleActionsMap.put("Violetta4", new Image("azioniDisponibili/Violetta4.png"));
+            possibleActionsMap.put("Violetta5", new Image("azioniDisponibili/Violetta5.png"));
+            //possibleActionsMap.put("Violetta6", new Image("azioniDisponibili/Violetta6.png"));
+            //possibleActionsMap.put("Violetta7", new Image("azioniDisponibili/Violetta7.png"));
+            //possibleActionsMap.put("Violetta8", new Image("azioniDisponibili/Violetta8.png"));
+            //possibleActionsMap.put("Violetta9", new Image("azioniDisponibili/Violetta9.png"));
+            //possibleActionsMap.put("Violetta10", new Image("azioniDisponibili/Violetta10.png"));
 
             //////////////////////////////////////////////////////////////event handler for no spaces
             noSpace = new EventHandler<KeyEvent>() {
@@ -646,7 +718,6 @@ public class GUIView extends Application implements View, VirtualView {
         borderPane.setTop(upTxt);
         BorderPane.setAlignment(upTxt, Pos.TOP_CENTER);
 
-
         HBox images1 = new HBox();
         images1.setMouseTransparent(false);
 
@@ -922,12 +993,12 @@ public class GUIView extends Application implements View, VirtualView {
                     playerId.setFont(Font.font("verdana", 10));
                     playerId.setTextFill(Color.WHITE);
 
-                    Label character = new Label("Personaggio: " + x.getString("character"));
-                    character.setFont(Font.font("verdana", 10));
-                    character.setWrapText(true);
-                    character.setTextFill(Color.YELLOW);
+                    Label characterLabel = new Label("Personaggio: " + x.getString("character"));
+                    characterLabel.setFont(Font.font("verdana", 10));
+                    characterLabel.setWrapText(true);
+                    characterLabel.setTextFill(Color.YELLOW);
 
-                    player.getChildren().addAll(playerId, character);
+                    player.getChildren().addAll(playerId, characterLabel);
                     playersConnected.getChildren().add(player);
                 });
 
@@ -935,7 +1006,8 @@ public class GUIView extends Application implements View, VirtualView {
 
             BorderPane borderPane = (BorderPane) currentStage.getScene().getRoot();
 
-            borderPane.setPrefWidth(((BorderPane) currentStage.getScene().getRoot()).getPrefWidth());
+            borderPane
+                    .setPrefWidth(((BorderPane) currentStage.getScene().getRoot()).getPrefWidth());
             AnchorPane right = new AnchorPane();
             right.getChildren().add(playersConnected);
             AnchorPane.setLeftAnchor(right, 0.0);
@@ -1284,19 +1356,19 @@ public class GUIView extends Application implements View, VirtualView {
 
                                     break;
 
-                    }
-                    weaponsInSpawnSquare.add(rotatedButton);
-                    rotatedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-                            JsonQueue.add("method", "askCardInfo");
-                            JsonQueue.add("cardId", Integer.toString(
-                                    ((ButtonWeapon) mouseEvent.getSource()).cardId));
-                            JsonQueue.send();
-                        }
-                    });
-                    rotatedButton.setOnMouseEntered(bigger);
-                    rotatedButton.setOnMouseExited(smaller);
+                            }
+                            weaponsInSpawnSquare.add(rotatedButton);
+                            rotatedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    JsonQueue.add("method", "askCardInfo");
+                                    JsonQueue.add("cardId", Integer.toString(
+                                            ((ButtonWeapon) mouseEvent.getSource()).cardId));
+                                    JsonQueue.send();
+                                }
+                            });
+                            rotatedButton.setOnMouseEntered(bigger);
+                            rotatedButton.setOnMouseExited(smaller);
 
                         });
 
@@ -1363,6 +1435,13 @@ public class GUIView extends Application implements View, VirtualView {
                                                     ((ImageView) m)
                                                             .setFitHeight(125 / scale);
                                                 });
+                                        if (t.getString("playerId").equals(playerIdView)) {
+                                            this.squareList.stream().filter(k -> k.getPresent())
+                                                    .filter(s -> s.getColor().equals(color) && s
+                                                            .getButtonSquareId()
+                                                            .equals(id))
+                                                    .findAny().get().setCurrentPosition(true);
+                                        }
                                     });
                         }
 
@@ -1394,9 +1473,20 @@ public class GUIView extends Application implements View, VirtualView {
             AnchorPane.setTopAnchor(killsOfAllPlayers, 30.0);
             anchorPane.getChildren().add(killsOfAllPlayers);
 
-            //////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////  prendo le azioni possibili che puo fare un giocatore
+            this.actionsList.clear();
+            JsonObject characterJson = jGameHandlerObject.getJsonArray("playerList").stream()
+                    .map(JsonValue::asJsonObject)
+                    .filter(x -> x.getString("playerId").equals(playerIdView)).findFirst().get();
+            character = characterJson.getString("character");
+            characterJson.getJsonObject("bridge").getJsonObject("actionBridge")
+                    .getJsonArray("possibleActionsArray").stream().map(JsonValue::asJsonObject)
+                    .forEach(x -> {
+                        this.actionsList.add(x.getInt("id"));
 
-            /////////////////////////////////////////////////////////////////////////// centro spacchetto json model-carte
+                    });
+
+            /////////////////////////////////////////////////////////////////////////// centro powerUp e armi
             weaponsList.clear();
             powerUpList.clear();
             HBox cards = new HBox();
@@ -1425,6 +1515,15 @@ public class GUIView extends Application implements View, VirtualView {
                                 x.getInt("id"),
                                 x.getString("name"),
                                 card);
+                        imageButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                JsonQueue.add("method", "askCardInfo");
+                                JsonQueue.add("cardId", Integer.toString(
+                                        ((ButtonWeapon) mouseEvent.getSource()).cardId));
+                                JsonQueue.send();
+                            }
+                        });
                         weaponsList.add(imageButton);
                         imageButton.setOnMouseEntered(bigger);
                         imageButton.setOnMouseExited(smaller);
@@ -1453,7 +1552,7 @@ public class GUIView extends Application implements View, VirtualView {
             pannelloCentrale.getChildren().addAll(imagePane, cards);
             pannelloCentrale.setSpacing(0);
             borderPane.setCenter(pannelloCentrale);
-            /////////////////////////////////////////////////destra
+            /////////////////////////////////////////////////destra metto plance giocatori
             AnchorPane rightAnchorPane = new AnchorPane();
             VBox bridges = new VBox();
             AnchorPane.setTopAnchor(bridges, 0.0);
@@ -1481,9 +1580,10 @@ public class GUIView extends Application implements View, VirtualView {
             jGameHandlerObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
-                        String character = x.getString("character");
+                        String allPlayersCharacter = x.getString("character");
                         Node characterBridge = bridges.getChildren().stream()
-                                .filter(k -> k.getId().equals(character)).findFirst().get();
+                                .filter(k -> k.getId().equals(allPlayersCharacter)).findFirst()
+                                .get();
                         HBox shots = new HBox();
                         HBox kills = new HBox();
                         int numberOfBridge = bridges.getChildren().indexOf(characterBridge);
@@ -1495,7 +1595,6 @@ public class GUIView extends Application implements View, VirtualView {
                                     kill.setFitHeight(25);
                                     kill.setFitWidth(25);
                                     kills.getChildren().add(kill);
-                                    System.out.println("sono qui");
                                 });
                         x.getJsonObject("bridge").getJsonObject("damageBridge")
                                 .getJsonArray("shots").stream()
@@ -1508,7 +1607,6 @@ public class GUIView extends Application implements View, VirtualView {
                                     shots.getChildren().add(shot);
 
                                 });
-                        System.out.println(character + "size kills " + kills.getChildren().size());
                         AnchorPane.setTopAnchor(kills,
                                 (double) numberOfBridge * (565 / 5) + 115 - 30);
                         AnchorPane.setLeftAnchor(kills, 103.0);
@@ -1516,12 +1614,11 @@ public class GUIView extends Application implements View, VirtualView {
                         AnchorPane.setLeftAnchor(shots, 40.0);
                         AnchorPane.setRightAnchor(shots, 120.0);
                         rightAnchorPane.getChildren().addAll(shots, kills);
-                        System.out.println(kills.isVisible());
                     });
             ///////////////////////////// bottoni
 
             AnchorPane.setTopAnchor(collectiveButtons, 565.0);
-            AnchorPane.setLeftAnchor(collectiveButtons, 10.0);
+            AnchorPane.setLeftAnchor(collectiveButtons, 130.0);
             collectiveButtons.setSpacing(14);
             rightAnchorPane.getChildren().add(collectiveButtons);
             borderPane.setRight(rightAnchorPane);
@@ -1602,8 +1699,13 @@ public class GUIView extends Application implements View, VirtualView {
                 ;
             }
         });
-        this.sqaureList.stream().forEach(x -> x.update());
-
+        ButtonSquare.setOnMouseCollect(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                ;
+            }
+        });
+        this.squareList.stream().forEach(x -> x.update());
 
     }
 
@@ -1612,203 +1714,392 @@ public class GUIView extends Application implements View, VirtualView {
 
         Platform.runLater(() -> {
 
-                    this.elimanteSetOnMouseClicked();
-                    JsonObject object = JsonUtility.jsonDeserialize(value);
-                    collectiveButtons.getChildren().clear();
+            this.elimanteSetOnMouseClicked();
+            JsonObject object = JsonUtility.jsonDeserialize(value);
+            collectiveButtons.getChildren().clear();
 
-                    ////////////////////////////////////////////////////bottoni sempre disponibli infocarte , info powerup
+            ////////////////////////////////////////////////////bottoni sempre disponibli infocarte , info powerup
 
-                    object.getJsonArray("info").forEach(x -> {
+            object.getJsonArray("info").forEach(x -> {
 
-                        if (x.toString().substring(1, x.toString().length() - 1).equals("askCardInfo")) {
+                if (x.toString().substring(1, x.toString().length() - 1).equals("askCardInfo")) {
 
-                            Button infoCarte = new Button("info carte");
-                            infoCarte.setPrefWidth(200);
-                            infoCarte.setPrefHeight(40);
-                            infoCarte.setTextFill(Color.BLACK);
-                            infoCarte.setOnMouseExited(smaller);
-                            infoCarte.setOnMouseEntered(bigger);
-                            infoCarte.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    Button infoCarte = new Button("info carte");
+                    infoCarte.setPrefWidth(200);
+                    infoCarte.setPrefHeight(36);
+                    infoCarte.setTextFill(Color.BLACK);
+                    infoCarte.setOnMouseExited(smaller);
+                    infoCarte.setOnMouseEntered(bigger);
+                    infoCarte.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            Stage infoCarteStage = new Stage();
+                            BorderPane centre = new BorderPane();
+                            ScrollPane images = new ScrollPane();
+                            HBox twoCrads = new HBox();
+                            twoCrads.setSpacing(80);
+                            VBox allcards = new VBox();
+                            allcards.setSpacing(30);
+                            for (int i = 1; i < 22; i++) {
+                                ImageView card = new ImageView(weaponsMap.get(i));
+                                card.setFitWidth(150);
+                                card.setFitHeight(250);
+                                ButtonWeapon buttonWeapon = new ButtonWeapon(i, "name", card);
+                                buttonWeapon.setOnMouseEntered(bigger);
+                                buttonWeapon.setOnMouseExited(smaller);
+                                buttonWeapon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent mouseEvent) {
+                                        JsonQueue.add("method", "askCardInfo");
+                                        JsonQueue.add("cardId", Integer.toString(
+                                                ((ButtonWeapon) mouseEvent.getSource()).cardId));
+                                        JsonQueue.send();
+                                    }
+                                });
+                                twoCrads.getChildren().add(buttonWeapon);
+
+                                if (twoCrads.getChildren().size() == 2) {
+
+                                    allcards.getChildren().add(twoCrads);
+                                    twoCrads = new HBox();
+                                    twoCrads.setSpacing(80);
+
+
+                                }
+                            }
+                            images.setContent(allcards);
+                            images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+                            Scene imagesScene = new Scene(new StackPane(images), 450, 500);
+                            infoCarteStage.setScene(imagesScene);
+                            infoCarteStage.show();
+
+                        }
+
+                    });
+                    infoCarte.setAlignment(Pos.CENTER);
+                    collectiveButtons.getChildren().add(infoCarte);
+                    this.resizeButtons();
+
+                } else if (x.toString().substring(1, x.toString().length() - 1)
+                        .equals("askInfoPowerUp")) {
+
+                    //TODO infopowerup
+
+                }
+            });
+
+            ////////////////////////////////////////////////////////////////////state che impongono
+
+            switch (object.getString("state")) {
+
+                case "spawnState":
+
+                    ButtonPowerUp.setOnMouse(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+
+                            JsonQueue.add("method", "spawn");
+                            JsonQueue.add("name",
+                                    ((ButtonPowerUp) mouseEvent.getSource()).getName());
+                            JsonQueue.add("color",
+                                    ((ButtonPowerUp) mouseEvent.getSource())
+                                            .getColor());
+                            JsonQueue.send();
+                        }
+
+
+                    });
+
+                    powerUpList.forEach(y -> y.update());
+                    Button spawnButton = new Button(
+                            "per favore clicca su un powerUp per fare lo spawn");
+                    spawnButton.setPrefSize(200, 36);
+                    spawnButton.setWrapText(true);
+                    spawnButton.setTextFill(Color.BLACK);
+                    collectiveButtons.getChildren().add(spawnButton);
+                    spawnButton.setAlignment(Pos.CENTER);
+                    this.resizeButtons();
+                    break;
+
+                case "shootState":
+
+                    object.getJsonArray("methods").forEach(x -> {
+
+                        if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askUsePrimary")) {
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askUseAlternative")) {
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askUseOptional1")) {
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askUseOptional2")) {
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("endAction")) {
+                        }
+                    });
+                    break;
+
+                case "actionState":
+                    object.getJsonArray("methods").forEach(x -> {
+
+                        if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("moveAction")) {
+
+                            Button moveActionButton = new Button(
+                                    "clicca un quadrato per muoverti!");
+                            ButtonSquare.setOnMouse(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent mouseEvent) {
-                                    Stage infoCarteStage = new Stage();
-                                    BorderPane centre = new BorderPane();
-                                    ScrollPane images = new ScrollPane();
-                                    HBox twoCrads = new HBox();
-                                    twoCrads.setSpacing(80);
-                                    VBox allcards = new VBox();
-                                    allcards.setSpacing(30);
-                                    for (int i = 1; i < 22; i++) {
-                                        ImageView card = new ImageView(weaponsMap.get(i));
-                                        card.setFitWidth(150);
-                                        card.setFitHeight(250);
-                                        ButtonWeapon buttonWeapon = new ButtonWeapon(i, "name", card);
-                                        buttonWeapon.setOnMouseEntered(bigger);
-                                        buttonWeapon.setOnMouseExited(smaller);
-                                        buttonWeapon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                            @Override
-                                            public void handle(MouseEvent mouseEvent) {
-                                                JsonQueue.add("method", "askCardInfo");
-                                                JsonQueue.add("cardId", Integer.toString(
-                                                        ((ButtonWeapon) mouseEvent.getSource()).cardId));
-                                                JsonQueue.send();
-                                            }
-                                        });
-                                        twoCrads.getChildren().add(buttonWeapon);
+                                    ButtonSquare destination = ((ButtonSquare) mouseEvent
+                                            .getSource());
+                                    JsonQueue.add("method", "moveAction");
+                                    JsonQueue.add("squareColor", destination.getColor());
+                                    JsonQueue.add("squareId", destination.getButtonSquareId());
+                                    JsonQueue.send();
 
-                                        if (twoCrads.getChildren().size() == 2) {
-
-                                            allcards.getChildren().add(twoCrads);
-                                            twoCrads = new HBox();
-                                            twoCrads.setSpacing(80);
-
-
-
-                                        }
-                                    }
-                                    images.setContent(allcards);
-                                    images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-                                    Scene imagesScene = new Scene(new StackPane(images), 450, 500);
-                                    infoCarteStage.setScene(imagesScene);
-                                    infoCarteStage.show();
 
                                 }
 
                             });
-                            infoCarte.setAlignment(Pos.CENTER);
-                            collectiveButtons.getChildren().add(infoCarte);
+                            this.squareList.forEach(s->s.update());
+                            moveActionButton.setId("move");
+                            moveActionButton.setPrefSize(200, 36);
+                            moveActionButton.setAlignment(Pos.CENTER);
+                            moveActionButton.setTextFill(Color.BLACK);
+                            collectiveButtons.getChildren().add(moveActionButton);
+                            this.resizeButtons();
+
 
                         } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askInfoPowerUp")) {
+                                .equals("askCollect")) {
+                            Button collectButton = new Button("clicca il tuo quadrato e raccoogli");
+                            collectButton.setPrefSize(200, 36);
+                            collectButton.setAlignment(Pos.CENTER);
+                            collectButton.setTextFill(Color.BLACK);
+                            ButtonSquare.setOnMouseCollect(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    ButtonSquare destination = ((ButtonSquare) mouseEvent
+                                            .getSource());
 
-                            //TODO infopowerup
+                                    if (destination.isSpawn) {
+                                        //TODO clicca sullo square e segli arma con wizard
 
+                                    } else {
+                                        JsonQueue.add("method", "askCollect");
+                                        JsonQueue.add("cardIdCollect", "");
+                                        JsonQueue.add("cardIdDiscard", "");
+                                        JsonQueue.add("powerups", "");
+                                        JsonQueue.send();
+
+                                    }
+                                }
+                            });
+                            this.squareList.stream().forEach(z -> z.update());
+                            collectiveButtons.getChildren().add(collectButton);
+                            this.resizeButtons();
+
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askActivateWeapon")) {
+
+                            Button activateCardButton = new Button("clicca un'arma per attivarla!");
+                            activateCardButton.setPrefSize(200, 36);
+                            activateCardButton.setTextFill(Color.BLACK);
+                            collectiveButtons.getChildren().add(activateCardButton);
+                            this.resizeButtons();
+
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askReload")) {
+                            Button reloadWeapon = new Button("ricarica arma!");
+                            reloadWeapon.setOnMouseEntered(bigger);
+                            reloadWeapon.setOnMouseExited(smaller);
+                            reloadWeapon.setTextFill(Color.BLACK);
+                            reloadWeapon.setPrefSize(200, 36);
+                            collectiveButtons.getChildren().add(reloadWeapon);
+                            this.resizeButtons();
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("endAction")) {
+                            Button endAction = new Button("fine azione!");
+                            endAction.setPrefSize(200, 36);
+                            endAction.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    JsonQueue.add("method", "endAction");
+                                    JsonQueue.add("cardId", "");
+                                    JsonQueue.send();
+                                }
+                            });
+                            endAction.setOnMouseEntered(bigger);
+                            endAction.setOnMouseExited(smaller);
+                            collectiveButtons.getChildren().add(endAction);
+                            this.resizeButtons();
                         }
+
                     });
 
-                    ////////////////////////////////////////////////////////////////////state che impongono
+                default:
 
-                    switch (object.getString("state")) {
+                    object.getJsonArray("methods").forEach(x -> {
 
-                        case "spawnState":
+                        if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("selectAction")) {
+
+                            Button selezionaAzione = new Button("seleziona azione");
+                            selezionaAzione.setPrefWidth(200);
+                            selezionaAzione.setPrefHeight(36);
+                            selezionaAzione.setOnMouseEntered(bigger);
+                            selezionaAzione.setOnMouseExited(smaller);
+                            selezionaAzione.setTextFill(Color.BLACK);
+                            collectiveButtons.getChildren().add(selezionaAzione);
+                            selezionaAzione.setAlignment(Pos.CENTER);
+                            selezionaAzione.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    Stage chooseAction = new Stage();
+                                    VBox root = new VBox();
+                                    root.setSpacing(10);
+                                    HBox actions = new HBox();
+                                    actions.setSpacing(0);
+                                    GUIView.this.actionsList.stream().forEach(k -> {
+                                        ImageView action = new ImageView(possibleActionsMap
+                                                .get(GUIView.this.character + Integer.toString(k)));
+                                        int valueOfAction;
+                                        switch (k) {
+                                            case 0:
+                                                valueOfAction = 4;
+
+                                            case 4:
+                                                valueOfAction = 2;
+                                                break;
+
+                                            case 5:
+                                                valueOfAction = 3;
+                                                break;
+
+                                            case 6:
+                                                valueOfAction = 1;
+                                                break;
+                                            case 7:
+                                                valueOfAction = 2;
+                                                break;
+
+                                            case 8:
+                                                valueOfAction = 3;
+                                                break;
+
+                                            case 9:
+                                                valueOfAction = 1;
+                                                break;
+
+                                            case 10:
+                                                valueOfAction = 2;
+                                                break;
+
+                                            default:
+                                                valueOfAction = k;
+                                        }
+                                        String actionValueString = Integer.toString(valueOfAction);
+                                        Button actionButton = new Button("", action);
+                                        actionButton.setOnMouseEntered(bigger);
+                                        actionButton.setOnMouseExited(smaller);
+                                        actionButton.setBackground(new Background(
+                                                new BackgroundFill(Color.TRANSPARENT,
+                                                        CornerRadii.EMPTY, Insets.EMPTY)));
+                                        actionButton.setOnMouseClicked(
+                                                new EventHandler<MouseEvent>() {
+                                                    @Override
+                                                    public void handle(MouseEvent mouseEvent) {
+                                                        JsonQueue.add("method", "selectAction");
+                                                        JsonQueue.add("actionNumber",
+                                                                actionValueString);
+                                                        JsonQueue.send();
+                                                    }
+                                                });
+                                        action.setFitHeight(80);
+                                        action.setFitWidth(50);
+                                        actions.getChildren().add(actionButton);
+                                    });
+                                    Button quit = new Button("quit");
+                                    quit.setOnMouseEntered(bigger);
+                                    quit.setOnMouseExited(smaller);
+                                    quit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                        @Override
+                                        public void handle(MouseEvent mouseEvent) {
+                                            chooseAction.close();
+                                        }
+                                    });
+                                    root.getChildren().addAll(actions, quit);
+                                    chooseAction.setScene(new Scene(root));
+                                    chooseAction.show();
+
+                                }
+                            });
+
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askUsePowerUp")) {
 
                             ButtonPowerUp.setOnMouse(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent mouseEvent) {
-                                    System.out.println(
-                                            ((ButtonPowerUp) mouseEvent.getSource())
-                                                    .getColor());
-                                    JsonQueue.add("method", "spawn");
-                                    JsonQueue.add("name",
-                                            ((ButtonPowerUp) mouseEvent.getSource()).getName());
-                                    JsonQueue.add("color",
-                                            ((ButtonPowerUp) mouseEvent.getSource())
-                                                    .getColor());
-                                    JsonQueue.send();
+
+                                    //
                                 }
-
-
                             });
 
                             powerUpList.forEach(y -> y.update());
-                            Label spawnLabel = new Label(
-                                    "per favore clicca su un powerUp per fare lo spawn");
-                            spawnLabel.setPrefSize(200, 40);
-                            spawnLabel.setWrapText(true);
-                            spawnLabel.setTextFill(Color.WHITE);
-                            collectiveButtons.getChildren().add(spawnLabel);
-                            spawnLabel.setAlignment(Pos.CENTER);
-                            break;
+                            //se schiacci powerUp usi powerup (usa effetto nuova finestra)
+                            //setOnMouse
 
-                        case "shootState":
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("endOfTurn")) {
 
-                            object.getJsonArray("methods").forEach(x -> {
-
-                                if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askUsePrimary")) {
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askUseAlternative")) {
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askUseOptional1")) {
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askUseOptional2")) {
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("endAction")) {
+                            Button fineTurno = new Button("fine turno");
+                            fineTurno.setPrefWidth(200);
+                            fineTurno.setPrefHeight(36);
+                            fineTurno.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    JsonQueue.add("method", "endOfTurn");
+                                    JsonQueue.add("endOfTurn", "");
+                                    JsonQueue.send();
                                 }
                             });
-                            break;
+                            fineTurno.setOnMouseExited(smaller);
+                            fineTurno.setOnMouseEntered(bigger);
+                            fineTurno.setTextFill(Color.BLACK);
+                            collectiveButtons.getChildren().add(fineTurno);
+                            fineTurno.setAlignment(Pos.CENTER);
+                            this.resizeButtons();
 
-                        default:
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("moveAction")) {
 
-                            object.getJsonArray("methods").forEach(x -> {
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askCollect")) {
 
-                                if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("selectAction")) {
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askActivateWeapon")) {
 
-                                    Button selezionaAzione = new Button("seleziona azione");
-                                    selezionaAzione.setPrefWidth(200);
-                                    selezionaAzione.setPrefHeight(40);
-                                    selezionaAzione.setOnMouseEntered(bigger);
-                                    selezionaAzione.setOnMouseExited(smaller);
-                                    selezionaAzione.setTextFill(Color.BLACK);
-                                    collectiveButtons.getChildren().add(selezionaAzione);
-                                    selezionaAzione.setAlignment(Pos.CENTER);
+                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                                .equals("askReload")) {
 
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askUsePowerUp")) {
+                        }
 
-                                    ButtonPowerUp.setOnMouse(new EventHandler<MouseEvent>() {
-                                        @Override
-                                        public void handle(MouseEvent mouseEvent) {
+                    });
+            }
+        });
 
-                                            //
-                                        }
-                                    });
+        /////////////////////////////////////////////////////////
 
-                                    powerUpList.forEach(y -> y.update());
-                                    //se schiacci powerUp usi powerup (usa effetto nuova finestra)
-                                    //setOnMouse
+    }
 
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("endOfTurn")) {
+    public void resizeButtons() {
+        int numberOfButtons = this.collectiveButtons.getChildren().size();
 
-                                    Button fineTurno = new Button("fine turno");
-                                    fineTurno.setPrefWidth(200);
-                                    fineTurno.setPrefHeight(40);
-                                    fineTurno.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                        @Override
-                                        public void handle(MouseEvent mouseEvent) {
-                                            JsonQueue.add("method", "endOfTurn");
-                                            JsonQueue.add("endOfTurn", "");
-                                            JsonQueue.send();
-                                        }
-                                    });
-                                    fineTurno.setOnMouseExited(smaller);
-                                    fineTurno.setOnMouseEntered(bigger);
-                                    fineTurno.setTextFill(Color.BLACK);
-                                    collectiveButtons.getChildren().add(fineTurno);
-                                    fineTurno.setAlignment(Pos.CENTER);
-
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("moveAction")) {
-
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askCollect")) {
-
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askActivateWeapon")) {
-
-                                } else if (x.toString().substring(1, x.toString().length() - 1)
-                                        .equals("askReload")) {
-
-                                }
-
-                            });
-                    }
-                });
-
-                /////////////////////////////////////////////////////////
-
+        if (numberOfButtons > 4) {
+            this.collectiveButtons.getChildren().stream()
+                    .forEach(x -> x.prefHeight((212 + numberOfButtons * 14) / numberOfButtons));
+        }
     }
 
     @Override
