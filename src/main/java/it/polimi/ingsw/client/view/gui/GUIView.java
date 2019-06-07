@@ -1641,6 +1641,7 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     private synchronized void createNotifications(String stringTitle, String value) {
+
         Platform.runLater(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.NONE);
@@ -1886,28 +1887,38 @@ public class GUIView extends Application implements View, VirtualView {
                                             .getSource());
 
                                     if (destination.isSpawn) {
+
                                         Stage collectStage = new Stage();
+
                                         VBox root = new VBox();
                                         root.setSpacing(20);
-                                        HBox cardsInSquare = new HBox();
+
                                         ToggleGroup cardsInSquareGroup = new ToggleGroup();
+
+                                        HBox cardsInSquare = new HBox();
+
                                         HBox toggleBox = new HBox();
                                         toggleBox.setSpacing(100);
+
                                         weaponsInSpawnSquare.stream()
                                                 .filter(c -> c.getColorOfSpawn()
                                                         .equals(destination.getColor()))
                                                 .forEach(c -> {
+
                                                     ImageView card = new ImageView(
                                                             weaponsMap.get(c.getCardId()));
                                                     card.setFitWidth(100);
                                                     card.setFitHeight(150);
+
                                                     Button cardButton = new Button("", card);
 
                                                     RadioButton radioButton = new RadioButton();
                                                     radioButton.setUserData(
                                                             String.valueOf(c.getCardId()));
+
                                                     cardsInSquare.getChildren().add(cardButton);
                                                     radioButton.setToggleGroup(cardsInSquareGroup);
+
                                                     toggleBox.getChildren().add(radioButton);
 
                                                     cardButton.setOnMouseEntered(
@@ -2008,24 +2019,31 @@ public class GUIView extends Application implements View, VirtualView {
 
                                             CheckBox checkBox = new CheckBox();
                                             checkBox.setId(new StringBuilder().append(p.name)
-                                                    .append("-").append(p.color).toString());
+                                                    .append("-").append(p.color.toLowerCase())
+                                                    .toString());
 
                                             myPowerUps.getChildren().addAll(powerUpButton);
                                             powerUpCheckBox.getChildren().addAll(checkBox);
+
                                             powerUpButton.setOnMouseEntered(
                                                     new EventHandler<MouseEvent>() {
+
                                                         @Override
                                                         public void handle(
                                                                 MouseEvent mouseEvent) {
+
                                                             collectStage.getScene()
                                                                     .setCursor(Cursor.HAND);
                                                         }
                                                     });
+
                                             powerUpButton.setOnMouseExited(
                                                     new EventHandler<MouseEvent>() {
+
                                                         @Override
                                                         public void handle(
                                                                 MouseEvent mouseEvent) {
+
                                                             collectStage.getScene()
                                                                     .setCursor(
                                                                             Cursor.DEFAULT);
@@ -2038,22 +2056,25 @@ public class GUIView extends Application implements View, VirtualView {
                                                         public void handle(MouseEvent mouseEvent) {
 
                                                             checkBox.setSelected(
-                                                                    checkBox.isSelected() ? false
-                                                                            : true);
+                                                                    !checkBox.isSelected());
                                                         }
                                                     });
                                         });
 
                                         root.getChildren().addAll(myPowerUps, powerUpCheckBox);
+
                                         Button enter = new Button("Conferma");
-                                        enter.setPrefSize(60, 25);
+                                        enter.setPrefSize(80, 25);
                                         enter.setOnMouseEntered(bigger);
                                         enter.setOnMouseExited(smaller);
+
                                         enter.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                             @Override
                                             public void handle(MouseEvent mouseEvent) {
+
                                                 if (toggleBox.getChildren().stream().anyMatch(
                                                         m -> ((RadioButton) m).isSelected())) {
+
                                                     JsonQueue.add("method", "askCollect");
                                                     JsonQueue.add("cardIdCollect",
                                                             toggleBox.getChildren().stream()
@@ -2061,15 +2082,60 @@ public class GUIView extends Application implements View, VirtualView {
                                                                             .isSelected())
                                                                     .findFirst().get().getUserData()
                                                                     .toString());
-                                                    JsonQueue.add("cardIdDiscard", "");
-                                                    JsonQueue.add("powerups", "");
+
+                                                    if (playerToggles.getChildren().stream()
+                                                            .anyMatch(m -> ((RadioButton) m)
+                                                                    .isSelected())) {
+
+                                                        JsonQueue.add("cardIdDiscard",
+                                                                playerToggles.getChildren().stream()
+                                                                        .filter(m -> ((RadioButton) m)
+                                                                                .isSelected())
+                                                                        .findFirst().get()
+                                                                        .getUserData()
+                                                                        .toString());
+                                                    } else {
+
+                                                        JsonQueue.add("cardIdDiscard", "");
+                                                    }
+
+                                                    if (powerUpCheckBox.getChildren().stream()
+                                                            .anyMatch(m -> ((CheckBox) m)
+                                                                    .isSelected())) {
+
+                                                        StringBuilder line = new StringBuilder();
+
+                                                        line.append("powerup(");
+
+                                                        powerUpCheckBox.getChildren().stream()
+                                                                .filter(m -> ((CheckBox) m)
+                                                                        .isSelected())
+                                                                .forEach(s -> {
+
+                                                                    line.append(s.getId());
+                                                                    line.append(" ");
+                                                                });
+                                                        line.append(")");
+
+                                                        JsonQueue.add("powerups", line.toString());
+
+                                                    } else {
+
+                                                        JsonQueue.add("powerups", "");
+                                                    }
+
                                                     JsonQueue.send();
                                                     collectStage.close();
+                                                } else {
+
+                                                    createNotifications("Attenzione!",
+                                                            "Devi selezionare quale carta vuoi raccogliere.");
                                                 }
+
                                             }
                                         });
                                         root.getChildren().add(enter);
-                                        Scene  collectScene= new Scene(root);
+                                        Scene collectScene = new Scene(root);
                                         collectStage.setScene(collectScene);
                                         collectStage.show();
 
