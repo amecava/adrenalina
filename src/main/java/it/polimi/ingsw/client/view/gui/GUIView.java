@@ -14,10 +14,13 @@ import java.io.StringReader;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.security.Guard;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
@@ -53,6 +56,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -87,7 +91,6 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
-import javax.swing.border.Border;
 
 public class GUIView extends Application implements View, VirtualView {
 
@@ -766,8 +769,20 @@ public class GUIView extends Application implements View, VirtualView {
             }
         });
 
+        VBox vBox = new VBox();
+        vBox.setSpacing(50);
+        vBox.setAlignment(Pos.CENTER);
+
+        Label label = new Label(game);
+        label.setFont(Font.font("Silom", FontWeight.BOLD, 70));
+        label.setAlignment(Pos.CENTER);
+        label.setTextFill(Color.WHITE);
+
         HBox characters = new HBox();
+        characters.setAlignment(Pos.CENTER);
         characters.setSpacing(20);
+
+        vBox.getChildren().addAll(label, characters);
 
         ////////////////////////////////////////////////////////////////////////////
 
@@ -871,8 +886,8 @@ public class GUIView extends Application implements View, VirtualView {
         characters.getChildren().addAll(button1, button2, button3, button4, button5);
         characters.setAlignment(Pos.CENTER);
 
-        borderPane.setCenter(characters);
-        BorderPane.setAlignment(characters, Pos.CENTER);
+        borderPane.setCenter(vBox);
+        BorderPane.setAlignment(vBox, Pos.CENTER);
 
         Platform.runLater(() -> changeScene(borderPane));
     }
@@ -885,8 +900,8 @@ public class GUIView extends Application implements View, VirtualView {
                 new BackgroundImage(background, BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
+        borderPane.setPadding(new Insets(50, 40, 0, 0));
 
-        borderPane.setPadding(new Insets(50, 0, 0, 0));
         ImageView imageAdrenalina = new ImageView(adrenalina);
         imageAdrenalina.setFitHeight(125);
         imageAdrenalina.setPreserveRatio(true);
@@ -963,6 +978,7 @@ public class GUIView extends Application implements View, VirtualView {
         VBox images = new VBox();
         images.getChildren().addAll(images1, images2);
         borderPane.setCenter(images);
+        BorderPane.setAlignment(images, Pos.CENTER_LEFT);
         Platform.runLater(() -> changeScene(borderPane));
     }
 
@@ -1147,66 +1163,89 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void updateGameNotStartedScreen(String value) throws RemoteException {
 
-        VBox playersConnected = new VBox();
-        playersConnected.setMaxWidth(150);
-
-        JsonReader reader = Json.createReader(new StringReader(value));
-        JsonObject readObject = reader.readObject();
-        Label countDown;
-
-        int count = readObject.getInt("countdown");
-
-        if (count < 10) {
-
-            countDown = new Label(
-                    "Tra " + count + " secondi avrà inizio la partita!");
-
-        } else {
-
-            countDown = new Label(
-                    "Non appena si saranno collegati 3 giocatori inizierà il countdown...");
-        }
-
-        countDown.setMinHeight(200);
-        countDown.setWrapText(true);
-        countDown.setTextFill(Color.WHITE);
-        countDown.setFont(Font.font("verdana", 15));
-
-        playersConnected.getChildren().addAll(countDown);
-
-        readObject.getJsonArray("playerList").stream()
-                .map(JsonValue::asJsonObject)
-                .forEach(x -> {
-
-                    VBox player = new VBox();
-                    player.setMinHeight(60);
-                    player.setSpacing(3);
-
-                    Label playerId = new Label("Giocatore : " + x.getString("playerId"));
-                    playerId.setWrapText(true);
-                    playerId.setFont(Font.font("verdana", 10));
-                    playerId.setTextFill(Color.WHITE);
-
-                    Label characterLabel = new Label("Personaggio: " + x.getString("character"));
-                    characterLabel.setFont(Font.font("verdana", 10));
-                    characterLabel.setWrapText(true);
-                    characterLabel.setTextFill(Color.YELLOW);
-
-                    player.getChildren().addAll(playerId, characterLabel);
-
-                    playersConnected.getChildren().add(player);
-                });
+        JsonObject readObject = JsonUtility.jsonDeserialize(value);
 
         Platform.runLater(() -> {
 
             BorderPane borderPane = (BorderPane) currentStage.getScene().getRoot();
 
-            borderPane
-                    .setPrefWidth(((BorderPane) currentStage.getScene().getRoot()).getPrefWidth());
-            AnchorPane right = new AnchorPane();
-            right.getChildren().add(playersConnected);
-            AnchorPane.setLeftAnchor(right, 0.0);
-            borderPane.setRight(right);
+            VBox rows = new VBox();
+            rows.setSpacing(40);
+            rows.setAlignment(Pos.CENTER);
+
+            HBox firstRow = new HBox();
+            HBox secondRow = new HBox();
+            firstRow.setSpacing(30);
+            firstRow.setAlignment(Pos.CENTER);
+            secondRow.setSpacing(30);
+            secondRow.setAlignment(Pos.CENTER);
+
+            Map<String, VBox> vBoxMap = playersMap.entrySet().stream()
+                    .map(x -> {
+
+                        ImageView desaturated = new ImageView(x.getValue());
+                        desaturated.setPreserveRatio(true);
+                        desaturated.setFitHeight(200);
+                        desaturated.setOpacity(0.2);
+                        ColorAdjust desaturate = new ColorAdjust();
+                        desaturate.setSaturation(-1);
+                        desaturated.setEffect(desaturate);
+
+                        Label label = new Label();
+                        label.setFont(Font.font("Silom", 30));
+                        label.setTextFill(Color.WHITE);
+                        label.setAlignment(Pos.CENTER);
+
+                        VBox vBox = new VBox();
+                        vBox.setAlignment(Pos.CENTER);
+                        vBox.setSpacing(20);
+
+                        vBox.getChildren().addAll(desaturated, label);
+
+                        return new SimpleEntry<>(x.getKey(), vBox);
+
+                    }).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+            readObject.getJsonArray("playerList").stream()
+                    .map(JsonValue::asJsonObject)
+                    .forEach(x -> {
+
+                        VBox vBox = vBoxMap.get(x.getString("character"));
+
+                        ImageView imageView = (ImageView) vBox.getChildren().get(0);
+                        imageView.setOpacity(1);
+                        ((ColorAdjust)imageView.getEffect()).setSaturation(0);
+
+                        Label label = (Label) vBox.getChildren().get(1);
+                        label.setText(x.getString("playerId"));
+                    });
+
+            firstRow.getChildren().addAll(vBoxMap.get(":D-strutt-OR3"), vBoxMap.get("Sprog"));
+            secondRow.getChildren().addAll(vBoxMap.get("Violetta"), vBoxMap.get("Dozer"), vBoxMap.get("Banshee"));
+
+            Label countDown = new Label();
+            countDown.setWrapText(true);
+            countDown.setTextFill(Color.WHITE);
+            countDown.setFont(Font.font("Silom", 20));
+            countDown.setAlignment(Pos.CENTER);
+
+            int count = readObject.getInt("countdown");
+
+            if (count < 10) {
+
+                countDown.setText("La partita inizierà tra " + count + " secondi.");
+
+            } else {
+
+                countDown.setText("In attesa di tre giocatori connessi.");
+            }
+
+            rows.getChildren().addAll(firstRow, secondRow, countDown);
+
+            borderPane.setRight(rows);
+            BorderPane.setAlignment(rows, Pos.CENTER_RIGHT);
+
+
         });
 
     }
@@ -1229,6 +1268,7 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void completeCardInfo(String value) throws RemoteException {
         Platform.runLater(() -> {
+
             JsonObject jsonCard = JsonUtility.jsonDeserialize(value);
             Stage infocard = new Stage();
             AnchorPane anchorPane = new AnchorPane();
