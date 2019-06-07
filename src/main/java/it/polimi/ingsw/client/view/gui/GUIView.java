@@ -47,9 +47,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -2000,7 +2003,7 @@ public class GUIView extends Application implements View, VirtualView {
 
                     powerUpList.forEach(y -> y.update());
                     Button spawnButton = new Button(
-                            "per favore clicca su un powerUp per fare lo spawn");
+                            "Spawn");
                     spawnButton.setPrefSize(200, 36);
                     spawnButton.setWrapText(true);
                     spawnButton.setTextFill(Color.BLACK);
@@ -2071,7 +2074,192 @@ public class GUIView extends Application implements View, VirtualView {
                                             .getSource());
 
                                     if (destination.isSpawn) {
-                                        //TODO clicca sullo square e segli arma con wizard
+                                        Stage collectStage = new Stage();
+                                        VBox root = new VBox();
+                                        root.setSpacing(20);
+                                        HBox cardsInSquare = new HBox();
+                                        ToggleGroup cardsInSquareGroup = new ToggleGroup();
+                                        HBox toggleBox = new HBox();
+                                        toggleBox.setSpacing(100);
+                                        weaponsInSpawnSquare.stream()
+                                                .filter(c -> c.getColorOfSpawn()
+                                                        .equals(destination.getColor()))
+                                                .forEach(c -> {
+                                                    ImageView card = new ImageView(
+                                                            weaponsMap.get(c.getCardId()));
+                                                    card.setFitWidth(100);
+                                                    card.setFitHeight(150);
+                                                    Button cardButton = new Button("", card);
+
+                                                    RadioButton radioButton = new RadioButton();
+                                                    radioButton.setUserData(
+                                                            String.valueOf(c.getCardId()));
+                                                    cardsInSquare.getChildren().add(cardButton);
+                                                    radioButton.setToggleGroup(cardsInSquareGroup);
+                                                    toggleBox.getChildren().add(radioButton);
+
+                                                    cardButton.setOnMouseEntered(
+                                                            new EventHandler<MouseEvent>() {
+                                                                @Override
+                                                                public void handle(
+                                                                        MouseEvent mouseEvent) {
+                                                                    collectStage.getScene()
+                                                                            .setCursor(Cursor.HAND);
+                                                                }
+                                                            });
+                                                    cardButton.setOnMouseExited(
+                                                            new EventHandler<MouseEvent>() {
+                                                                @Override
+                                                                public void handle(
+                                                                        MouseEvent mouseEvent) {
+                                                                    collectStage.getScene()
+                                                                            .setCursor(
+                                                                                    Cursor.DEFAULT);
+                                                                }
+                                                            });
+                                                    cardButton.setOnMouseClicked(
+                                                            new EventHandler<MouseEvent>() {
+                                                                @Override
+                                                                public void handle(
+                                                                        MouseEvent mouseEvent) {
+                                                                    cardsInSquareGroup.selectToggle(
+                                                                            radioButton);
+                                                                }
+                                                            });
+                                                });
+                                        root.getChildren().addAll(cardsInSquare, toggleBox);
+
+                                        HBox myPlayerCards = new HBox();
+                                        HBox playerToggles = new HBox();
+                                        playerToggles.setSpacing(100);
+                                        ToggleGroup playerCardsGroup = new ToggleGroup();
+                                        weaponsList.stream().forEach(w -> {
+
+                                            ImageView weaponImage = new ImageView(
+                                                    weaponsMap.get(w.getCardId()));
+                                            weaponImage.setFitHeight(150);
+                                            weaponImage.setFitWidth(100);
+                                            Button weaponCardButton = new Button("", weaponImage);
+
+                                            RadioButton weaponRadioButton = new RadioButton();
+                                            weaponRadioButton.setUserData(
+                                                    String.valueOf(w.getCardId()));
+                                            myPlayerCards.getChildren().add(weaponCardButton);
+                                            weaponRadioButton.setToggleGroup(playerCardsGroup);
+                                            playerToggles.getChildren().add(weaponRadioButton);
+
+                                            weaponCardButton.setOnMouseEntered(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            collectStage.getScene()
+                                                                    .setCursor(Cursor.HAND);
+                                                        }
+                                                    });
+                                            weaponCardButton.setOnMouseExited(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            collectStage.getScene()
+                                                                    .setCursor(
+                                                                            Cursor.DEFAULT);
+                                                        }
+                                                    });
+                                            weaponCardButton.setOnMouseClicked(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            playerCardsGroup.selectToggle(
+                                                                    weaponRadioButton);
+                                                        }
+                                                    });
+
+
+                                        });
+                                        root.getChildren().addAll(myPlayerCards, playerToggles);
+
+                                        HBox myPowerUps = new HBox();
+                                        HBox powerUpCheckBox = new HBox();
+                                        powerUpCheckBox.setSpacing(100);
+                                        powerUpList.stream().forEach(p -> {
+
+                                            ImageView powerUpImage = new ImageView(powerUpsMap
+                                                    .get(new StringBuilder().append(p.name)
+                                                            .append(" ").append(p.color)
+                                                            .toString()));
+                                            powerUpImage.setFitWidth(100);
+                                            powerUpImage.setFitHeight(150);
+                                            Button powerUpButton = new Button("", powerUpImage);
+
+                                            CheckBox checkBox = new CheckBox();
+                                            checkBox.setId(new StringBuilder().append(p.name)
+                                                    .append("-").append(p.color).toString());
+
+                                            myPowerUps.getChildren().addAll(powerUpButton);
+                                            powerUpCheckBox.getChildren().addAll(checkBox);
+                                            powerUpButton.setOnMouseEntered(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            collectStage.getScene()
+                                                                    .setCursor(Cursor.HAND);
+                                                        }
+                                                    });
+                                            powerUpButton.setOnMouseExited(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            collectStage.getScene()
+                                                                    .setCursor(
+                                                                            Cursor.DEFAULT);
+                                                        }
+                                                    });
+
+                                            powerUpButton.setOnMouseClicked(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(MouseEvent mouseEvent) {
+
+                                                            checkBox.setSelected(
+                                                                    checkBox.isSelected() ? false
+                                                                            : true);
+                                                        }
+                                                    });
+                                        });
+
+                                        root.getChildren().addAll(myPowerUps, powerUpCheckBox);
+                                        Button enter = new Button("Conferma");
+                                        enter.setPrefSize(60, 25);
+                                        enter.setOnMouseEntered(bigger);
+                                        enter.setOnMouseExited(smaller);
+                                        enter.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                            @Override
+                                            public void handle(MouseEvent mouseEvent) {
+                                                if (toggleBox.getChildren().stream().anyMatch(
+                                                        m -> ((RadioButton) m).isSelected())) {
+                                                    JsonQueue.add("method", "askCollect");
+                                                    JsonQueue.add("cardIdCollect",
+                                                            toggleBox.getChildren().stream()
+                                                                    .filter(m -> ((RadioButton) m)
+                                                                            .isSelected())
+                                                                    .findFirst().get().getUserData()
+                                                                    .toString());
+                                                    JsonQueue.add("cardIdDiscard", "");
+                                                    JsonQueue.add("powerups", "");
+                                                    JsonQueue.send();
+                                                    collectStage.close();
+                                                }
+                                            }
+                                        });
+                                        root.getChildren().add(enter);
+                                        Scene  collectScene= new Scene(root);
+                                        collectStage.setScene(collectScene);
+                                        collectStage.show();
 
                                     } else {
                                         JsonQueue.add("method", "askCollect");
@@ -2201,6 +2389,8 @@ public class GUIView extends Application implements View, VirtualView {
                                                         JsonQueue.add("actionNumber",
                                                                 actionValueString);
                                                         JsonQueue.send();
+                                                        chooseAction.close();
+
                                                     }
                                                 });
                                         action.setFitHeight(80);
