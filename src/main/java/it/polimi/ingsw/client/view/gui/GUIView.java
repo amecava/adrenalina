@@ -177,6 +177,7 @@ public class GUIView extends Application implements View, VirtualView {
                 ammoTilesMap.put("GIALLOBLUBLU", new Image("ammoTiles/GIALLOBLUBLU.png"));
                 ammoTilesMap.put("GIALLOGIALLO", new Image("ammoTiles/GIALLOGIALLO.png"));
                 ammoTilesMap.put("GIALLOROSSO", new Image("ammoTiles/GIALLOROSSO.png"));
+                notifyPreloader(new ProgressNotification(0.1));
                 ammoTilesMap.put("GIALLOROSSOROSSO", new Image("ammoTiles/GIALLOROSSOROSSO.png"));
                 ammoTilesMap.put("ROSSOBLU", new Image("ammoTiles/ROSSOBLU.png"));
                 ammoTilesMap.put("ROSSOBLUBLU", new Image("ammoTiles/ROSSOBLUBLU.png"));
@@ -190,6 +191,7 @@ public class GUIView extends Application implements View, VirtualView {
                 weaponsMap.put(4, new Image("cardsImages/4.png"));
                 weaponsMap.put(5, new Image("cardsImages/5.png"));
                 weaponsMap.put(6, new Image("cardsImages/6.png"));
+                notifyPreloader(new ProgressNotification(0.15));
                 weaponsMap.put(7, new Image("cardsImages/7.png"));
                 weaponsMap.put(8, new Image("cardsImages/8.png"));
                 weaponsMap.put(9, new Image("cardsImages/9.png"));
@@ -200,13 +202,12 @@ public class GUIView extends Application implements View, VirtualView {
                 weaponsMap.put(14, new Image("cardsImages/14.png"));
                 weaponsMap.put(15, new Image("cardsImages/15.png"));
                 weaponsMap.put(16, new Image("cardsImages/16.png"));
+                notifyPreloader(new ProgressNotification(0.2));
                 weaponsMap.put(17, new Image("cardsImages/17.png"));
                 weaponsMap.put(18, new Image("cardsImages/18.png"));
                 weaponsMap.put(19, new Image("cardsImages/19.png"));
                 weaponsMap.put(20, new Image("cardsImages/20.png"));
                 weaponsMap.put(21, new Image("cardsImages/21.png"));
-                notifyPreloader(new ProgressNotification(0.1));
-
                 powerUpsMap.put("GRANATAVENOM BLU", new Image("cardsImages/GRANATAVENOMBLUE.png"));
                 powerUpsMap.put("GRANATAVENOM ROSSO", new Image("cardsImages/GRANATAVENOMRED.png"));
                 powerUpsMap.put("GRANATAVENOM GIALLO",
@@ -215,6 +216,7 @@ public class GUIView extends Application implements View, VirtualView {
                         .put("TELETRASPORTO BLU", new Image("cardsImages/TELETRASPORTOBLUE.png"));
                 powerUpsMap
                         .put("TELETRASPORTO ROSSO", new Image("cardsImages/TELETRASPORTORED.png"));
+                notifyPreloader(new ProgressNotification(0.25));
                 powerUpsMap
                         .put("TELETRASPORTO GIALLO",
                                 new Image("cardsImages/TELETRASPORTOYELLOW.png"));
@@ -227,8 +229,7 @@ public class GUIView extends Application implements View, VirtualView {
                         new Image("cardsImages/RAGGIOCINETICORED.png"));
                 powerUpsMap.put("RAGGIOCINETICO GIALLO",
                         new Image("cardsImages/RAGGIOCINETICOYELLOW.png"));
-                notifyPreloader(new ProgressNotification(0.2));
-
+                notifyPreloader(new ProgressNotification(0.3));
                 bridgesMap.put("Bansheefalse", new Image("playerboards/Bansheefalse.png"));
                 bridgesMap.put("Bansheetrue", new Image("playerboards/Bansheetrue.png"));
 
@@ -246,7 +247,8 @@ public class GUIView extends Application implements View, VirtualView {
                 bridgesMap
                         .put(":D-strutt-OR3true",
                                 new Image("playerboards/D-strutt-OR3_true_frenesia.png"));
-                notifyPreloader(new ProgressNotification(0.3));
+                notifyPreloader(new ProgressNotification(0.35));
+
 
                 playersMap.put(":D-strutt-OR3", new Image("players/distruttore.png"));
                 playersMap.put("Sprog", new Image("players/sprog.png"));
@@ -255,7 +257,6 @@ public class GUIView extends Application implements View, VirtualView {
                 playersMap.put("Banshee", new Image("players/banshee.png"));
                 playersMap.put("adrenalinaText", new Image("players/adrenaline_text.png"));
                 playersMap.put("adrenalinaIcon", new Image("players/adrenaline_icon.png"));
-                notifyPreloader(new ProgressNotification(0.4));
 
                 dropsMap.put("GIALLO", new Image("Drop/drop-yellow.png"));
                 dropsMap.put("VERDE", new Image("Drop/drop-green.png"));
@@ -263,6 +264,7 @@ public class GUIView extends Application implements View, VirtualView {
                 dropsMap.put("VIOLA", new Image("Drop/drop-violet.png"));
                 dropsMap.put("GRIGIO", new Image("Drop/drop-gray.png"));
                 dropsMap.put("morte", new Image("Drop/teschio.jpg"));
+                notifyPreloader(new ProgressNotification(0.4));
 
                 possibleActionsMap.put("Banshee0", new Image("azioniDisponibili/Banshee0.png"));
                 possibleActionsMap.put("Banshee1", new Image("azioniDisponibili/Banshee1.png"));
@@ -272,6 +274,7 @@ public class GUIView extends Application implements View, VirtualView {
                 possibleActionsMap.put("Banshee5", new Image("azioniDisponibili/Banshee5.png"));
                 possibleActionsMap.put("Banshee6", new Image("azioniDisponibili/Banshee6.png"));
                 possibleActionsMap.put("Banshee7", new Image("azioniDisponibili/Banshee7.png"));
+                notifyPreloader(new ProgressNotification(0.45));
                 possibleActionsMap.put("Banshee8", new Image("azioniDisponibili/Banshee8.png"));
                 possibleActionsMap.put("Banshee9", new Image("azioniDisponibili/Banshee9.png"));
                 possibleActionsMap.put("Banshee10", new Image("azioniDisponibili/Banshee10.png"));
@@ -283,6 +286,7 @@ public class GUIView extends Application implements View, VirtualView {
                         .put(":D-strutt-OR32", new Image("azioniDisponibili/D-strutt-OR32.png"));
                 possibleActionsMap
                         .put(":D-strutt-OR33", new Image("azioniDisponibili/D-strutt-OR33.png"));
+                notifyPreloader(new ProgressNotification(0.5));
                 possibleActionsMap
                         .put(":D-strutt-OR34", new Image("azioniDisponibili/D-strutt-OR34.png"));
                 possibleActionsMap
@@ -297,7 +301,7 @@ public class GUIView extends Application implements View, VirtualView {
                 // .put(":D-strutt-OR39", new Image("azioniDisponibili/D-strutt-OR39.png"));
                 //possibleActionsMap
                 //  .put(":D-strutt-OR310", new Image("azioniDisponibili/D-strutt-OR310.png"));
-                notifyPreloader(new ProgressNotification(0.5));
+                notifyPreloader(new ProgressNotification(0.55));
                 possibleActionsMap.put("Dozer0", new Image("azioniDisponibili/Dozer0.png"));
                 possibleActionsMap.put("Dozer1", new Image("azioniDisponibili/Dozer1.png"));
                 possibleActionsMap.put("Dozer2", new Image("azioniDisponibili/Dozer2.png"));
@@ -306,6 +310,7 @@ public class GUIView extends Application implements View, VirtualView {
                 possibleActionsMap.put("Dozer5", new Image("azioniDisponibili/Dozer5.png"));
                 //possibleActionsMap.put("Dozer6", new Image("azioniDisponibili/Dozer6.png"));
                 //possibleActionsMap.put("Dozer7", new Image("azioniDisponibili/Dozer7.png"));
+                notifyPreloader(new ProgressNotification(0.65));
                 //possibleActionsMap.put("Dozer8", new Image("azioniDisponibili/Dozer8.png"));
                 //possibleActionsMap.put("Dozer9", new Image("azioniDisponibili/Dozer9.png"));
                 //possibleActionsMap.put("Dozer10", new Image("azioniDisponibili/Dozer10.png"));
@@ -315,7 +320,7 @@ public class GUIView extends Application implements View, VirtualView {
                 possibleActionsMap.put("Sprog3", new Image("azioniDisponibili/Sprog3.png"));
                 possibleActionsMap.put("Sprog4", new Image("azioniDisponibili/Sprog4.png"));
                 possibleActionsMap.put("Sprog5", new Image("azioniDisponibili/Sprog5.png"));
-                notifyPreloader(new ProgressNotification(0.6));
+                notifyPreloader(new ProgressNotification(0.7));
                 //possibleActionsMap.put("Sprog6", new Image("azioniDisponibili/Sprog6.png"));
                 //possibleActionsMap.put("Sprog7", new Image("azioniDisponibili/Sprog7.png"));
                 //possibleActionsMap.put("Sprog8", new Image("azioniDisponibili/Sprog8.png"));
@@ -324,6 +329,7 @@ public class GUIView extends Application implements View, VirtualView {
                 possibleActionsMap.put("Violetta0", new Image("azioniDisponibili/Violetta0.png"));
                 possibleActionsMap.put("Violetta1", new Image("azioniDisponibili/Violetta1.png"));
                 possibleActionsMap.put("Violetta2", new Image("azioniDisponibili/Violetta2.png"));
+                notifyPreloader(new ProgressNotification(0.75));
                 possibleActionsMap.put("Violetta3", new Image("azioniDisponibili/Violetta3.png"));
                 possibleActionsMap.put("Violetta4", new Image("azioniDisponibili/Violetta4.png"));
                 possibleActionsMap.put("Violetta5", new Image("azioniDisponibili/Violetta5.png"));
@@ -332,6 +338,7 @@ public class GUIView extends Application implements View, VirtualView {
                 //possibleActionsMap.put("Violetta8", new Image("azioniDisponibili/Violetta8.png"));
                 //possibleActionsMap.put("Violetta9", new Image("azioniDisponibili/Violetta9.png"));
                 //possibleActionsMap.put("Violetta10", new Image("azioniDisponibili/Violetta10.png"));
+                notifyPreloader(new ProgressNotification(0.8));
 
                 //////////////////////////////////////////////////////////////event handler for no spaces
                 noSpace = new EventHandler<KeyEvent>() {
@@ -342,7 +349,6 @@ public class GUIView extends Application implements View, VirtualView {
                         }
                     }
                 };
-                notifyPreloader(new ProgressNotification(0.7));
                 ////////////////////////////////////////////////////////////////
                 stBig = new ScaleTransition();
                 stSmall = new ScaleTransition();
@@ -373,7 +379,7 @@ public class GUIView extends Application implements View, VirtualView {
 
                     }
                 };
-                notifyPreloader(new ProgressNotification(0.8));
+                notifyPreloader(new ProgressNotification(0.85));
                 ////////////////////////////////////////////////////////////
                 imageView0 = new ImageView(new Image("Boards/0 - UPUP.png"));
                 imageView0.setFitHeight(240);
@@ -384,11 +390,10 @@ public class GUIView extends Application implements View, VirtualView {
                 imageView2 = new ImageView(new Image("Boards/2 - UPDOWN.png"));
                 imageView2.setFitWidth(300);
                 imageView2.setFitHeight(240);
+                notifyPreloader(new ProgressNotification(0.9));
                 imageView3 = new ImageView(new Image("Boards/3 - DOWNUP.png"));
                 imageView3.setFitWidth(300);
                 imageView3.setFitHeight(240);
-                notifyPreloader(new ProgressNotification(0.9));
-
                 imageView0select = new ImageView(new Image("Boards/0 - UPUP - select.png"));
                 imageView0select.setFitHeight(240);
                 imageView0select.setFitWidth(300);
@@ -397,6 +402,7 @@ public class GUIView extends Application implements View, VirtualView {
                 imageView1select.setFitWidth(300);
                 imageView2select = new ImageView(new Image("Boards/2 - UPDOWN - select.png"));
                 imageView2select.setFitWidth(300);
+                notifyPreloader(new ProgressNotification(0.95));
                 imageView2select.setFitHeight(240);
                 imageView3select = new ImageView(new Image("Boards/3 - DOWNUP - select.png"));
                 imageView3select.setFitWidth(300);
@@ -417,7 +423,7 @@ public class GUIView extends Application implements View, VirtualView {
 
     //todo every button should be bigger when ohvered
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         initialize();
 
@@ -2482,7 +2488,8 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void completePowerUpInfo(String value) throws RemoteException {
-        return;
+
+
     }
 
 }
