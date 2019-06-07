@@ -77,7 +77,7 @@ class Terminal {
 
                 print(">>> " + ANSI_GREEN + input + ANSI_RESET);
 
-                Thread.sleep(30);
+                Thread.sleep(80);
             }
 
         } catch (InterruptedException e) {

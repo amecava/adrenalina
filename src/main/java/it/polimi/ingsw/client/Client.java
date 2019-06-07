@@ -1,8 +1,10 @@
 package it.polimi.ingsw.client;
 
+import com.sun.javafx.application.LauncherImpl;
 import it.polimi.ingsw.client.view.console.ConsoleView;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.gui.GUIView;
+import it.polimi.ingsw.client.view.gui.GUIPreloader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -31,9 +33,9 @@ public class Client {
         this.socketPort = socketPort;
     }
 
-    private void start(boolean console) throws IOException {
+    private void start(String[] args) throws IOException {
 
-        if (console) {
+        if (args[0].equals("c")) {
 
             this.view = new ConsoleView();
 
@@ -41,7 +43,7 @@ public class Client {
 
             this.view = new GUIView();
 
-            new Thread(GUIView::initialize).start();
+            new Thread(() -> Client.launch(args)).start();
         }
 
         this.view.initialScreen(this.discoveryPort, this.rmiPort, this.socketPort);
@@ -99,6 +101,11 @@ public class Client {
         return inetAddress;
     }
 
+    private static void launch(String[] args) {
+
+        LauncherImpl.launchApplication(GUIView.class, GUIPreloader.class, args);
+    }
+
     public static void main(String[] args) {
 
         try {
@@ -108,7 +115,7 @@ public class Client {
             if (args.length == 1 &&
                     (args[0].equals("c") || args[0].equals("g"))) {
 
-                client.start(args[0].equals("c"));
+                client.start(args);
 
             }
 

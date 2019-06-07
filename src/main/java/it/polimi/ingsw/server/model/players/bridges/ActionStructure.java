@@ -159,11 +159,11 @@ public class ActionStructure implements Serializable {
     public JsonObject toJsonObject() {
 
         return Json.createObjectBuilder()
+                .add("id", this.id)
                 .add("move", move != null ? effect.getMaxDist() : 0)
                 .add("collect", collect != null)
                 .add("reload", reload != null)
                 .add("shoot", shoot != null)
-                .add("id", this.id)
                 .build();
     }
 }
