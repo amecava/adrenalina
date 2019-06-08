@@ -104,6 +104,8 @@ public class GUIView extends Application implements View, VirtualView {
     private static Map<String, Image> ammoTilesMap = new HashMap<>();
     private static Map<String, Image> dropsMap = new HashMap<>();
     private static Map<String, Image> possibleActionsMap = new HashMap<>();
+    private static Map<String, Image> cubesMap = new HashMap<>();
+
 
     private static ImageView imageView0;
     private static ImageView imageView1;
@@ -175,6 +177,11 @@ public class GUIView extends Application implements View, VirtualView {
                 tcp = new ImageView("cardsImages/TCP.png");
 
                 distruttore = new Image("players/distruttore_big.png");
+
+                cubesMap.put("ROSSO", new Image("ammoTiles/ROSSO.png"));
+                cubesMap.put("GIALLO", new Image("ammoTiles/GIALLO.png"));
+                cubesMap.put("BLU", new Image("ammoTiles/BLU.png"));
+
 
                 ammoTilesMap.put("BLUBLU", new Image("ammoTiles/BLUBLU.png"));
                 ammoTilesMap.put("BLUGIALLOGIALLO", new Image("ammoTiles/BLUGIALLOGIALLO.png"));
@@ -634,6 +641,7 @@ public class GUIView extends Application implements View, VirtualView {
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
         borderPane.setPadding(new Insets(50, 0, 0, 0));
+
         ImageView imageAdrenalina = new ImageView(adrenalina);
         imageAdrenalina.setFitHeight(125);
         imageAdrenalina.setPreserveRatio(true);
@@ -650,6 +658,7 @@ public class GUIView extends Application implements View, VirtualView {
                 new BackgroundImage(background, BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
+
 
         borderPane.setCenter(gameList);
 
@@ -1110,10 +1119,13 @@ public class GUIView extends Application implements View, VirtualView {
             Button game = new Button();
             game.setBackground(new Background(
                     new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+            game.setMinWidth(games.getMaxWidth());
             game.setPrefWidth(games.getMaxWidth());
             game.setPrefHeight(200);
             game.setText("Non sono ancora state create partite.\n"
                     + "Per crearne una clicca il pulsante qui sotto.");
+
+            game.setStyle(" -fx-text-inner-color: white; -fx-font: 20px Silom");
             game.setTextFill(Color.WHITE);
             game.setOpacity(0.6);
             games.getChildren().add(game);
@@ -1142,9 +1154,11 @@ public class GUIView extends Application implements View, VirtualView {
             game.setWrapText(true);
             game.setId(x.getString("gameId"));
             game.setTextFill(Color.WHITE);
+            game.setMinWidth(games.getMaxWidth());
             game.setPrefWidth(games.getMaxWidth());
             game.setPrefHeight(200);
             game.setOpacity(0.6);
+            game.setStyle(" -fx-text-inner-color: white; -fx-font: 20px Silom");
 
             game.setOnMouseEntered(new EventHandler<MouseEvent>() {
 
@@ -1741,18 +1755,33 @@ public class GUIView extends Application implements View, VirtualView {
 
                     });
 
-            /////////////////////////////////////////////////////////////////////////// centro powerUp e armi
+            /////////////////////////////////////////////////////////////////////////// centro powerUp e armi e tuoi cubes
             weaponsList.clear();
             powerUpList.clear();
+
+            HBox myPlayerCubes = new HBox();
+            myPlayerCubes.setPrefHeight(30);
+
             HBox cards = new HBox();
             cards.setPrefWidth(990);
             cards.setPrefHeight((565 / 3) + 10);
+
             JsonObject thisPlayerObject = jGameHandlerObject
                     .getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .filter(x -> x.getString("playerId").equals(playerIdView))
                     .findAny()
                     .orElseThrow(IllegalArgumentException::new);
+
+            thisPlayerObject.getJsonArray("ammoCubes").stream()
+                    .map(x -> x.toString().substring(1, x.toString().length() - 1))
+                    .forEach(cube -> {
+
+                        ImageView cubeView = new ImageView(cubesMap.get(cube));
+                        cubeView.setFitHeight(30);
+                        cubeView.setFitWidth(30);
+                        myPlayerCubes.getChildren().add(cubeView);
+                    });
 
             thisPlayerObject.getJsonArray("weapons").stream()
                     .map(JsonValue::asJsonObject)
@@ -1804,7 +1833,13 @@ public class GUIView extends Application implements View, VirtualView {
                         powerUpButton.setOnMouseExited(smaller);
                         cards.getChildren().add(powerUpButton);
                     });
+
+            anchorPane.getChildren().add(myPlayerCubes);
+
+            AnchorPane.setLeftAnchor(myPlayerCubes, 10.0);
+            AnchorPane.setBottomAnchor(myPlayerCubes, 0.0);
             pannelloCentrale.getChildren().addAll(imagePane, cards);
+
             pannelloCentrale.setSpacing(0);
             borderPane.setCenter(pannelloCentrale);
             /////////////////////////////////////////////////destra metto plance giocatori
@@ -1895,6 +1930,7 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     private synchronized void createNotifications(String stringTitle, String value) {
+
         Platform.runLater(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.NONE);
@@ -2140,28 +2176,38 @@ public class GUIView extends Application implements View, VirtualView {
                                             .getSource());
 
                                     if (destination.isSpawn) {
+
                                         Stage collectStage = new Stage();
+
                                         VBox root = new VBox();
                                         root.setSpacing(20);
-                                        HBox cardsInSquare = new HBox();
+
                                         ToggleGroup cardsInSquareGroup = new ToggleGroup();
+
+                                        HBox cardsInSquare = new HBox();
+
                                         HBox toggleBox = new HBox();
                                         toggleBox.setSpacing(100);
+
                                         weaponsInSpawnSquare.stream()
                                                 .filter(c -> c.getColorOfSpawn()
                                                         .equals(destination.getColor()))
                                                 .forEach(c -> {
+
                                                     ImageView card = new ImageView(
                                                             weaponsMap.get(c.getCardId()));
                                                     card.setFitWidth(100);
                                                     card.setFitHeight(150);
+
                                                     Button cardButton = new Button("", card);
 
                                                     RadioButton radioButton = new RadioButton();
                                                     radioButton.setUserData(
                                                             String.valueOf(c.getCardId()));
+
                                                     cardsInSquare.getChildren().add(cardButton);
                                                     radioButton.setToggleGroup(cardsInSquareGroup);
+
                                                     toggleBox.getChildren().add(radioButton);
 
                                                     cardButton.setOnMouseEntered(
@@ -2262,24 +2308,31 @@ public class GUIView extends Application implements View, VirtualView {
 
                                             CheckBox checkBox = new CheckBox();
                                             checkBox.setId(new StringBuilder().append(p.name)
-                                                    .append("-").append(p.color).toString());
+                                                    .append("-").append(p.color.toLowerCase())
+                                                    .toString());
 
                                             myPowerUps.getChildren().addAll(powerUpButton);
                                             powerUpCheckBox.getChildren().addAll(checkBox);
+
                                             powerUpButton.setOnMouseEntered(
                                                     new EventHandler<MouseEvent>() {
+
                                                         @Override
                                                         public void handle(
                                                                 MouseEvent mouseEvent) {
+
                                                             collectStage.getScene()
                                                                     .setCursor(Cursor.HAND);
                                                         }
                                                     });
+
                                             powerUpButton.setOnMouseExited(
                                                     new EventHandler<MouseEvent>() {
+
                                                         @Override
                                                         public void handle(
                                                                 MouseEvent mouseEvent) {
+
                                                             collectStage.getScene()
                                                                     .setCursor(
                                                                             Cursor.DEFAULT);
@@ -2292,22 +2345,25 @@ public class GUIView extends Application implements View, VirtualView {
                                                         public void handle(MouseEvent mouseEvent) {
 
                                                             checkBox.setSelected(
-                                                                    checkBox.isSelected() ? false
-                                                                            : true);
+                                                                    !checkBox.isSelected());
                                                         }
                                                     });
                                         });
 
                                         root.getChildren().addAll(myPowerUps, powerUpCheckBox);
+
                                         Button enter = new Button("Conferma");
-                                        enter.setPrefSize(60, 25);
+                                        enter.setPrefSize(80, 25);
                                         enter.setOnMouseEntered(bigger);
                                         enter.setOnMouseExited(smaller);
+
                                         enter.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                             @Override
                                             public void handle(MouseEvent mouseEvent) {
+
                                                 if (toggleBox.getChildren().stream().anyMatch(
                                                         m -> ((RadioButton) m).isSelected())) {
+
                                                     JsonQueue.add("method", "askCollect");
                                                     JsonQueue.add("cardIdCollect",
                                                             toggleBox.getChildren().stream()
@@ -2315,15 +2371,60 @@ public class GUIView extends Application implements View, VirtualView {
                                                                             .isSelected())
                                                                     .findFirst().get().getUserData()
                                                                     .toString());
-                                                    JsonQueue.add("cardIdDiscard", "");
-                                                    JsonQueue.add("powerups", "");
+
+                                                    if (playerToggles.getChildren().stream()
+                                                            .anyMatch(m -> ((RadioButton) m)
+                                                                    .isSelected())) {
+
+                                                        JsonQueue.add("cardIdDiscard",
+                                                                playerToggles.getChildren().stream()
+                                                                        .filter(m -> ((RadioButton) m)
+                                                                                .isSelected())
+                                                                        .findFirst().get()
+                                                                        .getUserData()
+                                                                        .toString());
+                                                    } else {
+
+                                                        JsonQueue.add("cardIdDiscard", "");
+                                                    }
+
+                                                    if (powerUpCheckBox.getChildren().stream()
+                                                            .anyMatch(m -> ((CheckBox) m)
+                                                                    .isSelected())) {
+
+                                                        StringBuilder line = new StringBuilder();
+
+                                                        line.append("powerup(");
+
+                                                        powerUpCheckBox.getChildren().stream()
+                                                                .filter(m -> ((CheckBox) m)
+                                                                        .isSelected())
+                                                                .forEach(s -> {
+
+                                                                    line.append(s.getId());
+                                                                    line.append(" ");
+                                                                });
+                                                        line.append(")");
+
+                                                        JsonQueue.add("powerups", line.toString());
+
+                                                    } else {
+
+                                                        JsonQueue.add("powerups", "");
+                                                    }
+
                                                     JsonQueue.send();
                                                     collectStage.close();
+                                                } else {
+
+                                                    createNotifications("Attenzione!",
+                                                            "Devi selezionare quale carta vuoi raccogliere.");
                                                 }
+
                                             }
                                         });
                                         root.getChildren().add(enter);
-                                        Scene  collectScene= new Scene(root);
+                                        Scene collectScene = new Scene(root);
                                         collectStage.setScene(collectScene);
                                         collectStage.show();
 

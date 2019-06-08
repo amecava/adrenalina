@@ -172,7 +172,8 @@ public class Board implements Serializable {
                 .levenshteinDistance(powerUpName, x.getName()) <= 3)) {
 
             return this.getPowerUpDeck().getDeck().stream().filter(x -> JsonUtility
-                    .levenshteinDistance(powerUpName, x.getName()) <= 3).findAny().get().toJsonObject();
+                    .levenshteinDistance(powerUpName, x.getName()) <= 3).findAny().get()
+                    .toJsonObject();
         }
 
         return null;
@@ -185,14 +186,17 @@ public class Board implements Serializable {
 
         int i = 0;
         int j = 0;
+
         Square tmpSquare = this.roomsList.get(i).getSquare(0);
+        Square firstOfTheRow;
 
         while (board.size() < 3) {
 
+            firstOfTheRow = tmpSquare;
+
             builder = Json.createArrayBuilder();
 
-            if (i >= 1 && !tmpSquare.getAdjacent(Direction.NORTH)
-                    .equals(this.roomsList.get(i - 1).getSquare(0))) {
+            if (i == 2 && (this.boardId == 0 || this.boardId == 1)) {
 
                 builder.add(Json.createObjectBuilder().add("empty", "").build());
                 j++;
@@ -216,23 +220,19 @@ public class Board implements Serializable {
 
             board.add(builder.build());
 
-            i++;
+            if (firstOfTheRow.getAdjacent(Direction.SOUTH) != null) {
 
-            //qui l'errore, la room 1 non è più sotto la 0, cazzo
-            tmpSquare = this.roomsList.get(i).getSquare(0);
+                tmpSquare = firstOfTheRow.getAdjacent(Direction.SOUTH);
+
+            } else {
+
+                tmpSquare = firstOfTheRow.getAdjacent(Direction.EAST).getAdjacent(Direction.SOUTH);
+            }
+            i++;
         }
 
         builder = Json.createArrayBuilder();
         board.forEach(builder::add);
-
-        JsonArrayBuilder players = Json.createArrayBuilder();
-
-        this.roomsList.stream()
-                .flatMap(x -> x.getSquaresList().stream())
-                .filter(y -> !y.getPlayers().isEmpty())
-                .flatMap(z -> z.getPlayers().stream())
-                .map(Player::toJsonObject)
-                .forEach(players::add);
 
         return Json.createObjectBuilder()
                 .add("boardId", this.boardId)

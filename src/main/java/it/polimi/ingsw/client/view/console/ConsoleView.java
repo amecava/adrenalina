@@ -143,11 +143,11 @@ public class ConsoleView implements View, VirtualView {
 
         Terminal.output("");
         Terminal.output(
-                "1: \u001b[34m█ █ █  \u001b[0m  2:\u001b[34m █ █ █ \u001b[32m█\u001b[0m  3: █ █ █ █\u001b[0m  4: █ █ █ █\u001b[0m");
+                "1: \u001b[34m█ █ █  \u001b[0m  2:\u001b[34m █ █ █ \u001b[32m█\u001b[0m  3: \u001b[31m█ \u001b[34m█ █  \u001b[0m  4: █ █ █ █\u001b[0m");
         Terminal.output(
-                "   \u001b[31m█ █ █ \u001b[33m█\u001b[0m     \u001b[31m█ █\u001b[33m █ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+                "   \u001b[31m█ █ █ \u001b[33m█\u001b[0m     \u001b[31m█ █\u001b[33m █ █\u001b[0m     \u001b[31m█ \u001b[35m█ █ \u001b[33m█\u001b[0m     █ █ █ █\u001b[0m");
         Terminal.output(
-                "   \u001b[37m  █ █ \u001b[33m█\u001b[0m     \u001b[37m  █ \u001b[33m█ █\u001b[0m     █ █ █ █\u001b[0m     █ █ █ █\u001b[0m");
+                "   \u001b[37m  █ █ \u001b[33m█\u001b[0m     \u001b[37m  █ \u001b[33m█ █\u001b[0m     \u001b[37m█ █ █ \u001b[33m█\u001b[0m     █ █ █ █\u001b[0m");
         Terminal.output("");
     }
 

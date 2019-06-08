@@ -293,7 +293,7 @@
       },
       {
         "present": true,
-        "squareId": 3,
+        "squareId": "3",
         "color": "giallo",
         "spawn": true
       }
