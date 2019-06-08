@@ -202,10 +202,10 @@ public class ConsoleView implements View, VirtualView {
 
         this.id = jsonObject.getString("playerId");
 
-        if (jsonObject.getBoolean("isGameStarted") && jsonObject.containsKey("gameId")) {
+        if (jsonObject.getBoolean("gameStarted") && jsonObject.containsKey("gameId")) {
 
             this.infoMessage("Login effettuato come " + jsonObject.getString("playerId") +
-                    "e riconnesso alla partita " + jsonObject.getString("gameId"));
+                    " e riconnesso alla partita " + jsonObject.getString("gameId"));
         } else {
 
             this.infoMessage("Login effettuato come " + jsonObject.getString("playerId"));
