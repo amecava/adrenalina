@@ -104,6 +104,7 @@ public class GUIView extends Application implements View, VirtualView {
     private static Map<String, Image> ammoTilesMap = new HashMap<>();
     private static Map<String, Image> dropsMap = new HashMap<>();
     private static Map<String, Image> possibleActionsMap = new HashMap<>();
+    private static Map<String, Image> boardMap = new HashMap<>();
     private static Map<String, Image> cubesMap = new HashMap<>();
 
 
@@ -150,10 +151,14 @@ public class GUIView extends Application implements View, VirtualView {
     private List<ButtonWeapon> weaponsList = new ArrayList<>();
     private List<ButtonWeapon> weaponsInSpawnSquare = new ArrayList<>();
     private List<Integer> actionsList = new ArrayList<>();
+    private List<String> playersInGame = new ArrayList<>();
+    private List<ButtonSquare> squareListForShootState = new ArrayList<>();
 
     private String character;
 
     private String playerIdView;
+    private int boardId;
+    private int activatedWeapon;
 
     private static BooleanProperty ready = new SimpleBooleanProperty(false);
 
@@ -392,17 +397,21 @@ public class GUIView extends Application implements View, VirtualView {
                 };
                 notifyPreloader(new ProgressNotification(0.85));
                 ////////////////////////////////////////////////////////////
-                imageView0 = new ImageView(new Image("Boards/0 - UPUP.png"));
+                boardMap.put("board0Image", new Image("Boards/0 - UPUP.png"));
+                imageView0 = new ImageView(boardMap.get("board0Image"));
                 imageView0.setFitHeight(240);
                 imageView0.setFitWidth(300);
-                imageView1 = new ImageView(new Image("Boards/1 - DOWNDOWN.png"));
+                boardMap.put("board1Image", new Image("Boards/1 - DOWNDOWN.png"));
+                imageView1 = new ImageView(boardMap.get("board1Image"));
                 imageView1.setFitHeight(240);
                 imageView1.setFitWidth(300);
-                imageView2 = new ImageView(new Image("Boards/2 - UPDOWN.png"));
+                boardMap.put("board2Image", new Image("Boards/2 - UPDOWN.png"));
+                imageView2 = new ImageView(boardMap.get("board2Image"));
                 imageView2.setFitWidth(300);
                 imageView2.setFitHeight(240);
                 notifyPreloader(new ProgressNotification(0.9));
-                imageView3 = new ImageView(new Image("Boards/3 - DOWNUP.png"));
+                boardMap.put("board3Image", new Image("Boards/3 - DOWNUP.png"));
+                imageView3 = new ImageView(boardMap.get("board3Image"));
                 imageView3.setFitWidth(300);
                 imageView3.setFitHeight(240);
                 imageView0select = new ImageView(new Image("Boards/0 - UPUP - select.png"));
@@ -1427,109 +1436,123 @@ public class GUIView extends Application implements View, VirtualView {
         });
     }
 
+    public synchronized Node createBoard(boolean isUpdateBoard, double xScaleFactor) {
+        double yScaleFactor = xScaleFactor;
+        ImageView boardImage = new ImageView();
+
+        switch (boardId) {
+            case 0:
+                boardImage = new ImageView(boardMap.get("board2Image"));
+                break;
+            case 1:
+                boardImage = new ImageView(boardMap.get("board0Image"));
+                break;
+
+            case 2:
+                boardImage = new ImageView(boardMap.get("board1Image"));
+                break;
+
+            case 3:
+                boardImage = new ImageView(boardMap.get("board3Image"));
+                break;
+
+
+        }
+        /////////////////////////////////////////////////////centro set quadrati!
+        if (isUpdateBoard) {
+            this.squareList.clear();
+        } else {
+            this.squareListForShootState.clear();
+        }
+        boardImage.setFitWidth(990 / xScaleFactor);
+        boardImage
+                .setFitHeight(565 / yScaleFactor);//1.321 rapporto tra lunghezza e altezza originale
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.setPrefSize(990 / xScaleFactor, 565 / yScaleFactor);
+        VBox squares = new VBox();
+        AnchorPane.setTopAnchor(squares, 120.0 / yScaleFactor);
+        AnchorPane.setBottomAnchor(squares, 25.0 / yScaleFactor);
+        AnchorPane.setLeftAnchor(squares, 160.0 / xScaleFactor);
+        AnchorPane.setRightAnchor(squares, 145.0 / xScaleFactor);
+        HBox line;
+        line = new HBox();
+        line.setSpacing(0);
+
+        JsonObject jsonBoard = jsonArray.stream().map(JsonValue::asJsonObject)
+                .filter(x -> x.getInt("id") == boardId).findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+
+        jsonBoard.getJsonArray("values").stream().map(JsonValue::asJsonObject)
+                .forEach(x -> {
+                            ButtonSquare buttonSquare = new ButtonSquare(true);
+                            if (x.getBoolean("present")) {
+                                buttonSquare = new ButtonSquare(
+                                        x.getString("color"), x.getString("squareId"));
+                                buttonSquare.setBackground(new Background(
+                                        new BackgroundFill(Color.rgb(217, 217, 217),
+                                                CornerRadii.EMPTY,
+                                                Insets.EMPTY)));
+                                buttonSquare.setSpawn(x.getBoolean("spawn"));
+                                buttonSquare.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent mouseEvent) {
+                                        ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.3);
+                                        currentStage.getScene().setCursor(Cursor.HAND);
+                                    }
+                                });
+                                buttonSquare.setOnMouseExited(new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent mouseEvent) {
+                                        ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.0);
+                                        currentStage.getScene().setCursor(Cursor.DEFAULT);
+                                    }
+                                });
+
+                            } else {
+                                buttonSquare = new ButtonSquare(false);
+
+                            }
+                            buttonSquare.setPrefHeight(125 / yScaleFactor);
+                            buttonSquare.setPrefWidth(175 / xScaleFactor);
+                            StackPane stackPane = new StackPane();
+                            stackPane.setPrefHeight(125 / yScaleFactor);
+                            stackPane.setPrefWidth(175 / xScaleFactor);
+                            stackPane.getChildren().add(buttonSquare);
+                            if (isUpdateBoard) {
+                                squareList.add(buttonSquare);
+                            } else {
+                                squareListForShootState.add(buttonSquare);
+                            }
+                            line.getChildren().add(stackPane);
+                            if (line.getChildren().size() == 4) {
+                                HBox row = new HBox();
+                                row.getChildren().addAll(line.getChildren());
+                                squares.getChildren().add(row);
+                                line.getChildren().clear();
+                            }
+                        }
+                );
+        anchorPane.getChildren().addAll(boardImage, squares);
+        return anchorPane;
+    }
+
     @Override
     public synchronized void updateBoard(String value) throws RemoteException {
 
         JsonObject jGameHandlerObject = JsonUtility.jsonDeserialize(value);
 
-        int board = jGameHandlerObject.getJsonObject("board").getInt("boardId");
+        boardId = jGameHandlerObject.getJsonObject("board").getInt("boardId");
 
         Platform.runLater(() -> {
-            ImageView boardImage = new ImageView();
-            ((BorderPane) currentStage.getScene().getRoot()).getChildren().clear();
-            switch (board) {
-                case 0:
-                    boardImage = imageView2;
-                    break;
-                case 1:
-                    boardImage = imageView0;
-                    break;
-
-                case 2:
-                    boardImage = imageView1;
-                    break;
-
-                case 3:
-                    boardImage = imageView3;
-                    break;
-
-
-            }
-            /////////////////////////////////////////////////////centro set quadrati!
-            this.squareList.clear();
             VBox pannelloCentrale = new VBox();
             BorderPane borderPane = new BorderPane();
             borderPane.setBackground(new Background(
                     new BackgroundImage(background, BackgroundRepeat.REPEAT,
                             BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                             BackgroundSize.DEFAULT)));
-            GridPane imagePane = new GridPane();
-            boardImage.setFitWidth(990);
-            boardImage.setFitHeight(565);
-            imagePane.setPrefHeight(990);
-            imagePane.setPrefWidth(565);
-            AnchorPane anchorPane = new AnchorPane();
-            anchorPane.setPrefSize(990, 565);
-            VBox squares = new VBox();
-            AnchorPane.setTopAnchor(squares, 120.0);
-            AnchorPane.setBottomAnchor(squares, 25.0);
-            AnchorPane.setLeftAnchor(squares, 160.0);
-            AnchorPane.setRightAnchor(squares, 145.0);
-            HBox line;
-            line = new HBox();
-            line.setSpacing(0);
+            ((BorderPane) currentStage.getScene().getRoot()).getChildren().clear();
+            AnchorPane anchorPane = (AnchorPane) this.createBoard(true, 1);
 
-            JsonObject jsonBoard = jsonArray.stream().map(JsonValue::asJsonObject)
-                    .filter(x -> x.getInt("id") == board).findFirst()
-                    .orElseThrow(IllegalArgumentException::new);
-
-            jsonBoard.getJsonArray("values").stream().map(JsonValue::asJsonObject)
-                    .forEach(x -> {
-                                ButtonSquare buttonSquare = new ButtonSquare(true);
-                                if (x.getBoolean("present")) {
-                                    buttonSquare = new ButtonSquare(
-                                            x.getString("color"), x.getString("squareId"));
-                                    buttonSquare.setBackground(new Background(
-                                            new BackgroundFill(Color.rgb(217, 217, 217),
-                                                    CornerRadii.EMPTY,
-                                                    Insets.EMPTY)));
-                                    buttonSquare.setSpawn(x.getBoolean("spawn"));
-                                    buttonSquare.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                                        @Override
-                                        public void handle(MouseEvent mouseEvent) {
-                                            ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.3);
-                                            currentStage.getScene().setCursor(Cursor.HAND);
-                                        }
-                                    });
-                                    buttonSquare.setOnMouseExited(new EventHandler<MouseEvent>() {
-                                        @Override
-                                        public void handle(MouseEvent mouseEvent) {
-                                            ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.0);
-                                            currentStage.getScene().setCursor(Cursor.DEFAULT);
-                                        }
-                                    });
-
-                                } else {
-                                    buttonSquare = new ButtonSquare(false);
-
-                                }
-                                buttonSquare.setPrefHeight(125);
-                                buttonSquare.setPrefWidth(175);
-                                StackPane stackPane = new StackPane();
-                                stackPane.setPrefHeight(125);
-                                stackPane.setPrefWidth(175);
-                                stackPane.getChildren().add(buttonSquare);
-                                squareList.add(buttonSquare);
-                                line.getChildren().add(stackPane);
-                                if (line.getChildren().size() == 4) {
-                                    HBox row = new HBox();
-                                    row.getChildren().addAll(line.getChildren());
-                                    squares.getChildren().add(row);
-                                    line.getChildren().clear();
-                                }
-                            }
-                    );
-            anchorPane.getChildren().add(squares);
             /////////////////////////////////////////////////metto armi nello slot armi
             weaponsInSpawnSquare.clear();
             HBox weaponsTop = new HBox();
@@ -1554,6 +1577,7 @@ public class GUIView extends Application implements View, VirtualView {
             AnchorPane.setTopAnchor(weaponsDx, 320.0);
             AnchorPane.setRightAnchor(weaponsDx, 0.0);
             AnchorPane.setBottomAnchor(weaponsDx, 0.0);
+            //////////////////////////////////////////////////////////
 
             jGameHandlerObject.getJsonObject("board")
                     .getJsonArray("arrays").stream()
@@ -1645,10 +1669,10 @@ public class GUIView extends Application implements View, VirtualView {
 
             anchorPane.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop);
 
-            imagePane.getChildren().addAll(boardImage, anchorPane);
             anchorPane.setMouseTransparent(false);
 
             ////////////////////////////////////////////////////  metto giocatori e ammotiles nei quadrati!!
+            playersInGame.clear();
             jGameHandlerObject.getJsonObject("board").getJsonArray("arrays").stream()
                     .flatMap(x -> x.asJsonArray().stream())
                     .map(JsonValue::asJsonObject)
@@ -1687,7 +1711,7 @@ public class GUIView extends Application implements View, VirtualView {
                             z.getJsonArray("playersIn").stream()
                                     .map(JsonValue::asJsonObject)
                                     .forEach(t -> {
-
+                                        playersInGame.add(t.getString("character"));
                                         ImageView player = new ImageView(
                                                 playersMap.get(t.getString("character")));
 
@@ -1833,12 +1857,12 @@ public class GUIView extends Application implements View, VirtualView {
                         powerUpButton.setOnMouseExited(smaller);
                         cards.getChildren().add(powerUpButton);
                     });
+            pannelloCentrale.getChildren().addAll(anchorPane, cards);
 
             anchorPane.getChildren().add(myPlayerCubes);
 
             AnchorPane.setLeftAnchor(myPlayerCubes, 10.0);
             AnchorPane.setBottomAnchor(myPlayerCubes, 0.0);
-            pannelloCentrale.getChildren().addAll(imagePane, cards);
 
             pannelloCentrale.setSpacing(0);
             borderPane.setCenter(pannelloCentrale);
@@ -1875,6 +1899,7 @@ public class GUIView extends Application implements View, VirtualView {
                                 .filter(k -> k.getId().equals(allPlayersCharacter)).findFirst()
                                 .get();
                         HBox shots = new HBox();
+                        shots.setSpacing(2);
                         HBox kills = new HBox();
                         int numberOfBridge = bridges.getChildren().indexOf(characterBridge);
                         x.getJsonObject("bridge").getJsonArray("deathBridgeArray").stream()
@@ -1942,6 +1967,7 @@ public class GUIView extends Application implements View, VirtualView {
             title.setFill(Color.YELLOW);
             Text message = new Text(value);
             message.setFill(Color.WHITE);
+            message.setWrappingWidth(200);
             dialogVbox.getChildren().addAll(title, message);
             dialogVbox.setSpacing(20);
             Scene dialogScene = new Scene(dialogVbox, 300, 200);
@@ -2120,14 +2146,62 @@ public class GUIView extends Application implements View, VirtualView {
 
                         if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUsePrimary")) {
+                            Button effettoPrimario = this.createGenericButton();
+                            effettoPrimario.setText("effetto primario");
+                            effettoPrimario.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    createShootStage(true, "askUsePrimary");
+
+                                }
+                            });
+                            collectiveButtons.getChildren().add(effettoPrimario);
+                            this.resizeButtons();
+
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUseAlternative")) {
+                            Button effettoAlternativo = this.createGenericButton();
+                            effettoAlternativo.setText("effetto alternativo");
+                            effettoAlternativo.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    createShootStage(false, "askUseAlternative");
+                                }
+                            });
+                            collectiveButtons.getChildren().add(effettoAlternativo);
+                            this.resizeButtons();
+
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUseOptional1")) {
+                            Button opzionale1 = this.createGenericButton();
+                            opzionale1.setText("effetto opzionale 1");
+                            opzionale1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    createShootStage(false, "askUseOptional1");
+                                }
+                            });
+                            collectiveButtons.getChildren().add(opzionale1);
+                            this.resizeButtons();
+
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUseOptional2")) {
+                            Button opzionale2 = this.createGenericButton();
+                            opzionale2.setText(" effetto opzionale2");
+                            opzionale2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    createShootStage(false, "askUseOptional2");
+                                }
+                            });
+                            collectiveButtons.getChildren().add(opzionale2);
+                            this.resizeButtons();
+
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("endAction")) {
+                            Button endAction = this.createEndActionButton();
+                            collectiveButtons.getChildren().addAll(endAction);
+                            this.resizeButtons();
                         }
                     });
                     break;
@@ -2445,11 +2519,25 @@ public class GUIView extends Application implements View, VirtualView {
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askActivateWeapon")) {
 
-                            Button activateCardButton = new Button("clicca un'arma per attivarla!");
+                            Button activateCardButton = new Button("clicca arma per attivarla!");
+                            ButtonWeapon.setOnMouse(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    GUIView.this.activatedWeapon = ((ButtonWeapon) mouseEvent
+                                            .getSource()).getCardId();
+                                    JsonQueue.add("method", "askActivateWeapon");
+                                    JsonQueue.add("cardId", String.valueOf(
+                                            ((ButtonWeapon) mouseEvent.getSource()).getCardId()));
+                                    JsonQueue.send();
+                                }
+                            });
+                            GUIView.this.weaponsList.stream().forEach(z -> z.update());
+
                             activateCardButton.setPrefSize(200, 36);
                             activateCardButton.setTextFill(Color.BLACK);
                             collectiveButtons.getChildren().add(activateCardButton);
                             this.resizeButtons();
+
 
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askReload")) {
@@ -2462,18 +2550,7 @@ public class GUIView extends Application implements View, VirtualView {
                             this.resizeButtons();
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("endAction")) {
-                            Button endAction = new Button("fine azione!");
-                            endAction.setPrefSize(200, 36);
-                            endAction.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    JsonQueue.add("method", "endAction");
-                                    JsonQueue.add("cardId", "");
-                                    JsonQueue.send();
-                                }
-                            });
-                            endAction.setOnMouseEntered(bigger);
-                            endAction.setOnMouseExited(smaller);
+                            Button endAction = this.createEndActionButton();
                             collectiveButtons.getChildren().add(endAction);
                             this.resizeButtons();
                         }
@@ -2510,6 +2587,7 @@ public class GUIView extends Application implements View, VirtualView {
                                         switch (k) {
                                             case 0:
                                                 valueOfAction = 4;
+                                                break;
 
                                             case 4:
                                                 valueOfAction = 2;
@@ -2643,14 +2721,367 @@ public class GUIView extends Application implements View, VirtualView {
 
         if (numberOfButtons > 4) {
             this.collectiveButtons.getChildren().stream()
-                    .forEach(x -> x.prefHeight((212 + numberOfButtons * 14) / numberOfButtons));
+                    .forEach(x -> x.resize(36, (212 + numberOfButtons * 14) / numberOfButtons));
         }
+    }
+
+    public void createShootStage(Boolean isPrimaryEffect, String effectType) {
+
+        VBox root = new VBox();
+        root.setSpacing(5);
+        StringBuilder target = new StringBuilder().append("");
+        StringBuilder destination = new StringBuilder().append("");
+        AnchorPane board = (AnchorPane) this.createBoard(false, 2);// scala della meta' in lunghezza
+        HBox playersconnected = new HBox();
+        HBox checkBoxes = new HBox();
+        VBox playersAndCheckBox = new VBox();
+        int numberOfPlayersConnected = (int) this.playersInGame.stream().count() - 1;
+        int scaleFactor = numberOfPlayersConnected >= 3 ? numberOfPlayersConnected : 3;
+
+        this.playersInGame.stream().filter(x -> !x.equals(character)).forEach(x -> {
+            ImageView playerConnected = new ImageView(playersMap.get(x));
+            playerConnected.setFitWidth(495 / scaleFactor);
+            playerConnected.setFitHeight(220);
+            CheckBox playerCheckBox = new CheckBox();
+            playerCheckBox.setPrefSize(30, 30);
+            playerCheckBox.setId(x);
+            checkBoxes.getChildren().add(playerCheckBox);
+            Button playerConnectedButton = new Button(null, playerConnected);
+            checkBoxes.setSpacing(playerConnectedButton.getWidth());
+            playerConnectedButton.setBackground(new Background(
+                    new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+            playerConnectedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    playerCheckBox.setSelected(playerCheckBox.isSelected() ? false : true);
+                }
+            });
+
+            playersconnected.getChildren().add(playerConnectedButton);
+
+        });
+
+        StackPane playersAndMap = new StackPane();
+
+        HBox skipAndConfirmButtons = new HBox();
+        Button confirm = new Button("conferma");
+        confirm.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
+        confirm.setOnMouseEntered(bigger);
+        confirm.setOnMouseExited(smaller);
+        Button skipTarget = new Button("salta target");
+        skipTarget.prefHeightProperty().bind(confirm.prefHeightProperty());
+        skipTarget.prefWidthProperty().bind(confirm.prefWidthProperty());
+        skipTarget.setOnMouseEntered(bigger);
+        skipTarget.setOnMouseExited(smaller);
+        skipTarget.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
+        skipTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                GUIView.this.createDestination(root, board, effectType, target, destination);
+            }
+        });
+
+        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+
+                if (!checkBoxes.getChildren().stream()
+                        .anyMatch(c -> ((CheckBox) c).isSelected())) {
+
+                    target.append("");
+                } else {
+
+                    target.append("target(");
+                    checkBoxes.getChildren().stream()
+                            .filter(c -> ((CheckBox) c).isSelected())
+                            .forEach(c -> {
+
+                                target.append(c.getId()).append(" ");
+                            });
+                    target.append(")");
+
+
+                }
+                GUIView.this.createDestination(root, board, effectType, target, destination);
+
+            }
+        });
+
+
+        playersAndCheckBox.getChildren()
+                .addAll(playersconnected, checkBoxes, confirm);
+
+        playersAndMap.setVisible(false);
+        playersAndMap.getChildren().addAll(board, playersAndCheckBox);
+        Stage shootStage = new Stage();
+        HBox cardAndRadioButtons = new HBox();
+        ToggleGroup radioButtonToggle = new ToggleGroup();
+        ImageView cardImage = new ImageView(weaponsMap.get(activatedWeapon));
+        cardImage.setFitWidth(100);
+        cardImage.setFitHeight(150);
+        cardAndRadioButtons.getChildren().add(cardImage);
+
+        VBox radioButtonAndLabel = new VBox(30);
+        HBox lineOfRadioAndPlayer = new HBox();
+        RadioButton playerTarget = new RadioButton();
+        playerTarget.setToggleGroup(radioButtonToggle);
+        playerTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                playersAndMap.setVisible(true);
+                board.setVisible(false);
+                playersAndCheckBox.setVisible(true);
+                playersAndMap.getChildren().clear();
+                playersAndMap.getChildren().addAll(board, playersAndCheckBox);
+            }
+        });
+        Label playerLabel = new Label("target(personaggio)");
+        lineOfRadioAndPlayer.getChildren().addAll(playerLabel, playerTarget);
+        radioButtonAndLabel.getChildren().add(lineOfRadioAndPlayer);
+
+        HBox lineOfRadioAndButton = new HBox();
+        RadioButton squareTarget = new RadioButton();
+        GUIView.this.squareListForShootState.stream().filter(s -> s.getPresent())
+                .forEach(s -> s.setOnMouseClicked(
+                        new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+
+                                target.append("target(")
+                                        .append(((ButtonSquare) mouseEvent.getSource())
+                                                .getColor().toLowerCase());
+
+                                if (squareTarget.isSelected()) {
+
+                                    target.append("-")
+                                            .append(((ButtonSquare) mouseEvent.getSource())
+                                                    .getButtonSquareId());
+                                }
+
+                                target.append(")");
+                                GUIView.this.createDestination(root, board, effectType, target,
+                                        destination);
+                            }
+                        }));
+        squareTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                playersAndMap.setVisible(true);
+                board.setVisible(true);
+                playersAndCheckBox.setVisible(false);
+                playersAndMap.getChildren().clear();
+                playersAndMap.getChildren().addAll(playersAndCheckBox, board);
+
+            }
+        });
+        squareTarget.setToggleGroup(radioButtonToggle);
+        Label buttonLabel = new Label("target(square)");
+        lineOfRadioAndButton.getChildren().addAll(buttonLabel, squareTarget);
+        radioButtonAndLabel.getChildren().add(lineOfRadioAndButton);
+
+        HBox lineOfRadioAndRoom = new HBox();
+        RadioButton roomTarget = new RadioButton();
+        roomTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                playersAndMap.setVisible(true);
+                board.setVisible(true);
+                playersAndCheckBox.setVisible(false);
+                playersAndMap.getChildren().clear();
+                playersAndMap.getChildren().addAll(playersAndCheckBox, board);
+            }
+        });
+        roomTarget.setToggleGroup(radioButtonToggle);
+        Label roomLabel = new Label("target(stanza)");
+        lineOfRadioAndRoom.getChildren().addAll(roomLabel, roomTarget);
+        radioButtonAndLabel.getChildren().add(lineOfRadioAndRoom);
+        cardAndRadioButtons.getChildren().add(radioButtonAndLabel);
+
+        root.getChildren().addAll(cardAndRadioButtons, playersAndMap, skipTarget);
+        shootStage.setScene(new Scene(root));
+        shootStage.show();
+
+
     }
 
     @Override
     public void completePowerUpInfo(String value) throws RemoteException {
 
 
+    }
+
+    public Button createEndActionButton() {
+        Button endAction = new Button("fine azione!");
+        endAction.setPrefSize(200, 36);
+        endAction.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                JsonQueue.add("method", "endAction");
+                JsonQueue.add("cardId", "");
+                JsonQueue.send();
+            }
+        });
+        endAction.setAlignment(Pos.CENTER);
+        endAction.setTextFill(Color.BLACK);
+        endAction.setOnMouseEntered(bigger);
+        endAction.setOnMouseExited(smaller);
+        return endAction;
+    }
+
+    public Button createGenericButton() {
+        Button genericButton = new Button();
+        genericButton.setPrefSize(200, 36);
+        genericButton.setOnMouseEntered(bigger);
+        genericButton.setOnMouseExited(smaller);
+        genericButton.setAlignment(Pos.CENTER);
+        genericButton.setTextFill(Color.BLACK);
+        return genericButton;
+    }
+
+    public void createDestination(VBox root, AnchorPane board, String effectType,
+            StringBuilder target, StringBuilder destination) {
+        root.getChildren().clear();
+
+        Label selectDestinationLabel = new Label();
+        selectDestinationLabel.setText("Seleziona la destinazione");
+        selectDestinationLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+
+        Button skipButton = new Button();
+        skipButton.setText("salta destinazione");
+        skipButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
+
+        skipButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+
+                GUIView.this.thirdUseEffectScreen(root, effectType, target, destination);
+            }
+        });
+
+        board.setVisible(true);
+        root.getChildren().addAll(selectDestinationLabel, board, skipButton);
+        GUIView.this.squareListForShootState.stream()
+                .filter(s -> s.getPresent())
+                .forEach(s -> s.setOnMouseClicked(
+                        new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                destination.append("destinazione(")
+                                        .append(((ButtonSquare) mouseEvent.getSource())
+                                                .getColor().toLowerCase())
+                                        .append("-")
+                                        .append(((ButtonSquare) mouseEvent.getSource())
+                                                .getButtonSquareId())
+                                        .append(")");
+
+                                switch (effectType) {
+
+                                    case "askUsePrimary":
+
+                                        JsonQueue.add("method", effectType);
+                                        JsonQueue.add("line",
+                                                new StringBuilder().append(target.toString())
+                                                        .append(destination.toString())
+                                                        .toString());
+
+                                        JsonQueue.send();
+                                        break;
+
+                                    default:
+
+
+                                }
+
+
+                            }
+                        }));
+    }
+
+    public void thirdUseEffectScreen(VBox root, String effectType, StringBuilder target,
+            StringBuilder destination) {
+        StringBuilder paymentLine = new StringBuilder().append("");
+
+        if (!effectType.equals("askUsePowerUp")) {
+            root.getChildren().clear();
+
+            Label selectPaymentLabel = new Label();
+            selectPaymentLabel.setText("Vuoi pagare con un powerup?");
+            selectPaymentLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+
+            Button confirmButton = new Button();
+            confirmButton.setText("conferma");
+            confirmButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
+
+            HBox powerUpButtonsHBox = new HBox();
+            HBox checkBoxHBox = new HBox();
+
+            checkBoxHBox.setSpacing(170);
+
+            powerUpList.forEach(p -> {
+
+                String nameId = new StringBuilder().append(p.getName().toLowerCase())
+                        .append("-")
+                        .append(p.getColor().toLowerCase())
+                        .toString();
+
+                CheckBox powerUpCheckBox = new CheckBox();
+                powerUpCheckBox.setId(nameId);
+
+                ImageView powerUp = new ImageView(powerUpsMap
+                        .get(new StringBuilder().append(p.getName())
+                                .append(" ")
+                                .append(p.getColor())
+                                .toString()));
+
+                powerUp.setFitWidth(160);
+                powerUp.setFitHeight(220);
+
+                Button pButton = new Button("", powerUp);
+                pButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+
+                        powerUpCheckBox.setSelected(!powerUpCheckBox.isSelected());
+                    }
+                });
+
+                checkBoxHBox.getChildren().add(powerUpCheckBox);
+                powerUpButtonsHBox.getChildren().add(pButton);
+            });
+            root.getChildren().addAll(powerUpButtonsHBox, checkBoxHBox, confirmButton);
+            confirmButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                    if (!checkBoxHBox.getChildren().stream()
+                            .anyMatch(c -> ((CheckBox) c).isSelected())) {
+                        JsonQueue.add("method", effectType);
+                        JsonQueue.add("line",
+                                new StringBuilder().append(target.toString())
+                                        .append(destination.toString())
+                                        .append(paymentLine.toString())
+                                        .toString());
+                        JsonQueue.send();
+                    }
+                    else {
+                        paymentLine.append("POWER_UP(");
+                        checkBoxHBox.getChildren().stream().forEach(c->
+                        {
+                            paymentLine.append(((CheckBox)c).getId()).append(" ");
+                        });
+                        paymentLine.append(")");
+                        JsonQueue.add("method", effectType);
+                        JsonQueue.add("line",
+                                new StringBuilder().append(target.toString())
+                                        .append(destination.toString())
+                                        .append(paymentLine.toString())
+                                        .toString());
+                        JsonQueue.send();
+
+                    }
+                }
+            });
+        }
     }
 
 }
