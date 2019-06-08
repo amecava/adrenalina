@@ -396,17 +396,21 @@ public class GUIView extends Application implements View, VirtualView {
                 };
                 notifyPreloader(new ProgressNotification(0.85));
                 ////////////////////////////////////////////////////////////
-                imageView0 = new ImageView(new Image("Boards/0 - UPUP.png"));
+                boardMap.put("board0Image", new Image("Boards/0 - UPUP.png"));
+                imageView0 = new ImageView(boardMap.get("board0Image"));
                 imageView0.setFitHeight(240);
                 imageView0.setFitWidth(300);
-                imageView1 = new ImageView(new Image("Boards/1 - DOWNDOWN.png"));
+                boardMap.put("board1Image", new Image("Boards/1 - DOWNDOWN.png"));
+                imageView1 = new ImageView(boardMap.get("board1Image"));
                 imageView1.setFitHeight(240);
                 imageView1.setFitWidth(300);
-                imageView2 = new ImageView(new Image("Boards/2 - UPDOWN.png"));
+                boardMap.put("board2Image", new Image("Boards/2 - UPDOWN.png"));
+                imageView2 = new ImageView(boardMap.get("board2Image"));
                 imageView2.setFitWidth(300);
                 imageView2.setFitHeight(240);
                 notifyPreloader(new ProgressNotification(0.9));
-                imageView3 = new ImageView(new Image("Boards/3 - DOWNUP.png"));
+                boardMap.put("board3Image", new Image("Boards/3 - DOWNUP.png"));
+                imageView3 = new ImageView(boardMap.get("board3Image"));
                 imageView3.setFitWidth(300);
                 imageView3.setFitHeight(240);
                 imageView0select = new ImageView(new Image("Boards/0 - UPUP - select.png"));
@@ -1418,11 +1422,6 @@ public class GUIView extends Application implements View, VirtualView {
 
         switch (boardId) {
             case 0:
-                if (boardMap.containsKey("board2Image")) {
-                    System.out.println("trovata immagine ");
-                } else {
-                    System.out.println("non trovata ");
-                }
                 boardImage = new ImageView(boardMap.get("board2Image"));
                 break;
             case 1:
@@ -1844,7 +1843,6 @@ public class GUIView extends Application implements View, VirtualView {
 
             AnchorPane.setLeftAnchor(myPlayerCubes, 10.0);
             AnchorPane.setBottomAnchor(myPlayerCubes, 0.0);
-            pannelloCentrale.getChildren().addAll(imagePane, cards);
 
             pannelloCentrale.setSpacing(0);
             borderPane.setCenter(pannelloCentrale);
