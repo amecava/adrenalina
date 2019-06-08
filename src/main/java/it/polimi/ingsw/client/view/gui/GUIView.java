@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -80,6 +82,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -258,8 +261,6 @@ public class GUIView extends Application implements View, VirtualView {
                 playersMap.put("Violetta", new Image("players/violetta.png"));
                 playersMap.put("Dozer", new Image("players/dozer.png"));
                 playersMap.put("Banshee", new Image("players/banshee.png"));
-                playersMap.put("adrenalinaText", new Image("players/adrenaline_text.png"));
-                playersMap.put("adrenalinaIcon", new Image("players/adrenaline_icon.png"));
 
                 dropsMap.put("GIALLO", new Image("Drop/drop-yellow.png"));
                 dropsMap.put("VERDE", new Image("Drop/drop-green.png"));
@@ -442,7 +443,7 @@ public class GUIView extends Application implements View, VirtualView {
         });
         currentStage.setWidth(1920);
         currentStage.setHeight(1080);
-        currentStage.setResizable(false);
+        //currentStage.setResizable(false);
 
     }
 
@@ -558,6 +559,7 @@ public class GUIView extends Application implements View, VirtualView {
                         distruttoreImage.setFitHeight(300);
                         borderPane.setBottom(distruttoreImage);
                         BorderPane.setAlignment(distruttoreImage, Pos.BOTTOM_LEFT);
+
                         Platform.runLater(() -> changeScene(borderPane));
 
                     } catch (IOException e) {
@@ -908,8 +910,13 @@ public class GUIView extends Application implements View, VirtualView {
         borderPane.setTop(imageAdrenalina);
         BorderPane.setAlignment(imageAdrenalina, Pos.TOP_CENTER);
 
-        HBox images1 = new HBox();
-        images1.setMouseTransparent(false);
+        VBox center = new VBox();
+        center.setSpacing(30);
+        center.setAlignment(Pos.CENTER);
+
+        HBox boards = new HBox();
+        boards.setMouseTransparent(false);
+        boards.setAlignment(Pos.CENTER);
 
         Button board0 = new Button("", imageView2select);
         board0.setOnMouseExited(smaller);
@@ -971,14 +978,48 @@ public class GUIView extends Application implements View, VirtualView {
             }
         });
 
-        images1.getChildren().addAll(board0, board1);
-        HBox images2 = new HBox();
-        images2.setMouseTransparent(false);
-        images2.getChildren().addAll(board2, board3);
-        VBox images = new VBox();
-        images.getChildren().addAll(images1, images2);
-        borderPane.setCenter(images);
-        BorderPane.setAlignment(images, Pos.CENTER_LEFT);
+        boards.getChildren().addAll(board0, board1, board2, board3);
+
+        HBox characters = new HBox();
+        characters.setSpacing(60);
+        characters.setAlignment(Pos.CENTER);
+
+        playersMap.forEach((key, value)  -> {
+
+                    ImageView desaturated = new ImageView(value);
+                    desaturated.setPreserveRatio(true);
+                    desaturated.setFitHeight(180);
+                    desaturated.setOpacity(0.2);
+                    ColorAdjust desaturate = new ColorAdjust();
+                    desaturate.setSaturation(-1);
+                    desaturated.setEffect(desaturate);
+
+                    Label label = new Label();
+                    label.setFont(Font.font("Silom", 30));
+                    label.setTextFill(Color.WHITE);
+                    label.setAlignment(Pos.CENTER);
+
+                    VBox vBox = new VBox();
+                    vBox.setAlignment(Pos.CENTER);
+                    vBox.setSpacing(20);
+
+                    vBox.getChildren().addAll(desaturated, label);
+                    vBox.setId(key);
+
+                    characters.getChildren().add(vBox);
+                });
+
+        Label countDown = new Label();
+        countDown.setWrapText(true);
+        countDown.setTextFill(Color.WHITE);
+        countDown.setFont(Font.font("Silom", 20));
+        countDown.setAlignment(Pos.CENTER);
+
+        center.getChildren().addAll(boards, characters, countDown);
+
+        borderPane.setCenter(center);
+        BorderPane.setAlignment(center, Pos.CENTER);
+
         Platform.runLater(() -> changeScene(borderPane));
     }
 
@@ -1168,84 +1209,63 @@ public class GUIView extends Application implements View, VirtualView {
         Platform.runLater(() -> {
 
             BorderPane borderPane = (BorderPane) currentStage.getScene().getRoot();
-
-            VBox rows = new VBox();
-            rows.setSpacing(40);
-            rows.setAlignment(Pos.CENTER);
-
-            HBox firstRow = new HBox();
-            HBox secondRow = new HBox();
-            firstRow.setSpacing(30);
-            firstRow.setAlignment(Pos.CENTER);
-            secondRow.setSpacing(30);
-            secondRow.setAlignment(Pos.CENTER);
-
-            Map<String, VBox> vBoxMap = playersMap.entrySet().stream()
-                    .map(x -> {
-
-                        ImageView desaturated = new ImageView(x.getValue());
-                        desaturated.setPreserveRatio(true);
-                        desaturated.setFitHeight(200);
-                        desaturated.setOpacity(0.2);
-                        ColorAdjust desaturate = new ColorAdjust();
-                        desaturate.setSaturation(-1);
-                        desaturated.setEffect(desaturate);
-
-                        Label label = new Label();
-                        label.setFont(Font.font("Silom", 30));
-                        label.setTextFill(Color.WHITE);
-                        label.setAlignment(Pos.CENTER);
-
-                        VBox vBox = new VBox();
-                        vBox.setAlignment(Pos.CENTER);
-                        vBox.setSpacing(20);
-
-                        vBox.getChildren().addAll(desaturated, label);
-
-                        return new SimpleEntry<>(x.getKey(), vBox);
-
-                    }).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+            HBox characters = (HBox) ((VBox) borderPane.getCenter()).getChildren().get(1);
 
             readObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
 
-                        VBox vBox = vBoxMap.get(x.getString("character"));
+                        VBox characterVBox = characters.getChildren().stream()
+                                .map(y -> (VBox) y)
+                                .filter(y -> y.getId().equals(x.getString("character")))
+                                .findFirst()
+                                .orElse(null);
 
-                        ImageView imageView = (ImageView) vBox.getChildren().get(0);
-                        imageView.setOpacity(1);
-                        ((ColorAdjust)imageView.getEffect()).setSaturation(0);
+                        if (characterVBox != null
+                                && characterVBox.getChildren().get(0).getOpacity() == 0.2) {
 
-                        Label label = (Label) vBox.getChildren().get(1);
-                        label.setText(x.getString("playerId"));
+                            ImageView imageView = (ImageView) characterVBox.getChildren().get(0);
+                            imageView.setFitHeight(200);
+                            imageView.setOpacity(1);
+                            ((ColorAdjust)imageView.getEffect()).setSaturation(0);
+
+                            RotateTransition rotator = new RotateTransition(Duration.millis(300), imageView);
+                            rotator.setAxis(Rotate.Y_AXIS);
+                            rotator.setFromAngle(0);
+                            rotator.setToAngle(360);
+                            rotator.setInterpolator(Interpolator.LINEAR);
+                            rotator.setCycleCount(1);
+
+                            rotator.play();
+
+                            /*
+                            ScaleTransition scaleTransition = new ScaleTransition();
+                            scaleTransition.setDuration(Duration.millis(500));
+                            scaleTransition.setNode(imageView);
+                            scaleTransition.setByY(1.05);
+                            scaleTransition.setByX(1.05);
+                            scaleTransition.setCycleCount(1);
+                            scaleTransition.setAutoReverse(false);
+
+                            scaleTransition.play();
+                            */
+
+                            Label label = (Label) characterVBox.getChildren().get(1);
+                            label.setText(x.getString("playerId"));
+                        }
                     });
 
-            firstRow.getChildren().addAll(vBoxMap.get(":D-strutt-OR3"), vBoxMap.get("Sprog"));
-            secondRow.getChildren().addAll(vBoxMap.get("Violetta"), vBoxMap.get("Dozer"), vBoxMap.get("Banshee"));
-
-            Label countDown = new Label();
-            countDown.setWrapText(true);
-            countDown.setTextFill(Color.WHITE);
-            countDown.setFont(Font.font("Silom", 20));
-            countDown.setAlignment(Pos.CENTER);
-
+            ////////
             int count = readObject.getInt("countdown");
 
             if (count < 10) {
 
-                countDown.setText("La partita inizierà tra " + count + " secondi.");
+                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2)).setText("La partita inizierà tra " + count + " secondi.");
 
             } else {
 
-                countDown.setText("In attesa di tre giocatori connessi.");
+                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2)).setText("In attesa di tre giocatori connessi.");
             }
-
-            rows.getChildren().addAll(firstRow, secondRow, countDown);
-
-            borderPane.setRight(rows);
-            BorderPane.setAlignment(rows, Pos.CENTER_RIGHT);
-
-
         });
 
     }
