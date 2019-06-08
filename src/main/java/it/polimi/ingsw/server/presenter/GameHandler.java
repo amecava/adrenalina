@@ -263,6 +263,7 @@ public class GameHandler implements Serializable {
         return this.model.toJsonObject()
                 .add("gameId", this.gameId)
                 .add("countdown", this.gameStarted)
+                .add("gameStarted", this.isGameStarted())
                 .build();
     }
 }

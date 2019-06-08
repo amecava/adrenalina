@@ -50,23 +50,26 @@ public class ClientHandler {
 
     static synchronized void removeClient(Presenter presenter) {
 
-        clientList.remove(presenter);
+        if (clientList.contains(presenter)) {
 
-        if (presenter.getGameHandler() != null && presenter.getPlayer() != null) {
+            clientList.remove(presenter);
 
-            map.get(presenter.getGameHandler())
-                    .replace(presenter.getPlayer().setConnected(false), null);
+            if (presenter.getGameHandler() != null && presenter.getPlayer() != null) {
+
+                map.get(presenter.getGameHandler())
+                        .replace(presenter.getPlayer().setConnected(false), null);
+            }
+
+            LOGGER.log(Level.INFO, "{0} disconnected from server.", presenter.getPlayerId());
+
+            if (!presenter.getPlayerId().equals("Client")) {
+
+                broadcast(x -> true, "broadcast",
+                        presenter.getPlayerId() + ": disconnesso dal server.");
+            }
+
+            presenter.disconnectPresenter();
         }
-
-        LOGGER.log(Level.INFO, "{0} disconnected from server.", presenter.getPlayerId());
-
-        if (!presenter.getPlayerId().equals("Client")) {
-
-            broadcast(x -> true, "broadcast",
-                    presenter.getPlayerId() + ": disconnesso dal server.");
-        }
-
-        presenter.disconnectPresenter();
     }
 
     static synchronized boolean isClientPresent(String playerId) {
@@ -204,7 +207,17 @@ public class ClientHandler {
 
             map.values().forEach(x ->
 
-                    x.forEach((key, value) -> x.replace(key, null))
+                    x.forEach((key, value) -> {
+
+                        key.setConnected(false);
+
+                        if (value != null) {
+
+                            value.disconnectPresenter();
+                        }
+
+                        x.replace(key, null);
+                    })
             );
 
             File file = new File(path);

@@ -217,7 +217,6 @@ public class BoardDrawer {
             }
             cubesSubString.append(fixLength(10, cubesSubString.length()));
 
-
         } else {
 
             for (JsonValue card : jsonArray.getJsonArray(row)

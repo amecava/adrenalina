@@ -106,9 +106,8 @@ public abstract class Presenter implements VirtualPresenter {
 
             this.callRemoteMethod("completeLogin",
                     Json.createObjectBuilder(object)
-                            .add("gameId", this.gameHandler.getGameId() != null ? this.gameHandler
-                                    .getGameId() : " ")
-                            .add("isGameStarted", this.gameHandler.isGameStarted())
+                            .add("gameId", this.gameHandler.getGameId())
+                            .add("gameStarted", this.gameHandler.isGameStarted())
                             .build().toString());
 
             ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
@@ -124,7 +123,7 @@ public abstract class Presenter implements VirtualPresenter {
 
             this.callRemoteMethod("completeLogin",
                     Json.createObjectBuilder(object)
-                            .add("isGameStarted", this.gameHandler == null)
+                            .add("gameStarted", this.gameHandler == null)
                             .build().toString());
 
             this.callRemoteMethod("updateState", state.get("noGameState").toString());
