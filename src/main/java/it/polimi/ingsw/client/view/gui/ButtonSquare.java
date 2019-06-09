@@ -12,7 +12,7 @@ import javafx.scene.input.MouseEvent;
 public class ButtonSquare extends Button {
 
     String color;
-    String id;
+    int id;
     Boolean present;
     boolean isSpawn;
     boolean currentPosition=false;
@@ -20,7 +20,7 @@ public class ButtonSquare extends Button {
     private static EventHandler<MouseEvent> eventHandler;
     private static EventHandler<MouseEvent> collectEventHandler;
 
-    public ButtonSquare(String color, String id) {
+    public ButtonSquare(String color, int id) {
         this.color = color;
         this.id = id;
         this.present = true;
@@ -60,11 +60,11 @@ public class ButtonSquare extends Button {
     }
 
 
-    public String getButtonSquareId() {
+    public int getButtonSquareId() {
         return this.id;
     }
 
-    public void setButtonSqaureId(String id) {
+    public void setButtonSqaureId(int id) {
         this.id = id;
     }
 
