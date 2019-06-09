@@ -39,7 +39,7 @@ public class GUIPreloader extends Preloader {
         vBox.setBackground(new Background(
                 new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        image = new ImageView("players/adrenaline_icon.png");
+        image = new ImageView("images/adrenaline_icon.png");
         image.setPreserveRatio(true);
         image.setFitHeight(300);
 
@@ -62,8 +62,11 @@ public class GUIPreloader extends Preloader {
     public void handleProgressNotification(ProgressNotification pn) {
 
         if (pn.getProgress() != 1.0 || !noLoadingProgress) {
+
             bar.setProgress(pn.getProgress()/2);
+
             if (pn.getProgress() > 0) {
+
                 noLoadingProgress = false;
             }
         }
@@ -80,11 +83,14 @@ public class GUIPreloader extends Preloader {
         if (pn instanceof ProgressNotification) {
 
             double v = ((ProgressNotification) pn).getProgress();
+
             if (!noLoadingProgress) {
 
                 v = 0.5 + v/2;
             }
+
             bar.setProgress(v);
+
         } else if (pn instanceof StateChangeNotification) {
 
             stage.hide();

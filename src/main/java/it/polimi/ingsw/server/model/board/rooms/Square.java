@@ -205,8 +205,7 @@ public class Square implements Target, Serializable {
                 .add("squareId", this.squareId)
                 .add("isSpawn", this.spawn)
                 .add("tools", toolsBuilder.build())
-                .add("playersIn",
-                        (this.players.isEmpty()) ? JsonValue.NULL : playersBuilder.build())
+                .add("playersIn", (this.players.isEmpty()) ? JsonValue.NULL : playersBuilder.build())
                 .add("eastConnection", this.connection.get(Direction.EAST).toString())
                 .build();
     }
