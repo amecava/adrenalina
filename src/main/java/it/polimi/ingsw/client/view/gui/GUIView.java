@@ -184,7 +184,6 @@ public class GUIView extends Application implements View, VirtualView {
                 cubesMap.put("GIALLO", new Image("ammoTiles/GIALLO.png"));
                 cubesMap.put("BLU", new Image("ammoTiles/BLU.png"));
 
-
                 ammoTilesMap.put("BLUBLU", new Image("ammoTiles/BLUBLU.png"));
                 ammoTilesMap.put("BLUGIALLOGIALLO", new Image("ammoTiles/BLUGIALLOGIALLO.png"));
                 ammoTilesMap.put("BLUROSSOROSSO", new Image("ammoTiles/BLUROSSOROSSO.png"));
@@ -263,7 +262,6 @@ public class GUIView extends Application implements View, VirtualView {
                         .put(":D-strutt-OR3true",
                                 new Image("playerboards/D-strutt-OR3_true_frenesia.png"));
                 notifyPreloader(new ProgressNotification(0.35));
-
 
                 playersMap.put(":D-strutt-OR3", new Image("players/distruttore.png"));
                 playersMap.put("Sprog", new Image("players/sprog.png"));
@@ -665,7 +663,6 @@ public class GUIView extends Application implements View, VirtualView {
                 new BackgroundImage(background, BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
-
 
         borderPane.setCenter(gameList);
 
@@ -1237,14 +1234,15 @@ public class GUIView extends Application implements View, VirtualView {
 
                         ImageView imageView = (ImageView) vBox.getChildren().get(0);
                         imageView.setOpacity(1);
-                        ((ColorAdjust)imageView.getEffect()).setSaturation(0);
+                        ((ColorAdjust) imageView.getEffect()).setSaturation(0);
 
                         Label label = (Label) vBox.getChildren().get(1);
                         label.setText(x.getString("playerId"));
                     });
 
             firstRow.getChildren().addAll(vBoxMap.get(":D-strutt-OR3"), vBoxMap.get("Sprog"));
-            secondRow.getChildren().addAll(vBoxMap.get("Violetta"), vBoxMap.get("Dozer"), vBoxMap.get("Banshee"));
+            secondRow.getChildren()
+                    .addAll(vBoxMap.get("Violetta"), vBoxMap.get("Dozer"), vBoxMap.get("Banshee"));
 
             Label countDown = new Label();
             countDown.setWrapText(true);
@@ -2787,7 +2785,6 @@ public class GUIView extends Application implements View, VirtualView {
             }
         });
 
-
         playersAndCheckBox.getChildren()
                 .addAll(playersconnected, checkBoxes, confirm);
 
@@ -2886,7 +2883,6 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void completePowerUpInfo(String value) throws RemoteException {
-
 
     }
 
@@ -3035,6 +3031,7 @@ public class GUIView extends Application implements View, VirtualView {
 
                     if (!checkBoxHBox.getChildren().stream()
                             .anyMatch(c -> ((CheckBox) c).isSelected())) {
+
                         JsonQueue.add("method", effectType);
                         JsonQueue.add("line",
                                 new StringBuilder().append(target.toString())
@@ -3042,12 +3039,12 @@ public class GUIView extends Application implements View, VirtualView {
                                         .append(paymentLine.toString())
                                         .toString());
                         JsonQueue.send();
-                    }
-                    else {
+                    } else {
+
                         paymentLine.append("POWER_UP(");
-                        checkBoxHBox.getChildren().stream().forEach(c->
+                        checkBoxHBox.getChildren().stream().forEach(c ->
                         {
-                            paymentLine.append(((CheckBox)c).getId()).append(" ");
+                            paymentLine.append(((CheckBox) c).getId()).append(" ");
                         });
                         paymentLine.append(")");
                         JsonQueue.add("method", effectType);
