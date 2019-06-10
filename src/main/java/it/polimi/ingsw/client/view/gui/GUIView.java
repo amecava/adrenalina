@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
+import it.polimi.ingsw.client.view.gui.animation.SpriteAnimation;
 import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
 import java.awt.GraphicsDevice;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
@@ -88,6 +90,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javax.json.Json;
@@ -200,6 +203,13 @@ public class GUIView extends Application implements View, VirtualView {
         new Thread(task).start();
     }
 
+    private static final int COLUMNS  =   8;
+    private static final int COUNT    =  64;
+    private static final int OFFSET_X =  0;
+    private static final int OFFSET_Y =  0;
+    private static final int WIDTH    = 512;
+    private static final int HEIGHT   = 512;
+
     //todo every button should be bigger when ohvered
     @Override
     public void start(Stage stage) {
@@ -208,6 +218,7 @@ public class GUIView extends Application implements View, VirtualView {
 
         currentStage = stage;
         currentScene = new Scene(new BorderPane());
+
         currentStage.setScene(currentScene);
 
         currentStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -221,12 +232,45 @@ public class GUIView extends Application implements View, VirtualView {
         currentStage.setWidth(1920);
         currentStage.setHeight(1080);
         //currentStage.setResizable(false);
-
     }
 
-    public void changeScene(Parent parent) {
+    private void setExplosion(Parent clickable, BorderPane borderPane, int id) {
 
-        currentStage.getScene().setRoot(parent);
+        clickable.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent event) {
+
+                ImageView imageView = new ImageView(Images.explosionsMap.get("explosion" + id));
+                imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+
+                imageView.setX(event.getSceneX() - (WIDTH / 2));
+                imageView.setY(event.getSceneY() - (HEIGHT / 2));
+
+                Animation animation = new SpriteAnimation(
+                        imageView,
+                        Duration.millis(1000),
+                        COUNT, COLUMNS,
+                        OFFSET_X, OFFSET_Y,
+                        WIDTH, HEIGHT
+                );
+                animation.setCycleCount(1);
+
+                animation.setOnFinished(x -> {
+
+                    borderPane.getChildren().remove(imageView);
+                });
+
+                animation.play();
+
+                borderPane.getChildren().add(imageView);
+            }
+        });
+    }
+
+    public void changeScene(BorderPane root) {
+
+        this.setExplosion(root, root, 1);
+
+        currentStage.getScene().setRoot(root);
 
         if (!currentStage.isShowing()) {
 
@@ -299,12 +343,37 @@ public class GUIView extends Application implements View, VirtualView {
 
                         rmiButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                             @Override
-                            public void handle(MouseEvent mouseEvent) {
-                                synchronized (View.connection) {
-                                    View.connection.add(new RmiConnection(inetAddress, rmiPort,
-                                            GUIView.this));
-                                    View.connection.notifyAll();
-                                }
+                            public void handle(MouseEvent event) {
+
+                                ImageView imageView = new ImageView(Images.explosionsMap.get("explosion4"));
+                                imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+
+                                imageView.setX(event.getSceneX() - (WIDTH / 2));
+                                imageView.setY(event.getSceneY() - (HEIGHT / 2));
+
+                                Animation animation = new SpriteAnimation(
+                                        imageView,
+                                        Duration.millis(1000),
+                                        COUNT, COLUMNS,
+                                        OFFSET_X, OFFSET_Y,
+                                        WIDTH, HEIGHT
+                                );
+                                animation.setCycleCount(1);
+
+                                animation.setOnFinished(x -> {
+
+                                    borderPane.getChildren().remove(imageView);
+
+                                    synchronized (View.connection) {
+
+                                        View.connection.add(new RmiConnection(inetAddress, rmiPort, GUIView.this));
+                                        View.connection.notifyAll();
+                                    }
+                                });
+
+                                animation.play();
+
+                                borderPane.getChildren().add(imageView);
                             }
                         });
 
@@ -317,13 +386,38 @@ public class GUIView extends Application implements View, VirtualView {
 
                         tcpButtom.setOnMouseClicked(new EventHandler<MouseEvent>() {
                             @Override
-                            public void handle(MouseEvent mouseEvent) {
-                                synchronized (View.connection) {
-                                    View.connection
-                                            .add(new SocketConnection(inetAddress, socketPort,
-                                                    GUIView.this));
-                                    View.connection.notifyAll();
-                                }
+                            public void handle(MouseEvent event) {
+
+                                ImageView imageView = new ImageView(Images.explosionsMap.get("explosion4"));
+                                imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+
+                                imageView.setX(event.getSceneX() - (WIDTH / 2));
+                                imageView.setY(event.getSceneY() - (HEIGHT / 2));
+
+                                Animation animation = new SpriteAnimation(
+                                        imageView,
+                                        Duration.millis(1000),
+                                        COUNT, COLUMNS,
+                                        OFFSET_X, OFFSET_Y,
+                                        WIDTH, HEIGHT
+                                );
+                                animation.setCycleCount(1);
+
+                                animation.setOnFinished(x -> {
+
+                                    borderPane.getChildren().remove(imageView);
+
+                                    synchronized (View.connection) {
+                                        View.connection
+                                                .add(new SocketConnection(inetAddress, socketPort,
+                                                        GUIView.this));
+                                        View.connection.notifyAll();
+                                    }
+                                });
+
+                                animation.play();
+
+                                borderPane.getChildren().add(imageView);
                             }
                         });
 
