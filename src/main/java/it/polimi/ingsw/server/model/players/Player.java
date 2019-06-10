@@ -439,7 +439,7 @@ public class Player implements Target, Serializable {
 
         } catch (IllegalArgumentException e) {
 
-            throw new CostException("Non hai abbastanza risorse.");
+            throw new CostException("Non hai abbastanza risorseaaa.");
         }
     }
 

@@ -276,12 +276,14 @@ public class GUIView extends Application implements View, VirtualView {
                         borderPane.setPrefWidth(429);
 
                         borderPane.setBackground(new Background(
-                                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                                new BackgroundImage(Images.imagesMap.get("background"),
+                                        BackgroundRepeat.REPEAT,
                                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                                         BackgroundSize.DEFAULT)));
 
                         borderPane.setPadding(new Insets(50, 0, 0, 0));
-                        ImageView imageAdrenalina = new ImageView(Images.imagesMap.get("adrenalina"));
+                        ImageView imageAdrenalina = new ImageView(
+                                Images.imagesMap.get("adrenalina"));
                         imageAdrenalina.setFitHeight(125);
                         imageAdrenalina.setPreserveRatio(true);
                         borderPane.setTop(imageAdrenalina);
@@ -290,7 +292,8 @@ public class GUIView extends Application implements View, VirtualView {
                         HBox hBox = new HBox();
                         hBox.setSpacing(50);
 
-                        Button rmiButton = new Button("", new ImageView(Images.imagesMap.get("rmi")));
+                        Button rmiButton = new Button("",
+                                new ImageView(Images.imagesMap.get("rmi")));
                         rmiButton.setOnMouseEntered(bigger);
                         rmiButton.setOnMouseExited(smaller);
                         rmiButton.setBackground(new Background(
@@ -308,7 +311,8 @@ public class GUIView extends Application implements View, VirtualView {
                             }
                         });
 
-                        Button tcpButtom = new Button("", new ImageView(Images.imagesMap.get("tcp")));
+                        Button tcpButtom = new Button("",
+                                new ImageView(Images.imagesMap.get("tcp")));
                         tcpButtom.setOnMouseEntered(bigger);
                         tcpButtom.setOnMouseExited(smaller);
                         tcpButtom.setBackground(new Background(
@@ -331,7 +335,8 @@ public class GUIView extends Application implements View, VirtualView {
                         borderPane.setCenter(hBox);
                         BorderPane.setAlignment(hBox, Pos.CENTER_RIGHT);
                         hBox.setAlignment(Pos.CENTER);
-                        ImageView distruttoreImage = new ImageView(Images.imagesMap.get("distructor"));
+                        ImageView distruttoreImage = new ImageView(
+                                Images.imagesMap.get("distructor"));
                         distruttoreImage.setPreserveRatio(true);
                         distruttoreImage.setFitHeight(300);
                         borderPane.setBottom(distruttoreImage);
@@ -696,7 +701,6 @@ public class GUIView extends Application implements View, VirtualView {
         boards.setMouseTransparent(false);
         boards.setAlignment(Pos.CENTER);
 
-
         ImageView image0 = new ImageView(Images.boardsMap.get("board3").getValue());
         image0.setFitHeight(240);
         image0.setFitWidth(300);
@@ -732,7 +736,6 @@ public class GUIView extends Application implements View, VirtualView {
                 JsonQueue.send();
             }
         });
-
 
         ImageView image2 = new ImageView(Images.boardsMap.get("board2").getValue());
         image2.setFitHeight(240);
@@ -776,30 +779,30 @@ public class GUIView extends Application implements View, VirtualView {
         characters.setSpacing(60);
         characters.setAlignment(Pos.CENTER);
 
-        Images.playersMap.forEach((key, value)  -> {
+        Images.playersMap.forEach((key, value) -> {
 
-                    ImageView desaturated = new ImageView(value);
-                    desaturated.setPreserveRatio(true);
-                    desaturated.setFitHeight(180);
-                    desaturated.setOpacity(0.2);
-                    ColorAdjust desaturate = new ColorAdjust();
-                    desaturate.setSaturation(-1);
-                    desaturated.setEffect(desaturate);
+            ImageView desaturated = new ImageView(value);
+            desaturated.setPreserveRatio(true);
+            desaturated.setFitHeight(180);
+            desaturated.setOpacity(0.2);
+            ColorAdjust desaturate = new ColorAdjust();
+            desaturate.setSaturation(-1);
+            desaturated.setEffect(desaturate);
 
-                    Label label = new Label();
-                    label.setFont(Font.font("Silom", 30));
-                    label.setTextFill(Color.WHITE);
-                    label.setAlignment(Pos.CENTER);
+            Label label = new Label();
+            label.setFont(Font.font("Silom", 30));
+            label.setTextFill(Color.WHITE);
+            label.setAlignment(Pos.CENTER);
 
-                    VBox vBox = new VBox();
-                    vBox.setAlignment(Pos.CENTER);
-                    vBox.setSpacing(20);
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.CENTER);
+            vBox.setSpacing(20);
 
-                    vBox.getChildren().addAll(desaturated, label);
-                    vBox.setId(key);
+            vBox.getChildren().addAll(desaturated, label);
+            vBox.setId(key);
 
-                    characters.getChildren().add(vBox);
-                });
+            characters.getChildren().add(vBox);
+        });
 
         Label countDown = new Label();
         countDown.setWrapText(true);
@@ -1025,9 +1028,10 @@ public class GUIView extends Application implements View, VirtualView {
                             ImageView imageView = (ImageView) characterVBox.getChildren().get(0);
                             imageView.setFitHeight(200);
                             imageView.setOpacity(1);
-                            ((ColorAdjust)imageView.getEffect()).setSaturation(0);
+                            ((ColorAdjust) imageView.getEffect()).setSaturation(0);
 
-                            RotateTransition rotator = new RotateTransition(Duration.millis(300), imageView);
+                            RotateTransition rotator = new RotateTransition(Duration.millis(300),
+                                    imageView);
                             rotator.setAxis(Rotate.Y_AXIS);
                             rotator.setFromAngle(0);
                             rotator.setToAngle(360);
@@ -1058,11 +1062,13 @@ public class GUIView extends Application implements View, VirtualView {
 
             if (count < 10) {
 
-                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2)).setText("La partita inizierà tra " + count + " secondi.");
+                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2))
+                        .setText("La partita inizierà tra " + count + " secondi.");
 
             } else {
 
-                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2)).setText("In attesa di tre giocatori connessi.");
+                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2))
+                        .setText("In attesa di tre giocatori connessi.");
             }
         });
 
@@ -1366,7 +1372,8 @@ public class GUIView extends Application implements View, VirtualView {
                         .map(JsonValue::asJsonObject)
                         .forEach(y -> {
 
-                            ImageView cardImage = new ImageView(Images.weaponsMap.get(y.getInt("id")));
+                            ImageView cardImage = new ImageView(
+                                    Images.weaponsMap.get(y.getInt("id")));
                             ButtonWeapon rotatedButton = null;
                             ImageView definiteRotateImage = null;
 
@@ -1470,10 +1477,12 @@ public class GUIView extends Application implements View, VirtualView {
                                     .forEach(s -> {
 
                                         ImageView tile = new ImageView(
-                                                Images.ammoTilesMap.get(s.getJsonArray("colors").stream()
-                                                        .map(JsonValue::toString)
-                                                        .map(p -> p.substring(1, p.length() - 1))
-                                                        .collect(Collectors.joining())));
+                                                Images.ammoTilesMap
+                                                        .get(s.getJsonArray("colors").stream()
+                                                                .map(JsonValue::toString)
+                                                                .map(p -> p.substring(1,
+                                                                        p.length() - 1))
+                                                                .collect(Collectors.joining())));
 
                                         tile.setFitHeight(45);
                                         tile.setFitWidth(45);
@@ -1513,7 +1522,8 @@ public class GUIView extends Application implements View, VirtualView {
                         }
 
                         ButtonSquare tmp = this.squareList.stream().filter(k -> k.getPresent())
-                                .filter(s -> s.getColor().equals(color) && s.getButtonSquareId() == id)
+                                .filter(s -> s.getColor().equals(color)
+                                        && s.getButtonSquareId() == id)
                                 .findAny()
                                 .orElseThrow(IllegalArgumentException::new);
 
@@ -1529,7 +1539,8 @@ public class GUIView extends Application implements View, VirtualView {
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
                         ImageView killshot = new ImageView(
-                                Images.dropsMap.get(x.toString().substring(1, x.toString().length() - 1)));
+                                Images.dropsMap
+                                        .get(x.toString().substring(1, x.toString().length() - 1)));
                         killshot.setFitWidth(40);
                         killshot.setFitHeight(40);
                         killsOfAllPlayers.getChildren().add(killshot);
@@ -1816,7 +1827,8 @@ public class GUIView extends Application implements View, VirtualView {
 
                 if (x.toString().substring(1, x.toString().length() - 1).equals("askCardInfo")) {
 
-                    Button infoCarte = new GameButton("info carte", new ImageView(Images.imagesMap.get("button")));
+                    Button infoCarte = new GameButton("info carte",
+                            new ImageView(Images.imagesMap.get("button")));
 
                     infoCarte.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
@@ -1916,7 +1928,8 @@ public class GUIView extends Application implements View, VirtualView {
                         if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUsePrimary")) {
 
-                            Button effettoPrimario = new GameButton("effetto primario", new ImageView(Images.imagesMap.get("button")));
+                            Button effettoPrimario = new GameButton("effetto primario",
+                                    new ImageView(Images.imagesMap.get("button")));
 
                             effettoPrimario.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
@@ -1931,7 +1944,8 @@ public class GUIView extends Application implements View, VirtualView {
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUseAlternative")) {
 
-                            Button effettoAlternativo = new GameButton("effetto alternativo", new ImageView(Images.imagesMap.get("button")));
+                            Button effettoAlternativo = new GameButton("effetto alternativo",
+                                    new ImageView(Images.imagesMap.get("button")));
 
                             effettoAlternativo.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
@@ -1945,7 +1959,8 @@ public class GUIView extends Application implements View, VirtualView {
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUseOptional1")) {
 
-                            Button opzionale1 = new GameButton("effetto opzionale 1", new ImageView(Images.imagesMap.get("button")));
+                            Button opzionale1 = new GameButton("effetto opzionale 1",
+                                    new ImageView(Images.imagesMap.get("button")));
 
                             opzionale1.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
@@ -1959,7 +1974,8 @@ public class GUIView extends Application implements View, VirtualView {
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("askUseOptional2")) {
 
-                            Button opzionale2 = new GameButton("effetto opzionale 2", new ImageView(Images.imagesMap.get("button")));
+                            Button opzionale2 = new GameButton("effetto opzionale 2",
+                                    new ImageView(Images.imagesMap.get("button")));
 
                             opzionale2.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
@@ -1994,7 +2010,8 @@ public class GUIView extends Application implements View, VirtualView {
                                             .getSource());
                                     JsonQueue.add("method", "moveAction");
                                     JsonQueue.add("squareColor", destination.getColor());
-                                    JsonQueue.add("squareId", String.valueOf(destination.getButtonSquareId()));
+                                    JsonQueue.add("squareId",
+                                            String.valueOf(destination.getButtonSquareId()));
                                     JsonQueue.send();
 
 
@@ -2145,10 +2162,11 @@ public class GUIView extends Application implements View, VirtualView {
                                         powerUpCheckBox.setSpacing(100);
                                         powerUpList.stream().forEach(p -> {
 
-                                            ImageView powerUpImage = new ImageView(Images.powerUpsMap
-                                                    .get(new StringBuilder().append(p.name)
-                                                            .append(" ").append(p.color)
-                                                            .toString()));
+                                            ImageView powerUpImage = new ImageView(
+                                                    Images.powerUpsMap
+                                                            .get(new StringBuilder().append(p.name)
+                                                                    .append(" ").append(p.color)
+                                                                    .toString()));
                                             powerUpImage.setFitWidth(100);
                                             powerUpImage.setFitHeight(150);
                                             Button powerUpButton = new Button("", powerUpImage);
@@ -2337,7 +2355,8 @@ public class GUIView extends Application implements View, VirtualView {
                         if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("selectAction")) {
 
-                            Button selezionaAzione = new GameButton("seleziona azione", new ImageView(Images.imagesMap.get("button")));
+                            Button selezionaAzione = new GameButton("seleziona azione",
+                                    new ImageView(Images.imagesMap.get("button")));
 
                             collectiveButtons.getChildren().add(selezionaAzione);
 
@@ -2445,7 +2464,8 @@ public class GUIView extends Application implements View, VirtualView {
                         } else if (x.toString().substring(1, x.toString().length() - 1)
                                 .equals("endOfTurn")) {
 
-                            Button fineTurno = new GameButton("fine turno", new ImageView(Images.imagesMap.get("button")));
+                            Button fineTurno = new GameButton("fine turno",
+                                    new ImageView(Images.imagesMap.get("button")));
 
                             fineTurno.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
@@ -2496,6 +2516,10 @@ public class GUIView extends Application implements View, VirtualView {
         root.setSpacing(5);
         StringBuilder target = new StringBuilder().append("");
         StringBuilder destination = new StringBuilder().append("");
+        root.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
         AnchorPane board = (AnchorPane) this.createBoard(false, 2);// scala della meta' in lunghezza
         HBox playersconnected = new HBox();
         HBox checkBoxes = new HBox();
@@ -2550,23 +2574,19 @@ public class GUIView extends Application implements View, VirtualView {
             @Override
             public void handle(MouseEvent mouseEvent) {
 
-                if (!checkBoxes.getChildren().stream()
+                if (checkBoxes.getChildren().stream()
                         .anyMatch(c -> ((CheckBox) c).isSelected())) {
-
-                    target.append("");
-                } else {
 
                     target.append("target(");
                     checkBoxes.getChildren().stream()
                             .filter(c -> ((CheckBox) c).isSelected())
                             .forEach(c -> {
 
-                                target.append(c.getId()).append(" ");
+                                target.append(c.getId().toLowerCase()).append(" ");
                             });
                     target.append(")");
-
-
                 }
+
                 GUIView.this.createDestination(root, board, effectType, target, destination);
 
             }
@@ -2599,9 +2619,10 @@ public class GUIView extends Application implements View, VirtualView {
                 playersAndMap.getChildren().addAll(board, playersAndCheckBox);
             }
         });
-        Label playerLabel = new Label("target(personaggio)");
+        Label playerLabel = new Label("Target: personaggio");
         lineOfRadioAndPlayer.getChildren().addAll(playerLabel, playerTarget);
         radioButtonAndLabel.getChildren().add(lineOfRadioAndPlayer);
+        playerLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         HBox lineOfRadioAndButton = new HBox();
         RadioButton squareTarget = new RadioButton();
@@ -2639,9 +2660,10 @@ public class GUIView extends Application implements View, VirtualView {
             }
         });
         squareTarget.setToggleGroup(radioButtonToggle);
-        Label buttonLabel = new Label("target(square)");
+        Label buttonLabel = new Label("Target: quadrato");
         lineOfRadioAndButton.getChildren().addAll(buttonLabel, squareTarget);
         radioButtonAndLabel.getChildren().add(lineOfRadioAndButton);
+        buttonLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         HBox lineOfRadioAndRoom = new HBox();
         RadioButton roomTarget = new RadioButton();
@@ -2656,10 +2678,11 @@ public class GUIView extends Application implements View, VirtualView {
             }
         });
         roomTarget.setToggleGroup(radioButtonToggle);
-        Label roomLabel = new Label("target(stanza)");
+        Label roomLabel = new Label("Target: stanza");
         lineOfRadioAndRoom.getChildren().addAll(roomLabel, roomTarget);
         radioButtonAndLabel.getChildren().add(lineOfRadioAndRoom);
         cardAndRadioButtons.getChildren().add(radioButtonAndLabel);
+        roomLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         root.getChildren().addAll(cardAndRadioButtons, playersAndMap, skipTarget);
         shootStage.setScene(new Scene(root));
@@ -2674,7 +2697,8 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     public Button createEndActionButton() {
-        Button endAction = new GameButton("fine azione", new ImageView(Images.imagesMap.get("button")));
+        Button endAction = new GameButton("fine azione",
+                new ImageView(Images.imagesMap.get("button")));
 
         endAction.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -2690,14 +2714,19 @@ public class GUIView extends Application implements View, VirtualView {
 
     public void createDestination(VBox root, AnchorPane board, String effectType,
             StringBuilder target, StringBuilder destination) {
+
         root.getChildren().clear();
+        root.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
 
         Label selectDestinationLabel = new Label();
-        selectDestinationLabel.setText("Seleziona la destinazione");
+        selectDestinationLabel.setText("Seleziona la destinazione (se necessario):");
         selectDestinationLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         Button skipButton = new Button();
-        skipButton.setText("salta destinazione");
+        skipButton.setText("Salta");
         skipButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
 
         skipButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -2739,6 +2768,8 @@ public class GUIView extends Application implements View, VirtualView {
 
                                     default:
 
+                                        GUIView.this.thirdUseEffectScreen(root, effectType, target,
+                                                destination);
 
                                 }
 
@@ -2749,9 +2780,16 @@ public class GUIView extends Application implements View, VirtualView {
 
     public void thirdUseEffectScreen(VBox root, String effectType, StringBuilder target,
             StringBuilder destination) {
-        StringBuilder paymentLine = new StringBuilder().append("");
+
+        StringBuilder paymentLine = new StringBuilder();
+
+        root.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
 
         if (!effectType.equals("askUsePowerUp")) {
+
             root.getChildren().clear();
 
             Label selectPaymentLabel = new Label();
@@ -2759,17 +2797,42 @@ public class GUIView extends Application implements View, VirtualView {
             selectPaymentLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
             Button confirmButton = new Button();
-            confirmButton.setText("conferma");
-            confirmButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
+            confirmButton.setText("Paga");
+            confirmButton.setStyle("-fx-text-inner-color: white; -fx-font: 15px Silom");
+
+            Button noButton = new Button();
+            noButton.setText("No");
+            noButton.setStyle("-fx-text-inner-color: white; -fx-font: 15px Silom");
+
+            HBox buttonsHBox = new HBox();
+
+            buttonsHBox.setSpacing(400);
+
+            buttonsHBox.getChildren().addAll(confirmButton, noButton);
+
+            noButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                    JsonQueue.add("method", effectType);
+                    JsonQueue.add("line",
+                            new StringBuilder().append(target.toString())
+                                    .append(destination.toString())
+                                    .toString());
+                    JsonQueue.send();
+                }
+            });
 
             HBox powerUpButtonsHBox = new HBox();
             HBox checkBoxHBox = new HBox();
+
+            checkBoxHBox.setLayoutX(20);
 
             checkBoxHBox.setSpacing(170);
 
             powerUpList.forEach(p -> {
 
-                String nameId = new StringBuilder().append(p.getName().toLowerCase())
+                String nameId = new StringBuilder().append(p.getName())
                         .append("-")
                         .append(p.getColor().toLowerCase())
                         .toString();
@@ -2787,6 +2850,7 @@ public class GUIView extends Application implements View, VirtualView {
                 powerUp.setFitHeight(220);
 
                 Button pButton = new Button("", powerUp);
+
                 pButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
@@ -2798,8 +2862,12 @@ public class GUIView extends Application implements View, VirtualView {
                 checkBoxHBox.getChildren().add(powerUpCheckBox);
                 powerUpButtonsHBox.getChildren().add(pButton);
             });
-            root.getChildren().addAll(powerUpButtonsHBox, checkBoxHBox, confirmButton);
+
+            root.getChildren()
+                    .addAll(selectPaymentLabel, powerUpButtonsHBox, checkBoxHBox, buttonsHBox);
+
             confirmButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
                 @Override
                 public void handle(MouseEvent mouseEvent) {
 
@@ -2810,17 +2878,20 @@ public class GUIView extends Application implements View, VirtualView {
                         JsonQueue.add("line",
                                 new StringBuilder().append(target.toString())
                                         .append(destination.toString())
-                                        .append(paymentLine.toString())
                                         .toString());
                         JsonQueue.send();
                     } else {
 
-                        paymentLine.append("POWER_UP(");
-                        checkBoxHBox.getChildren().stream().forEach(c ->
-                        {
-                            paymentLine.append(((CheckBox) c).getId()).append(" ");
-                        });
+                        paymentLine.append("powerup(");
+
+                        checkBoxHBox.getChildren().stream()
+                                .forEach(c ->
+                                        paymentLine.append(c.getId())
+                                                .append(" ")
+                                );
+
                         paymentLine.append(")");
+
                         JsonQueue.add("method", effectType);
                         JsonQueue.add("line",
                                 new StringBuilder().append(target.toString())
@@ -2832,6 +2903,9 @@ public class GUIView extends Application implements View, VirtualView {
                     }
                 }
             });
+        } else {
+
+            //TODO cubesPayment Screen
         }
     }
 

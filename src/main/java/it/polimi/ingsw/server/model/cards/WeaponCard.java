@@ -253,7 +253,7 @@ public class WeaponCard implements Card, Serializable {
 
         } catch (IllegalArgumentException e) {
 
-            throw new CostException("Non hai abbastanza risorse.");
+            throw new CostException("Non hai abbastanza risorseeee.");
         }
     }
 
