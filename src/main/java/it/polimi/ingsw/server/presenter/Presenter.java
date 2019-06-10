@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
+import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
@@ -18,6 +19,7 @@ import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import javax.json.Json;
@@ -452,8 +454,7 @@ public abstract class Presenter implements VirtualPresenter {
                             .powerUps(this.player, object.getString("powerups"))) {
 
                         this.gameHandler.getModel().getBoard().getPowerUpDeck().addPowerUpCard(
-                                this.player.getPowerUpsList()
-                                        .remove(this.player.getPowerUpsList().indexOf(powerUp)));
+                                this.player.removePowerUp(powerUp));
                     }
                 }
 
@@ -746,9 +747,21 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
+                EffectArgument effectArgument = EffectParser.effectArgument(this.gameHandler, object.getString("line"));
+                List<PowerUpCard> powerUpList = EffectParser.powerUps(this.player, object.getString("line"));
+
                 this.player.useCard(effectType,
-                        EffectParser.effectArgument(this.gameHandler, object.getString("line")),
-                        EffectParser.powerUps(this.player, object.getString("line")));
+                        effectArgument,
+                        powerUpList);
+
+                if (!powerUpList.isEmpty()) {
+
+                    for (PowerUpCard powerUp : powerUpList) {
+
+                        this.gameHandler.getModel().getBoard().getPowerUpDeck().addPowerUpCard(
+                                this.player.removePowerUp(powerUp));
+                    }
+                }
 
                 ClientHandler.gameBroadcast(
                         this.gameHandler,

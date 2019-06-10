@@ -24,6 +24,8 @@ class Images {
     static final Map<String, Image> cubesMap = new HashMap<>();
     static final Map<String, Image> imagesMap = new HashMap<>();
 
+    static final Map<String, Image> explosionsMap = new HashMap<>();
+
     private Images() {
 
         //
@@ -235,6 +237,11 @@ class Images {
         imagesMap.put("rmi", new Image("images/cards/RMI.png"));
         imagesMap.put("tcp", new Image("images/cards/TCP.png"));
         imagesMap.put("distructor", new Image("images/distruttore_big.png"));
+
+        explosionsMap.put("explosion1", new Image("images/explosions/explosion-1.png"));
+        explosionsMap.put("explosion2", new Image("images/explosions/explosion-2.png"));
+        explosionsMap.put("explosion3", new Image("images/explosions/explosion-3.png"));
+        explosionsMap.put("explosion4", new Image("images/explosions/explosion-4.png"));
 
         guiView.notifyPreloader(new ProgressNotification(1));
     }
