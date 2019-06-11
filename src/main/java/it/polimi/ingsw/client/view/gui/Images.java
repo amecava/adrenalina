@@ -24,6 +24,7 @@ public class Images {
     static final Map<String, Image> cubesMap = new HashMap<>();
     static final Map<String, Image> imagesMap = new HashMap<>();
 
+    static final Map<String, Image> notifications = new HashMap<>();
     public static final Map<String, Image> explosionsMap = new HashMap<>();
 
     private Images() {
@@ -221,9 +222,9 @@ public class Images {
         dropsMap.put("GIALLO", new Image("images/drops/drop-yellow.png"));
         dropsMap.put("VERDE", new Image("images/drops/drop-green.png"));
         dropsMap.put("AZZURRO", new Image("images/drops/drop-blue.png"));
-        guiView.notifyPreloader(new ProgressNotification(0.9));
         dropsMap.put("VIOLA", new Image("images/drops/drop-violet.png"));
         dropsMap.put("GRIGIO", new Image("images/drops/drop-gray.png"));
+        guiView.notifyPreloader(new ProgressNotification(0.9));
         dropsMap.put("morte", new Image("images/drops/teschio.jpg"));
 
         cubesMap.put("ROSSO", new Image("images/cubes/ROSSO.png"));
@@ -231,9 +232,9 @@ public class Images {
         cubesMap.put("BLU", new Image("images/cubes/BLU.png"));
 
         imagesMap.put("background", new Image("images/background.png"));
-        guiView.notifyPreloader(new ProgressNotification(0.95));
         imagesMap.put("button", new Image("images/button-2.png"));
         imagesMap.put("adrenalina", new Image("images/adrenaline_text.png"));
+        guiView.notifyPreloader(new ProgressNotification(0.95));
         imagesMap.put("rmi", new Image("images/cards/RMI.png"));
         imagesMap.put("tcp", new Image("images/cards/TCP.png"));
         imagesMap.put("distructor", new Image("images/distruttore_big.png"));
@@ -242,6 +243,10 @@ public class Images {
         explosionsMap.put("explosion2", new Image("images/explosions/explosion-2.png"));
         explosionsMap.put("explosion3", new Image("images/explosions/explosion-3.png"));
         explosionsMap.put("explosion4", new Image("images/explosions/explosion-4.png"));
+
+        notifications.put("info", new Image("images/notifications/info-notification.png"));
+        notifications.put("error", new Image("images/notifications/error-notification.png"));
+        notifications.put("broadcast", new Image("images/notifications/broadcast-notification.png"));
 
         guiView.notifyPreloader(new ProgressNotification(1));
     }
