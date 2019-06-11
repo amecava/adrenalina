@@ -152,7 +152,7 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void boardScreen() {
+    public void boardScreen(int id) {
 
         Terminal.clearScreen();
     }
@@ -482,7 +482,7 @@ public class ConsoleView implements View, VirtualView {
 
         JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
 
-        this.boardScreen();
+        this.boardScreen(0);
 
         StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject, this.id);
 

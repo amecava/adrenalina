@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.model.players;
 
 import it.polimi.ingsw.server.model.ammo.AmmoCube;
 import it.polimi.ingsw.server.model.ammo.AmmoTile;
+import it.polimi.ingsw.server.model.ammo.Cost;
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.Card;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
@@ -10,7 +11,6 @@ import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.TargetType;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
-import it.polimi.ingsw.server.model.exceptions.cards.CostException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
 import it.polimi.ingsw.server.model.exceptions.cards.CardNotFoundException;
@@ -408,41 +408,6 @@ public class Player implements Target, Serializable {
         return tmpTile;
     }
 
-    private void checkResources(List<Color> costCopy, List<PowerUpCard> ammoList) throws CostException {
-
-        try {
-
-            ammoList.stream()
-                    .map(PowerUpCard::getColor)
-                    .forEach(x -> {
-
-                        if (costCopy.contains(x)) {
-
-                            costCopy.remove(x);
-
-                        } else {
-
-                            throw new IllegalArgumentException();
-                        }
-                    });
-
-            costCopy.stream()
-                    .distinct()
-                    .forEach(x -> {
-                        if (costCopy.stream().filter(y -> y.equals(x)).count() > this
-                                .getAmmoCubesList().stream().filter(y -> !y.isUsed()).map(
-                                        AmmoCube::getColor).filter(y -> y.equals(x)).count()) {
-
-                            throw new IllegalArgumentException();
-                        }
-                    });
-
-        } catch (IllegalArgumentException e) {
-
-            throw new CostException("Non hai abbastanza risorse.");
-        }
-    }
-
     public void collect(int cardId, List<PowerUpCard> powerUpCards) throws CardException, IllegalActionException {
 
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null
@@ -468,7 +433,7 @@ public class Player implements Target, Serializable {
 
         costCopy.remove(0);
 
-        this.checkResources(costCopy, powerUpCards);
+        Cost.checkCost(this, costCopy, powerUpCards);
 
         costCopy.forEach(x ->
                 this.getAmmoCubesList().stream()

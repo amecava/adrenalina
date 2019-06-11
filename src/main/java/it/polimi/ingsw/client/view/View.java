@@ -16,5 +16,5 @@ public interface View {
     void gamesListScreen();
 
     void gameNotStartedScreen();
-    void boardScreen();
+    void boardScreen(int id);
 }

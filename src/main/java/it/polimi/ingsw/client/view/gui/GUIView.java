@@ -4,23 +4,13 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
-import it.polimi.ingsw.client.view.gui.animation.SpriteAnimation;
+import it.polimi.ingsw.client.view.gui.animation.ExplosionAnimation;
 import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.net.InetAddress;
-import java.rmi.RemoteException;
-import java.security.Guard;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import javafx.animation.Animation;
@@ -34,32 +24,22 @@ import javafx.application.Preloader.ProgressNotification;
 import javafx.application.Preloader.StateChangeNotification;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -76,7 +56,6 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -90,18 +69,12 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 public class GUIView extends Application implements View, VirtualView {
-
-    private Scene currentScene;
 
     private static Stage currentStage;
 
@@ -112,13 +85,13 @@ public class GUIView extends Application implements View, VirtualView {
     private List<Stage> notifications = new ArrayList<>();
 
     private static EventHandler<KeyEvent> noSpace;
-    public static EventHandler<MouseEvent> bigger;
-    public static EventHandler<MouseEvent> smaller;
+    static EventHandler<MouseEvent> bigger;
+    static EventHandler<MouseEvent> smaller;
 
     private static ScaleTransition stBig;
     private static ScaleTransition stSmall;
 
-    private static JsonArray jsonArray;
+    private static JsonObject jsonObject;
 
     private List<ButtonSquare> squareList = new ArrayList<>();
     private List<ButtonPowerUp> powerUpList = new ArrayList<>();
@@ -136,28 +109,25 @@ public class GUIView extends Application implements View, VirtualView {
 
     private static BooleanProperty ready = new SimpleBooleanProperty(false);
 
-    private void initialize() {
+    private static final String METHOD = "method";
+
+    private static void initialize(GUIView guiView) {
 
         Task task = new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
 
-                notifyPreloader(new ProgressNotification(0));
-                InputStream in = GUIView.class.getClassLoader()
-                        .getResourceAsStream("Boards/Board.json");
+                guiView.notifyPreloader(new ProgressNotification(0));
 
-                jsonArray = Json.createReader(in).readArray();
                 //////////////////////////////////////////////////////////////
 
-                Images.loadImages(GUIView.this);
+                Images.loadImages(guiView);
 
                 //////////////////////////////////////////////////////////////event handler for no spaces
-                noSpace = new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(KeyEvent keyEvent) {
-                        if (keyEvent.getCharacter().equals(" ")) {
-                            ((TextField) keyEvent.getSource()).deletePreviousChar();
-                        }
+                noSpace = keyEvent -> {
+
+                    if (keyEvent.getCharacter().equals(" ")) {
+                        ((TextField) keyEvent.getSource()).deletePreviousChar();
                     }
                 };
                 ////////////////////////////////////////////////////////////////
@@ -173,28 +143,24 @@ public class GUIView extends Application implements View, VirtualView {
                 stSmall.setToX(1.0);
                 stBig.setDuration(new Duration(20));
                 stSmall.setDuration(new Duration(20));
-                bigger = new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        stBig.setNode((Button) mouseEvent.getSource());
-                        stBig.play();
-                        currentStage.getScene().setCursor(Cursor.HAND);
-                    }
-                };
-                smaller = new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        stSmall.setNode((Button) mouseEvent.getSource());
-                        stSmall.play();
-                        currentStage.getScene().setCursor(Cursor.DEFAULT);
+                bigger = mouseEvent -> {
 
-                    }
+                    stBig.setNode((Button) mouseEvent.getSource());
+                    stBig.play();
+                    currentStage.getScene().setCursor(Cursor.HAND);
+                };
+
+                smaller = mouseEvent -> {
+
+                    stSmall.setNode((Button) mouseEvent.getSource());
+                    stSmall.play();
+                    currentStage.getScene().setCursor(Cursor.DEFAULT);
                 };
                 ////////////////////////////////////////////////////////////
 
                 ready.setValue(Boolean.TRUE);
 
-                notifyPreloader(new StateChangeNotification(
+                guiView.notifyPreloader(new StateChangeNotification(
                         StateChangeNotification.Type.BEFORE_START));
 
                 return null;
@@ -203,72 +169,38 @@ public class GUIView extends Application implements View, VirtualView {
         new Thread(task).start();
     }
 
-    private static final int COLUMNS  =   8;
-    private static final int COUNT    =  64;
-    private static final int OFFSET_X =  0;
-    private static final int OFFSET_Y =  0;
-    private static final int WIDTH    = 512;
-    private static final int HEIGHT   = 512;
-
-    //todo every button should be bigger when ohvered
     @Override
     public void start(Stage stage) {
 
-        initialize();
+        initialize(this);
+
+        stage.setScene(new Scene(new BorderPane()));
+
+        stage.setOnCloseRequest(x -> {
+
+            JsonQueue.add(METHOD, "remoteDisconnect");
+            JsonQueue.send();
+        });
+
+        stage.setWidth(1920);
+        stage.setHeight(1080);
 
         currentStage = stage;
-        currentScene = new Scene(new BorderPane());
 
-        currentStage.setScene(currentScene);
-
-        currentStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-
-                JsonQueue.add("method", "remoteDisconnect");
-                JsonQueue.send();
-            }
-        });
-        currentStage.setWidth(1920);
-        currentStage.setHeight(1080);
-        //currentStage.setResizable(false);
     }
 
-    private void setExplosion(Parent clickable, BorderPane borderPane, int id) {
+    private void changeScene(BorderPane root) {
 
-        clickable.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent event) {
+        root.addEventHandler(MouseEvent.MOUSE_CLICKED, x -> {
 
-                ImageView imageView = new ImageView(Images.explosionsMap.get("explosion" + id));
-                imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+            Entry<ImageView, Animation> entry = ExplosionAnimation.getExplosion(1, x);
 
-                imageView.setX(event.getSceneX() - (WIDTH / 2));
-                imageView.setY(event.getSceneY() - (HEIGHT / 2));
+            entry.getValue().setOnFinished(y -> root.getChildren().remove(entry.getKey()));
 
-                Animation animation = new SpriteAnimation(
-                        imageView,
-                        Duration.millis(1000),
-                        COUNT, COLUMNS,
-                        OFFSET_X, OFFSET_Y,
-                        WIDTH, HEIGHT
-                );
-                animation.setCycleCount(1);
+            entry.getValue().play();
 
-                animation.setOnFinished(x -> {
-
-                    borderPane.getChildren().remove(imageView);
-                });
-
-                animation.play();
-
-                borderPane.getChildren().add(imageView);
-            }
+            root.getChildren().add(entry.getKey());
         });
-    }
-
-    public void changeScene(BorderPane root) {
-
-        this.setExplosion(root, root, 1);
 
         currentStage.getScene().setRoot(root);
 
@@ -302,141 +234,123 @@ public class GUIView extends Application implements View, VirtualView {
         return JsonQueue.queue.remove();
     }
 
+    private BorderPane createLogoPane(boolean character) {
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setPadding(new Insets(50, 0, 0, 0));
+
+        borderPane.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        ImageView imageAdrenalina = new ImageView(Images.imagesMap.get("adrenalina"));
+        imageAdrenalina.setPreserveRatio(true);
+        imageAdrenalina.setFitHeight(125);
+
+        borderPane.setTop(imageAdrenalina);
+        BorderPane.setAlignment(imageAdrenalina, Pos.TOP_CENTER);
+
+        if (character) {
+
+            ImageView distructor = new ImageView(Images.imagesMap.get("distructor"));
+            distructor.setPreserveRatio(true);
+            distructor.setFitHeight(300);
+
+            borderPane.setBottom(distructor);
+            BorderPane.setAlignment(distructor, Pos.BOTTOM_LEFT);
+        }
+
+        return borderPane;
+    }
+
     @Override
     public void initialScreen(int discoveryPort, int rmiPort, int socketPort) {
 
-        ready.addListener(new ChangeListener<Boolean>() {
-            public void changed(
-                    ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+        ready.addListener((observableValue, aBoolean, t1) -> {
 
-                if (Boolean.TRUE.equals(t1)) {
+            if (Boolean.TRUE.equals(t1)) {
 
-                    try {
+                try {
 
-                        InetAddress inetAddress = Client.discoverServer(discoveryPort);
+                    InetAddress inetAddress = Client.discoverServer(discoveryPort);
 
-                        BorderPane borderPane = new BorderPane();
-                        borderPane.setPrefHeight(615);
-                        borderPane.setPrefWidth(429);
+                    BorderPane borderPane = GUIView.this.createLogoPane(true);
 
-                        borderPane.setBackground(new Background(
-                                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                                        BackgroundSize.DEFAULT)));
+                    HBox hBox = new HBox();
+                    hBox.setSpacing(50);
 
-                        borderPane.setPadding(new Insets(50, 0, 0, 0));
-                        ImageView imageAdrenalina = new ImageView(Images.imagesMap.get("adrenalina"));
-                        imageAdrenalina.setFitHeight(125);
-                        imageAdrenalina.setPreserveRatio(true);
-                        borderPane.setTop(imageAdrenalina);
-                        BorderPane.setAlignment(imageAdrenalina, Pos.BOTTOM_CENTER);
+                    Button rmiButton = new Button("",
+                            new ImageView(Images.imagesMap.get("rmi")));
+                    rmiButton.setOnMouseEntered(bigger);
+                    rmiButton.setOnMouseExited(smaller);
+                    rmiButton.setBackground(new Background(
+                            new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
+                                    Insets.EMPTY)));
 
-                        HBox hBox = new HBox();
-                        hBox.setSpacing(50);
+                    rmiButton.setOnMouseClicked(x -> {
 
-                        Button rmiButton = new Button("", new ImageView(Images.imagesMap.get("rmi")));
-                        rmiButton.setOnMouseEntered(bigger);
-                        rmiButton.setOnMouseExited(smaller);
-                        rmiButton.setBackground(new Background(
-                                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
-                                        Insets.EMPTY)));
+                        Entry<ImageView, Animation> entry = ExplosionAnimation
+                                .getExplosion(4, x);
 
-                        rmiButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
+                        entry.getValue().setOnFinished(y -> {
 
-                                ImageView imageView = new ImageView(Images.explosionsMap.get("explosion4"));
-                                imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+                            borderPane.getChildren().remove(entry.getKey());
 
-                                imageView.setX(event.getSceneX() - (WIDTH / 2));
-                                imageView.setY(event.getSceneY() - (HEIGHT / 2));
+                            synchronized (View.connection) {
 
-                                Animation animation = new SpriteAnimation(
-                                        imageView,
-                                        Duration.millis(1000),
-                                        COUNT, COLUMNS,
-                                        OFFSET_X, OFFSET_Y,
-                                        WIDTH, HEIGHT
-                                );
-                                animation.setCycleCount(1);
-
-                                animation.setOnFinished(x -> {
-
-                                    borderPane.getChildren().remove(imageView);
-
-                                    synchronized (View.connection) {
-
-                                        View.connection.add(new RmiConnection(inetAddress, rmiPort, GUIView.this));
-                                        View.connection.notifyAll();
-                                    }
-                                });
-
-                                animation.play();
-
-                                borderPane.getChildren().add(imageView);
+                                View.connection.add(new RmiConnection(inetAddress, rmiPort,
+                                        GUIView.this));
+                                View.connection.notifyAll();
                             }
                         });
 
-                        Button tcpButtom = new Button("", new ImageView(Images.imagesMap.get("tcp")));
-                        tcpButtom.setOnMouseEntered(bigger);
-                        tcpButtom.setOnMouseExited(smaller);
-                        tcpButtom.setBackground(new Background(
-                                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
-                                        Insets.EMPTY)));
+                        entry.getValue().play();
 
-                        tcpButtom.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
+                        borderPane.getChildren().add(entry.getKey());
+                    });
 
-                                ImageView imageView = new ImageView(Images.explosionsMap.get("explosion4"));
-                                imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+                    Button tcpButtom = new Button("",
+                            new ImageView(Images.imagesMap.get("tcp")));
+                    tcpButtom.setOnMouseEntered(bigger);
+                    tcpButtom.setOnMouseExited(smaller);
+                    tcpButtom.setBackground(new Background(
+                            new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
+                                    Insets.EMPTY)));
 
-                                imageView.setX(event.getSceneX() - (WIDTH / 2));
-                                imageView.setY(event.getSceneY() - (HEIGHT / 2));
+                    tcpButtom.setOnMouseClicked(x -> {
 
-                                Animation animation = new SpriteAnimation(
-                                        imageView,
-                                        Duration.millis(1000),
-                                        COUNT, COLUMNS,
-                                        OFFSET_X, OFFSET_Y,
-                                        WIDTH, HEIGHT
-                                );
-                                animation.setCycleCount(1);
+                        Entry<ImageView, Animation> entry = ExplosionAnimation
+                                .getExplosion(4, x);
 
-                                animation.setOnFinished(x -> {
+                        entry.getValue().setOnFinished(y -> {
 
-                                    borderPane.getChildren().remove(imageView);
+                            borderPane.getChildren().remove(entry.getKey());
 
-                                    synchronized (View.connection) {
-                                        View.connection
-                                                .add(new SocketConnection(inetAddress, socketPort,
-                                                        GUIView.this));
-                                        View.connection.notifyAll();
-                                    }
-                                });
+                            synchronized (View.connection) {
 
-                                animation.play();
-
-                                borderPane.getChildren().add(imageView);
+                                View.connection
+                                        .add(new SocketConnection(inetAddress, socketPort,
+                                                GUIView.this));
+                                View.connection.notifyAll();
                             }
                         });
 
-                        hBox.getChildren().addAll(rmiButton, tcpButtom);
-                        borderPane.setCenter(hBox);
-                        BorderPane.setAlignment(hBox, Pos.CENTER_RIGHT);
-                        hBox.setAlignment(Pos.CENTER);
-                        ImageView distruttoreImage = new ImageView(Images.imagesMap.get("distructor"));
-                        distruttoreImage.setPreserveRatio(true);
-                        distruttoreImage.setFitHeight(300);
-                        borderPane.setBottom(distruttoreImage);
-                        BorderPane.setAlignment(distruttoreImage, Pos.BOTTOM_LEFT);
+                        entry.getValue().play();
 
-                        Platform.runLater(() -> changeScene(borderPane));
+                        borderPane.getChildren().add(entry.getKey());
+                    });
 
-                    } catch (IOException e) {
+                    hBox.getChildren().addAll(rmiButton, tcpButtom);
+                    borderPane.setCenter(hBox);
+                    BorderPane.setAlignment(hBox, Pos.CENTER_RIGHT);
+                    hBox.setAlignment(Pos.CENTER);
 
-                        e.printStackTrace();
-                    }
+                    Platform.runLater(() -> changeScene(borderPane));
+
+                } catch (IOException e) {
+
+                    //
                 }
             }
         });
@@ -445,17 +359,13 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void loginScreen() {
 
+        BorderPane borderPane = this.createLogoPane(true);
+
         Label label = new Label("Inserisci un nome utente:");
         label.setFont(Font.font("Silom", 30));
         label.setTextAlignment(TextAlignment.CENTER);
         label.setAlignment(Pos.CENTER);
         label.setTextFill(Color.WHITE);
-
-        BorderPane borderPane = new BorderPane();
-        borderPane.setBackground(new Background(
-                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                        BackgroundSize.DEFAULT)));
 
         TextField userLogin = new TextField();
         userLogin.setFont(Font.font("Silom", FontWeight.BOLD, 70));
@@ -463,14 +373,13 @@ public class GUIView extends Application implements View, VirtualView {
         userLogin.setStyle("-fx-background-color: transparent; -fx-text-inner-color: white");
         userLogin.setOnKeyTyped(noSpace);
 
-        userLogin.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode().equals(KeyCode.ENTER) && !userLogin.getText().equals("")) {
-                    JsonQueue.add("method", "selectPlayerId");
-                    JsonQueue.add("playerId", userLogin.getText());
-                    JsonQueue.send();
-                }
+        userLogin.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ENTER) && !userLogin.getText().equals("")) {
+
+                JsonQueue.add(METHOD, "selectPlayerId");
+                JsonQueue.add("playerId", userLogin.getText());
+
+                JsonQueue.send();
             }
         });
 
@@ -479,38 +388,16 @@ public class GUIView extends Application implements View, VirtualView {
         vBox.setSpacing(20);
         vBox.getChildren().addAll(new Text(), label, userLogin);
 
-        borderPane.setPadding(new Insets(50, 0, 0, 0));
         borderPane.setCenter(vBox);
         BorderPane.setAlignment(vBox, Pos.CENTER);
-        ImageView imageAdrenalina = new ImageView(Images.imagesMap.get("adrenalina"));
-        imageAdrenalina.setFitHeight(125);
-        imageAdrenalina.setPreserveRatio(true);
-        borderPane.setTop(imageAdrenalina);
-        BorderPane.setAlignment(imageAdrenalina, Pos.TOP_CENTER);
-        ImageView distruttoreImage = new ImageView(Images.imagesMap.get("distructor"));
-        distruttoreImage.setPreserveRatio(true);
-        distruttoreImage.setFitHeight(300);
-        borderPane.setBottom(distruttoreImage);
-        BorderPane.setAlignment(distruttoreImage, Pos.BOTTOM_LEFT);
+
         Platform.runLater(() -> changeScene(borderPane));
     }
 
     @Override
     public void gamesListScreen() {
 
-        BorderPane borderPane = new BorderPane();
-
-        borderPane.setBackground(new Background(
-                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                        BackgroundSize.DEFAULT)));
-        borderPane.setPadding(new Insets(50, 0, 0, 0));
-
-        ImageView imageAdrenalina = new ImageView(Images.imagesMap.get("adrenalina"));
-        imageAdrenalina.setFitHeight(125);
-        imageAdrenalina.setPreserveRatio(true);
-        borderPane.setTop(imageAdrenalina);
-        BorderPane.setAlignment(imageAdrenalina, Pos.TOP_CENTER);
+        BorderPane borderPane = this.createLogoPane(false);
 
         this.gameList = new ScrollPane();
 
@@ -522,7 +409,6 @@ public class GUIView extends Application implements View, VirtualView {
                 new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
-
 
         borderPane.setCenter(gameList);
 
@@ -551,22 +437,19 @@ public class GUIView extends Application implements View, VirtualView {
         numberOfDeaths.setWrapText(true);
 
         TextField insertNumberOdDeaths = new TextField();
-        insertNumberOdDeaths.setOnKeyTyped(new EventHandler<KeyEvent>() {
+        insertNumberOdDeaths.setOnKeyTyped(keyEvent -> {
 
-            @Override
-            public void handle(KeyEvent keyEvent) {
+            if (insertNumberOdDeaths.getCharacters().toString().length() > 1) {
 
-                if (insertNumberOdDeaths.getCharacters().toString().length() > 1) {
+                insertNumberOdDeaths.deletePreviousChar();
 
-                    insertNumberOdDeaths.deletePreviousChar();
+            } else if (!insertNumberOdDeaths.getCharacters().toString().matches("([5-8])")) {
 
-                } else if (!insertNumberOdDeaths.getCharacters().toString().matches("([5-8])")) {
-
-                    insertNumberOdDeaths.deletePreviousChar();
-                    createNotifications("Errore:", "Metti un numero da 5 a 8");
-                }
+                insertNumberOdDeaths.deletePreviousChar();
+                createNotifications("Errore:", "Metti un numero da 5 a 8");
             }
         });
+
         insertNumberOdDeaths.setPrefSize(60, 20);
         Label frenzy = new Label("Frensia finale:");
         frenzy.setTextFill(Color.WHITE);
@@ -579,15 +462,14 @@ public class GUIView extends Application implements View, VirtualView {
         confirmGame.setMinWidth(50);
 
         /////////////////////////////////////////////
-        confirmGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "askCreateGame");
-                JsonQueue.add("gameId", insertGameName.getText());
-                JsonQueue.add("numberOfDeaths", insertNumberOdDeaths.getText());
-                JsonQueue.add("frenzy", checkBoxFrenzy.isSelected() ? "frenesia" : "");
-                JsonQueue.send();
-            }
+        confirmGame.setOnMouseClicked(mouseEvent -> {
+
+            JsonQueue.add(METHOD, "askCreateGame");
+            JsonQueue.add("gameId", insertGameName.getText());
+            JsonQueue.add("numberOfDeaths", insertNumberOdDeaths.getText());
+            JsonQueue.add("frenzy", checkBoxFrenzy.isSelected() ? "frenesia" : "");
+
+            JsonQueue.send();
         });
         confirmGame.setTextFill(Color.BLACK);
         show.getChildren()
@@ -596,19 +478,7 @@ public class GUIView extends Application implements View, VirtualView {
         show.setVisible(false);
         show.setMinWidth(500);
         newGame.getChildren().addAll(createGame, show);
-        createGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-
-                if (show.isVisible()) {
-
-                    show.setVisible(false);
-
-                } else {
-                    show.setVisible(true);
-                }
-            }
-        });
+        createGame.setOnMouseClicked(mouseEvent -> show.setVisible(!show.isVisible()));
         borderPane.setBottom(newGame);
         BorderPane.setAlignment(newGame, Pos.BOTTOM_LEFT);
         createGame.prefHeightProperty().bind(show.prefHeightProperty());
@@ -617,32 +487,7 @@ public class GUIView extends Application implements View, VirtualView {
 
     private void selectCharacterScreen(String game) {
 
-        BorderPane borderPane = new BorderPane();
-
-        borderPane.setBackground(new Background(
-                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                        BackgroundSize.DEFAULT)));
-        borderPane.setPadding(new Insets(50, 0, 0, 0));
-        ImageView imageAdrenalina = new ImageView(Images.imagesMap.get("adrenalina"));
-        imageAdrenalina.setFitHeight(125);
-        imageAdrenalina.setPreserveRatio(true);
-        borderPane.setTop(imageAdrenalina);
-        BorderPane.setAlignment(imageAdrenalina, Pos.TOP_CENTER);
-
-        Button back = new Button("Indietro");
-        back.setOnMouseEntered(bigger);
-        back.setOnMouseExited(smaller);
-        back.setMinWidth(200);
-        back.setTextFill(Color.BLACK);
-
-        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-
-                gamesListScreen();
-            }
-        });
+        BorderPane borderPane = this.createLogoPane(false);
 
         VBox vBox = new VBox();
         vBox.setSpacing(50);
@@ -661,104 +506,33 @@ public class GUIView extends Application implements View, VirtualView {
 
         ////////////////////////////////////////////////////////////////////////////
 
-        ImageView distructor = new ImageView(Images.playersMap.get(":D-strutt-OR3"));
-        distructor.setPreserveRatio(true);
-        distructor.setFitHeight(200);
-        Button button1 = new Button("", distructor);
-        button1.setOnMouseEntered(bigger);
-        button1.setOnMouseExited(smaller);
-        button1.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        Images.playersMap.forEach((key, value) -> {
 
-        button1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "selectGame");
+            ImageView imageView = new ImageView(value);
+            imageView.setPreserveRatio(true);
+            imageView.setFitHeight(200);
+
+            Button button = new Button("", imageView);
+            button.setBackground(new Background(
+                    new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+
+            button.setOnMouseEntered(bigger);
+            button.setOnMouseExited(smaller);
+
+            button.setOnMouseClicked(x -> {
+
+                JsonQueue.add(METHOD, "selectGame");
+
                 JsonQueue.add("gameId", game);
-                JsonQueue.add("character", ":D-strutt-OR3");
+                JsonQueue.add("character", key);
+
                 JsonQueue.send();
-            }
+            });
+
+            characters.getChildren().add(button);
+
         });
 
-        ImageView sprog = new ImageView(Images.playersMap.get("Sprog"));
-        sprog.setPreserveRatio(true);
-        sprog.setFitHeight(200);
-        Button button2 = new Button("", sprog);
-        button2.setOnMouseEntered(bigger);
-        button2.setOnMouseExited(smaller);
-        button2.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        button2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "selectGame");
-                JsonQueue.add("gameId", game);
-                JsonQueue.add("character", "Sprog");
-                JsonQueue.send();
-            }
-        });
-
-        ImageView violetta = new ImageView(Images.playersMap.get("Violetta"));
-        violetta.setPreserveRatio(true);
-        violetta.setFitHeight(200);
-        Button button3 = new Button("", violetta);
-        button3.setOnMouseEntered(bigger);
-        button3.setOnMouseExited(smaller);
-        button3.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        button3.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "selectGame");
-                JsonQueue.add("gameId", game);
-                JsonQueue.add("character", "Violetta");
-                JsonQueue.send();
-            }
-        });
-
-        ImageView dozer = new ImageView(Images.playersMap.get("Dozer"));
-        dozer.setPreserveRatio(true);
-        dozer.setFitHeight(200);
-        Button button4 = new Button("", dozer);
-        button4.setOnMouseEntered(bigger);
-        button4.setOnMouseExited(smaller);
-        button4.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        button4.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "selectGame");
-                JsonQueue.add("gameId", game);
-                JsonQueue.add("character", "Dozer");
-                JsonQueue.send();
-            }
-        });
-
-        ImageView banshee = new ImageView(Images.playersMap.get("Banshee"));
-        banshee.setPreserveRatio(true);
-        banshee.setFitHeight(200);
-        Button button5 = new Button("", banshee);
-        button5.setOnMouseEntered(bigger);
-        button5.setOnMouseExited(smaller);
-        button5.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        button5.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "selectGame");
-                JsonQueue.add("gameId", game);
-                JsonQueue.add("character", "Banshee");
-                JsonQueue.send();
-            }
-        });
-
-        ////////////////////////////////////////////////////////////////////////////
-
-        characters.getChildren().addAll(button1, button2, button3, button4, button5);
         characters.setAlignment(Pos.CENTER);
 
         borderPane.setCenter(vBox);
@@ -770,18 +544,7 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void gameNotStartedScreen() {
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setBackground(new Background(
-                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                        BackgroundSize.DEFAULT)));
-        borderPane.setPadding(new Insets(50, 40, 0, 0));
-
-        ImageView imageAdrenalina = new ImageView(Images.imagesMap.get("adrenalina"));
-        imageAdrenalina.setFitHeight(125);
-        imageAdrenalina.setPreserveRatio(true);
-        borderPane.setTop(imageAdrenalina);
-        BorderPane.setAlignment(imageAdrenalina, Pos.TOP_CENTER);
+        BorderPane borderPane = this.createLogoPane(false);
 
         VBox center = new VBox();
         center.setSpacing(30);
@@ -791,110 +554,59 @@ public class GUIView extends Application implements View, VirtualView {
         boards.setMouseTransparent(false);
         boards.setAlignment(Pos.CENTER);
 
+        Images.boardsMap.forEach((key, entry) -> {
 
-        ImageView image0 = new ImageView(Images.boardsMap.get("board3").getValue());
-        image0.setFitHeight(240);
-        image0.setFitWidth(300);
-        Button board0 = new Button("", image0);
-        board0.setOnMouseExited(smaller);
-        board0.setOnMouseEntered(bigger);
-        board0.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+            ImageView imageView = new ImageView(entry.getValue());
 
-        board0.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "voteBoard");
-                JsonQueue.add("vote", "1");
+            imageView.setPreserveRatio(true);
+            imageView.setFitHeight(250);
+
+            Button board = new Button("", imageView);
+            board.setBackground(new Background(
+                    new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+
+            board.setOnMouseExited(smaller);
+            board.setOnMouseEntered(bigger);
+
+            board.setOnMouseClicked(x -> {
+
+                JsonQueue.add(METHOD, "voteBoard");
+                JsonQueue.add("vote", key.replace("board", ""));
+
                 JsonQueue.send();
-            }
+            });
+
+            boards.getChildren().add(board);
         });
-
-        ImageView image1 = new ImageView(Images.boardsMap.get("board1").getValue());
-        image1.setFitHeight(240);
-        image1.setFitWidth(300);
-        Button board1 = new Button("", image1);
-        board1.setOnMouseEntered(bigger);
-        board1.setOnMouseExited(smaller);
-        board1.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        board1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "voteBoard");
-                JsonQueue.add("vote", "2");
-                JsonQueue.send();
-            }
-        });
-
-
-        ImageView image2 = new ImageView(Images.boardsMap.get("board2").getValue());
-        image2.setFitHeight(240);
-        image2.setFitWidth(300);
-        Button board2 = new Button("", image2);
-        board2.setOnMouseEntered(bigger);
-        board2.setOnMouseExited(smaller);
-        board2.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        board2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "voteBoard");
-                JsonQueue.add("vote", "3");
-                JsonQueue.send();
-            }
-        });
-
-        ImageView image3 = new ImageView(Images.boardsMap.get("board4").getValue());
-        image3.setFitHeight(240);
-        image3.setFitWidth(300);
-        Button board3 = new Button("", image3);
-        board3.setOnMouseEntered(bigger);
-        board3.setOnMouseExited(smaller);
-        board3.setBackground(new Background(
-                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        board3.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "voteBoard");
-                JsonQueue.add("vote", "4");
-                JsonQueue.send();
-            }
-        });
-
-        boards.getChildren().addAll(board0, board1, board2, board3);
 
         HBox characters = new HBox();
         characters.setSpacing(60);
         characters.setAlignment(Pos.CENTER);
 
-        Images.playersMap.forEach((key, value)  -> {
+        Images.playersMap.forEach((key, value) -> {
 
-                    ImageView desaturated = new ImageView(value);
-                    desaturated.setPreserveRatio(true);
-                    desaturated.setFitHeight(180);
-                    desaturated.setOpacity(0.2);
-                    ColorAdjust desaturate = new ColorAdjust();
-                    desaturate.setSaturation(-1);
-                    desaturated.setEffect(desaturate);
+            ImageView desaturated = new ImageView(value);
+            desaturated.setPreserveRatio(true);
+            desaturated.setFitHeight(180);
+            desaturated.setOpacity(0.2);
+            ColorAdjust desaturate = new ColorAdjust();
+            desaturate.setSaturation(-1);
+            desaturated.setEffect(desaturate);
 
-                    Label label = new Label();
-                    label.setFont(Font.font("Silom", 30));
-                    label.setTextFill(Color.WHITE);
-                    label.setAlignment(Pos.CENTER);
+            Label label = new Label();
+            label.setFont(Font.font("Silom", 30));
+            label.setTextFill(Color.WHITE);
+            label.setAlignment(Pos.CENTER);
 
-                    VBox vBox = new VBox();
-                    vBox.setAlignment(Pos.CENTER);
-                    vBox.setSpacing(20);
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.CENTER);
+            vBox.setSpacing(20);
 
-                    vBox.getChildren().addAll(desaturated, label);
-                    vBox.setId(key);
+            vBox.getChildren().addAll(desaturated, label);
+            vBox.setId(key);
 
-                    characters.getChildren().add(vBox);
-                });
+            characters.getChildren().add(vBox);
+        });
 
         Label countDown = new Label();
         countDown.setWrapText(true);
@@ -912,42 +624,43 @@ public class GUIView extends Application implements View, VirtualView {
 
 
     @Override
-    public void boardScreen() {
-        return;
+    public void boardScreen(int id) {
+
+        //
     }
 
     /////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void broadcast(String value) throws RemoteException {
+    public void broadcast(String value) {
         this.createNotifications("broadcast", value);
     }
 
     @Override
-    public void gameBroadcast(String value) throws RemoteException {
+    public void gameBroadcast(String value) {
         this.createNotifications("Game Brodcast", value);
     }
 
     @Override
-    public void infoMessage(String value) throws RemoteException {
+    public void infoMessage(String value) {
         this.createNotifications("Informazione", value);
     }
 
     @Override
-    public void errorMessage(String value) throws RemoteException {
+    public void errorMessage(String value) {
         this.createNotifications("Errore:", value);
 
     }
 
 
     @Override
-    public void isConnected(String value) throws RemoteException {
+    public void isConnected(String value) {
 
         //
     }
 
     @Override
-    public void completeLogin(String value) throws RemoteException {
+    public void completeLogin(String value) {
 
         JsonObject object = JsonUtility.jsonDeserialize(value);
 
@@ -958,7 +671,7 @@ public class GUIView extends Application implements View, VirtualView {
 
             if (object.getBoolean("gameStarted")) {
 
-                this.boardScreen();
+                this.boardScreen(0);
 
             } else {
 
@@ -973,13 +686,13 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     @Override
-    public void completeDisconnect(String value) throws RemoteException {
+    public void completeDisconnect(String value) {
 
         System.exit(0);
     }
 
     @Override
-    public void updateGameList(String value) throws RemoteException {
+    public void updateGameList(String value) {
 
         JsonObject object = JsonUtility.jsonDeserialize(value);
 
@@ -1039,40 +752,27 @@ public class GUIView extends Application implements View, VirtualView {
             game.setOpacity(0.6);
             game.setStyle(" -fx-text-inner-color: white; -fx-font: 20px Silom");
 
-            game.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            game.setOnMouseEntered(mouseEvent -> {
 
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-
-                    ((Button) (mouseEvent.getSource())).setOpacity(100);
-                    currentStage.getScene().setCursor(Cursor.HAND);
-                }
+                ((Button) (mouseEvent.getSource())).setOpacity(100);
+                currentStage.getScene().setCursor(Cursor.HAND);
             });
 
-            game.setOnMouseExited(new EventHandler<MouseEvent>() {
+            game.setOnMouseExited(mouseEvent -> {
 
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-
-                    ((Button) (mouseEvent.getSource())).setOpacity(0.6);
-                    currentStage.getScene().setCursor(Cursor.DEFAULT);
-                }
+                ((Button) (mouseEvent.getSource())).setOpacity(0.6);
+                currentStage.getScene().setCursor(Cursor.DEFAULT);
             });
 
-            game.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            game.setOnMouseClicked(mouseEvent -> {
 
-                @Override
-                public void handle(MouseEvent mouseEvent) {
+                if (!x.getBoolean("gameStarted")) {
 
-                    if (!x.getBoolean("gameStarted")) {
+                    selectCharacterScreen(game.getId());
 
-                        selectCharacterScreen(game.getId());
+                } else {
 
-                    } else {
-
-                        createNotifications("Errore:", "La partita è già iniziata!");
-                    }
-
+                    createNotifications("Errore:", "La partita è già iniziata!");
                 }
             });
 
@@ -1084,18 +784,18 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     @Override
-    public void completeCreateGame(String value) throws RemoteException {
+    public void completeCreateGame(String value) {
         this.createNotifications("partita creata!",
                 "ora seleziona la partita nella quale vuoi entrare");
     }
 
     @Override
-    public void completeSelectGame(String value) throws RemoteException {
+    public void completeSelectGame(String value) {
         this.gameNotStartedScreen();
     }
 
     @Override
-    public void updateGameNotStartedScreen(String value) throws RemoteException {
+    public void updateGameNotStartedScreen(String value) {
 
         JsonObject readObject = JsonUtility.jsonDeserialize(value);
 
@@ -1120,9 +820,10 @@ public class GUIView extends Application implements View, VirtualView {
                             ImageView imageView = (ImageView) characterVBox.getChildren().get(0);
                             imageView.setFitHeight(200);
                             imageView.setOpacity(1);
-                            ((ColorAdjust)imageView.getEffect()).setSaturation(0);
+                            ((ColorAdjust) imageView.getEffect()).setSaturation(0);
 
-                            RotateTransition rotator = new RotateTransition(Duration.millis(300), imageView);
+                            RotateTransition rotator = new RotateTransition(Duration.millis(300),
+                                    imageView);
                             rotator.setAxis(Rotate.Y_AXIS);
                             rotator.setFromAngle(0);
                             rotator.setToAngle(360);
@@ -1130,18 +831,6 @@ public class GUIView extends Application implements View, VirtualView {
                             rotator.setCycleCount(1);
 
                             rotator.play();
-
-                            /*
-                            ScaleTransition scaleTransition = new ScaleTransition();
-                            scaleTransition.setDuration(Duration.millis(500));
-                            scaleTransition.setNode(imageView);
-                            scaleTransition.setByY(1.05);
-                            scaleTransition.setByX(1.05);
-                            scaleTransition.setCycleCount(1);
-                            scaleTransition.setAutoReverse(false);
-
-                            scaleTransition.play();
-                            */
 
                             Label label = (Label) characterVBox.getChildren().get(1);
                             label.setText(x.getString("playerId"));
@@ -1153,38 +842,39 @@ public class GUIView extends Application implements View, VirtualView {
 
             if (count < 10) {
 
-                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2)).setText("La partita inizierà tra " + count + " secondi.");
+                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2))
+                        .setText("La partita inizierà tra " + count + " secondi.");
 
             } else {
 
-                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2)).setText("In attesa di tre giocatori connessi.");
+                ((Label) ((VBox) borderPane.getCenter()).getChildren().get(2))
+                        .setText("In attesa di tre giocatori connessi.");
             }
         });
 
     }
 
     @Override
-    public void completeVoteBoard(String value) throws RemoteException {
+    public void completeVoteBoard(String value) {
         this.createNotifications("voto mappa", " hai votato correttamente");
     }
 
     @Override
-    public void completeSelectAction(String value) throws RemoteException {
+    public void completeSelectAction(String value) {
         this.createNotifications("selezione azione completata", "");
     }
 
     @Override
-    public void completeEndAction(String value) throws RemoteException {
+    public void completeEndAction(String value) {
         this.createNotifications("fine azione", "");
     }
 
     @Override
-    public void completeCardInfo(String value) throws RemoteException {
+    public void completeCardInfo(String value) {
         Platform.runLater(() -> {
 
             JsonObject jsonCard = JsonUtility.jsonDeserialize(value);
             Stage infocard = new Stage();
-            AnchorPane anchorPane = new AnchorPane();
             HBox elements = new HBox();
             AnchorPane.setRightAnchor(elements, 20.0);
             AnchorPane.setTopAnchor(elements, 20.0);
@@ -1231,13 +921,13 @@ public class GUIView extends Application implements View, VirtualView {
             if (jsonCard.get("alternative") != JsonValue.NULL) {
                 JsonObject alternativo = jsonCard.getJsonObject("alternative");
                 Label effettoAlternativo = new Label();
-                effettoAlternativo.setText("Effetto alternativo :" + primary.getString("name"));
+                effettoAlternativo.setText("Effetto alternativo :" + alternativo.getString("name"));
                 effettoAlternativo.setTextFill(Color.YELLOW);
                 text.getChildren().add(effettoAlternativo);
                 Label descrizioneAlternativo = new Label();
-                descrizionePrimario.setMinHeight(30);
-                descrizionePrimario.setText(
-                        "Descrizione effetto alternativo: " + primary.getString("description"));
+                descrizioneAlternativo.setMinHeight(30);
+                descrizioneAlternativo.setText(
+                        "Descrizione effetto alternativo: " + alternativo.getString("description"));
                 descrizioneAlternativo.setWrapText(true);
                 descrizioneAlternativo.setTextFill(Color.YELLOW);
                 text.getChildren().add(descrizioneAlternativo);
@@ -1281,12 +971,7 @@ public class GUIView extends Application implements View, VirtualView {
             }
 
             Button exit = new Button("Exit");
-            exit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    infocard.close();
-                }
-            });
+            exit.setOnMouseClicked(x -> infocard.close());
 
             exit.setTextFill(Color.BLACK);
             exit.setOnMouseEntered(bigger);
@@ -1298,16 +983,14 @@ public class GUIView extends Application implements View, VirtualView {
             Scene infocardScene = new Scene(elements, 500, 500);
             infocard.setScene(infocardScene);
             PauseTransition delay = new PauseTransition(Duration.seconds(50));
-            delay.setOnFinished(event -> {
-                infocard.close();
-            });
+            delay.setOnFinished(event -> infocard.close());
             infocard.show();
             delay.play();
         });
     }
 
-    public synchronized Node createBoard(boolean isUpdateBoard, double xScaleFactor) {
-        double yScaleFactor = xScaleFactor;
+    private synchronized Node createBoard(boolean isUpdateBoard, double scaleFactor) {
+
         ImageView boardImage = new ImageView();
 
         switch (boardId) {
@@ -1326,6 +1009,7 @@ public class GUIView extends Application implements View, VirtualView {
                 boardImage = new ImageView(Images.boardsMap.get("board4").getKey());
                 break;
 
+            default:
 
         }
         /////////////////////////////////////////////////////centro set quadrati!
@@ -1334,59 +1018,53 @@ public class GUIView extends Application implements View, VirtualView {
         } else {
             this.squareListForShootState.clear();
         }
-        boardImage.setFitWidth(990 / xScaleFactor);
+        boardImage.setFitWidth(990 / scaleFactor);
         boardImage
-                .setFitHeight(565 / yScaleFactor);//1.321 rapporto tra lunghezza e altezza originale
+                .setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.setPrefSize(990 / xScaleFactor, 565 / yScaleFactor);
+        anchorPane.setPrefSize(990 / scaleFactor, 565 / scaleFactor);
         VBox squares = new VBox();
-        AnchorPane.setTopAnchor(squares, 120.0 / yScaleFactor);
-        AnchorPane.setBottomAnchor(squares, 25.0 / yScaleFactor);
-        AnchorPane.setLeftAnchor(squares, 160.0 / xScaleFactor);
-        AnchorPane.setRightAnchor(squares, 145.0 / xScaleFactor);
+        AnchorPane.setTopAnchor(squares, 120.0 / scaleFactor);
+        AnchorPane.setBottomAnchor(squares, 25.0 / scaleFactor);
+        AnchorPane.setLeftAnchor(squares, 160.0 / scaleFactor);
+        AnchorPane.setRightAnchor(squares, 145.0 / scaleFactor);
         HBox line;
         line = new HBox();
         line.setSpacing(0);
 
-        JsonObject jsonBoard = jsonArray.stream().map(JsonValue::asJsonObject)
-                .filter(x -> x.getInt("id") == boardId).findFirst()
-                .orElseThrow(IllegalArgumentException::new);
-
-        jsonBoard.getJsonArray("values").stream().map(JsonValue::asJsonObject)
+        jsonObject.getJsonObject("board").getJsonArray("arrays").stream()
+                .flatMap(x -> x.asJsonArray().stream().map(JsonValue::asJsonObject))
                 .forEach(x -> {
-                            ButtonSquare buttonSquare = new ButtonSquare(true);
-                            if (x.getBoolean("present")) {
+                            ButtonSquare buttonSquare;
+
+                            if (!x.containsKey("empty")) {
                                 buttonSquare = new ButtonSquare(
-                                        x.getString("color"), Integer.valueOf(x.getString("squareId")));
+                                        x.getString("color"), x.getInt("squareId"));
                                 buttonSquare.setBackground(new Background(
                                         new BackgroundFill(Color.rgb(217, 217, 217),
                                                 CornerRadii.EMPTY,
                                                 Insets.EMPTY)));
-                                buttonSquare.setSpawn(x.getBoolean("spawn"));
-                                buttonSquare.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                                    @Override
-                                    public void handle(MouseEvent mouseEvent) {
-                                        ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.3);
-                                        currentStage.getScene().setCursor(Cursor.HAND);
-                                    }
+                                buttonSquare.setSpawn(x.getBoolean("isSpawn"));
+                                buttonSquare.setOnMouseEntered(mouseEvent -> {
+
+                                    ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.3);
+                                    currentStage.getScene().setCursor(Cursor.HAND);
                                 });
-                                buttonSquare.setOnMouseExited(new EventHandler<MouseEvent>() {
-                                    @Override
-                                    public void handle(MouseEvent mouseEvent) {
-                                        ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.0);
-                                        currentStage.getScene().setCursor(Cursor.DEFAULT);
-                                    }
+                                buttonSquare.setOnMouseExited(mouseEvent -> {
+
+                                    ((ButtonSquare) (mouseEvent.getSource())).setOpacity(0.0);
+                                    currentStage.getScene().setCursor(Cursor.DEFAULT);
                                 });
 
                             } else {
                                 buttonSquare = new ButtonSquare(false);
 
                             }
-                            buttonSquare.setPrefHeight(125 / yScaleFactor);
-                            buttonSquare.setPrefWidth(175 / xScaleFactor);
+                            buttonSquare.setPrefHeight(125 / scaleFactor);
+                            buttonSquare.setPrefWidth(175 / scaleFactor);
                             StackPane stackPane = new StackPane();
-                            stackPane.setPrefHeight(125 / yScaleFactor);
-                            stackPane.setPrefWidth(175 / xScaleFactor);
+                            stackPane.setPrefHeight(125 / scaleFactor);
+                            stackPane.setPrefWidth(175 / scaleFactor);
                             stackPane.getChildren().add(buttonSquare);
                             if (isUpdateBoard) {
                                 squareList.add(buttonSquare);
@@ -1407,11 +1085,11 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     @Override
-    public synchronized void updateBoard(String value) throws RemoteException {
+    public synchronized void updateBoard(String value) {
 
-        JsonObject jGameHandlerObject = JsonUtility.jsonDeserialize(value);
+        jsonObject = JsonUtility.jsonDeserialize(value);
 
-        boardId = jGameHandlerObject.getJsonObject("board").getInt("boardId");
+        boardId = jsonObject.getJsonObject("board").getInt("boardId");
 
         Platform.runLater(() -> {
             VBox pannelloCentrale = new VBox();
@@ -1449,7 +1127,7 @@ public class GUIView extends Application implements View, VirtualView {
             AnchorPane.setBottomAnchor(weaponsDx, 0.0);
             //////////////////////////////////////////////////////////
 
-            jGameHandlerObject.getJsonObject("board")
+            jsonObject.getJsonObject("board")
                     .getJsonArray("arrays").stream()
                     .flatMap(x -> x.asJsonArray().stream())
                     .map(JsonValue::asJsonObject).filter(x -> !x.containsKey("empty"))
@@ -1461,7 +1139,8 @@ public class GUIView extends Application implements View, VirtualView {
                         .map(JsonValue::asJsonObject)
                         .forEach(y -> {
 
-                            ImageView cardImage = new ImageView(Images.weaponsMap.get(y.getInt("id")));
+                            ImageView cardImage = new ImageView(
+                                    Images.weaponsMap.get(y.getInt("id")));
                             ButtonWeapon rotatedButton = null;
                             ImageView definiteRotateImage = null;
 
@@ -1519,16 +1198,18 @@ public class GUIView extends Application implements View, VirtualView {
 
                                     break;
 
+                                default:
+
                             }
                             weaponsInSpawnSquare.add(rotatedButton);
-                            rotatedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    JsonQueue.add("method", "askCardInfo");
-                                    JsonQueue.add("cardId", Integer.toString(
-                                            ((ButtonWeapon) mouseEvent.getSource()).cardId));
-                                    JsonQueue.send();
-                                }
+
+                            rotatedButton.setOnMouseClicked(mouseEvent -> {
+
+                                JsonQueue.add(METHOD, "askCardInfo");
+                                JsonQueue.add("cardId", Integer.toString(
+                                        ((ButtonWeapon) mouseEvent.getSource()).cardId));
+
+                                JsonQueue.send();
                             });
                             rotatedButton.setOnMouseEntered(bigger);
                             rotatedButton.setOnMouseExited(smaller);
@@ -1543,18 +1224,16 @@ public class GUIView extends Application implements View, VirtualView {
 
             ////////////////////////////////////////////////////  metto giocatori e ammotiles nei quadrati!!
             playersInGame.clear();
-            jGameHandlerObject.getJsonObject("board").getJsonArray("arrays").stream()
+            jsonObject.getJsonObject("board").getJsonArray("arrays").stream()
                     .flatMap(x -> x.asJsonArray().stream())
                     .map(JsonValue::asJsonObject)
                     .filter(x -> !x.containsKey("empty"))
                     .forEach(z -> {
 
-                        String color = z.getString("color").toLowerCase();
+                        String color = z.getString("color");
                         int id = z.getInt("squareId");
 
                         HBox playersInSquare = new HBox();
-                        //was 175 125
-                        //playersInSquare.setPrefSize(175, 125);
 
                         HBox tilesInSquare = new HBox();
 
@@ -1565,10 +1244,12 @@ public class GUIView extends Application implements View, VirtualView {
                                     .forEach(s -> {
 
                                         ImageView tile = new ImageView(
-                                                Images.ammoTilesMap.get(s.getJsonArray("colors").stream()
-                                                        .map(JsonValue::toString)
-                                                        .map(p -> p.substring(1, p.length() - 1))
-                                                        .collect(Collectors.joining())));
+                                                Images.ammoTilesMap
+                                                        .get(s.getJsonArray("colors").stream()
+                                                                .map(JsonValue::toString)
+                                                                .map(p -> p.substring(1,
+                                                                        p.length() - 1))
+                                                                .collect(Collectors.joining())));
 
                                         tile.setFitHeight(45);
                                         tile.setFitWidth(45);
@@ -1599,7 +1280,8 @@ public class GUIView extends Application implements View, VirtualView {
                                                             .setFitHeight(125 / scale);
                                                 });
                                         if (t.getString("playerId").equals(playerIdView)) {
-                                            this.squareList.stream().filter(k -> k.getPresent())
+                                            this.squareList.stream()
+                                                    .filter(ButtonSquare::getPresent)
                                                     .filter(s -> s.getColor().equals(color) && s
                                                             .getButtonSquareId() == id)
                                                     .findAny().get().setCurrentPosition(true);
@@ -1607,8 +1289,9 @@ public class GUIView extends Application implements View, VirtualView {
                                     });
                         }
 
-                        ButtonSquare tmp = this.squareList.stream().filter(k -> k.getPresent())
-                                .filter(s -> s.getColor().equals(color) && s.getButtonSquareId() == id)
+                        ButtonSquare tmp = this.squareList.stream().filter(ButtonSquare::getPresent)
+                                .filter(s -> s.getColor().equals(color)
+                                        && s.getButtonSquareId() == id)
                                 .findAny()
                                 .orElseThrow(IllegalArgumentException::new);
 
@@ -1620,11 +1303,12 @@ public class GUIView extends Application implements View, VirtualView {
                     });
             //////////////////////////////////centro metto morti nella plncia morti board
             HBox killsOfAllPlayers = new HBox();
-            jGameHandlerObject.getJsonObject("deaths").getJsonArray("deathBridgeArray").stream()
+            jsonObject.getJsonObject("deaths").getJsonArray("deathBridgeArray").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
                         ImageView killshot = new ImageView(
-                                Images.dropsMap.get(x.toString().substring(1, x.toString().length() - 1)));
+                                Images.dropsMap
+                                        .get(x.toString().substring(1, x.toString().length() - 1)));
                         killshot.setFitWidth(40);
                         killshot.setFitHeight(40);
                         killsOfAllPlayers.getChildren().add(killshot);
@@ -1636,16 +1320,13 @@ public class GUIView extends Application implements View, VirtualView {
 
             ////////////////////////////////////////////////////////////  prendo le azioni possibili che puo fare un giocatore
             this.actionsList.clear();
-            JsonObject characterJson = jGameHandlerObject.getJsonArray("playerList").stream()
+            JsonObject characterJson = jsonObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .filter(x -> x.getString("playerId").equals(playerIdView)).findFirst().get();
             character = characterJson.getString("character");
             characterJson.getJsonObject("bridge").getJsonObject("actionBridge")
                     .getJsonArray("possibleActionsArray").stream().map(JsonValue::asJsonObject)
-                    .forEach(x -> {
-                        this.actionsList.add(x.getInt("id"));
-
-                    });
+                    .forEach(x -> this.actionsList.add(x.getInt("id")));
 
             /////////////////////////////////////////////////////////////////////////// centro powerUp e armi e tuoi cubes
             weaponsList.clear();
@@ -1656,9 +1337,9 @@ public class GUIView extends Application implements View, VirtualView {
 
             HBox cards = new HBox();
             cards.setPrefWidth(990);
-            cards.setPrefHeight((565 / 3) + 10);
+            cards.setPrefHeight((565.0 / 3) + 10);
 
-            JsonObject thisPlayerObject = jGameHandlerObject
+            JsonObject thisPlayerObject = jsonObject
                     .getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .filter(x -> x.getString("playerId").equals(playerIdView))
@@ -1686,19 +1367,18 @@ public class GUIView extends Application implements View, VirtualView {
                             card = new ImageView(Images.weaponsMap.get(0));
                         }
                         card.setFitWidth(130);
-                        card.setFitHeight((565 / 3) + 15);
+                        card.setFitHeight((565.0 / 3) + 15);
                         ButtonWeapon imageButton = new ButtonWeapon(
                                 x.getInt("id"),
                                 x.getString("name"),
                                 card);
-                        imageButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent mouseEvent) {
-                                JsonQueue.add("method", "askCardInfo");
-                                JsonQueue.add("cardId", Integer.toString(
-                                        ((ButtonWeapon) mouseEvent.getSource()).cardId));
-                                JsonQueue.send();
-                            }
+                        imageButton.setOnMouseClicked(mouseEvent -> {
+
+                            JsonQueue.add(METHOD, "askCardInfo");
+                            JsonQueue.add("cardId", Integer.toString(
+                                    ((ButtonWeapon) mouseEvent.getSource()).cardId));
+
+                            JsonQueue.send();
                         });
                         weaponsList.add(imageButton);
                         imageButton.setOnMouseEntered(bigger);
@@ -1717,7 +1397,7 @@ public class GUIView extends Application implements View, VirtualView {
                                         .toString()));
 
                         powerUp.setFitWidth(130);
-                        powerUp.setFitHeight((565 / 3) + 15);
+                        powerUp.setFitHeight((565.0 / 3) + 15);
                         ButtonPowerUp powerUpButton = new ButtonPowerUp(x.getString("name"),
                                 x.getString("color"), powerUp);
                         powerUpList.add(powerUpButton);
@@ -1739,7 +1419,7 @@ public class GUIView extends Application implements View, VirtualView {
             VBox bridges = new VBox();
             AnchorPane.setTopAnchor(bridges, 0.0);
             bridges.setSpacing(0);
-            jGameHandlerObject.getJsonArray("playerList").stream()
+            jsonObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
 
@@ -1751,15 +1431,15 @@ public class GUIView extends Application implements View, VirtualView {
                                                 .getBoolean("isFinalFrenzy"))
                                         .toString()));
                         bridge.setId(x.getString("character"));
-                        bridge.setFitWidth(990 / 3 + 150);
-                        bridge.setFitHeight(565 / 5);
+                        bridge.setFitWidth(990.0 / 3 + 150);
+                        bridge.setFitHeight(565.0 / 5);
                         bridges.getChildren().add(bridge);
 
 
                     });
             rightAnchorPane.getChildren().add(bridges);
             /////////////////////////////metto segnalini danno su giocatori e segnalini morti
-            jGameHandlerObject.getJsonArray("playerList").stream()
+            jsonObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
                         String allPlayersCharacter = x.getString("character");
@@ -1780,20 +1460,19 @@ public class GUIView extends Application implements View, VirtualView {
                                     kills.getChildren().add(kill);
                                 });
                         x.getJsonObject("bridge").getJsonObject("damageBridge")
-                                .getJsonArray("shots").stream()
-                                .forEach(z -> {
-                                    ImageView shot = new ImageView(Images.dropsMap.get(
-                                            z.toString().substring(1, z.toString().length() - 1)));
+                                .getJsonArray("shots").forEach(z -> {
+                            ImageView shot = new ImageView(Images.dropsMap.get(
+                                    z.toString().substring(1, z.toString().length() - 1)));
 
-                                    shot.setFitHeight(35);
-                                    shot.setFitWidth(25);
-                                    shots.getChildren().add(shot);
+                            shot.setFitHeight(35);
+                            shot.setFitWidth(25);
+                            shots.getChildren().add(shot);
 
-                                });
+                        });
                         AnchorPane.setTopAnchor(kills,
-                                (double) numberOfBridge * (565 / 5) + 115 - 30);
+                                (double) numberOfBridge * (565.0 / 5) + 115 - 30);
                         AnchorPane.setLeftAnchor(kills, 103.0);
-                        AnchorPane.setTopAnchor(shots, (double) numberOfBridge * (565 / 5) + 35);
+                        AnchorPane.setTopAnchor(shots, (double) numberOfBridge * (565.0 / 5) + 35);
                         AnchorPane.setLeftAnchor(shots, 40.0);
                         AnchorPane.setRightAnchor(shots, 120.0);
                         rightAnchorPane.getChildren().addAll(shots, kills);
@@ -1808,16 +1487,6 @@ public class GUIView extends Application implements View, VirtualView {
 
             /////////////////////////////////////////////////
             changeScene(borderPane);
-
-            /*
-            Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-            if (primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() > 1950) {
-                currentStage.sizeToScene();
-            } else {
-                currentStage.setMaximized(true);
-            }
-            */
-
         });
 
     }
@@ -1852,7 +1521,7 @@ public class GUIView extends Application implements View, VirtualView {
                 notifications.remove(dialog);
                 dialog.close();
             });
-            this.notifications.stream().forEach(x -> x.setY(x.getY() - 200));
+            this.notifications.forEach(x -> x.setY(x.getY() - 200));
             this.notifications.add(dialog);
             dialog.show();
             delay.play();
@@ -1860,44 +1529,38 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     private void elimanteSetOnMouseClicked() {
-        ButtonPowerUp.setOnMouse(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                ;
-            }
-        });
-        this.powerUpList.stream().forEach(x -> x.update());
+        ButtonPowerUp.setOnMouse(mouseEvent -> {
 
-        ButtonWeapon.setOnMouse(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "askCardInfo");
-                JsonQueue.add("cardId",
-                        Integer.toString(((ButtonWeapon) mouseEvent.getSource()).cardId));
-                JsonQueue.send();
-            }
+            //
         });
-        this.weaponsList.stream().forEach(x -> x.update());
-        this.weaponsInSpawnSquare.forEach(x -> x.update());
+        this.powerUpList.forEach(ButtonPowerUp::update);
 
-        ButtonSquare.setOnMouse(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                ;
-            }
+        ButtonWeapon.setOnMouse(mouseEvent -> {
+
+            JsonQueue.add(METHOD, "askCardInfo");
+            JsonQueue.add("cardId",
+                    Integer.toString(((ButtonWeapon) mouseEvent.getSource()).cardId));
+
+            JsonQueue.send();
         });
-        ButtonSquare.setOnMouseCollect(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                ;
-            }
+        this.weaponsList.forEach(ButtonWeapon::update);
+        this.weaponsInSpawnSquare.forEach(ButtonWeapon::update);
+
+        ButtonSquare.setOnMouse(mouseEvent -> {
+
+            //
         });
-        this.squareList.stream().forEach(x -> x.update());
+        ButtonSquare.setOnMouseCollect(mouseEvent -> {
+
+            //
+        });
+
+        this.squareList.forEach(ButtonSquare::update);
 
     }
 
     @Override
-    public synchronized void updateState(String value) throws RemoteException {
+    public synchronized void updateState(String value) {
 
         Platform.runLater(() -> {
 
@@ -1909,64 +1572,60 @@ public class GUIView extends Application implements View, VirtualView {
 
             object.getJsonArray("info").forEach(x -> {
 
-                if (x.toString().substring(1, x.toString().length() - 1).equals("askCardInfo")) {
+                String method = x.toString().substring(1, x.toString().length() - 1);
 
-                    Button infoCarte = new GameButton("info carte", new ImageView(Images.imagesMap.get("button")));
+                if (method.equals("askCardInfo")) {
 
-                    infoCarte.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-                            Stage infoCarteStage = new Stage();
-                            BorderPane centre = new BorderPane();
-                            ScrollPane images = new ScrollPane();
-                            HBox twoCrads = new HBox();
-                            twoCrads.setSpacing(80);
-                            VBox allcards = new VBox();
-                            allcards.setSpacing(30);
-                            for (int i = 1; i < 22; i++) {
-                                ImageView card = new ImageView(Images.weaponsMap.get(i));
-                                card.setFitWidth(150);
-                                card.setFitHeight(250);
-                                ButtonWeapon buttonWeapon = new ButtonWeapon(i, "name", card);
-                                buttonWeapon.setOnMouseEntered(bigger);
-                                buttonWeapon.setOnMouseExited(smaller);
-                                buttonWeapon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                    @Override
-                                    public void handle(MouseEvent mouseEvent) {
-                                        JsonQueue.add("method", "askCardInfo");
-                                        JsonQueue.add("cardId", Integer.toString(
-                                                ((ButtonWeapon) mouseEvent.getSource()).cardId));
-                                        JsonQueue.send();
-                                    }
-                                });
-                                twoCrads.getChildren().add(buttonWeapon);
+                    Button infoCarte = new GameButton("info carte",
+                            new ImageView(Images.imagesMap.get("button")));
 
-                                if (twoCrads.getChildren().size() == 2) {
+                    infoCarte.setOnMouseClicked(mouseEvent -> {
 
-                                    allcards.getChildren().add(twoCrads);
-                                    twoCrads = new HBox();
-                                    twoCrads.setSpacing(80);
+                        Stage infoCarteStage = new Stage();
+                        ScrollPane images = new ScrollPane();
+                        HBox twoCrads = new HBox();
+                        twoCrads.setSpacing(80);
+                        VBox allcards = new VBox();
+                        allcards.setSpacing(30);
+                        for (int i = 1; i < 22; i++) {
+                            ImageView card = new ImageView(Images.weaponsMap.get(i));
+                            card.setFitWidth(150);
+                            card.setFitHeight(250);
+                            ButtonWeapon buttonWeapon = new ButtonWeapon(i, "name", card);
+                            buttonWeapon.setOnMouseEntered(bigger);
+                            buttonWeapon.setOnMouseExited(smaller);
+                            buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
+
+                                JsonQueue.add(METHOD, "askCardInfo");
+                                JsonQueue.add("cardId", Integer.toString(
+                                        ((ButtonWeapon) weaponMouseEvent.getSource()).cardId));
+                                JsonQueue.send();
+                            });
+                            twoCrads.getChildren().add(buttonWeapon);
+
+                            if (twoCrads.getChildren().size() == 2) {
+
+                                allcards.getChildren().add(twoCrads);
+                                twoCrads = new HBox();
+                                twoCrads.setSpacing(80);
 
 
-                                }
                             }
-                            images.setContent(allcards);
-                            images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-                            Scene imagesScene = new Scene(new StackPane(images), 450, 500);
-                            infoCarteStage.setScene(imagesScene);
-                            infoCarteStage.show();
-
                         }
-
+                        images.setContent(allcards);
+                        images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+                        Scene imagesScene = new Scene(new StackPane(images), 450, 500);
+                        infoCarteStage.setScene(imagesScene);
+                        infoCarteStage.show();
                     });
                     infoCarte.setAlignment(Pos.CENTER);
                     collectiveButtons.getChildren().add(infoCarte);
                     this.resizeButtons();
 
-                } else if (x.toString().substring(1, x.toString().length() - 1)
-                        .equals("askInfoPowerUp")) {
+                } else if (method.equals("askInfoPowerUp")) {
 
                     //TODO infopowerup
+                    //
 
                 }
             });
@@ -1977,23 +1636,19 @@ public class GUIView extends Application implements View, VirtualView {
 
                 case "spawnState":
 
-                    ButtonPowerUp.setOnMouse(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
+                    ButtonPowerUp.setOnMouse(mouseEvent -> {
 
-                            JsonQueue.add("method", "spawn");
-                            JsonQueue.add("name",
-                                    ((ButtonPowerUp) mouseEvent.getSource()).getName());
-                            JsonQueue.add("color",
-                                    ((ButtonPowerUp) mouseEvent.getSource())
-                                            .getColor());
-                            JsonQueue.send();
-                        }
+                        JsonQueue.add(METHOD, "spawn");
+                        JsonQueue.add("name",
+                                ((ButtonPowerUp) mouseEvent.getSource()).getName());
+                        JsonQueue.add("color",
+                                ((ButtonPowerUp) mouseEvent.getSource())
+                                        .getColor());
 
-
+                        JsonQueue.send();
                     });
 
-                    powerUpList.forEach(y -> y.update());
+                    powerUpList.forEach(ButtonPowerUp::update);
                     Button spawnButton = new Button(
                             "Spawn");
                     spawnButton.setPrefSize(200, 36);
@@ -2008,65 +1663,49 @@ public class GUIView extends Application implements View, VirtualView {
 
                     object.getJsonArray("methods").forEach(x -> {
 
-                        if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askUsePrimary")) {
+                        String method = x.toString().substring(1, x.toString().length() - 1);
 
-                            Button effettoPrimario = new GameButton("effetto primario", new ImageView(Images.imagesMap.get("button")));
+                        if (method.equals("askUsePrimary")) {
 
-                            effettoPrimario.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    createShootStage(true, "askUsePrimary");
+                            Button effettoPrimario = new GameButton("effetto primario",
+                                    new ImageView(Images.imagesMap.get("button")));
 
-                                }
-                            });
+                            effettoPrimario.setOnMouseClicked(
+                                    mouseEvent -> createShootStage(true, "askUsePrimary"));
                             collectiveButtons.getChildren().add(effettoPrimario);
                             this.resizeButtons();
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askUseAlternative")) {
+                        } else if (method.equals("askUseAlternative")) {
 
-                            Button effettoAlternativo = new GameButton("effetto alternativo", new ImageView(Images.imagesMap.get("button")));
+                            Button effettoAlternativo = new GameButton("effetto alternativo",
+                                    new ImageView(Images.imagesMap.get("button")));
 
-                            effettoAlternativo.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    createShootStage(false, "askUseAlternative");
-                                }
-                            });
+                            effettoAlternativo.setOnMouseClicked(
+                                    mouseEvent -> createShootStage(false, "askUseAlternative"));
                             collectiveButtons.getChildren().add(effettoAlternativo);
                             this.resizeButtons();
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askUseOptional1")) {
+                        } else if (method.equals("askUseOptional1")) {
 
-                            Button opzionale1 = new GameButton("effetto opzionale 1", new ImageView(Images.imagesMap.get("button")));
+                            Button opzionale1 = new GameButton("effetto opzionale 1",
+                                    new ImageView(Images.imagesMap.get("button")));
 
-                            opzionale1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    createShootStage(false, "askUseOptional1");
-                                }
-                            });
+                            opzionale1.setOnMouseClicked(
+                                    mouseEvent -> createShootStage(false, "askUseOptional1"));
                             collectiveButtons.getChildren().add(opzionale1);
                             this.resizeButtons();
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askUseOptional2")) {
+                        } else if (method.equals("askUseOptional2")) {
 
-                            Button opzionale2 = new GameButton("effetto opzionale 2", new ImageView(Images.imagesMap.get("button")));
+                            Button opzionale2 = new GameButton("effetto opzionale 2",
+                                    new ImageView(Images.imagesMap.get("button")));
 
-                            opzionale2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    createShootStage(false, "askUseOptional2");
-                                }
-                            });
+                            opzionale2.setOnMouseClicked(
+                                    mouseEvent -> createShootStage(false, "askUseOptional2"));
                             collectiveButtons.getChildren().add(opzionale2);
                             this.resizeButtons();
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("endAction")) {
+                        } else if (method.equals("endAction")) {
                             Button endAction = this.createEndActionButton();
                             collectiveButtons.getChildren().addAll(endAction);
                             this.resizeButtons();
@@ -2077,26 +1716,25 @@ public class GUIView extends Application implements View, VirtualView {
                 case "actionState":
                     object.getJsonArray("methods").forEach(x -> {
 
-                        if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("moveAction")) {
+                        String method = x.toString().substring(1, x.toString().length() - 1);
+
+                        if (method.equals("moveAction")) {
 
                             Button moveActionButton = new Button(
                                     "clicca un quadrato per muoverti!");
-                            ButtonSquare.setOnMouse(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    ButtonSquare destination = ((ButtonSquare) mouseEvent
-                                            .getSource());
-                                    JsonQueue.add("method", "moveAction");
-                                    JsonQueue.add("squareColor", destination.getColor());
-                                    JsonQueue.add("squareId", String.valueOf(destination.getButtonSquareId()));
-                                    JsonQueue.send();
+                            ButtonSquare.setOnMouse(mouseEvent -> {
 
+                                ButtonSquare destination = ((ButtonSquare) mouseEvent
+                                        .getSource());
 
-                                }
+                                JsonQueue.add(METHOD, "moveAction");
+                                JsonQueue.add("squareColor", destination.getColor());
+                                JsonQueue.add("squareId",
+                                        String.valueOf(destination.getButtonSquareId()));
 
+                                JsonQueue.send();
                             });
-                            this.squareList.forEach(s -> s.update());
+                            this.squareList.forEach(ButtonSquare::update);
                             moveActionButton.setId("move");
                             moveActionButton.setPrefSize(200, 36);
                             moveActionButton.setAlignment(Pos.CENTER);
@@ -2105,301 +1743,237 @@ public class GUIView extends Application implements View, VirtualView {
                             this.resizeButtons();
 
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askCollect")) {
+                        } else if (method.equals("askCollect")) {
                             Button collectButton = new Button("clicca il tuo quadrato e raccoogli");
                             collectButton.setPrefSize(200, 36);
                             collectButton.setAlignment(Pos.CENTER);
                             collectButton.setTextFill(Color.BLACK);
-                            ButtonSquare.setOnMouseCollect(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    ButtonSquare destination = ((ButtonSquare) mouseEvent
-                                            .getSource());
+                            ButtonSquare.setOnMouseCollect(mouseEvent -> {
 
-                                    if (destination.isSpawn) {
+                                ButtonSquare destination = ((ButtonSquare) mouseEvent
+                                        .getSource());
 
-                                        Stage collectStage = new Stage();
+                                if (destination.isSpawn) {
 
-                                        VBox root = new VBox();
-                                        root.setSpacing(20);
+                                    Stage collectStage = new Stage();
 
-                                        ToggleGroup cardsInSquareGroup = new ToggleGroup();
+                                    VBox root = new VBox();
+                                    root.setSpacing(20);
 
-                                        HBox cardsInSquare = new HBox();
+                                    ToggleGroup cardsInSquareGroup = new ToggleGroup();
 
-                                        HBox toggleBox = new HBox();
-                                        toggleBox.setSpacing(100);
+                                    HBox cardsInSquare = new HBox();
 
-                                        weaponsInSpawnSquare.stream()
-                                                .filter(c -> c.getColorOfSpawn()
-                                                        .equals(destination.getColor()))
-                                                .forEach(c -> {
+                                    HBox toggleBox = new HBox();
+                                    toggleBox.setSpacing(100);
 
-                                                    ImageView card = new ImageView(
-                                                            Images.weaponsMap.get(c.getCardId()));
-                                                    card.setFitWidth(100);
-                                                    card.setFitHeight(150);
+                                    weaponsInSpawnSquare.stream()
+                                            .filter(c -> c.getColorOfSpawn()
+                                                    .equals(destination.getColor()))
+                                            .forEach(c -> {
 
-                                                    Button cardButton = new Button("", card);
+                                                ImageView card = new ImageView(
+                                                        Images.weaponsMap.get(c.getCardId()));
+                                                card.setFitWidth(100);
+                                                card.setFitHeight(150);
 
-                                                    RadioButton radioButton = new RadioButton();
-                                                    radioButton.setUserData(
-                                                            String.valueOf(c.getCardId()));
+                                                Button cardButton = new Button("", card);
 
-                                                    cardsInSquare.getChildren().add(cardButton);
-                                                    radioButton.setToggleGroup(cardsInSquareGroup);
+                                                RadioButton radioButton = new RadioButton();
+                                                radioButton.setUserData(
+                                                        String.valueOf(c.getCardId()));
 
-                                                    toggleBox.getChildren().add(radioButton);
+                                                cardsInSquare.getChildren().add(cardButton);
+                                                radioButton.setToggleGroup(cardsInSquareGroup);
 
-                                                    cardButton.setOnMouseEntered(
-                                                            new EventHandler<MouseEvent>() {
-                                                                @Override
-                                                                public void handle(
-                                                                        MouseEvent mouseEvent) {
-                                                                    collectStage.getScene()
-                                                                            .setCursor(Cursor.HAND);
-                                                                }
-                                                            });
-                                                    cardButton.setOnMouseExited(
-                                                            new EventHandler<MouseEvent>() {
-                                                                @Override
-                                                                public void handle(
-                                                                        MouseEvent mouseEvent) {
-                                                                    collectStage.getScene()
-                                                                            .setCursor(
-                                                                                    Cursor.DEFAULT);
-                                                                }
-                                                            });
-                                                    cardButton.setOnMouseClicked(
-                                                            new EventHandler<MouseEvent>() {
-                                                                @Override
-                                                                public void handle(
-                                                                        MouseEvent mouseEvent) {
-                                                                    cardsInSquareGroup.selectToggle(
-                                                                            radioButton);
-                                                                }
-                                                            });
-                                                });
-                                        root.getChildren().addAll(cardsInSquare, toggleBox);
+                                                toggleBox.getChildren().add(radioButton);
 
-                                        HBox myPlayerCards = new HBox();
-                                        HBox playerToggles = new HBox();
-                                        playerToggles.setSpacing(100);
-                                        ToggleGroup playerCardsGroup = new ToggleGroup();
-                                        weaponsList.stream().forEach(w -> {
+                                                cardButton.setOnMouseEntered(
+                                                        mouseEvent1 -> collectStage.getScene()
+                                                                .setCursor(Cursor.HAND));
+                                                cardButton.setOnMouseExited(
+                                                        mouseEvent1 -> collectStage.getScene()
+                                                                .setCursor(
+                                                                        Cursor.DEFAULT));
+                                                cardButton.setOnMouseClicked(
+                                                        mouseEvent1 -> cardsInSquareGroup
+                                                                .selectToggle(
+                                                                        radioButton));
+                                            });
+                                    root.getChildren().addAll(cardsInSquare, toggleBox);
 
-                                            ImageView weaponImage = new ImageView(
-                                                    Images.weaponsMap.get(w.getCardId()));
-                                            weaponImage.setFitHeight(150);
-                                            weaponImage.setFitWidth(100);
-                                            Button weaponCardButton = new Button("", weaponImage);
+                                    HBox myPlayerCards = new HBox();
+                                    HBox playerToggles = new HBox();
+                                    playerToggles.setSpacing(100);
+                                    ToggleGroup playerCardsGroup = new ToggleGroup();
+                                    weaponsList.forEach(w -> {
 
-                                            RadioButton weaponRadioButton = new RadioButton();
-                                            weaponRadioButton.setUserData(
-                                                    String.valueOf(w.getCardId()));
-                                            myPlayerCards.getChildren().add(weaponCardButton);
-                                            weaponRadioButton.setToggleGroup(playerCardsGroup);
-                                            playerToggles.getChildren().add(weaponRadioButton);
+                                        ImageView weaponImage = new ImageView(
+                                                Images.weaponsMap.get(w.getCardId()));
+                                        weaponImage.setFitHeight(150);
+                                        weaponImage.setFitWidth(100);
+                                        Button weaponCardButton = new Button("", weaponImage);
 
-                                            weaponCardButton.setOnMouseEntered(
-                                                    new EventHandler<MouseEvent>() {
-                                                        @Override
-                                                        public void handle(
-                                                                MouseEvent mouseEvent) {
-                                                            collectStage.getScene()
-                                                                    .setCursor(Cursor.HAND);
-                                                        }
-                                                    });
-                                            weaponCardButton.setOnMouseExited(
-                                                    new EventHandler<MouseEvent>() {
-                                                        @Override
-                                                        public void handle(
-                                                                MouseEvent mouseEvent) {
-                                                            collectStage.getScene()
-                                                                    .setCursor(
-                                                                            Cursor.DEFAULT);
-                                                        }
-                                                    });
-                                            weaponCardButton.setOnMouseClicked(
-                                                    new EventHandler<MouseEvent>() {
-                                                        @Override
-                                                        public void handle(
-                                                                MouseEvent mouseEvent) {
-                                                            playerCardsGroup.selectToggle(
-                                                                    weaponRadioButton);
-                                                        }
-                                                    });
+                                        RadioButton weaponRadioButton = new RadioButton();
+                                        weaponRadioButton.setUserData(
+                                                String.valueOf(w.getCardId()));
+                                        myPlayerCards.getChildren().add(weaponCardButton);
+                                        weaponRadioButton.setToggleGroup(playerCardsGroup);
+                                        playerToggles.getChildren().add(weaponRadioButton);
+
+                                        weaponCardButton.setOnMouseEntered(
+                                                mouseEvent1 -> collectStage.getScene()
+                                                        .setCursor(Cursor.HAND));
+                                        weaponCardButton.setOnMouseExited(
+                                                mouseEvent1 -> collectStage.getScene()
+                                                        .setCursor(
+                                                                Cursor.DEFAULT));
+                                        weaponCardButton.setOnMouseClicked(
+                                                mouseEvent1 -> playerCardsGroup.selectToggle(
+                                                        weaponRadioButton));
 
 
-                                        });
-                                        root.getChildren().addAll(myPlayerCards, playerToggles);
+                                    });
+                                    root.getChildren().addAll(myPlayerCards, playerToggles);
 
-                                        HBox myPowerUps = new HBox();
-                                        HBox powerUpCheckBox = new HBox();
-                                        powerUpCheckBox.setSpacing(100);
-                                        powerUpList.stream().forEach(p -> {
+                                    HBox myPowerUps = new HBox();
+                                    HBox powerUpCheckBox = new HBox();
+                                    powerUpCheckBox.setSpacing(100);
+                                    powerUpList.forEach(p -> {
 
-                                            ImageView powerUpImage = new ImageView(Images.powerUpsMap
-                                                    .get(new StringBuilder().append(p.name)
-                                                            .append(" ").append(p.color)
-                                                            .toString()));
-                                            powerUpImage.setFitWidth(100);
-                                            powerUpImage.setFitHeight(150);
-                                            Button powerUpButton = new Button("", powerUpImage);
+                                        ImageView powerUpImage = new ImageView(
+                                                Images.powerUpsMap
+                                                        .get(new StringBuilder().append(p.name)
+                                                                .append(" ").append(p.color)
+                                                                .toString()));
+                                        powerUpImage.setFitWidth(100);
+                                        powerUpImage.setFitHeight(150);
+                                        Button powerUpButton = new Button("", powerUpImage);
 
-                                            CheckBox checkBox = new CheckBox();
-                                            checkBox.setId(new StringBuilder().append(p.name)
-                                                    .append("-").append(p.color.toLowerCase())
-                                                    .toString());
+                                        CheckBox checkBox = new CheckBox();
+                                        checkBox.setId(new StringBuilder().append(p.name)
+                                                .append("-").append(p.color.toLowerCase())
+                                                .toString());
 
-                                            myPowerUps.getChildren().addAll(powerUpButton);
-                                            powerUpCheckBox.getChildren().addAll(checkBox);
+                                        myPowerUps.getChildren().addAll(powerUpButton);
+                                        powerUpCheckBox.getChildren().addAll(checkBox);
 
-                                            powerUpButton.setOnMouseEntered(
-                                                    new EventHandler<MouseEvent>() {
+                                        powerUpButton.setOnMouseEntered(
+                                                mouseEvent1 -> collectStage.getScene()
+                                                        .setCursor(Cursor.HAND));
 
-                                                        @Override
-                                                        public void handle(
-                                                                MouseEvent mouseEvent) {
+                                        powerUpButton.setOnMouseExited(
+                                                mouseEvent1 -> collectStage.getScene()
+                                                        .setCursor(
+                                                                Cursor.DEFAULT));
 
-                                                            collectStage.getScene()
-                                                                    .setCursor(Cursor.HAND);
-                                                        }
-                                                    });
+                                        powerUpButton.setOnMouseClicked(
+                                                mouseEvent1 -> checkBox.setSelected(
+                                                        !checkBox.isSelected()));
+                                    });
 
-                                            powerUpButton.setOnMouseExited(
-                                                    new EventHandler<MouseEvent>() {
+                                    root.getChildren().addAll(myPowerUps, powerUpCheckBox);
 
-                                                        @Override
-                                                        public void handle(
-                                                                MouseEvent mouseEvent) {
+                                    Button enter = new Button("Conferma");
+                                    enter.setPrefSize(80, 25);
+                                    enter.setOnMouseEntered(bigger);
+                                    enter.setOnMouseExited(smaller);
 
-                                                            collectStage.getScene()
-                                                                    .setCursor(
-                                                                            Cursor.DEFAULT);
-                                                        }
-                                                    });
+                                    enter.setOnMouseClicked(mouseEvent1 -> {
 
-                                            powerUpButton.setOnMouseClicked(
-                                                    new EventHandler<MouseEvent>() {
-                                                        @Override
-                                                        public void handle(MouseEvent mouseEvent) {
+                                        if (toggleBox.getChildren().stream().anyMatch(
+                                                m -> ((RadioButton) m).isSelected())) {
 
-                                                            checkBox.setSelected(
-                                                                    !checkBox.isSelected());
-                                                        }
-                                                    });
-                                        });
+                                            JsonQueue.add(METHOD, "askCollect");
+                                            JsonQueue.add("cardIdCollect",
+                                                    toggleBox.getChildren().stream()
+                                                            .filter(m -> ((RadioButton) m)
+                                                                    .isSelected())
+                                                            .findFirst().get().getUserData()
+                                                            .toString());
 
-                                        root.getChildren().addAll(myPowerUps, powerUpCheckBox);
+                                            if (playerToggles.getChildren().stream()
+                                                    .anyMatch(m -> ((RadioButton) m)
+                                                            .isSelected())) {
 
-                                        Button enter = new Button("Conferma");
-                                        enter.setPrefSize(80, 25);
-                                        enter.setOnMouseEntered(bigger);
-                                        enter.setOnMouseExited(smaller);
-
-                                        enter.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                            @Override
-                                            public void handle(MouseEvent mouseEvent) {
-
-                                                if (toggleBox.getChildren().stream().anyMatch(
-                                                        m -> ((RadioButton) m).isSelected())) {
-
-                                                    JsonQueue.add("method", "askCollect");
-                                                    JsonQueue.add("cardIdCollect",
-                                                            toggleBox.getChildren().stream()
-                                                                    .filter(m -> ((RadioButton) m)
-                                                                            .isSelected())
-                                                                    .findFirst().get().getUserData()
-                                                                    .toString());
-
-                                                    if (playerToggles.getChildren().stream()
-                                                            .anyMatch(m -> ((RadioButton) m)
-                                                                    .isSelected())) {
-
-                                                        JsonQueue.add("cardIdDiscard",
-                                                                playerToggles.getChildren().stream()
-                                                                        .filter(m -> ((RadioButton) m)
-                                                                                .isSelected())
-                                                                        .findFirst().get()
-                                                                        .getUserData()
-                                                                        .toString());
-                                                    } else {
-
-                                                        JsonQueue.add("cardIdDiscard", "");
-                                                    }
-
-                                                    if (powerUpCheckBox.getChildren().stream()
-                                                            .anyMatch(m -> ((CheckBox) m)
-                                                                    .isSelected())) {
-
-                                                        StringBuilder line = new StringBuilder();
-
-                                                        line.append("powerup(");
-
-                                                        powerUpCheckBox.getChildren().stream()
-                                                                .filter(m -> ((CheckBox) m)
+                                                JsonQueue.add("cardIdDiscard",
+                                                        playerToggles.getChildren().stream()
+                                                                .filter(m -> ((RadioButton) m)
                                                                         .isSelected())
-                                                                .forEach(s -> {
+                                                                .findFirst().get()
+                                                                .getUserData()
+                                                                .toString());
+                                            } else {
 
-                                                                    line.append(s.getId());
-                                                                    line.append(" ");
-                                                                });
-                                                        line.append(")");
-
-                                                        JsonQueue.add("powerups", line.toString());
-
-                                                    } else {
-
-                                                        JsonQueue.add("powerups", "");
-                                                    }
-
-                                                    JsonQueue.send();
-                                                    collectStage.close();
-                                                } else {
-
-                                                    createNotifications("Attenzione!",
-                                                            "Devi selezionare quale carta vuoi raccogliere.");
-                                                }
-
+                                                JsonQueue.add("cardIdDiscard", "");
                                             }
-                                        });
-                                        root.getChildren().add(enter);
-                                        Scene collectScene = new Scene(root);
-                                        collectStage.setScene(collectScene);
-                                        collectStage.show();
 
-                                    } else {
-                                        JsonQueue.add("method", "askCollect");
-                                        JsonQueue.add("cardIdCollect", "");
-                                        JsonQueue.add("cardIdDiscard", "");
-                                        JsonQueue.add("powerups", "");
-                                        JsonQueue.send();
+                                            if (powerUpCheckBox.getChildren().stream()
+                                                    .anyMatch(m -> ((CheckBox) m)
+                                                            .isSelected())) {
 
-                                    }
+                                                StringBuilder line = new StringBuilder();
+
+                                                line.append("powerup(");
+
+                                                powerUpCheckBox.getChildren().stream()
+                                                        .filter(m -> ((CheckBox) m)
+                                                                .isSelected())
+                                                        .forEach(s -> {
+
+                                                            line.append(s.getId());
+                                                            line.append(" ");
+                                                        });
+                                                line.append(")");
+
+                                                JsonQueue.add("powerups", line.toString());
+
+                                            } else {
+
+                                                JsonQueue.add("powerups", "");
+                                            }
+
+                                            JsonQueue.send();
+                                            collectStage.close();
+                                        } else {
+
+                                            createNotifications("Attenzione!",
+                                                    "Devi selezionare quale carta vuoi raccogliere.");
+                                        }
+                                    });
+                                    root.getChildren().add(enter);
+                                    Scene collectScene = new Scene(root);
+                                    collectStage.setScene(collectScene);
+                                    collectStage.show();
+
+                                } else {
+                                    JsonQueue.add(METHOD, "askCollect");
+                                    JsonQueue.add("cardIdCollect", "");
+                                    JsonQueue.add("cardIdDiscard", "");
+                                    JsonQueue.add("powerups", "");
+                                    JsonQueue.send();
+
                                 }
                             });
-                            this.squareList.stream().forEach(z -> z.update());
+                            this.squareList.forEach(ButtonSquare::update);
                             collectiveButtons.getChildren().add(collectButton);
                             this.resizeButtons();
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askActivateWeapon")) {
+                        } else if (method.equals("askActivateWeapon")) {
 
                             Button activateCardButton = new Button("clicca arma per attivarla!");
-                            ButtonWeapon.setOnMouse(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    GUIView.this.activatedWeapon = ((ButtonWeapon) mouseEvent
-                                            .getSource()).getCardId();
-                                    JsonQueue.add("method", "askActivateWeapon");
-                                    JsonQueue.add("cardId", String.valueOf(
-                                            ((ButtonWeapon) mouseEvent.getSource()).getCardId()));
-                                    JsonQueue.send();
-                                }
+                            ButtonWeapon.setOnMouse(mouseEvent -> {
+
+                                GUIView.this.activatedWeapon = ((ButtonWeapon) mouseEvent
+                                        .getSource()).getCardId();
+
+                                JsonQueue.add(METHOD, "askActivateWeapon");
+                                JsonQueue.add("cardId", String.valueOf(
+                                        ((ButtonWeapon) mouseEvent.getSource()).getCardId()));
+
+                                JsonQueue.send();
                             });
-                            GUIView.this.weaponsList.stream().forEach(z -> z.update());
+                            GUIView.this.weaponsList.forEach(ButtonWeapon::update);
 
                             activateCardButton.setPrefSize(200, 36);
                             activateCardButton.setTextFill(Color.BLACK);
@@ -2407,8 +1981,7 @@ public class GUIView extends Application implements View, VirtualView {
                             this.resizeButtons();
 
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askReload")) {
+                        } else if (method.equals("askReload")) {
                             Button reloadWeapon = new Button("ricarica arma!");
                             reloadWeapon.setOnMouseEntered(bigger);
                             reloadWeapon.setOnMouseExited(smaller);
@@ -2424,150 +1997,124 @@ public class GUIView extends Application implements View, VirtualView {
                         }
 
                     });
+                    break;
 
                 default:
 
                     object.getJsonArray("methods").forEach(x -> {
 
-                        if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("selectAction")) {
+                        String method = x.toString().substring(1, x.toString().length() - 1);
 
-                            Button selezionaAzione = new GameButton("seleziona azione", new ImageView(Images.imagesMap.get("button")));
+                        if (method.equals("selectAction")) {
+
+                            Button selezionaAzione = new GameButton("seleziona azione",
+                                    new ImageView(Images.imagesMap.get("button")));
 
                             collectiveButtons.getChildren().add(selezionaAzione);
 
-                            selezionaAzione.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    Stage chooseAction = new Stage();
-                                    VBox root = new VBox();
-                                    root.setSpacing(10);
-                                    HBox actions = new HBox();
-                                    actions.setSpacing(0);
-                                    GUIView.this.actionsList.stream().forEach(k -> {
-                                        ImageView action = new ImageView(Images.possibleActionsMap
-                                                .get(GUIView.this.character + Integer.toString(k)));
-                                        int valueOfAction;
-                                        switch (k) {
-                                            case 0:
-                                                valueOfAction = 4;
-                                                break;
+                            selezionaAzione.setOnMouseClicked(mouseEvent -> {
 
-                                            case 4:
-                                                valueOfAction = 2;
-                                                break;
+                                Stage chooseAction = new Stage();
+                                VBox root = new VBox();
+                                root.setSpacing(10);
+                                HBox actions = new HBox();
+                                actions.setSpacing(0);
+                                GUIView.this.actionsList.forEach(k -> {
+                                    ImageView action = new ImageView(Images.possibleActionsMap
+                                            .get(GUIView.this.character + k));
+                                    int valueOfAction;
+                                    switch (k) {
+                                        case 0:
+                                            valueOfAction = 4;
+                                            break;
 
-                                            case 5:
-                                                valueOfAction = 3;
-                                                break;
+                                        case 4:
+                                            valueOfAction = 2;
+                                            break;
 
-                                            case 6:
-                                                valueOfAction = 1;
-                                                break;
-                                            case 7:
-                                                valueOfAction = 2;
-                                                break;
+                                        case 5:
+                                            valueOfAction = 3;
+                                            break;
 
-                                            case 8:
-                                                valueOfAction = 3;
-                                                break;
+                                        case 6:
+                                            valueOfAction = 1;
+                                            break;
+                                        case 7:
+                                            valueOfAction = 2;
+                                            break;
 
-                                            case 9:
-                                                valueOfAction = 1;
-                                                break;
+                                        case 8:
+                                            valueOfAction = 3;
+                                            break;
 
-                                            case 10:
-                                                valueOfAction = 2;
-                                                break;
+                                        case 9:
+                                            valueOfAction = 1;
+                                            break;
 
-                                            default:
-                                                valueOfAction = k;
-                                        }
-                                        String actionValueString = Integer.toString(valueOfAction);
-                                        Button actionButton = new Button("", action);
-                                        actionButton.setOnMouseEntered(bigger);
-                                        actionButton.setOnMouseExited(smaller);
-                                        actionButton.setBackground(new Background(
-                                                new BackgroundFill(Color.TRANSPARENT,
-                                                        CornerRadii.EMPTY, Insets.EMPTY)));
-                                        actionButton.setOnMouseClicked(
-                                                new EventHandler<MouseEvent>() {
-                                                    @Override
-                                                    public void handle(MouseEvent mouseEvent) {
-                                                        JsonQueue.add("method", "selectAction");
-                                                        JsonQueue.add("actionNumber",
-                                                                actionValueString);
-                                                        JsonQueue.send();
-                                                        chooseAction.close();
+                                        case 10:
+                                            valueOfAction = 2;
+                                            break;
 
-                                                    }
-                                                });
-                                        action.setFitHeight(80);
-                                        action.setFitWidth(50);
-                                        actions.getChildren().add(actionButton);
-                                    });
-                                    Button quit = new Button("quit");
-                                    quit.setOnMouseEntered(bigger);
-                                    quit.setOnMouseExited(smaller);
-                                    quit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                        @Override
-                                        public void handle(MouseEvent mouseEvent) {
-                                            chooseAction.close();
-                                        }
-                                    });
-                                    root.getChildren().addAll(actions, quit);
-                                    chooseAction.setScene(new Scene(root));
-                                    chooseAction.show();
+                                        default:
+                                            valueOfAction = k;
+                                    }
+                                    String actionValueString = Integer.toString(valueOfAction);
+                                    Button actionButton = new Button("", action);
+                                    actionButton.setOnMouseEntered(bigger);
+                                    actionButton.setOnMouseExited(smaller);
+                                    actionButton.setBackground(new Background(
+                                            new BackgroundFill(Color.TRANSPARENT,
+                                                    CornerRadii.EMPTY, Insets.EMPTY)));
+                                    actionButton.setOnMouseClicked(
+                                            mouseEvent1 -> {
 
-                                }
+                                                JsonQueue.add(METHOD, "selectAction");
+                                                JsonQueue.add("actionNumber",
+                                                        actionValueString);
+                                                JsonQueue.send();
+                                                chooseAction.close();
+                                            });
+                                    action.setFitHeight(80);
+                                    action.setFitWidth(50);
+                                    actions.getChildren().add(actionButton);
+                                });
+                                Button quit = new Button("quit");
+                                quit.setOnMouseEntered(bigger);
+                                quit.setOnMouseExited(smaller);
+                                quit.setOnMouseClicked(mouseEvent1 -> chooseAction.close());
+                                root.getChildren().addAll(actions, quit);
+                                chooseAction.setScene(new Scene(root));
+                                chooseAction.show();
                             });
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askUsePowerUp")) {
+                        } else if (method.equals("askUsePowerUp")) {
 
-                            ButtonPowerUp.setOnMouse(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
+                            ButtonPowerUp.setOnMouse(mouseEvent -> {
 
-                                    //
-                                }
+                                //
                             });
 
-                            powerUpList.forEach(y -> y.update());
+                            powerUpList.forEach(ButtonPowerUp::update);
                             //se schiacci powerUp usi powerup (usa effetto nuova finestra)
                             //setOnMouse
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("endOfTurn")) {
+                        } else if (method.equals("endOfTurn")) {
 
-                            Button fineTurno = new GameButton("fine turno", new ImageView(Images.imagesMap.get("button")));
+                            Button fineTurno = new GameButton("fine turno",
+                                    new ImageView(Images.imagesMap.get("button")));
 
-                            fineTurno.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    JsonQueue.add("method", "endOfTurn");
-                                    JsonQueue.add("endOfTurn", "");
-                                    JsonQueue.send();
-                                }
+                            fineTurno.setOnMouseClicked(mouseEvent -> {
+
+                                JsonQueue.add(METHOD, "endOfTurn");
+                                JsonQueue.add("endOfTurn", "");
+
+                                JsonQueue.send();
                             });
 
                             collectiveButtons.getChildren().add(fineTurno);
                             this.resizeButtons();
 
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("moveAction")) {
-
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askCollect")) {
-
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askActivateWeapon")) {
-
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
-                                .equals("askReload")) {
-
                         }
-
                     });
             }
         });
@@ -2576,31 +2123,31 @@ public class GUIView extends Application implements View, VirtualView {
 
     }
 
-    public void resizeButtons() {
+    private void resizeButtons() {
         int numberOfButtons = this.collectiveButtons.getChildren().size();
 
         if (numberOfButtons > 4) {
-            this.collectiveButtons.getChildren().stream()
-                    .forEach(x -> x.resize(36, (212 + numberOfButtons * 14) / numberOfButtons));
+            this.collectiveButtons.getChildren()
+                    .forEach(x -> x.resize(36, (212.0 + numberOfButtons * 14) / numberOfButtons));
         }
     }
 
-    public void createShootStage(Boolean isPrimaryEffect, String effectType) {
+    private void createShootStage(Boolean isPrimaryEffect, String effectType) {
 
         VBox root = new VBox();
         root.setSpacing(5);
-        StringBuilder target = new StringBuilder().append("");
-        StringBuilder destination = new StringBuilder().append("");
+        StringBuilder target = new StringBuilder();
+        StringBuilder destination = new StringBuilder();
         AnchorPane board = (AnchorPane) this.createBoard(false, 2);// scala della meta' in lunghezza
         HBox playersconnected = new HBox();
         HBox checkBoxes = new HBox();
         VBox playersAndCheckBox = new VBox();
-        int numberOfPlayersConnected = (int) this.playersInGame.stream().count() - 1;
+        int numberOfPlayersConnected = this.playersInGame.size() - 1;
         int scaleFactor = numberOfPlayersConnected >= 3 ? numberOfPlayersConnected : 3;
 
         this.playersInGame.stream().filter(x -> !x.equals(character)).forEach(x -> {
             ImageView playerConnected = new ImageView(Images.playersMap.get(x));
-            playerConnected.setFitWidth(495 / scaleFactor);
+            playerConnected.setFitWidth(495.0 / scaleFactor);
             playerConnected.setFitHeight(220);
             CheckBox playerCheckBox = new CheckBox();
             playerCheckBox.setPrefSize(30, 30);
@@ -2610,12 +2157,8 @@ public class GUIView extends Application implements View, VirtualView {
             checkBoxes.setSpacing(playerConnectedButton.getWidth());
             playerConnectedButton.setBackground(new Background(
                     new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-            playerConnectedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    playerCheckBox.setSelected(playerCheckBox.isSelected() ? false : true);
-                }
-            });
+            playerConnectedButton.setOnMouseClicked(
+                    mouseEvent -> playerCheckBox.setSelected(!playerCheckBox.isSelected()));
 
             playersconnected.getChildren().add(playerConnectedButton);
 
@@ -2623,7 +2166,6 @@ public class GUIView extends Application implements View, VirtualView {
 
         StackPane playersAndMap = new StackPane();
 
-        HBox skipAndConfirmButtons = new HBox();
         Button confirm = new Button("conferma");
         confirm.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
         confirm.setOnMouseEntered(bigger);
@@ -2634,39 +2176,28 @@ public class GUIView extends Application implements View, VirtualView {
         skipTarget.setOnMouseEntered(bigger);
         skipTarget.setOnMouseExited(smaller);
         skipTarget.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
-        skipTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                GUIView.this.createDestination(root, board, effectType, target, destination);
-            }
-        });
+        skipTarget.setOnMouseClicked(mouseEvent -> GUIView.this
+                .createDestination(root, board, effectType, target, destination));
 
-        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
+        confirm.setOnMouseClicked(mouseEvent -> {
 
-                if (!checkBoxes.getChildren().stream()
-                        .anyMatch(c -> ((CheckBox) c).isSelected())) {
+            if (checkBoxes.getChildren().stream()
+                    .noneMatch(c -> ((CheckBox) c).isSelected())) {
 
-                    target.append("");
-                } else {
+                //
 
-                    target.append("target(");
-                    checkBoxes.getChildren().stream()
-                            .filter(c -> ((CheckBox) c).isSelected())
-                            .forEach(c -> {
+            } else {
 
-                                target.append(c.getId()).append(" ");
-                            });
-                    target.append(")");
+                target.append("target(");
+                checkBoxes.getChildren().stream()
+                        .filter(c -> ((CheckBox) c).isSelected())
+                        .forEach(c -> target.append(c.getId()).append(" "));
+                target.append(")");
 
-
-                }
-                GUIView.this.createDestination(root, board, effectType, target, destination);
 
             }
+            GUIView.this.createDestination(root, board, effectType, target, destination);
         });
-
 
         playersAndCheckBox.getChildren()
                 .addAll(playersconnected, checkBoxes, confirm);
@@ -2685,15 +2216,13 @@ public class GUIView extends Application implements View, VirtualView {
         HBox lineOfRadioAndPlayer = new HBox();
         RadioButton playerTarget = new RadioButton();
         playerTarget.setToggleGroup(radioButtonToggle);
-        playerTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                playersAndMap.setVisible(true);
-                board.setVisible(false);
-                playersAndCheckBox.setVisible(true);
-                playersAndMap.getChildren().clear();
-                playersAndMap.getChildren().addAll(board, playersAndCheckBox);
-            }
+        playerTarget.setOnMouseClicked(mouseEvent -> {
+
+            playersAndMap.setVisible(true);
+            board.setVisible(false);
+            playersAndCheckBox.setVisible(true);
+            playersAndMap.getChildren().clear();
+            playersAndMap.getChildren().addAll(board, playersAndCheckBox);
         });
         Label playerLabel = new Label("target(personaggio)");
         lineOfRadioAndPlayer.getChildren().addAll(playerLabel, playerTarget);
@@ -2701,38 +2230,32 @@ public class GUIView extends Application implements View, VirtualView {
 
         HBox lineOfRadioAndButton = new HBox();
         RadioButton squareTarget = new RadioButton();
-        GUIView.this.squareListForShootState.stream().filter(s -> s.getPresent())
+        GUIView.this.squareListForShootState.stream().filter(ButtonSquare::getPresent)
                 .forEach(s -> s.setOnMouseClicked(
-                        new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent mouseEvent) {
+                        mouseEvent -> {
 
-                                target.append("target(")
+                            target.append("target(")
+                                    .append(((ButtonSquare) mouseEvent.getSource())
+                                            .getColor().toLowerCase());
+
+                            if (squareTarget.isSelected()) {
+
+                                target.append("-")
                                         .append(((ButtonSquare) mouseEvent.getSource())
-                                                .getColor().toLowerCase());
-
-                                if (squareTarget.isSelected()) {
-
-                                    target.append("-")
-                                            .append(((ButtonSquare) mouseEvent.getSource())
-                                                    .getButtonSquareId());
-                                }
-
-                                target.append(")");
-                                GUIView.this.createDestination(root, board, effectType, target,
-                                        destination);
+                                                .getButtonSquareId());
                             }
-                        }));
-        squareTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                playersAndMap.setVisible(true);
-                board.setVisible(true);
-                playersAndCheckBox.setVisible(false);
-                playersAndMap.getChildren().clear();
-                playersAndMap.getChildren().addAll(playersAndCheckBox, board);
 
-            }
+                            target.append(")");
+                            GUIView.this.createDestination(root, board, effectType, target,
+                                    destination);
+                        }));
+        squareTarget.setOnMouseClicked(mouseEvent -> {
+
+            playersAndMap.setVisible(true);
+            board.setVisible(true);
+            playersAndCheckBox.setVisible(false);
+            playersAndMap.getChildren().clear();
+            playersAndMap.getChildren().addAll(playersAndCheckBox, board);
         });
         squareTarget.setToggleGroup(radioButtonToggle);
         Label buttonLabel = new Label("target(square)");
@@ -2741,15 +2264,13 @@ public class GUIView extends Application implements View, VirtualView {
 
         HBox lineOfRadioAndRoom = new HBox();
         RadioButton roomTarget = new RadioButton();
-        roomTarget.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                playersAndMap.setVisible(true);
-                board.setVisible(true);
-                playersAndCheckBox.setVisible(false);
-                playersAndMap.getChildren().clear();
-                playersAndMap.getChildren().addAll(playersAndCheckBox, board);
-            }
+        roomTarget.setOnMouseClicked(mouseEvent -> {
+
+            playersAndMap.setVisible(true);
+            board.setVisible(true);
+            playersAndCheckBox.setVisible(false);
+            playersAndMap.getChildren().clear();
+            playersAndMap.getChildren().addAll(playersAndCheckBox, board);
         });
         roomTarget.setToggleGroup(radioButtonToggle);
         Label roomLabel = new Label("target(stanza)");
@@ -2765,21 +2286,21 @@ public class GUIView extends Application implements View, VirtualView {
     }
 
     @Override
-    public void completePowerUpInfo(String value) throws RemoteException {
+    public void completePowerUpInfo(String value) {
 
-
+        //
     }
 
-    public Button createEndActionButton() {
-        Button endAction = new GameButton("fine azione", new ImageView(Images.imagesMap.get("button")));
+    private Button createEndActionButton() {
+        Button endAction = new GameButton("fine azione",
+                new ImageView(Images.imagesMap.get("button")));
 
-        endAction.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                JsonQueue.add("method", "endAction");
-                JsonQueue.add("cardId", "");
-                JsonQueue.send();
-            }
+        endAction.setOnMouseClicked(mouseEvent -> {
+
+            JsonQueue.add(METHOD, "endAction");
+            JsonQueue.add("cardId", "");
+
+            JsonQueue.send();
         });
 
         return endAction;
@@ -2797,56 +2318,28 @@ public class GUIView extends Application implements View, VirtualView {
         skipButton.setText("salta destinazione");
         skipButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
 
-        skipButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-
-                GUIView.this.thirdUseEffectScreen(root, effectType, target, destination);
-            }
-        });
+        skipButton.setOnMouseClicked(mouseEvent -> GUIView.this
+                .thirdUseEffectScreen(root, effectType, target, destination));
 
         board.setVisible(true);
         root.getChildren().addAll(selectDestinationLabel, board, skipButton);
         GUIView.this.squareListForShootState.stream()
-                .filter(s -> s.getPresent())
+                .filter(ButtonSquare::getPresent)
                 .forEach(s -> s.setOnMouseClicked(
-                        new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent mouseEvent) {
-                                destination.append("destinazione(")
-                                        .append(((ButtonSquare) mouseEvent.getSource())
-                                                .getColor().toLowerCase())
-                                        .append("-")
-                                        .append(((ButtonSquare) mouseEvent.getSource())
-                                                .getButtonSquareId())
-                                        .append(")");
+                        mouseEvent ->
 
-                                switch (effectType) {
-
-                                    case "askUsePrimary":
-
-                                        JsonQueue.add("method", effectType);
-                                        JsonQueue.add("line",
-                                                new StringBuilder().append(target.toString())
-                                                        .append(destination.toString())
-                                                        .toString());
-
-                                        JsonQueue.send();
-                                        break;
-
-                                    default:
-
-
-                                }
-
-
-                            }
-                        }));
+                            destination.append("destinazione(")
+                                    .append(((ButtonSquare) mouseEvent.getSource())
+                                            .getColor().toLowerCase())
+                                    .append("-")
+                                    .append(((ButtonSquare) mouseEvent.getSource())
+                                            .getButtonSquareId())
+                                    .append(")")));
     }
 
-    public void thirdUseEffectScreen(VBox root, String effectType, StringBuilder target,
+    private void thirdUseEffectScreen(VBox root, String effectType, StringBuilder target,
             StringBuilder destination) {
-        StringBuilder paymentLine = new StringBuilder().append("");
+        StringBuilder paymentLine = new StringBuilder();
 
         if (!effectType.equals("askUsePowerUp")) {
             root.getChildren().clear();
@@ -2884,48 +2377,38 @@ public class GUIView extends Application implements View, VirtualView {
                 powerUp.setFitHeight(220);
 
                 Button pButton = new Button("", powerUp);
-                pButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-
-                        powerUpCheckBox.setSelected(!powerUpCheckBox.isSelected());
-                    }
-                });
+                pButton.setOnMouseClicked(
+                        mouseEvent -> powerUpCheckBox.setSelected(!powerUpCheckBox.isSelected()));
 
                 checkBoxHBox.getChildren().add(powerUpCheckBox);
                 powerUpButtonsHBox.getChildren().add(pButton);
             });
             root.getChildren().addAll(powerUpButtonsHBox, checkBoxHBox, confirmButton);
-            confirmButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
+            confirmButton.setOnMouseClicked(mouseEvent -> {
 
-                    if (!checkBoxHBox.getChildren().stream()
-                            .anyMatch(c -> ((CheckBox) c).isSelected())) {
-                        JsonQueue.add("method", effectType);
-                        JsonQueue.add("line",
-                                new StringBuilder().append(target.toString())
-                                        .append(destination.toString())
-                                        .append(paymentLine.toString())
-                                        .toString());
-                        JsonQueue.send();
-                    }
-                    else {
-                        paymentLine.append("POWER_UP(");
-                        checkBoxHBox.getChildren().stream().forEach(c->
-                        {
-                            paymentLine.append(((CheckBox)c).getId()).append(" ");
-                        });
-                        paymentLine.append(")");
-                        JsonQueue.add("method", effectType);
-                        JsonQueue.add("line",
-                                new StringBuilder().append(target.toString())
-                                        .append(destination.toString())
-                                        .append(paymentLine.toString())
-                                        .toString());
-                        JsonQueue.send();
+                if (checkBoxHBox.getChildren().stream()
+                        .noneMatch(c -> ((CheckBox) c).isSelected())) {
 
-                    }
+                    JsonQueue.add(METHOD, effectType);
+                    JsonQueue.add("line",
+                            new StringBuilder().append(target.toString())
+                                    .append(destination.toString())
+                                    .append(paymentLine.toString())
+                                    .toString());
+                    JsonQueue.send();
+                } else {
+                    paymentLine.append("POWER_UP(");
+                    checkBoxHBox.getChildren()
+                            .forEach(c -> paymentLine.append(c.getId()).append(" "));
+                    paymentLine.append(")");
+                    JsonQueue.add(METHOD, effectType);
+                    JsonQueue.add("line",
+                            new StringBuilder().append(target.toString())
+                                    .append(destination.toString())
+                                    .append(paymentLine.toString())
+                                    .toString());
+                    JsonQueue.send();
+
                 }
             });
         }
