@@ -1050,6 +1050,7 @@ public class GUIView extends Application implements View, VirtualView {
         }
         boardImage.setFitWidth(990 / scaleFactor);
         boardImage.setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
+
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(990 / scaleFactor, 565 / scaleFactor);
         VBox squares = new VBox();
@@ -1187,7 +1188,7 @@ public class GUIView extends Application implements View, VirtualView {
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
-                                    rotatedButton.setColorOfSpawn("rosso");
+                                    rotatedButton.setColorOfSpawn("ROSSO");
                                     weaponsSx.getChildren().add(rotatedButton);
 
                                     break;
@@ -1204,7 +1205,7 @@ public class GUIView extends Application implements View, VirtualView {
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
-                                    rotatedButton.setColorOfSpawn("blu");
+                                    rotatedButton.setColorOfSpawn("BLU");
 
                                     weaponsTop.getChildren().add(rotatedButton);
 
@@ -1222,7 +1223,7 @@ public class GUIView extends Application implements View, VirtualView {
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
-                                    rotatedButton.setColorOfSpawn("giallo");
+                                    rotatedButton.setColorOfSpawn("GIALLO");
                                     weaponsDx.getChildren().add(rotatedButton);
 
                                     break;
@@ -1713,13 +1714,13 @@ public class GUIView extends Application implements View, VirtualView {
                     });
 
                     powerUpList.forEach(ButtonPowerUp::update);
-                    Button spawnButton = new Button(
-                            "Spawn");
-                    spawnButton.setPrefSize(200, 36);
-                    spawnButton.setWrapText(true);
-                    spawnButton.setTextFill(Color.BLACK);
+
+                    Button spawnButton = new GameButton(
+                                "clicca un powerup per spawnare", new ImageView(Images.imagesMap.get("button")));
+
+                    spawnButton.setMouseTransparent(true);
+
                     collectiveButtons.getChildren().add(spawnButton);
-                    spawnButton.setAlignment(Pos.CENTER);
                     this.resizeButtons();
                     break;
 
@@ -1809,219 +1810,281 @@ public class GUIView extends Application implements View, VirtualView {
 
                         } else if (method.equals("askCollect")) {
 
-                            Button collectButton = new GameButton(
-                                    "clicca il tuo square per raccogliere", new ImageView(Images.imagesMap.get("button")));
+                            Button moveActionButton = new GameButton(
+                                "clicca il tuo quadrato e raccogli", new ImageView(Images.imagesMap.get("button")));
 
-                            collectButton.setMouseTransparent(true);
+                            moveActionButton.setMouseTransparent(true);
 
-                            ButtonSquare.setOnMouseCollect(mouseEvent -> {
+                            ButtonSquare.setOnMouseCollect(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    ButtonSquare destination = ((ButtonSquare) mouseEvent
+                                            .getSource());
 
-                                ButtonSquare destination = ((ButtonSquare) mouseEvent
-                                        .getSource());
+                                    if (destination.isSpawn) {
 
-                                if (destination.isSpawn) {
+                                        Stage collectStage = new Stage();
 
-                                    Stage collectStage = new Stage();
+                                        VBox root = new VBox();
+                                        root.setSpacing(20);
 
-                                    VBox root = new VBox();
-                                    root.setSpacing(20);
+                                        ToggleGroup cardsInSquareGroup = new ToggleGroup();
 
-                                    ToggleGroup cardsInSquareGroup = new ToggleGroup();
+                                        HBox cardsInSquare = new HBox();
 
-                                    HBox cardsInSquare = new HBox();
+                                        HBox toggleBox = new HBox();
+                                        toggleBox.setSpacing(100);
 
-                                    HBox toggleBox = new HBox();
-                                    toggleBox.setSpacing(100);
+                                        weaponsInSpawnSquare.stream()
+                                                .filter(c -> c.getColorOfSpawn()
+                                                        .equals(destination.getColor()))
+                                                .forEach(c -> {
 
-                                    weaponsInSpawnSquare.stream()
-                                            .filter(c -> c.getColorOfSpawn()
-                                                    .equals(destination.getColor()))
-                                            .forEach(c -> {
+                                                    ImageView card = new ImageView(
+                                                            Images.weaponsMap.get(c.getCardId()));
+                                                    card.setFitWidth(100);
+                                                    card.setFitHeight(150);
 
-                                                ImageView card = new ImageView(
-                                                        Images.weaponsMap.get(c.getCardId()));
-                                                card.setFitWidth(100);
-                                                card.setFitHeight(150);
+                                                    Button cardButton = new Button("", card);
 
-                                                Button cardButton = new Button("", card);
+                                                    RadioButton radioButton = new RadioButton();
+                                                    radioButton.setUserData(
+                                                            String.valueOf(c.getCardId()));
 
-                                                RadioButton radioButton = new RadioButton();
-                                                radioButton.setUserData(
-                                                        String.valueOf(c.getCardId()));
+                                                    cardsInSquare.getChildren().add(cardButton);
+                                                    radioButton.setToggleGroup(cardsInSquareGroup);
 
-                                                cardsInSquare.getChildren().add(cardButton);
-                                                radioButton.setToggleGroup(cardsInSquareGroup);
+                                                    toggleBox.getChildren().add(radioButton);
 
-                                                toggleBox.getChildren().add(radioButton);
+                                                    cardButton.setOnMouseEntered(
+                                                            new EventHandler<MouseEvent>() {
+                                                                @Override
+                                                                public void handle(
+                                                                        MouseEvent mouseEvent) {
+                                                                    collectStage.getScene()
+                                                                            .setCursor(Cursor.HAND);
+                                                                }
+                                                            });
+                                                    cardButton.setOnMouseExited(
+                                                            new EventHandler<MouseEvent>() {
+                                                                @Override
+                                                                public void handle(
+                                                                        MouseEvent mouseEvent) {
+                                                                    collectStage.getScene()
+                                                                            .setCursor(
+                                                                                    Cursor.DEFAULT);
+                                                                }
+                                                            });
+                                                    cardButton.setOnMouseClicked(
+                                                            new EventHandler<MouseEvent>() {
+                                                                @Override
+                                                                public void handle(
+                                                                        MouseEvent mouseEvent) {
+                                                                    cardsInSquareGroup.selectToggle(
+                                                                            radioButton);
+                                                                }
+                                                            });
+                                                });
+                                        root.getChildren().addAll(cardsInSquare, toggleBox);
 
-                                                cardButton.setOnMouseEntered(
-                                                        mouseEvent1 -> collectStage.getScene()
-                                                                .setCursor(Cursor.HAND));
-                                                cardButton.setOnMouseExited(
-                                                        mouseEvent1 -> collectStage.getScene()
-                                                                .setCursor(
-                                                                        Cursor.DEFAULT));
-                                                cardButton.setOnMouseClicked(
-                                                        mouseEvent1 -> cardsInSquareGroup
-                                                                .selectToggle(
-                                                                        radioButton));
-                                            });
-                                    root.getChildren().addAll(cardsInSquare, toggleBox);
+                                        HBox myPlayerCards = new HBox();
+                                        HBox playerToggles = new HBox();
+                                        playerToggles.setSpacing(100);
+                                        ToggleGroup playerCardsGroup = new ToggleGroup();
+                                        weaponsList.stream().forEach(w -> {
 
-                                    HBox myPlayerCards = new HBox();
-                                    HBox playerToggles = new HBox();
-                                    playerToggles.setSpacing(100);
-                                    ToggleGroup playerCardsGroup = new ToggleGroup();
-                                    weaponsList.forEach(w -> {
+                                            ImageView weaponImage = new ImageView(
+                                                    Images.weaponsMap.get(w.getCardId()));
+                                            weaponImage.setFitHeight(150);
+                                            weaponImage.setFitWidth(100);
+                                            Button weaponCardButton = new Button("", weaponImage);
 
-                                        ImageView weaponImage = new ImageView(
-                                                Images.weaponsMap.get(w.getCardId()));
-                                        weaponImage.setFitHeight(150);
-                                        weaponImage.setFitWidth(100);
-                                        Button weaponCardButton = new Button("", weaponImage);
+                                            RadioButton weaponRadioButton = new RadioButton();
+                                            weaponRadioButton.setUserData(
+                                                    String.valueOf(w.getCardId()));
+                                            myPlayerCards.getChildren().add(weaponCardButton);
+                                            weaponRadioButton.setToggleGroup(playerCardsGroup);
+                                            playerToggles.getChildren().add(weaponRadioButton);
 
-                                        RadioButton weaponRadioButton = new RadioButton();
-                                        weaponRadioButton.setUserData(
-                                                String.valueOf(w.getCardId()));
-                                        myPlayerCards.getChildren().add(weaponCardButton);
-                                        weaponRadioButton.setToggleGroup(playerCardsGroup);
-                                        playerToggles.getChildren().add(weaponRadioButton);
+                                            weaponCardButton.setOnMouseEntered(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            collectStage.getScene()
+                                                                    .setCursor(Cursor.HAND);
+                                                        }
+                                                    });
+                                            weaponCardButton.setOnMouseExited(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            collectStage.getScene()
+                                                                    .setCursor(
+                                                                            Cursor.DEFAULT);
+                                                        }
+                                                    });
+                                            weaponCardButton.setOnMouseClicked(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
+                                                            playerCardsGroup.selectToggle(
+                                                                    weaponRadioButton);
+                                                        }
+                                                    });
 
-                                        weaponCardButton.setOnMouseEntered(
-                                                mouseEvent1 -> collectStage.getScene()
-                                                        .setCursor(Cursor.HAND));
-                                        weaponCardButton.setOnMouseExited(
-                                                mouseEvent1 -> collectStage.getScene()
-                                                        .setCursor(
-                                                                Cursor.DEFAULT));
-                                        weaponCardButton.setOnMouseClicked(
-                                                mouseEvent1 -> playerCardsGroup.selectToggle(
-                                                        weaponRadioButton));
 
+                                        });
+                                        root.getChildren().addAll(myPlayerCards, playerToggles);
 
-                                    });
-                                    root.getChildren().addAll(myPlayerCards, playerToggles);
+                                        HBox myPowerUps = new HBox();
+                                        HBox powerUpCheckBox = new HBox();
+                                        powerUpCheckBox.setSpacing(100);
+                                        powerUpList.stream().forEach(p -> {
 
-                                    HBox myPowerUps = new HBox();
-                                    HBox powerUpCheckBox = new HBox();
-                                    powerUpCheckBox.setSpacing(100);
-                                    powerUpList.forEach(p -> {
+                                            ImageView powerUpImage = new ImageView(Images.powerUpsMap
+                                                    .get(new StringBuilder().append(p.name)
+                                                            .append(" ").append(p.color)
+                                                            .toString()));
+                                            powerUpImage.setFitWidth(100);
+                                            powerUpImage.setFitHeight(150);
+                                            Button powerUpButton = new Button("", powerUpImage);
 
-                                        ImageView powerUpImage = new ImageView(
-                                                Images.powerUpsMap
-                                                        .get(new StringBuilder().append(p.name)
-                                                                .append(" ").append(p.color)
-                                                                .toString()));
-                                        powerUpImage.setFitWidth(100);
-                                        powerUpImage.setFitHeight(150);
-                                        Button powerUpButton = new Button("", powerUpImage);
+                                            CheckBox checkBox = new CheckBox();
+                                            checkBox.setId(new StringBuilder().append(p.name)
+                                                    .append("-").append(p.color)
+                                                    .toString());
 
-                                        CheckBox checkBox = new CheckBox();
-                                        checkBox.setId(new StringBuilder().append(p.name)
-                                                .append("-").append(p.color.toLowerCase())
-                                                .toString());
+                                            myPowerUps.getChildren().addAll(powerUpButton);
+                                            powerUpCheckBox.getChildren().addAll(checkBox);
 
-                                        myPowerUps.getChildren().addAll(powerUpButton);
-                                        powerUpCheckBox.getChildren().addAll(checkBox);
+                                            powerUpButton.setOnMouseEntered(
+                                                    new EventHandler<MouseEvent>() {
 
-                                        powerUpButton.setOnMouseEntered(
-                                                mouseEvent1 -> collectStage.getScene()
-                                                        .setCursor(Cursor.HAND));
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
 
-                                        powerUpButton.setOnMouseExited(
-                                                mouseEvent1 -> collectStage.getScene()
-                                                        .setCursor(
-                                                                Cursor.DEFAULT));
+                                                            collectStage.getScene()
+                                                                    .setCursor(Cursor.HAND);
+                                                        }
+                                                    });
 
-                                        powerUpButton.setOnMouseClicked(
-                                                mouseEvent1 -> checkBox.setSelected(
-                                                        !checkBox.isSelected()));
-                                    });
+                                            powerUpButton.setOnMouseExited(
+                                                    new EventHandler<MouseEvent>() {
 
-                                    root.getChildren().addAll(myPowerUps, powerUpCheckBox);
+                                                        @Override
+                                                        public void handle(
+                                                                MouseEvent mouseEvent) {
 
-                                    Button enter = new Button("Conferma");
-                                    enter.setPrefSize(80, 25);
-                                    enter.setOnMouseEntered(bigger);
-                                    enter.setOnMouseExited(smaller);
+                                                            collectStage.getScene()
+                                                                    .setCursor(
+                                                                            Cursor.DEFAULT);
+                                                        }
+                                                    });
 
-                                    enter.setOnMouseClicked(mouseEvent1 -> {
+                                            powerUpButton.setOnMouseClicked(
+                                                    new EventHandler<MouseEvent>() {
+                                                        @Override
+                                                        public void handle(MouseEvent mouseEvent) {
 
-                                        if (toggleBox.getChildren().stream().anyMatch(
-                                                m -> ((RadioButton) m).isSelected())) {
+                                                            checkBox.setSelected(
+                                                                    !checkBox.isSelected());
+                                                        }
+                                                    });
+                                        });
 
-                                            JsonQueue.add(METHOD, "askCollect");
-                                            JsonQueue.add("cardIdCollect",
-                                                    toggleBox.getChildren().stream()
-                                                            .filter(m -> ((RadioButton) m)
-                                                                    .isSelected())
-                                                            .findFirst().get().getUserData()
-                                                            .toString());
+                                        root.getChildren().addAll(myPowerUps, powerUpCheckBox);
 
-                                            if (playerToggles.getChildren().stream()
-                                                    .anyMatch(m -> ((RadioButton) m)
-                                                            .isSelected())) {
+                                        Button enter = new Button("Conferma");
+                                        enter.setPrefSize(80, 25);
+                                        enter.setOnMouseEntered(bigger);
+                                        enter.setOnMouseExited(smaller);
 
-                                                JsonQueue.add("cardIdDiscard",
-                                                        playerToggles.getChildren().stream()
-                                                                .filter(m -> ((RadioButton) m)
+                                        enter.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                            @Override
+                                            public void handle(MouseEvent mouseEvent) {
+
+                                                if (toggleBox.getChildren().stream().anyMatch(
+                                                        m -> ((RadioButton) m).isSelected())) {
+
+                                                    JsonQueue.add("method", "askCollect");
+                                                    JsonQueue.add("cardIdCollect",
+                                                            toggleBox.getChildren().stream()
+                                                                    .filter(m -> ((RadioButton) m)
+                                                                            .isSelected())
+                                                                    .findFirst().get().getUserData()
+                                                                    .toString());
+
+                                                    if (playerToggles.getChildren().stream()
+                                                            .anyMatch(m -> ((RadioButton) m)
+                                                                    .isSelected())) {
+
+                                                        JsonQueue.add("cardIdDiscard",
+                                                                playerToggles.getChildren().stream()
+                                                                        .filter(m -> ((RadioButton) m)
+                                                                                .isSelected())
+                                                                        .findFirst().get()
+                                                                        .getUserData()
+                                                                        .toString());
+                                                    } else {
+
+                                                        JsonQueue.add("cardIdDiscard", "");
+                                                    }
+
+                                                    if (powerUpCheckBox.getChildren().stream()
+                                                            .anyMatch(m -> ((CheckBox) m)
+                                                                    .isSelected())) {
+
+                                                        StringBuilder line = new StringBuilder();
+
+                                                        line.append("powerup(");
+
+                                                        powerUpCheckBox.getChildren().stream()
+                                                                .filter(m -> ((CheckBox) m)
                                                                         .isSelected())
-                                                                .findFirst().get()
-                                                                .getUserData()
-                                                                .toString());
-                                            } else {
+                                                                .forEach(s -> {
 
-                                                JsonQueue.add("cardIdDiscard", "");
+                                                                    line.append(s.getId());
+                                                                    line.append(" ");
+                                                                });
+                                                        line.append(")");
+
+                                                        JsonQueue.add("powerups", line.toString());
+
+                                                    } else {
+
+                                                        JsonQueue.add("powerups", "");
+                                                    }
+
+                                                    JsonQueue.send();
+                                                    collectStage.close();
+                                                } else {
+
+                                                    createNotifications("Attenzione!",
+                                                            "Devi selezionare quale carta vuoi raccogliere.");
+                                                }
+
                                             }
+                                        });
+                                        root.getChildren().add(enter);
+                                        Scene collectScene = new Scene(root);
+                                        collectStage.setScene(collectScene);
+                                        collectStage.show();
 
-                                            if (powerUpCheckBox.getChildren().stream()
-                                                    .anyMatch(m -> ((CheckBox) m)
-                                                            .isSelected())) {
+                                    } else {
+                                        JsonQueue.add("method", "askCollect");
+                                        JsonQueue.add("cardIdCollect", "");
+                                        JsonQueue.add("cardIdDiscard", "");
+                                        JsonQueue.add("powerups", "");
+                                        JsonQueue.send();
 
-                                                StringBuilder line = new StringBuilder();
-
-                                                line.append("powerup(");
-
-                                                powerUpCheckBox.getChildren().stream()
-                                                        .filter(m -> ((CheckBox) m)
-                                                                .isSelected())
-                                                        .forEach(s -> {
-
-                                                            line.append(s.getId());
-                                                            line.append(" ");
-                                                        });
-                                                line.append(")");
-
-                                                JsonQueue.add("powerups", line.toString());
-
-                                            } else {
-
-                                                JsonQueue.add("powerups", "");
-                                            }
-
-                                            JsonQueue.send();
-                                            collectStage.close();
-                                        } else {
-
-                                            createNotifications("Attenzione!",
-                                                    "Devi selezionare quale carta vuoi raccogliere.");
-                                        }
-                                    });
-                                    root.getChildren().add(enter);
-                                    Scene collectScene = new Scene(root);
-                                    collectStage.setScene(collectScene);
-                                    collectStage.show();
-
-                                } else {
-                                    JsonQueue.add(METHOD, "askCollect");
-                                    JsonQueue.add("cardIdCollect", "");
-                                    JsonQueue.add("cardIdDiscard", "");
-                                    JsonQueue.add("powerups", "");
-                                    JsonQueue.send();
-
+                                    }
                                 }
                             });
-                            this.squareList.forEach(ButtonSquare::update);
+                            this.squareList.stream().forEach(z -> z.update());
                             collectiveButtons.getChildren().add(collectButton);
                             this.resizeButtons();
 
@@ -2414,8 +2477,7 @@ public class GUIView extends Application implements View, VirtualView {
                                     .thirdUseEffectScreen(root, effectType, target, destination);
 
 
-                        })
-                );
+                        }));
 
 
     }
@@ -2442,7 +2504,7 @@ public class GUIView extends Application implements View, VirtualView {
 
             powerUpList.forEach(p -> {
 
-                String nameId = new StringBuilder().append(p.getName().toLowerCase())
+                String nameId = new StringBuilder().append(p.getName())
                         .append("-")
                         .append(p.getColor().toLowerCase())
                         .toString();
