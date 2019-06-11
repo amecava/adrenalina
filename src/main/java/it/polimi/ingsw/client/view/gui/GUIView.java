@@ -995,14 +995,14 @@ public class GUIView extends Application implements View, VirtualView {
 
         switch (boardId) {
             case 0:
-                boardImage = new ImageView(Images.boardsMap.get("board3").getKey());
+                boardImage = new ImageView(Images.boardsMap.get("board1").getKey());
                 break;
             case 1:
-                boardImage = new ImageView(Images.boardsMap.get("board1").getKey());
+                boardImage = new ImageView(Images.boardsMap.get("board2").getKey());
                 break;
 
             case 2:
-                boardImage = new ImageView(Images.boardsMap.get("board2").getKey());
+                boardImage = new ImageView(Images.boardsMap.get("board3").getKey());
                 break;
 
             case 3:
@@ -2346,11 +2346,11 @@ public class GUIView extends Application implements View, VirtualView {
                                     .append("-")
                                     .append(((ButtonSquare) mouseEvent.getSource())
                                             .getButtonSquareId())
-                                    .append(")")));
+                                    .append(")");
 
                             GUIView.this.thirdUseEffectScreen(root, effectType, target,
-                                                destination);
-                        }
+                                    destination);
+                        }));
     }
 
     private void thirdUseEffectScreen(VBox root, String effectType, StringBuilder target,
@@ -2445,8 +2445,11 @@ public class GUIView extends Application implements View, VirtualView {
                     JsonQueue.send();
                 } else {
                     paymentLine.append("powerup(");
-                    checkBoxHBox.getChildren()
+
+                    checkBoxHBox.getChildren().stream()
+                            .filter(c -> ((CheckBox) c).isSelected())
                             .forEach(c -> paymentLine.append(c.getId()).append(" "));
+
                     paymentLine.append(")");
                     JsonQueue.add(METHOD, effectType);
                     JsonQueue.add("line",
