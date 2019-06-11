@@ -208,6 +208,11 @@ public class WeaponCard implements Card, Serializable {
 
         List<Color> costCopy = new ArrayList<>(this.map.get(effectType).getCost());
 
+        System.out.print("cost: ");
+        this.map.get(effectType).getCost().forEach(System.out::print);
+
+        powerUpCardList.stream().map(PowerUpCard::getColor).forEach(System.out::println);
+
         this.checkCost(costCopy, powerUpCardList);
 
         // Execute selected effect

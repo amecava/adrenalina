@@ -2608,8 +2608,8 @@ public class GUIView extends Application implements View, VirtualView {
 
         VBox root = new VBox();
         root.setSpacing(5);
-        StringBuilder target = new StringBuilder().append("");
-        StringBuilder destination = new StringBuilder().append("");
+        StringBuilder target = new StringBuilder();
+        StringBuilder destination = new StringBuilder();
         root.setBackground(new Background(
                 new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
@@ -2636,7 +2636,7 @@ public class GUIView extends Application implements View, VirtualView {
             playerConnectedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    playerCheckBox.setSelected(playerCheckBox.isSelected() ? false : true);
+                    playerCheckBox.setSelected(!playerCheckBox.isSelected());
                 }
             });
 
@@ -2839,6 +2839,7 @@ public class GUIView extends Application implements View, VirtualView {
                         new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent mouseEvent) {
+
                                 destination.append("destinazione(")
                                         .append(((ButtonSquare) mouseEvent.getSource())
                                                 .getColor().toLowerCase())
@@ -2860,10 +2861,13 @@ public class GUIView extends Application implements View, VirtualView {
                                         JsonQueue.send();
                                         break;
 
-                                    default:
+                                    case "askUseAlternative":
+                                    case "askUseOptional1":
+                                    case "askUseOptional2":
 
                                         GUIView.this.thirdUseEffectScreen(root, effectType, target,
                                                 destination);
+                                        break;
 
                                 }
 
@@ -2900,7 +2904,7 @@ public class GUIView extends Application implements View, VirtualView {
 
             HBox buttonsHBox = new HBox();
 
-            buttonsHBox.setSpacing(400);
+            buttonsHBox.setSpacing(200);
 
             buttonsHBox.getChildren().addAll(confirmButton, noButton);
 
