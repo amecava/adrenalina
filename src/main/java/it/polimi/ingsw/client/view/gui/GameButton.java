@@ -16,11 +16,11 @@ public class GameButton extends Button {
 
         super(s, imageView);
 
-        imageView.setFitWidth(200);
-        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(36);
+        imageView.setFitWidth(240);
 
         this.setContentDisplay(ContentDisplay.CENTER);
-        this.setFont(Font.font("Silom", 18));
+        this.setFont(Font.font("Silom", 15));
         this.setTextFill(Color.rgb(203, 203, 203));
         this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setOnMouseExited(GUIView.smaller);

@@ -187,8 +187,7 @@ public class GUIView extends Application implements View, VirtualView {
             JsonQueue.send();
         });
 
-        stage.setWidth(1920);
-        stage.setHeight(1080);
+        stage.setMaximized(true);
 
         currentStage = stage;
 
@@ -1050,7 +1049,7 @@ public class GUIView extends Application implements View, VirtualView {
             this.squareListForShootState.clear();
         }
         boardImage.setFitWidth(990 / scaleFactor);
-        boardImage.setPreserveRatio(true);//1.321 rapporto tra lunghezza e altezza originale
+        boardImage.setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(990 / scaleFactor, 565 / scaleFactor);
         VBox squares = new VBox();
@@ -1511,7 +1510,7 @@ public class GUIView extends Application implements View, VirtualView {
 
             AnchorPane.setTopAnchor(collectiveButtons, 565.0);
             AnchorPane.setLeftAnchor(collectiveButtons, 130.0);
-            collectiveButtons.setSpacing(10);
+            collectiveButtons.setSpacing(7);
             rightAnchorPane.getChildren().add(collectiveButtons);
             borderPane.setRight(rightAnchorPane);
 
@@ -1785,8 +1784,11 @@ public class GUIView extends Application implements View, VirtualView {
 
                         if (method.equals("moveAction")) {
 
-                            Button moveActionButton = new Button(
-                                    "clicca un quadrato per muoverti!");
+                            Button moveActionButton = new GameButton(
+                                    "clicca uno square per muoverti", new ImageView(Images.imagesMap.get("button")));
+
+                            moveActionButton.setMouseTransparent(true);
+
                             ButtonSquare.setOnMouse(mouseEvent -> {
 
                                 ButtonSquare destination = ((ButtonSquare) mouseEvent
@@ -1800,19 +1802,18 @@ public class GUIView extends Application implements View, VirtualView {
                                 JsonQueue.send();
                             });
                             this.squareList.forEach(ButtonSquare::update);
-                            moveActionButton.setId("move");
-                            moveActionButton.setPrefSize(200, 36);
-                            moveActionButton.setAlignment(Pos.CENTER);
-                            moveActionButton.setTextFill(Color.BLACK);
+
                             collectiveButtons.getChildren().add(moveActionButton);
                             this.resizeButtons();
 
 
                         } else if (method.equals("askCollect")) {
-                            Button collectButton = new Button("clicca il tuo quadrato e raccoogli");
-                            collectButton.setPrefSize(200, 36);
-                            collectButton.setAlignment(Pos.CENTER);
-                            collectButton.setTextFill(Color.BLACK);
+
+                            Button collectButton = new GameButton(
+                                    "clicca il tuo square per raccogliere", new ImageView(Images.imagesMap.get("button")));
+
+                            collectButton.setMouseTransparent(true);
+
                             ButtonSquare.setOnMouseCollect(mouseEvent -> {
 
                                 ButtonSquare destination = ((ButtonSquare) mouseEvent
@@ -2026,7 +2027,11 @@ public class GUIView extends Application implements View, VirtualView {
 
                         } else if (method.equals("askActivateWeapon")) {
 
-                            Button activateCardButton = new Button("clicca arma per attivarla!");
+                            Button activateCardButton = new GameButton(
+                                    "clicca un'arma per attivarla", new ImageView(Images.imagesMap.get("button")));
+
+                            activateCardButton.setMouseTransparent(true);
+
                             ButtonWeapon.setOnMouse(mouseEvent -> {
 
                                 GUIView.this.activatedWeapon = ((ButtonWeapon) mouseEvent
@@ -2047,11 +2052,10 @@ public class GUIView extends Application implements View, VirtualView {
 
 
                         } else if (method.equals("askReload")) {
-                            Button reloadWeapon = new Button("ricarica arma!");
-                            reloadWeapon.setOnMouseEntered(bigger);
-                            reloadWeapon.setOnMouseExited(smaller);
-                            reloadWeapon.setTextFill(Color.BLACK);
-                            reloadWeapon.setPrefSize(200, 36);
+
+                            Button reloadWeapon = new GameButton(
+                                    "ricarica arma", new ImageView(Images.imagesMap.get("button")));
+
                             collectiveButtons.getChildren().add(reloadWeapon);
                             this.resizeButtons();
                         } else if (x.toString().substring(1, x.toString().length() - 1)
@@ -2192,8 +2196,13 @@ public class GUIView extends Application implements View, VirtualView {
         int numberOfButtons = this.collectiveButtons.getChildren().size();
 
         if (numberOfButtons > 4) {
-            this.collectiveButtons.getChildren()
-                    .forEach(x -> x.resize(36, (212.0 + numberOfButtons * 14) / numberOfButtons));
+            this.collectiveButtons.getChildren().stream()
+                    .map(x -> (ImageView) ((Button) x).getGraphic())
+                    .forEach(x -> {
+
+                        x.setFitHeight((195.0 - numberOfButtons * 7) / numberOfButtons);
+
+                    });
         }
     }
 
