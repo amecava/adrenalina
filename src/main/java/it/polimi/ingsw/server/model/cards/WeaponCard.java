@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.cards;
 
+import it.polimi.ingsw.server.model.ammo.Cost;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.ammo.AmmoCube;
@@ -132,7 +133,7 @@ public class WeaponCard implements Card, Serializable {
 
         List<Color> costCopy = new ArrayList<>(this.reloadCost);
 
-        this.checkCost(costCopy, powerUpCardList);
+        Cost.checkCost(this.owner, costCopy, powerUpCardList);
 
         // Set card loaded flag to true
         this.loaded = true;
@@ -213,7 +214,7 @@ public class WeaponCard implements Card, Serializable {
 
         powerUpCardList.stream().map(PowerUpCard::getColor).forEach(System.out::println);
 
-        this.checkCost(costCopy, powerUpCardList);
+        Cost.checkCost(this.owner, costCopy, powerUpCardList);
 
         // Execute selected effect
         this.effectHandler.useEffect(this.map.get(effectType), target);
@@ -225,41 +226,6 @@ public class WeaponCard implements Card, Serializable {
                         .findFirst().get()
                         .setUsed(true)
         );
-    }
-
-    private void checkCost(List<Color> costCopy, List<PowerUpCard> ammoList) throws CostException {
-
-        try {
-
-            ammoList.stream()
-                    .map(PowerUpCard::getColor)
-                    .forEach(x -> {
-
-                        if (costCopy.contains(x)) {
-
-                            costCopy.remove(x);
-
-                        } else {
-
-                            throw new IllegalArgumentException();
-                        }
-                    });
-
-            costCopy.stream()
-                    .distinct()
-                    .forEach(x -> {
-                        if (costCopy.stream().filter(y -> y.equals(x)).count() > this.owner
-                                .getAmmoCubesList().stream().filter(y -> !y.isUsed()).map(
-                                        AmmoCube::getColor).filter(y -> y.equals(x)).count()) {
-
-                            throw new IllegalArgumentException();
-                        }
-                    });
-
-        } catch (IllegalArgumentException e) {
-
-            throw new CostException("Non hai abbastanza risorseeee.");
-        }
     }
 
     @Override

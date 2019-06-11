@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import javafx.application.Preloader.ProgressNotification;
 import javafx.scene.image.Image;
 
-class Images {
+public class Images {
 
     static final Map<String, Entry<Image, Image>> boardsMap = new HashMap<>();
 
@@ -24,7 +24,7 @@ class Images {
     static final Map<String, Image> cubesMap = new HashMap<>();
     static final Map<String, Image> imagesMap = new HashMap<>();
 
-    static final Map<String, Image> explosionsMap = new HashMap<>();
+    public static final Map<String, Image> explosionsMap = new HashMap<>();
 
     private Images() {
 
@@ -36,20 +36,20 @@ class Images {
         guiView.notifyPreloader(new ProgressNotification(0));
         boardsMap.put("board1",
                 new SimpleEntry<>(
-                        new Image("images/boards/0 - UPUP.png"),
-                        new Image("images/boards/0 - UPUP - select.png")));
+                        new Image("images/boards/board1.png"),
+                        new Image("images/boards/board1 - select.png")));
         boardsMap.put("board2",
                 new SimpleEntry<>(
-                        new Image("images/boards/1 - DOWNDOWN.png"),
-                        new Image("images/boards/1 - DOWNDOWN - select.png")));
+                        new Image("images/boards/board2.png"),
+                        new Image("images/boards/board2 - select.png")));
         boardsMap.put("board3",
                 new SimpleEntry<>(
-                        new Image("images/boards/2 - UPDOWN.png"),
-                        new Image("images/boards/2 - UPDOWN - select.png")));
+                        new Image("images/boards/board3.png"),
+                        new Image("images/boards/board3 - select.png")));
         boardsMap.put("board4",
                 new SimpleEntry<>(
-                        new Image("images/boards/3 - DOWNUP.png"),
-                        new Image("images/boards/3 - DOWNUP - select.png")));
+                        new Image("images/boards/board4.png"),
+                        new Image("images/boards/board4 - select.png")));
 
         guiView.notifyPreloader(new ProgressNotification(0.05));
 
