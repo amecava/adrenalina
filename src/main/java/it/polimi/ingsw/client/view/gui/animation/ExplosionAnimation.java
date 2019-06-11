@@ -11,7 +11,7 @@ import javafx.util.Duration;
 
 public class ExplosionAnimation {
 
-    public ExplosionAnimation() {
+    private ExplosionAnimation() {
 
         //
     }
