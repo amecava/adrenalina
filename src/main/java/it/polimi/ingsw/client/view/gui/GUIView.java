@@ -7,6 +7,11 @@ import it.polimi.ingsw.client.view.connection.SocketConnection;
 import it.polimi.ingsw.client.view.gui.animation.ExplosionAnimation;
 import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
+import java.awt.AWTException;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -519,14 +524,26 @@ public class GUIView extends Application implements View, VirtualView {
             button.setOnMouseEntered(bigger);
             button.setOnMouseExited(smaller);
 
-            button.setOnMouseClicked(x -> {
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
 
-                JsonQueue.add(METHOD, "selectGame");
+                Entry<ImageView, Animation> entry = ExplosionAnimation.getExplosion(4, mouseEvent);
 
-                JsonQueue.add("gameId", game);
-                JsonQueue.add("character", key);
+                entry.getValue().setOnFinished(y -> {
 
-                JsonQueue.send();
+                    borderPane.getChildren().remove(entry.getKey());
+
+                    JsonQueue.add(METHOD, "selectGame");
+
+                    JsonQueue.add("gameId", game);
+                    JsonQueue.add("character", key);
+
+                    JsonQueue.send();
+
+                });
+
+                entry.getValue().play();
+
+                borderPane.getChildren().add(entry.getKey());
             });
 
             characters.getChildren().add(button);
@@ -538,7 +555,9 @@ public class GUIView extends Application implements View, VirtualView {
         borderPane.setCenter(vBox);
         BorderPane.setAlignment(vBox, Pos.CENTER);
 
-        Platform.runLater(() -> changeScene(borderPane));
+        Platform.runLater(() ->
+
+                changeScene(borderPane));
     }
 
     @Override
@@ -568,12 +587,24 @@ public class GUIView extends Application implements View, VirtualView {
             board.setOnMouseExited(smaller);
             board.setOnMouseEntered(bigger);
 
-            board.setOnMouseClicked(x -> {
+            board.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
 
-                JsonQueue.add(METHOD, "voteBoard");
-                JsonQueue.add("vote", key.replace("board", ""));
+                Entry<ImageView, Animation> x = ExplosionAnimation.getExplosion(4, mouseEvent);
 
-                JsonQueue.send();
+                x.getValue().setOnFinished(y -> {
+
+                    borderPane.getChildren().remove(x.getKey());
+
+                    JsonQueue.add(METHOD, "voteBoard");
+                    JsonQueue.add("vote", key.replace("board", ""));
+
+                    JsonQueue.send();
+
+                });
+
+                x.getValue().play();
+
+                borderPane.getChildren().add(x.getKey());
             });
 
             boards.getChildren().add(board);
@@ -1019,8 +1050,7 @@ public class GUIView extends Application implements View, VirtualView {
             this.squareListForShootState.clear();
         }
         boardImage.setFitWidth(990 / scaleFactor);
-        boardImage
-                .setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
+        boardImage.setPreserveRatio(true);//1.321 rapporto tra lunghezza e altezza originale
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(990 / scaleFactor, 565 / scaleFactor);
         VBox squares = new VBox();
@@ -1491,41 +1521,76 @@ public class GUIView extends Application implements View, VirtualView {
 
     }
 
-    private synchronized void createNotifications(String stringTitle, String value) {
+    private static TrayIcon trayIcon;
 
-        Platform.runLater(() -> {
-            final Stage dialog = new Stage();
-            dialog.initModality(Modality.NONE);
-            dialog.initStyle(StageStyle.TRANSPARENT);
-            dialog.initOwner(currentStage);
-            VBox dialogVbox = new VBox();
-            Text title = new Text(stringTitle);
-            title.setFont(Font.font("verdana", 20));
-            title.setFill(Color.YELLOW);
-            Text message = new Text(value);
-            message.setFill(Color.WHITE);
-            message.setWrappingWidth(200);
-            dialogVbox.getChildren().addAll(title, message);
-            dialogVbox.setSpacing(20);
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
-            dialogVbox.setBackground(new Background(
-                    new BackgroundFill(Color.rgb(25, 31, 53), CornerRadii.EMPTY,
-                            Insets.EMPTY)));
-            dialog.setScene(dialogScene);
-            dialogVbox.setAlignment(Pos.CENTER);
-            Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-            dialog.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - 300);
-            dialog.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight() - 200);
-            PauseTransition delay = new PauseTransition(Duration.seconds(3));
-            delay.setOnFinished(event -> {
-                notifications.remove(dialog);
-                dialog.close();
+    static {
+
+        if (SystemTray.isSupported()) {
+
+            try {
+
+                SystemTray tray = SystemTray.getSystemTray();
+
+                //If the icon is a file
+                //Alternative (if the icon is on the classpath):
+                //Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
+
+                trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().createImage("icon.png"), "");
+                //Let the system resize the image if needed
+                trayIcon.setImageAutoSize(true);
+                //Set tooltip text for the tray icon
+                trayIcon.setToolTip("");
+                tray.add(trayIcon);
+
+            } catch (AWTException e) {
+
+                //
+            }
+        }
+    }
+
+    private synchronized void createNotifications(String title, String value) {
+
+        if (SystemTray.isSupported()) {
+
+            trayIcon.displayMessage(title, value, MessageType.INFO);
+
+        } else {
+
+            Platform.runLater(() -> {
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.NONE);
+                dialog.initStyle(StageStyle.TRANSPARENT);
+                dialog.initOwner(currentStage);
+                VBox dialogVbox = new VBox();
+                Text titleText = new Text(title);
+                titleText.setFont(Font.font("verdana", 20));
+                titleText.setFill(Color.YELLOW);
+                Text message = new Text(value);
+                message.setFill(Color.WHITE);
+                message.setWrappingWidth(200);
+                dialogVbox.getChildren().addAll(titleText, message);
+                dialogVbox.setSpacing(20);
+                Scene dialogScene = new Scene(dialogVbox, 300, 200);
+                dialogVbox.setBackground(new Background(
+                        new BackgroundFill(Color.rgb(25, 31, 53), CornerRadii.EMPTY,
+                                Insets.EMPTY)));
+                dialog.setScene(dialogScene);
+                dialogVbox.setAlignment(Pos.CENTER);
+                Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+                dialog.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - 300);
+                dialog.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight() - 200);
+                PauseTransition delay = new PauseTransition(Duration.seconds(3));
+                delay.setOnFinished(event -> {
+                    notifications.remove(dialog);
+                    dialog.close();
+                });
+                this.notifications.forEach(x -> x.setY(x.getY() - 200));
+                this.notifications.add(dialog);
+                dialog.show();
+                delay.play();
             });
-            this.notifications.forEach(x -> x.setY(x.getY() - 200));
-            this.notifications.add(dialog);
-            dialog.show();
-            delay.play();
-        });
+        }
     }
 
     private void elimanteSetOnMouseClicked() {
@@ -2326,7 +2391,7 @@ public class GUIView extends Application implements View, VirtualView {
         GUIView.this.squareListForShootState.stream()
                 .filter(ButtonSquare::getPresent)
                 .forEach(s -> s.setOnMouseClicked(
-                        mouseEvent ->
+                        mouseEvent -> {
 
                             destination.append("destinazione(")
                                     .append(((ButtonSquare) mouseEvent.getSource())
@@ -2334,7 +2399,16 @@ public class GUIView extends Application implements View, VirtualView {
                                     .append("-")
                                     .append(((ButtonSquare) mouseEvent.getSource())
                                             .getButtonSquareId())
-                                    .append(")")));
+                                    .append(")");
+
+                            GUIView.this
+                                    .thirdUseEffectScreen(root, effectType, target, destination);
+
+
+                        })
+                );
+
+
     }
 
     private void thirdUseEffectScreen(VBox root, String effectType, StringBuilder target,
