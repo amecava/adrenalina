@@ -910,8 +910,14 @@ public class GUIView extends Application implements View, VirtualView {
         Platform.runLater(() -> {
 
             JsonObject jsonCard = JsonUtility.jsonDeserialize(value);
-            Stage infocard = new Stage();
+            Stage infoCard = new Stage();
+
             HBox elements = new HBox();
+            elements.setBackground(new Background(
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
             AnchorPane.setRightAnchor(elements, 20.0);
             AnchorPane.setTopAnchor(elements, 20.0);
             AnchorPane.setLeftAnchor(elements, 20.0);
@@ -927,10 +933,10 @@ public class GUIView extends Application implements View, VirtualView {
             name.setText("Nome :" + jsonCard.getString("name"));
             name.setTextFill(Color.YELLOW);
             text.getChildren().add(name);
-            Label carica = new Label();
-            carica.setText("Carica: " + (jsonCard.getBoolean("isLoaded") ? "Sì" : "No"));
-            carica.setTextFill(Color.YELLOW);
-            text.getChildren().add(carica);
+            Label loaded = new Label();
+            loaded.setText("Carica: " + (jsonCard.getBoolean("isLoaded") ? "Sì" : "No"));
+            loaded.setTextFill(Color.YELLOW);
+            text.getChildren().add(loaded);
 
             if (jsonCard.getString("notes") != null) {
                 Label notes = new Label();
@@ -942,72 +948,78 @@ public class GUIView extends Application implements View, VirtualView {
             }
 
             JsonObject primary = jsonCard.getJsonObject("primary");
-            Label effettoprimario = new Label();
-            effettoprimario.setText("Effetto primario :" + primary.getString("name"));
-            effettoprimario.setTextFill(Color.YELLOW);
-            text.getChildren().add(effettoprimario);
-            Label descrizionePrimario = new Label();
-            descrizionePrimario.setMinHeight(30);
-            descrizionePrimario
+
+            Label primaryEffect = new Label();
+            primaryEffect.setText("Effetto primario :" + primary.getString("name"));
+            primaryEffect.setTextFill(Color.YELLOW);
+            text.getChildren().add(primaryEffect);
+
+            Label primaryDescripton = new Label();
+            primaryDescripton.setMinHeight(30);
+            primaryDescripton
                     .setText("Descrizione effetto primario: " + primary.getString("description"));
-            descrizionePrimario.setWrapText(true);
-            descrizionePrimario.setTextFill(Color.YELLOW);
-            text.getChildren().add(descrizionePrimario);
+            primaryDescripton.setWrapText(true);
+            primaryDescripton.setTextFill(Color.YELLOW);
+
+            text.getChildren().add(primaryDescripton);
 
             if (jsonCard.get("alternative") != JsonValue.NULL) {
-                JsonObject alternativo = jsonCard.getJsonObject("alternative");
-                Label effettoAlternativo = new Label();
-                effettoAlternativo.setText("Effetto alternativo :" + alternativo.getString("name"));
-                effettoAlternativo.setTextFill(Color.YELLOW);
-                text.getChildren().add(effettoAlternativo);
-                Label descrizioneAlternativo = new Label();
-                descrizioneAlternativo.setMinHeight(30);
-                descrizioneAlternativo.setText(
-                        "Descrizione effetto alternativo: " + alternativo.getString("description"));
-                descrizioneAlternativo.setWrapText(true);
-                descrizioneAlternativo.setTextFill(Color.YELLOW);
-                text.getChildren().add(descrizioneAlternativo);
+
+                JsonObject alternative = jsonCard.getJsonObject("alternative");
+
+                Label alternativeEffect = new Label();
+                alternativeEffect.setText("Effetto alternativo :" + alternative.getString("name"));
+                alternativeEffect.setTextFill(Color.YELLOW);
+                text.getChildren().add(alternativeEffect);
+
+                Label alternativeDescription = new Label();
+                alternativeDescription.setMinHeight(30);
+                alternativeDescription.setText(
+                        "Descrizione effetto alternativo: " + alternative.getString("description"));
+                alternativeDescription.setWrapText(true);
+                alternativeDescription.setTextFill(Color.YELLOW);
+                text.getChildren().add(alternativeDescription);
             }
 
             if (jsonCard.get("optional1") != JsonValue.NULL) {
 
                 JsonObject optional1 = jsonCard.getJsonObject("optional1");
-                Label effettoOptional1 = new Label();
-                effettoOptional1.setText("Effetto opzionale 1:" + optional1.getString("name"));
+                Label effectOptional1 = new Label();
+                effectOptional1.setText("Effetto opzionale 1:" + optional1.getString("name"));
 
-                effettoOptional1.setTextFill(Color.YELLOW);
-                text.getChildren().add(effettoOptional1);
+                effectOptional1.setTextFill(Color.YELLOW);
+                text.getChildren().add(effectOptional1);
 
-                Label descrizioneOptional1 = new Label();
-                descrizioneOptional1.setTextFill(Color.YELLOW);
-                descrizioneOptional1.setMinHeight(30);
-                descrizioneOptional1.setText(
+                Label descriptionOptional1 = new Label();
+                descriptionOptional1.setTextFill(Color.YELLOW);
+                descriptionOptional1.setMinHeight(30);
+                descriptionOptional1.setText(
                         "Descrizione effetto opzionale 1: " + optional1.getString("description"));
-                descrizioneOptional1.setWrapText(true);
-                text.getChildren().add(descrizioneOptional1);
+                descriptionOptional1.setWrapText(true);
+                text.getChildren().add(descriptionOptional1);
             }
 
             if (jsonCard.get("optional2") != JsonValue.NULL) {
 
                 JsonObject optional2 = jsonCard.getJsonObject("optional2");
-                Label effettoOptional2 = new Label();
+                Label effectOptional2 = new Label();
 
-                effettoOptional2.setText("Effetto opzionale 2:" + optional2.getString("name"));
+                effectOptional2.setText("Effetto opzionale 2:" + optional2.getString("name"));
 
-                effettoOptional2.setTextFill(Color.YELLOW);
-                text.getChildren().add(effettoOptional2);
+                effectOptional2.setTextFill(Color.YELLOW);
+                text.getChildren().add(effectOptional2);
 
-                Label descrizioneEffettoOptional2 = new Label();
-                descrizioneEffettoOptional2.setMinHeight(30);
-                descrizioneEffettoOptional2.setTextFill(Color.YELLOW);
-                descrizioneEffettoOptional2.setText(
+                Label descriptionOptional1 = new Label();
+                descriptionOptional1.setMinHeight(30);
+                descriptionOptional1.setTextFill(Color.YELLOW);
+                descriptionOptional1.setText(
                         "Descrizione effetto opzionale 2: " + optional2.getString("description"));
-                descrizioneEffettoOptional2.setWrapText(true);
-                text.getChildren().add(descrizioneEffettoOptional2);
+                descriptionOptional1.setWrapText(true);
+                text.getChildren().add(descriptionOptional1);
             }
 
             Button exit = new Button("Exit");
-            exit.setOnMouseClicked(x -> infocard.close());
+            exit.setOnMouseClicked(x -> infoCard.close());
 
             exit.setTextFill(Color.BLACK);
             exit.setOnMouseEntered(bigger);
@@ -1016,11 +1028,11 @@ public class GUIView extends Application implements View, VirtualView {
             elements.getChildren().add(text);
             elements.setBackground(new Background(
                     new BackgroundFill(Color.rgb(25, 31, 53), CornerRadii.EMPTY, Insets.EMPTY)));
-            Scene infocardScene = new Scene(elements, 500, 500);
-            infocard.setScene(infocardScene);
+            Scene infoCardScene = new Scene(elements, 500, 500);
+            infoCard.setScene(infoCardScene);
             PauseTransition delay = new PauseTransition(Duration.seconds(50));
-            delay.setOnFinished(event -> infocard.close());
-            infocard.show();
+            delay.setOnFinished(event -> infoCard.close());
+            infoCard.show();
             delay.play();
         });
     }
@@ -1130,7 +1142,7 @@ public class GUIView extends Application implements View, VirtualView {
 
         Platform.runLater(() -> {
 
-            VBox pannelloCentrale = new VBox();
+            VBox centralPanel = new VBox();
             BorderPane borderPane = new BorderPane();
             borderPane.setBackground(new Background(
                     new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
@@ -1344,12 +1356,12 @@ public class GUIView extends Application implements View, VirtualView {
             jsonObject.getJsonObject("deaths").getJsonArray("deathBridgeArray").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
-                        ImageView killshot = new ImageView(
+                        ImageView killShot = new ImageView(
                                 Images.dropsMap
                                         .get(x.toString().substring(1, x.toString().length() - 1)));
-                        killshot.setFitWidth(40);
-                        killshot.setFitHeight(40);
-                        killsOfAllPlayers.getChildren().add(killshot);
+                        killShot.setFitWidth(40);
+                        killShot.setFitHeight(40);
+                        killsOfAllPlayers.getChildren().add(killShot);
 
                     });
             AnchorPane.setLeftAnchor(killsOfAllPlayers, 70.0);
@@ -1448,7 +1460,7 @@ public class GUIView extends Application implements View, VirtualView {
                         cards.getChildren().add(powerUpButton);
                     });
 
-            pannelloCentrale.getChildren().addAll(anchorPane, cards);
+            centralPanel.getChildren().addAll(anchorPane, cards);
 
             Label myPlayersPoints = new Label();
             myPlayersPoints.setText("Punti: " + thisPlayerObject.getInt("points"));
@@ -1462,8 +1474,8 @@ public class GUIView extends Application implements View, VirtualView {
             AnchorPane.setLeftAnchor(myPlayerCubes, 10.0);
             AnchorPane.setBottomAnchor(myPlayerCubes, 0.0);
 
-            pannelloCentrale.setSpacing(0);
-            borderPane.setCenter(pannelloCentrale);
+            centralPanel.setSpacing(0);
+            borderPane.setCenter(centralPanel);
             /////////////////////////////////////////////////destra metto plance giocatori
             AnchorPane rightAnchorPane = new AnchorPane();
             VBox bridges = new VBox();
@@ -1582,21 +1594,21 @@ public class GUIView extends Application implements View, VirtualView {
                 dialog.initModality(Modality.NONE);
                 dialog.initStyle(StageStyle.TRANSPARENT);
                 dialog.initOwner(currentStage);
-                VBox dialogVbox = new VBox();
+                VBox dialogVBox = new VBox();
                 Text titleText = new Text(title);
                 titleText.setFont(Font.font("verdana", 20));
                 titleText.setFill(Color.YELLOW);
                 Text message = new Text(value);
                 message.setFill(Color.WHITE);
                 message.setWrappingWidth(200);
-                dialogVbox.getChildren().addAll(titleText, message);
-                dialogVbox.setSpacing(20);
-                Scene dialogScene = new Scene(dialogVbox, 300, 200);
-                dialogVbox.setBackground(new Background(
+                dialogVBox.getChildren().addAll(titleText, message);
+                dialogVBox.setSpacing(20);
+                Scene dialogScene = new Scene(dialogVBox, 300, 200);
+                dialogVBox.setBackground(new Background(
                         new BackgroundFill(Color.rgb(25, 31, 53), CornerRadii.EMPTY,
                                 Insets.EMPTY)));
                 dialog.setScene(dialogScene);
-                dialogVbox.setAlignment(Pos.CENTER);
+                dialogVBox.setAlignment(Pos.CENTER);
                 Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
                 dialog.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - 300);
                 dialog.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight() - 200);
