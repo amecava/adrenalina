@@ -178,10 +178,10 @@ class ViewInspector {
                                 map.putIfAbsent(x.getKey().getAdjacent(y), x.getValue() + 1);
 
                                 // Update visited adjacent nodes
-                                x.getKey().getMap(throughWalls)
-                                        .putIfAbsent(x.getKey().getAdjacent(y), 1);
-                                x.getKey().getAdjacent(y).getMap(throughWalls)
-                                        .putIfAbsent(x.getKey(), 1);
+                                //x.getKey().getMap(throughWalls)
+                                //        .putIfAbsent(x.getKey().getAdjacent(y), 1);
+                                //x.getKey().getAdjacent(y).getMap(throughWalls)
+                                //        .putIfAbsent(x.getKey(), 1);
                             }
                         })
                 );

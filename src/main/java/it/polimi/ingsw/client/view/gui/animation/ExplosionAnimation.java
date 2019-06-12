@@ -18,15 +18,13 @@ public class ExplosionAnimation {
 
     private static final int COLUMNS = 8;
     private static final int COUNT = 64;
-    private static final int OFFSET_X = 0;
-    private static final int OFFSET_Y = 0;
     private static final int WIDTH = 512;
     private static final int HEIGHT = 512;
 
     public static Entry<ImageView, Animation> getExplosion(int id, MouseEvent event) {
 
         ImageView imageView = new ImageView(Images.explosionsMap.get("explosion" + id));
-        imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
+        imageView.setViewport(new Rectangle2D(0, 0, WIDTH, HEIGHT));
 
         imageView.setX(event.getSceneX() - ((double) WIDTH / 2));
         imageView.setY(event.getSceneY() - ((double) HEIGHT / 2));
@@ -35,7 +33,6 @@ public class ExplosionAnimation {
                 imageView,
                 Duration.millis(1000),
                 COUNT, COLUMNS,
-                OFFSET_X, OFFSET_Y,
                 WIDTH, HEIGHT
         );
 
