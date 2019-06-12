@@ -29,6 +29,7 @@ import javafx.application.Preloader.ProgressNotification;
 import javafx.application.Preloader.StateChangeNotification;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -70,6 +71,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -187,7 +189,10 @@ public class GUIView extends Application implements View, VirtualView {
             JsonQueue.send();
         });
 
-        stage.setMaximized(true);
+        stage.setMinWidth(750 + 485);
+        stage.setMinHeight(565 + 240);
+
+        stage.centerOnScreen();
 
         currentStage = stage;
 
@@ -1025,14 +1030,14 @@ public class GUIView extends Application implements View, VirtualView {
 
         switch (boardId) {
             case 0:
-                boardImage = new ImageView(Images.boardsMap.get("board3").getKey());
+                boardImage = new ImageView(Images.boardsMap.get("board1").getKey());
                 break;
             case 1:
-                boardImage = new ImageView(Images.boardsMap.get("board1").getKey());
+                boardImage = new ImageView(Images.boardsMap.get("board2").getKey());
                 break;
 
             case 2:
-                boardImage = new ImageView(Images.boardsMap.get("board2").getKey());
+                boardImage = new ImageView(Images.boardsMap.get("board3").getKey());
                 break;
 
             case 3:
@@ -1048,16 +1053,16 @@ public class GUIView extends Application implements View, VirtualView {
         } else {
             this.squareListForShootState.clear();
         }
-        boardImage.setFitWidth(990 / scaleFactor);
-        boardImage
-                .setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
+        boardImage.setFitWidth(750 / scaleFactor);// /3.4
+        boardImage.setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
+
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.setPrefSize(990 / scaleFactor, 565 / scaleFactor);
+        anchorPane.setPrefSize(750 / scaleFactor, 565 / scaleFactor);
         VBox squares = new VBox();
-        AnchorPane.setTopAnchor(squares, 120.0 / scaleFactor);
-        AnchorPane.setBottomAnchor(squares, 25.0 / scaleFactor);
-        AnchorPane.setLeftAnchor(squares, 160.0 / scaleFactor);
-        AnchorPane.setRightAnchor(squares, 145.0 / scaleFactor);
+        AnchorPane.setTopAnchor(squares, 117.0 / scaleFactor);
+        AnchorPane.setBottomAnchor(squares, 65 / scaleFactor);
+        AnchorPane.setLeftAnchor(squares, 116 / scaleFactor);
+        AnchorPane.setRightAnchor(squares, 120 / scaleFactor);
         HBox line;
         line = new HBox();
         line.setSpacing(0);
@@ -1090,11 +1095,11 @@ public class GUIView extends Application implements View, VirtualView {
                                 buttonSquare = new ButtonSquare(false);
 
                             }
-                            buttonSquare.setPrefHeight(125 / scaleFactor);
-                            buttonSquare.setPrefWidth(175 / scaleFactor);
+                            buttonSquare.setPrefHeight(145 / scaleFactor);
+                            buttonSquare.setPrefWidth(130 / scaleFactor);
                             StackPane stackPane = new StackPane();
-                            stackPane.setPrefHeight(125 / scaleFactor);
-                            stackPane.setPrefWidth(175 / scaleFactor);
+                            stackPane.setPrefHeight(145 / scaleFactor);
+                            stackPane.setPrefWidth(130 / scaleFactor);
                             stackPane.getChildren().add(buttonSquare);
                             if (isUpdateBoard) {
                                 squareList.add(buttonSquare);
@@ -1140,21 +1145,21 @@ public class GUIView extends Application implements View, VirtualView {
             VBox weaponsSx = new VBox();
             weaponsSx.setMouseTransparent(false);
 
-            weaponsSx.setSpacing(5);
-            weaponsDx.setSpacing(5);
-            weaponsTop.setSpacing(5);
+            weaponsSx.setSpacing(10);
+            weaponsDx.setSpacing(10);
+            weaponsTop.setSpacing(3);
 
-            AnchorPane.setTopAnchor(weaponsTop, 0.0);
-            AnchorPane.setLeftAnchor(weaponsTop, 520.0);
-            AnchorPane.setRightAnchor(weaponsTop, 150.0);
+            AnchorPane.setTopAnchor(weaponsTop, 3.0);
+            AnchorPane.setLeftAnchor(weaponsTop, 393.0);
+            AnchorPane.setRightAnchor(weaponsTop, 118.0);
 
             AnchorPane.setLeftAnchor(weaponsSx, 0.0);
             AnchorPane.setBottomAnchor(weaponsSx, 105.0);
-            AnchorPane.setTopAnchor(weaponsSx, 205.0);
+            AnchorPane.setTopAnchor(weaponsSx, 207.0);
 
             AnchorPane.setTopAnchor(weaponsDx, 320.0);
-            AnchorPane.setRightAnchor(weaponsDx, 0.0);
-            AnchorPane.setBottomAnchor(weaponsDx, 0.0);
+            AnchorPane.setLeftAnchor(weaponsDx, 644.0);
+            AnchorPane.setBottomAnchor(weaponsDx, 3.0);
             //////////////////////////////////////////////////////////
 
             jsonObject.getJsonObject("board")
@@ -1183,8 +1188,8 @@ public class GUIView extends Application implements View, VirtualView {
                                     params.setFill(Color.TRANSPARENT);
                                     Image rotatedImage = cardImage.snapshot(params, null);
                                     definiteRotateImage = new ImageView(rotatedImage);
-                                    definiteRotateImage.setFitWidth(120);
-                                    definiteRotateImage.setFitHeight(65);
+                                    definiteRotateImage.setFitWidth(92);
+                                    definiteRotateImage.setFitHeight(61);
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
@@ -1200,8 +1205,8 @@ public class GUIView extends Application implements View, VirtualView {
                                     paramsBlue.setFill(Color.TRANSPARENT);
                                     Image rotatedImage180 = cardImage.snapshot(paramsBlue, null);
                                     definiteRotateImage = new ImageView(rotatedImage180);
-                                    definiteRotateImage.setFitWidth(85);
-                                    definiteRotateImage.setFitHeight(100);
+                                    definiteRotateImage.setFitWidth(61);
+                                    definiteRotateImage.setFitHeight(92);
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
@@ -1218,8 +1223,8 @@ public class GUIView extends Application implements View, VirtualView {
                                     paramsGiallo.setFill(Color.TRANSPARENT);
                                     Image rotatedImage270 = cardImage.snapshot(paramsGiallo, null);
                                     definiteRotateImage = new ImageView(rotatedImage270);
-                                    definiteRotateImage.setFitHeight(65);
-                                    definiteRotateImage.setFitWidth(120);
+                                    definiteRotateImage.setFitWidth(92);
+                                    definiteRotateImage.setFitHeight(61);
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
@@ -1448,7 +1453,7 @@ public class GUIView extends Application implements View, VirtualView {
             AnchorPane rightAnchorPane = new AnchorPane();
             VBox bridges = new VBox();
             AnchorPane.setTopAnchor(bridges, 0.0);
-            bridges.setSpacing(0);
+            bridges.setSpacing(5);
             jsonObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
