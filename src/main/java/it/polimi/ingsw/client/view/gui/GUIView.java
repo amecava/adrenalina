@@ -1055,7 +1055,8 @@ public class GUIView extends Application implements View, VirtualView {
             this.squareListForShootState.clear();
         }
         boardImage.setFitWidth(750 / scaleFactor);// /3.4
-        boardImage.setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
+        boardImage
+                .setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
 
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(750 / scaleFactor, 565 / scaleFactor);
@@ -1398,17 +1399,21 @@ public class GUIView extends Application implements View, VirtualView {
                     .forEach(x -> {
                         ImageView card;
 
-                        if (x.getBoolean("isLoaded")) {
-                            card = new ImageView(Images.weaponsMap.get(x.getInt("id")));
-                        } else {
-                            card = new ImageView(Images.weaponsMap.get(0));
-                        }
+                        card = new ImageView(
+                                x.getBoolean("isLoaded")
+                                        ? Images.weaponsMap.get(x.getInt("id"))
+                                        : Images.weaponsMap.get(0));
+
                         card.setFitWidth(130);
                         card.setFitHeight((565.0 / 3) + 15);
+
                         ButtonWeapon imageButton = new ButtonWeapon(
                                 x.getInt("id"),
                                 x.getString("name"),
                                 card);
+
+                        imageButton.setLoaded(x.getBoolean("isLoaded"));
+
                         imageButton.setOnMouseClicked(mouseEvent -> {
 
                             JsonQueue.add(METHOD, "askCardInfo");
@@ -2128,7 +2133,13 @@ public class GUIView extends Application implements View, VirtualView {
 
                         } else if (method.equals("askReload")) {
 
-                            GUIView.this.createReloadStage(method);
+                            Button reloadButton = new GameButton("Ricarica",
+                                    new ImageView(Images.imagesMap.get("button")));
+
+                            collectiveButtons.getChildren().add(reloadButton);
+
+                            reloadButton.setOnMouseClicked(
+                                    mouseEvent -> GUIView.this.createReloadStage(method));
 
                         } else if (method
                                 .equals("endAction")) {
@@ -2216,6 +2227,7 @@ public class GUIView extends Application implements View, VirtualView {
                                                         actionValueString);
                                                 JsonQueue.send();
                                                 chooseAction.close();
+
                                             });
 
                                     action.setFitHeight(80);
@@ -2294,6 +2306,7 @@ public class GUIView extends Application implements View, VirtualView {
         ToggleGroup playerCardsGroup = new ToggleGroup();
 
         thisPlayerWeaponsList.stream()
+                .filter(card -> !card.isLoaded())
                 .forEach(w -> {
 
                     ImageView weaponImage = new ImageView(
@@ -2386,7 +2399,6 @@ public class GUIView extends Application implements View, VirtualView {
                                         .isSelected())
                                 .findFirst().get().getUserData()
                                 .toString());
-
 
                 if (powerUpCheckBox.getChildren().stream()
                         .anyMatch(m -> ((CheckBox) m)
