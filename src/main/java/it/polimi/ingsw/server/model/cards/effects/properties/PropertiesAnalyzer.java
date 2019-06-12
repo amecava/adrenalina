@@ -144,12 +144,16 @@ public class PropertiesAnalyzer {
                 // Launch exception if the distance is lower than the minDist property
                 if (effect.getMinDist() != null && distance < effect.getMinDist()) {
 
+                    System.out.println("Effect minDist: " + effect.getMinDist());
+                    System.out.println("Calculated distance: " + distance);
                     throw new SquareDistanceException("Distance metrics not troototoooooo!");
                 }
 
                 // Launch exception if the distance is greater than the maxDist property
                 if (effect.getMaxDist() != null && distance > effect.getMaxDist()) {
 
+                    System.out.println("Effect maxDist: " + effect.getMaxDist());
+                    System.out.println("Calculated distance: " + distance);
                     throw new SquareDistanceException("Distance metrics not trottoto!");
                 }
             }

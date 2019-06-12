@@ -29,6 +29,7 @@ import javafx.application.Preloader.ProgressNotification;
 import javafx.application.Preloader.StateChangeNotification;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -70,6 +71,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -100,7 +102,7 @@ public class GUIView extends Application implements View, VirtualView {
 
     private List<ButtonSquare> squareList = new ArrayList<>();
     private List<ButtonPowerUp> powerUpList = new ArrayList<>();
-    private List<ButtonWeapon> weaponsList = new ArrayList<>();
+    private List<ButtonWeapon> thisPlayerWeaponsList = new ArrayList<>();
     private List<ButtonWeapon> weaponsInSpawnSquare = new ArrayList<>();
     private List<Integer> actionsList = new ArrayList<>();
     private List<String> playersInGame = new ArrayList<>();
@@ -187,7 +189,10 @@ public class GUIView extends Application implements View, VirtualView {
             JsonQueue.send();
         });
 
-        stage.setMaximized(true);
+        stage.setMinWidth(750 + 485);
+        stage.setMinHeight(565 + 240);
+
+        stage.centerOnScreen();
 
         currentStage = stage;
 
@@ -901,6 +906,7 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void completeCardInfo(String value) {
+
         Platform.runLater(() -> {
 
             JsonObject jsonCard = JsonUtility.jsonDeserialize(value);
@@ -1048,17 +1054,17 @@ public class GUIView extends Application implements View, VirtualView {
         } else {
             this.squareListForShootState.clear();
         }
-        boardImage.setFitWidth(990 / scaleFactor);
+        boardImage.setFitWidth(750 / scaleFactor);// /3.4
         boardImage
                 .setFitHeight(565 / scaleFactor);//1.321 rapporto tra lunghezza e altezza originale
 
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.setPrefSize(990 / scaleFactor, 565 / scaleFactor);
+        anchorPane.setPrefSize(750 / scaleFactor, 565 / scaleFactor);
         VBox squares = new VBox();
-        AnchorPane.setTopAnchor(squares, 120.0 / scaleFactor);
-        AnchorPane.setBottomAnchor(squares, 25.0 / scaleFactor);
-        AnchorPane.setLeftAnchor(squares, 160.0 / scaleFactor);
-        AnchorPane.setRightAnchor(squares, 145.0 / scaleFactor);
+        AnchorPane.setTopAnchor(squares, 117.0 / scaleFactor);
+        AnchorPane.setBottomAnchor(squares, 65 / scaleFactor);
+        AnchorPane.setLeftAnchor(squares, 116 / scaleFactor);
+        AnchorPane.setRightAnchor(squares, 120 / scaleFactor);
         HBox line;
         line = new HBox();
         line.setSpacing(0);
@@ -1091,11 +1097,11 @@ public class GUIView extends Application implements View, VirtualView {
                                 buttonSquare = new ButtonSquare(false);
 
                             }
-                            buttonSquare.setPrefHeight(125 / scaleFactor);
-                            buttonSquare.setPrefWidth(175 / scaleFactor);
+                            buttonSquare.setPrefHeight(145 / scaleFactor);
+                            buttonSquare.setPrefWidth(130 / scaleFactor);
                             StackPane stackPane = new StackPane();
-                            stackPane.setPrefHeight(125 / scaleFactor);
-                            stackPane.setPrefWidth(175 / scaleFactor);
+                            stackPane.setPrefHeight(145 / scaleFactor);
+                            stackPane.setPrefWidth(130 / scaleFactor);
                             stackPane.getChildren().add(buttonSquare);
                             if (isUpdateBoard) {
                                 squareList.add(buttonSquare);
@@ -1123,6 +1129,7 @@ public class GUIView extends Application implements View, VirtualView {
         boardId = jsonObject.getJsonObject("board").getInt("boardId");
 
         Platform.runLater(() -> {
+
             VBox pannelloCentrale = new VBox();
             BorderPane borderPane = new BorderPane();
             borderPane.setBackground(new Background(
@@ -1141,21 +1148,21 @@ public class GUIView extends Application implements View, VirtualView {
             VBox weaponsSx = new VBox();
             weaponsSx.setMouseTransparent(false);
 
-            weaponsSx.setSpacing(5);
-            weaponsDx.setSpacing(5);
-            weaponsTop.setSpacing(5);
+            weaponsSx.setSpacing(10);
+            weaponsDx.setSpacing(10);
+            weaponsTop.setSpacing(3);
 
-            AnchorPane.setTopAnchor(weaponsTop, 0.0);
-            AnchorPane.setLeftAnchor(weaponsTop, 520.0);
-            AnchorPane.setRightAnchor(weaponsTop, 150.0);
+            AnchorPane.setTopAnchor(weaponsTop, 3.0);
+            AnchorPane.setLeftAnchor(weaponsTop, 393.0);
+            AnchorPane.setRightAnchor(weaponsTop, 118.0);
 
             AnchorPane.setLeftAnchor(weaponsSx, 0.0);
             AnchorPane.setBottomAnchor(weaponsSx, 105.0);
-            AnchorPane.setTopAnchor(weaponsSx, 205.0);
+            AnchorPane.setTopAnchor(weaponsSx, 207.0);
 
             AnchorPane.setTopAnchor(weaponsDx, 320.0);
-            AnchorPane.setRightAnchor(weaponsDx, 0.0);
-            AnchorPane.setBottomAnchor(weaponsDx, 0.0);
+            AnchorPane.setLeftAnchor(weaponsDx, 644.0);
+            AnchorPane.setBottomAnchor(weaponsDx, 3.0);
             //////////////////////////////////////////////////////////
 
             jsonObject.getJsonObject("board")
@@ -1184,8 +1191,8 @@ public class GUIView extends Application implements View, VirtualView {
                                     params.setFill(Color.TRANSPARENT);
                                     Image rotatedImage = cardImage.snapshot(params, null);
                                     definiteRotateImage = new ImageView(rotatedImage);
-                                    definiteRotateImage.setFitWidth(120);
-                                    definiteRotateImage.setFitHeight(65);
+                                    definiteRotateImage.setFitWidth(92);
+                                    definiteRotateImage.setFitHeight(61);
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
@@ -1196,13 +1203,13 @@ public class GUIView extends Application implements View, VirtualView {
 
                                 case "BLU":
 
-                                    cardImage.setRotate(180);
+                                    cardImage.setRotate(0);
                                     SnapshotParameters paramsBlue = new SnapshotParameters();
                                     paramsBlue.setFill(Color.TRANSPARENT);
                                     Image rotatedImage180 = cardImage.snapshot(paramsBlue, null);
                                     definiteRotateImage = new ImageView(rotatedImage180);
-                                    definiteRotateImage.setFitWidth(85);
-                                    definiteRotateImage.setFitHeight(100);
+                                    definiteRotateImage.setFitWidth(61);
+                                    definiteRotateImage.setFitHeight(92);
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
@@ -1219,8 +1226,8 @@ public class GUIView extends Application implements View, VirtualView {
                                     paramsGiallo.setFill(Color.TRANSPARENT);
                                     Image rotatedImage270 = cardImage.snapshot(paramsGiallo, null);
                                     definiteRotateImage = new ImageView(rotatedImage270);
-                                    definiteRotateImage.setFitHeight(65);
-                                    definiteRotateImage.setFitWidth(120);
+                                    definiteRotateImage.setFitWidth(92);
+                                    definiteRotateImage.setFitHeight(61);
                                     rotatedButton = new ButtonWeapon(y.getInt("id"),
                                             y.getString("name"),
                                             definiteRotateImage);
@@ -1360,7 +1367,7 @@ public class GUIView extends Application implements View, VirtualView {
                     .forEach(x -> this.actionsList.add(x.getInt("id")));
 
             /////////////////////////////////////////////////////////////////////////// centro powerUp e armi e tuoi cubes
-            weaponsList.clear();
+            thisPlayerWeaponsList.clear();
             powerUpList.clear();
 
             HBox myPlayerCubes = new HBox();
@@ -1392,17 +1399,21 @@ public class GUIView extends Application implements View, VirtualView {
                     .forEach(x -> {
                         ImageView card;
 
-                        if (x.getBoolean("isLoaded")) {
-                            card = new ImageView(Images.weaponsMap.get(x.getInt("id")));
-                        } else {
-                            card = new ImageView(Images.weaponsMap.get(0));
-                        }
+                        card = new ImageView(
+                                x.getBoolean("isLoaded")
+                                        ? Images.weaponsMap.get(x.getInt("id"))
+                                        : Images.weaponsMap.get(0));
+
                         card.setFitWidth(130);
                         card.setFitHeight((565.0 / 3) + 15);
+
                         ButtonWeapon imageButton = new ButtonWeapon(
                                 x.getInt("id"),
                                 x.getString("name"),
                                 card);
+
+                        imageButton.setLoaded(x.getBoolean("isLoaded"));
+
                         imageButton.setOnMouseClicked(mouseEvent -> {
 
                             JsonQueue.add(METHOD, "askCardInfo");
@@ -1411,7 +1422,7 @@ public class GUIView extends Application implements View, VirtualView {
 
                             JsonQueue.send();
                         });
-                        weaponsList.add(imageButton);
+                        thisPlayerWeaponsList.add(imageButton);
                         imageButton.setOnMouseEntered(bigger);
                         imageButton.setOnMouseExited(smaller);
                         cards.getChildren().add(imageButton);
@@ -1436,10 +1447,18 @@ public class GUIView extends Application implements View, VirtualView {
                         powerUpButton.setOnMouseExited(smaller);
                         cards.getChildren().add(powerUpButton);
                     });
+
             pannelloCentrale.getChildren().addAll(anchorPane, cards);
 
-            anchorPane.getChildren().add(myPlayerCubes);
+            Label myPlayersPoints = new Label();
+            myPlayersPoints.setText("Punti: " + thisPlayerObject.getInt("points"));
+            myPlayersPoints.setTextFill(Color.WHITE);
+            myPlayersPoints.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
+            anchorPane.getChildren().addAll(myPlayersPoints, myPlayerCubes);
+
+            AnchorPane.setLeftAnchor(myPlayersPoints, 10.0);
+            AnchorPane.setBottomAnchor(myPlayersPoints, 35.0);
             AnchorPane.setLeftAnchor(myPlayerCubes, 10.0);
             AnchorPane.setBottomAnchor(myPlayerCubes, 0.0);
 
@@ -1449,7 +1468,7 @@ public class GUIView extends Application implements View, VirtualView {
             AnchorPane rightAnchorPane = new AnchorPane();
             VBox bridges = new VBox();
             AnchorPane.setTopAnchor(bridges, 0.0);
-            bridges.setSpacing(0);
+            bridges.setSpacing(5);
             jsonObject.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
@@ -1609,7 +1628,7 @@ public class GUIView extends Application implements View, VirtualView {
 
             JsonQueue.send();
         });
-        this.weaponsList.forEach(ButtonWeapon::update);
+        this.thisPlayerWeaponsList.forEach(ButtonWeapon::update);
         this.weaponsInSpawnSquare.forEach(ButtonWeapon::update);
 
         ButtonSquare.setOnMouse(mouseEvent -> {
@@ -1781,6 +1800,7 @@ public class GUIView extends Application implements View, VirtualView {
                     break;
 
                 case "actionState":
+
                     object.getJsonArray("methods").forEach(x -> {
 
                         String method = x.toString().substring(1, x.toString().length() - 1);
@@ -1895,7 +1915,7 @@ public class GUIView extends Application implements View, VirtualView {
                                         HBox playerToggles = new HBox();
                                         playerToggles.setSpacing(100);
                                         ToggleGroup playerCardsGroup = new ToggleGroup();
-                                        weaponsList.stream().forEach(w -> {
+                                        thisPlayerWeaponsList.stream().forEach(w -> {
 
                                             ImageView weaponImage = new ImageView(
                                                     Images.weaponsMap.get(w.getCardId()));
@@ -2112,7 +2132,7 @@ public class GUIView extends Application implements View, VirtualView {
 
                                 JsonQueue.send();
                             });
-                            GUIView.this.weaponsList.forEach(ButtonWeapon::update);
+                            GUIView.this.thisPlayerWeaponsList.forEach(ButtonWeapon::update);
 
                             collectiveButtons.getChildren().add(activateCardButton);
                             this.resizeButtons();
@@ -2120,12 +2140,15 @@ public class GUIView extends Application implements View, VirtualView {
 
                         } else if (method.equals("askReload")) {
 
-                            Button reloadWeapon = new GameButton(
-                                    "ricarica arma", new ImageView(Images.imagesMap.get("button")));
+                            Button reloadButton = new GameButton("Ricarica",
+                                    new ImageView(Images.imagesMap.get("button")));
 
-                            collectiveButtons.getChildren().add(reloadWeapon);
-                            this.resizeButtons();
-                        } else if (x.toString().substring(1, x.toString().length() - 1)
+                            collectiveButtons.getChildren().add(reloadButton);
+
+                            reloadButton.setOnMouseClicked(
+                                    mouseEvent -> GUIView.this.createReloadStage(method));
+
+                        } else if (method
                                 .equals("endAction")) {
                             Button endAction = this.createEndActionButton();
                             collectiveButtons.getChildren().add(endAction);
@@ -2153,54 +2176,56 @@ public class GUIView extends Application implements View, VirtualView {
                                 Stage chooseAction = new Stage();
                                 VBox root = new VBox();
                                 root.setSpacing(10);
+                                root.setBackground(new Background(
+                                        new BackgroundImage(Images.imagesMap.get("background"),
+                                                BackgroundRepeat.REPEAT,
+                                                BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                                                BackgroundSize.DEFAULT)));
+
                                 HBox actions = new HBox();
                                 actions.setSpacing(0);
+
                                 GUIView.this.actionsList.forEach(k -> {
+
                                     ImageView action = new ImageView(Images.possibleActionsMap
                                             .get(GUIView.this.character + k));
+
                                     int valueOfAction;
+
                                     switch (k) {
                                         case 0:
                                             valueOfAction = 4;
                                             break;
 
                                         case 4:
+                                        case 7:
+                                        case 10:
                                             valueOfAction = 2;
                                             break;
 
                                         case 5:
-                                            valueOfAction = 3;
-                                            break;
-
-                                        case 6:
-                                            valueOfAction = 1;
-                                            break;
-                                        case 7:
-                                            valueOfAction = 2;
-                                            break;
-
                                         case 8:
                                             valueOfAction = 3;
                                             break;
 
+                                        case 6:
                                         case 9:
                                             valueOfAction = 1;
-                                            break;
-
-                                        case 10:
-                                            valueOfAction = 2;
                                             break;
 
                                         default:
                                             valueOfAction = k;
                                     }
+
                                     String actionValueString = Integer.toString(valueOfAction);
+
                                     Button actionButton = new Button("", action);
                                     actionButton.setOnMouseEntered(bigger);
                                     actionButton.setOnMouseExited(smaller);
                                     actionButton.setBackground(new Background(
                                             new BackgroundFill(Color.TRANSPARENT,
                                                     CornerRadii.EMPTY, Insets.EMPTY)));
+
                                     actionButton.setOnMouseClicked(
                                             mouseEvent1 -> {
 
@@ -2209,15 +2234,19 @@ public class GUIView extends Application implements View, VirtualView {
                                                         actionValueString);
                                                 JsonQueue.send();
                                                 chooseAction.close();
+
                                             });
+
                                     action.setFitHeight(80);
                                     action.setFitWidth(50);
                                     actions.getChildren().add(actionButton);
                                 });
+
                                 Button quit = new Button("quit");
                                 quit.setOnMouseEntered(bigger);
                                 quit.setOnMouseExited(smaller);
                                 quit.setOnMouseClicked(mouseEvent1 -> chooseAction.close());
+
                                 root.getChildren().addAll(actions, quit);
                                 chooseAction.setScene(new Scene(root));
                                 chooseAction.show();
@@ -2259,6 +2288,166 @@ public class GUIView extends Application implements View, VirtualView {
 
     }
 
+    private void createReloadStage(String methodName) {
+
+        Stage reloadStage = new Stage();
+
+        VBox root = new VBox();
+        root.setSpacing(5);
+        root.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        Label cardsLabel = new Label();
+        cardsLabel.setText("Le carte da ricaricare:");
+        cardsLabel.setWrapText(true);
+        cardsLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+        cardsLabel.setTextFill(Color.WHITE);
+
+        root.getChildren().add(cardsLabel);
+
+        HBox myPlayerCards = new HBox();
+        HBox playerToggles = new HBox();
+        playerToggles.setSpacing(100);
+        ToggleGroup playerCardsGroup = new ToggleGroup();
+
+        thisPlayerWeaponsList.stream()
+                .filter(card -> !card.isLoaded())
+                .forEach(w -> {
+
+                    ImageView weaponImage = new ImageView(
+                            Images.weaponsMap.get(w.getCardId()));
+                    weaponImage.setFitHeight(150);
+                    weaponImage.setFitWidth(100);
+
+                    Button weaponCardButton = new Button("", weaponImage);
+
+                    RadioButton weaponRadioButton = new RadioButton();
+                    weaponRadioButton.setUserData(
+                            String.valueOf(w.getCardId()));
+
+                    myPlayerCards.getChildren().add(weaponCardButton);
+                    weaponRadioButton.setToggleGroup(playerCardsGroup);
+                    playerToggles.getChildren().add(weaponRadioButton);
+
+                    weaponCardButton.setOnMouseEntered(mouseEvent -> reloadStage.getScene()
+                            .setCursor(Cursor.HAND));
+
+                    weaponCardButton.setOnMouseExited(mouseEvent -> reloadStage.getScene()
+                            .setCursor(
+                                    Cursor.DEFAULT));
+
+                    weaponCardButton.setOnMouseClicked(mouseEvent -> playerCardsGroup.selectToggle(
+                            weaponRadioButton));
+                });
+
+        root.getChildren().addAll(myPlayerCards, playerToggles);
+
+        Label powerUpsLabel = new Label();
+        powerUpsLabel.setText("I tuoi powerUp:");
+        powerUpsLabel.setWrapText(true);
+        powerUpsLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+        powerUpsLabel.setTextFill(Color.WHITE);
+
+        root.getChildren().add(powerUpsLabel);
+
+        HBox myPowerUps = new HBox();
+        HBox powerUpCheckBox = new HBox();
+        powerUpCheckBox.setSpacing(100);
+        powerUpList.stream()
+                .forEach(p -> {
+
+                    ImageView powerUpImage = new ImageView(
+                            Images.powerUpsMap
+                                    .get(new StringBuilder().append(p.name)
+                                            .append(" ").append(p.color)
+                                            .toString()));
+                    powerUpImage.setFitWidth(100);
+                    powerUpImage.setFitHeight(150);
+                    Button powerUpButton = new Button("", powerUpImage);
+
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setId(new StringBuilder().append(p.name)
+                            .append("-").append(p.color)
+                            .toString());
+
+                    myPowerUps.getChildren().addAll(powerUpButton);
+                    powerUpCheckBox.getChildren().addAll(checkBox);
+
+                    powerUpButton.setOnMouseEntered(mouseEvent -> reloadStage.getScene()
+                            .setCursor(Cursor.HAND));
+
+                    powerUpButton.setOnMouseExited(mouseEvent -> reloadStage.getScene()
+                            .setCursor(
+                                    Cursor.DEFAULT));
+
+                    powerUpButton.setOnMouseClicked(mouseEvent -> checkBox.setSelected(
+                            !checkBox.isSelected()));
+                });
+
+        root.getChildren().addAll(myPowerUps, powerUpCheckBox);
+
+        Button confirm = new Button("Conferma");
+        confirm.setAlignment(Pos.BOTTOM_CENTER);
+        confirm.setPrefSize(80, 25);
+        confirm.setOnMouseEntered(bigger);
+        confirm.setOnMouseExited(smaller);
+
+        confirm.setOnMouseClicked(mouseEvent -> {
+
+            if (playerToggles.getChildren().stream()
+                    .anyMatch(m -> ((RadioButton) m).isSelected())) {
+
+                JsonQueue.add(METHOD, methodName);
+                JsonQueue.add("id",
+                        playerToggles.getChildren().stream()
+                                .filter(m -> ((RadioButton) m)
+                                        .isSelected())
+                                .findFirst().get().getUserData()
+                                .toString());
+
+                if (powerUpCheckBox.getChildren().stream()
+                        .anyMatch(m -> ((CheckBox) m)
+                                .isSelected())) {
+
+                    StringBuilder line = new StringBuilder();
+
+                    line.append("powerup(");
+
+                    powerUpCheckBox.getChildren().stream()
+                            .filter(m -> ((CheckBox) m)
+                                    .isSelected())
+                            .forEach(s -> {
+
+                                line.append(s.getId());
+                                line.append(" ");
+                            });
+                    line.append(")");
+
+                    JsonQueue.add("powerup", line.toString());
+
+                } else {
+
+                    JsonQueue.add("powerup", "");
+                }
+
+                JsonQueue.send();
+                reloadStage.close();
+            } else {
+
+                createNotifications("Attenzione!",
+                        "Devi selezionare quale carta vuoi ricaricare.");
+            }
+        });
+
+        root.getChildren().add(confirm);
+
+        Scene reloadScene = new Scene(root);
+        reloadStage.setScene(reloadScene);
+        reloadStage.show();
+    }
+
     private void resizeButtons() {
         int numberOfButtons = this.collectiveButtons.getChildren().size();
 
@@ -2279,8 +2468,12 @@ public class GUIView extends Application implements View, VirtualView {
         root.setSpacing(5);
         StringBuilder target = new StringBuilder();
         StringBuilder destination = new StringBuilder();
+        root.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
         AnchorPane board = (AnchorPane) this.createBoard(false, 2);// scala della meta' in lunghezza
-        HBox playersconnected = new HBox();
+        HBox playersConnected = new HBox();
         HBox checkBoxes = new HBox();
         VBox playersAndCheckBox = new VBox();
         HBox endingButtons = new HBox();
@@ -2289,35 +2482,28 @@ public class GUIView extends Application implements View, VirtualView {
         int scaleFactor = numberOfPlayersConnected >= 3 ? numberOfPlayersConnected : 3;
         checkBoxes.setSpacing((495 / scaleFactor) + 10);
 
-        this.playersInGame.stream().filter(x -> !x.equals(character)).forEach(x -> {
-            ImageView playerConnected = new ImageView(Images.playersMap.get(x));
-            playerConnected.setFitWidth(495.0 / scaleFactor);
-            playerConnected.setFitHeight(220);
-            CheckBox playerCheckBox = new CheckBox();
-            playerCheckBox.setPrefSize(30, 30);
-            playerCheckBox.setId(x);
-            checkBoxes.getChildren().add(playerCheckBox);
-            Button playerConnectedButton = new Button(null, playerConnected);
-            playerConnectedButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    playerConnectedButton.getScene().setCursor(Cursor.HAND);
-                }
-            });
-            playerConnected.setOnMouseExited(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    playerConnectedButton.getScene().setCursor(Cursor.DEFAULT);
-                }
-            });
-            playerConnectedButton.setBackground(new Background(
-                    new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-            playerConnectedButton.setOnMouseClicked(
-                    mouseEvent -> playerCheckBox.setSelected(!playerCheckBox.isSelected()));
+        this.playersInGame.stream()
+                .filter(x -> !x.equals(character))
+                .forEach(x -> {
 
-            playersconnected.getChildren().add(playerConnectedButton);
+                    ImageView playerConnected = new ImageView(Images.playersMap.get(x));
+                    playerConnected.setFitWidth(495.0 / scaleFactor);
+                    playerConnected.setFitHeight(220);
+                    CheckBox playerCheckBox = new CheckBox();
+                    playerCheckBox.setPrefSize(30, 30);
+                    playerCheckBox.setId(x);
+                    checkBoxes.getChildren().add(playerCheckBox);
+                    Button playerConnectedButton = new Button(null, playerConnected);
+                    checkBoxes.setSpacing(playerConnectedButton.getWidth());
+                    playerConnectedButton.setBackground(new Background(
+                            new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
+                                    Insets.EMPTY)));
+                    playerConnectedButton.setOnMouseClicked(
+                            mouseEvent -> playerCheckBox.setSelected(!playerCheckBox.isSelected()));
 
-        });
+                    playersConnected.getChildren().add(playerConnectedButton);
+
+                });
 
         StackPane playersAndMap = new StackPane();
 
@@ -2366,9 +2552,10 @@ public class GUIView extends Application implements View, VirtualView {
             playersAndMap.getChildren().clear();
             playersAndMap.getChildren().addAll(board, playersAndCheckBox);
         });
-        Label playerLabel = new Label("target(personaggio)");
+        Label playerLabel = new Label("Target: personaggio");
         lineOfRadioAndPlayer.getChildren().addAll(playerLabel, playerTarget);
         radioButtonAndLabel.getChildren().add(lineOfRadioAndPlayer);
+        playerLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         HBox lineOfRadioAndButton = new HBox();
         RadioButton squareTarget = new RadioButton();
@@ -2408,9 +2595,10 @@ public class GUIView extends Application implements View, VirtualView {
             playersAndMap.getChildren().addAll(playersAndCheckBox, board);
         });
         squareTarget.setToggleGroup(radioButtonToggle);
-        Label buttonLabel = new Label("target(square)");
+        Label buttonLabel = new Label("Target: quadrato");
         lineOfRadioAndButton.getChildren().addAll(buttonLabel, squareTarget);
         radioButtonAndLabel.getChildren().add(lineOfRadioAndButton);
+        buttonLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         HBox lineOfRadioAndRoom = new HBox();
         RadioButton roomTarget = new RadioButton();
@@ -2426,7 +2614,8 @@ public class GUIView extends Application implements View, VirtualView {
             playersAndMap.getChildren().addAll(playersAndCheckBox, board);
         });
         roomTarget.setToggleGroup(radioButtonToggle);
-        Label roomLabel = new Label("target(stanza)");
+        Label roomLabel = new Label("Target: stanza");
+        roomLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
         lineOfRadioAndRoom.getChildren().addAll(roomLabel, roomTarget);
         radioButtonAndLabel.getChildren().add(lineOfRadioAndRoom);
         cardAndRadioButtons.getChildren().add(radioButtonAndLabel);
@@ -2434,7 +2623,6 @@ public class GUIView extends Application implements View, VirtualView {
             if (playerTarget.isSelected()) {
                 if (checkBoxes.getChildren().stream()
                         .noneMatch(c -> ((CheckBox) c).isSelected())) {
-
                     //
 
                 } else {
@@ -2487,14 +2675,19 @@ public class GUIView extends Application implements View, VirtualView {
 
     public void createDestination(VBox root, AnchorPane board, String effectType,
             StringBuilder target, StringBuilder destination) {
+
         root.getChildren().clear();
+        root.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
 
         Label selectDestinationLabel = new Label();
-        selectDestinationLabel.setText("Seleziona la destinazione");
+        selectDestinationLabel.setText("Seleziona la destinazione (se necessario):");
         selectDestinationLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         Button skipButton = new Button();
-        skipButton.setText("salta destinazione");
+        skipButton.setText("Salta");
         skipButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
 
         skipButton.setOnMouseClicked(mouseEvent -> GUIView.this
@@ -2537,9 +2730,16 @@ public class GUIView extends Application implements View, VirtualView {
 
     private void thirdUseEffectScreen(VBox root, String effectType, StringBuilder target,
             StringBuilder destination) {
+
         StringBuilder paymentLine = new StringBuilder();
 
+        root.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
         if (!effectType.equals("askUsePowerUp")) {
+
             root.getChildren().clear();
 
             Label selectPaymentLabel = new Label();
@@ -2547,11 +2747,36 @@ public class GUIView extends Application implements View, VirtualView {
             selectPaymentLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
             Button confirmButton = new Button();
-            confirmButton.setText("conferma");
-            confirmButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
+            confirmButton.setText("Paga");
+            confirmButton.setStyle("-fx-text-inner-color: white; -fx-font: 15px Silom");
+
+            Button noButton = new Button();
+            noButton.setText("No");
+            noButton.setStyle("-fx-text-inner-color: white; -fx-font: 15px Silom");
+
+            HBox buttonsHBox = new HBox();
+
+            buttonsHBox.setSpacing(200);
+
+            buttonsHBox.getChildren().addAll(confirmButton, noButton);
+
+            noButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                    JsonQueue.add("method", effectType);
+                    JsonQueue.add("line",
+                            new StringBuilder().append(target.toString())
+                                    .append(destination.toString())
+                                    .toString());
+                    JsonQueue.send();
+                }
+            });
 
             HBox powerUpButtonsHBox = new HBox();
             HBox checkBoxHBox = new HBox();
+
+            checkBoxHBox.setLayoutX(20);
 
             checkBoxHBox.setSpacing(170);
 
@@ -2604,13 +2829,15 @@ public class GUIView extends Application implements View, VirtualView {
                     JsonQueue.add("line",
                             new StringBuilder().append(target.toString())
                                     .append(destination.toString())
-                                    .append(paymentLine.toString())
                                     .toString());
                     JsonQueue.send();
                 } else {
-                    paymentLine.append("POWER_UP(");
-                    checkBoxHBox.getChildren()
+                    paymentLine.append("powerup(");
+
+                    checkBoxHBox.getChildren().stream()
+                            .filter(c -> ((CheckBox) c).isSelected())
                             .forEach(c -> paymentLine.append(c.getId()).append(" "));
+
                     paymentLine.append(")");
                     JsonQueue.add(METHOD, effectType);
                     JsonQueue.add("line",
@@ -2625,6 +2852,9 @@ public class GUIView extends Application implements View, VirtualView {
                         .append(destination.toString()).append(paymentLine.toString())
                         .toString());
             });
+        } else {
+
+            //TODO cubesPayment Screen
         }
     }
 
