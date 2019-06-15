@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.view.gui.animation;
+package it.polimi.ingsw.client.view.gui.animations;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -16,17 +16,14 @@ public class SpriteAnimation extends Transition {
 
     private int lastIndex;
 
-    SpriteAnimation(
-            ImageView imageView,
-            Duration duration,
-            int count,   int columns,
-            int width,   int height) {
+    SpriteAnimation(ImageView imageView, Duration duration,
+            int count, int columns, int width, int height) {
 
         this.imageView = imageView;
-        this.count     = count;
-        this.columns   = columns;
-        this.width     = width;
-        this.height    = height;
+        this.count = count;
+        this.columns = columns;
+        this.width = width;
+        this.height = height;
 
         setCycleDuration(duration);
         setInterpolator(Interpolator.LINEAR);

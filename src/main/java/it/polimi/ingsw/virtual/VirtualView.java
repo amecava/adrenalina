@@ -5,8 +5,6 @@ import java.rmi.RemoteException;
 
 public interface VirtualView extends Remote {
 
-    void updateState(String value) throws RemoteException;
-
     void broadcast(String value) throws RemoteException;
     void gameBroadcast(String value) throws RemoteException;
     void infoMessage(String value) throws RemoteException;
@@ -30,5 +28,5 @@ public interface VirtualView extends Remote {
     void completePowerUpInfo(String value) throws RemoteException;
 
     void updateBoard(String value) throws RemoteException;
-
+    void updateState(String value) throws RemoteException;
 }

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.view.gui;
+package it.polimi.ingsw.client.view.gui.handlers;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -8,9 +8,18 @@ import javax.json.JsonObjectBuilder;
 
 public class JsonQueue {
 
+    private static final Queue<JsonObject> queue = new ArrayDeque<>();
     private static JsonObjectBuilder builder = Json.createObjectBuilder();
 
-    public static final Queue<JsonObject> queue = new ArrayDeque<>();
+    private JsonQueue() {
+
+        //
+    }
+
+    public static Queue<JsonObject> getQueue() {
+
+        return queue;
+    }
 
     public static void add(String key, String value) {
 
