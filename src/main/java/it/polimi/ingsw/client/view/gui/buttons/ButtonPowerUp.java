@@ -1,24 +1,25 @@
 package it.polimi.ingsw.client.view.gui.buttons;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.transform.Rotate;
 
-public class ButtonPowerUp extends AbstractButton {
+public class ButtonPowerUp extends ButtonFlip {
 
     private String name;
     private String color;
 
     private static EventHandler<MouseEvent> eventHandler;
 
-    public ButtonPowerUp(String name, String color, ImageView card) {
+    public ButtonPowerUp(String name, String color, ImageView back, ImageView card) {
 
-        super();
+        super(back, card, Rotate.Y_AXIS, true);
 
         this.name = name;
         this.color = color;
-
-        super.setGraphic(card);
 
         this.setOnMouseClicked(eventHandler);
     }

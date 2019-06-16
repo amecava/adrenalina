@@ -54,15 +54,6 @@ public class CardHandler {
             carica.setTextFill(Color.YELLOW);
             text.getChildren().add(carica);
 
-            if (jsonCard.getString("notes") != null) {
-                Label notes = new Label();
-                notes.setMinHeight(30);
-                notes.setText("Note: " + jsonCard.getString("notes"));
-                notes.setWrapText(true);
-                text.getChildren().add(notes);
-                notes.setTextFill(Color.YELLOW);
-            }
-
             JsonObject primary = jsonCard.getJsonObject("primary");
             Label effettoprimario = new Label();
             effettoprimario.setText("Effetto primario :" + primary.getString("name"));
@@ -128,6 +119,15 @@ public class CardHandler {
                 text.getChildren().add(descrizioneEffettoOptional2);
             }
 
+            if (jsonCard.getString("notes") != null) {
+                Label notes = new Label();
+                notes.setMinHeight(30);
+                notes.setText("Note: " + jsonCard.getString("notes"));
+                notes.setWrapText(true);
+                text.getChildren().add(notes);
+                notes.setTextFill(Color.YELLOW);
+            }
+
             Button exit = new GameButton("Exit");
             exit.setOnMouseClicked(x -> infocard.close());
             text.getChildren().add(exit);
@@ -145,5 +145,6 @@ public class CardHandler {
 
     public static void powerUpCardInfo(JsonObject object) {
 
+        //
     }
 }

@@ -10,7 +10,7 @@ import it.polimi.ingsw.client.view.gui.animations.Images;
 import it.polimi.ingsw.client.view.gui.handlers.CardHandler;
 import it.polimi.ingsw.client.view.gui.handlers.JsonQueue;
 import it.polimi.ingsw.client.view.gui.handlers.Notifications;
-import it.polimi.ingsw.client.view.gui.screens.BoardScreen;
+import it.polimi.ingsw.client.view.gui.screens.boardscreen.BoardScreen;
 import it.polimi.ingsw.client.view.gui.screens.GameListScreen;
 import it.polimi.ingsw.client.view.gui.screens.GameNotStartedScreen;
 import it.polimi.ingsw.client.view.gui.screens.LoginScreen;
@@ -109,7 +109,6 @@ public class GUIView extends Application implements View, VirtualView {
     public static BorderPane createBorderPane(boolean adrenalina, boolean character) {
 
         BorderPane borderPane = new BorderPane();
-        borderPane.setPadding(new Insets(50, 0, 0, 0));
 
         borderPane.setBackground(new Background(
                 new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
@@ -124,6 +123,7 @@ public class GUIView extends Application implements View, VirtualView {
 
             borderPane.setTop(imageAdrenalina);
             BorderPane.setAlignment(imageAdrenalina, Pos.TOP_CENTER);
+            borderPane.setPadding(new Insets(50, 0, 0, 0));
         }
 
         if (character) {
@@ -226,10 +226,6 @@ public class GUIView extends Application implements View, VirtualView {
 
                     Button tcpButton = new GameButton(new ImageView(Images.imagesMap.get("tcp")));
 
-                    tcpButton.setBackground(new Background(
-                            new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
-                                    Insets.EMPTY)));
-
                     tcpButton.setOnMouseClicked(x -> {
 
                         Entry<ImageView, Animation> entry = Explosion
@@ -290,7 +286,7 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void boardScreen(JsonObject object) {
 
-        BoardScreen.generateScreen(object);
+        BoardScreen.updateScreen(object);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -339,7 +335,7 @@ public class GUIView extends Application implements View, VirtualView {
 
             if (object.getBoolean("gameStarted")) {
 
-                this.boardScreen(object.getJsonObject("board"));
+                this.boardScreen(object);
 
             } else {
 

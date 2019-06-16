@@ -52,11 +52,11 @@ public class ButtonSquare extends AbstractButton {
         this.spawn = spawn;
     }
 
-    public void setPlayerPosition() {
+    public void setPlayerPosition(boolean position) {
 
-        this.playerPosition = true;
+        this.playerPosition = position;
 
-        this.setOnMouseClicked(eventHandler2);
+        this.update();
     }
 
     public Boolean isPresent() {

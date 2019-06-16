@@ -1,10 +1,11 @@
 package it.polimi.ingsw.client.view.gui.buttons;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Point3D;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
-public class ButtonWeapon extends AbstractButton {
+public class ButtonWeapon extends ButtonFlip {
 
     private String color;
     private int cardId;
@@ -13,12 +14,11 @@ public class ButtonWeapon extends AbstractButton {
 
     private static EventHandler<MouseEvent> eventHandler;
 
-    public ButtonWeapon(int id, ImageView card) {
+    public ButtonWeapon(int id, ImageView back, ImageView card, Point3D axis, boolean showFront) {
 
-        super();
+        super(back, card, axis, showFront);
 
         this.cardId = id;
-        super.setGraphic(card);
 
         this.setOnMouseClicked(eventHandler);
     }
@@ -36,6 +36,11 @@ public class ButtonWeapon extends AbstractButton {
     public int getCardId() {
 
         return this.cardId;
+    }
+
+    public void setCardId(int cardId) {
+
+        this.cardId = cardId;
     }
 
     public boolean isLoaded() {

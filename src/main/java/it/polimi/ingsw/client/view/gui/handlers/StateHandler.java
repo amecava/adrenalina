@@ -5,7 +5,7 @@ import it.polimi.ingsw.client.view.gui.buttons.ButtonPowerUp;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonSquare;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonWeapon;
 import it.polimi.ingsw.client.view.gui.buttons.GameButton;
-import it.polimi.ingsw.client.view.gui.screens.BoardScreen;
+import it.polimi.ingsw.client.view.gui.screens.boardscreen.BoardScreen;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,17 +33,27 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javax.json.JsonObject;
 
 public class StateHandler {
 
-    public static void updateState(JsonObject object) {
+    private StateHandler() {
+
+        //
+    }
+
+    public static synchronized void updateState(JsonObject object) {
 
         Platform.runLater(() -> {
 
             eliminateSetOnMouseClicked();
-            BoardScreen.collectiveButtons.getChildren().clear();
+
+            if (BoardScreen.collectiveButtons != null) {
+
+                BoardScreen.collectiveButtons.getChildren().clear();
+            }
 
             ////////////////////////////////////////////////////bottoni sempre disponibli infocarte , info powerup
 
@@ -64,16 +74,18 @@ public class StateHandler {
                         VBox allcards = new VBox();
                         allcards.setSpacing(30);
                         for (int i = 1; i < 22; i++) {
+                            ImageView back = new ImageView(Images.weaponsMap.get(0));
                             ImageView card = new ImageView(Images.weaponsMap.get(i));
                             card.setFitWidth(150);
                             card.setFitHeight(250);
-                            ButtonWeapon buttonWeapon = new ButtonWeapon(i, card);
+                            ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card, Rotate.Y_AXIS, true);
 
                             buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
 
                                 JsonQueue.add("method", "askCardInfo");
                                 JsonQueue.add("cardId", Integer.toString(
-                                        ((ButtonWeapon) weaponMouseEvent.getSource()).getCardId()));
+                                        ((ButtonWeapon) weaponMouseEvent.getSource())
+                                                .getCardId()));
                                 JsonQueue.send();
                             });
                             twoCrads.getChildren().add(buttonWeapon);
@@ -123,7 +135,7 @@ public class StateHandler {
                         JsonQueue.send();
                     });
 
-                    BoardScreen.powerUpList.forEach(ButtonPowerUp::update);
+                    BoardScreen.getPlayerPowerUpList().forEach(ButtonPowerUp::update);
 
                     Button spawnButton = new GameButton(
                             "clicca un powerup per spawnare");
@@ -138,7 +150,8 @@ public class StateHandler {
 
                     object.getJsonArray("methods").forEach(x -> {
 
-                        String method = x.toString().substring(1, x.toString().length() - 1);
+                        String method = x.toString()
+                                .substring(1, x.toString().length() - 1);
 
                         if (method.equals("askUsePrimary")) {
 
@@ -146,16 +159,19 @@ public class StateHandler {
 
                             effettoPrimario.setOnMouseClicked(
                                     mouseEvent -> createShootStage("askUsePrimary"));
-                            BoardScreen.collectiveButtons.getChildren().add(effettoPrimario);
+                            BoardScreen.collectiveButtons.getChildren()
+                                    .add(effettoPrimario);
                             resizeButtons();
 
                         } else if (method.equals("askUseAlternative")) {
 
-                            Button effettoAlternativo = new GameButton("effetto alternativo");
+                            Button effettoAlternativo = new GameButton(
+                                    "effetto alternativo");
 
                             effettoAlternativo.setOnMouseClicked(
                                     mouseEvent -> createShootStage("askUseAlternative"));
-                            BoardScreen.collectiveButtons.getChildren().add(effettoAlternativo);
+                            BoardScreen.collectiveButtons.getChildren()
+                                    .add(effettoAlternativo);
                             resizeButtons();
 
                         } else if (method.equals("askUseOptional1")) {
@@ -188,7 +204,8 @@ public class StateHandler {
 
                     object.getJsonArray("methods").forEach(x -> {
 
-                        String method = x.toString().substring(1, x.toString().length() - 1);
+                        String method = x.toString()
+                                .substring(1, x.toString().length() - 1);
 
                         if (method.equals("moveAction")) {
 
@@ -209,9 +226,12 @@ public class StateHandler {
 
                                 JsonQueue.send();
                             });
-                            BoardScreen.squareList.forEach(ButtonSquare::update);
 
-                            BoardScreen.collectiveButtons.getChildren().add(moveActionButton);
+                            BoardScreen.getSquareList()
+                                    .forEach(ButtonSquare::update);
+
+                            BoardScreen.collectiveButtons.getChildren()
+                                    .add(moveActionButton);
                             resizeButtons();
 
 
@@ -240,13 +260,14 @@ public class StateHandler {
                                     HBox toggleBox = new HBox();
                                     toggleBox.setSpacing(100);
 
-                                    BoardScreen.weaponsInSpawnSquare.stream()
+                                    BoardScreen.getSpawnWeaponList().stream()
                                             .filter(c -> c.getColor()
                                                     .equals(destination.getColor()))
                                             .forEach(c -> {
 
                                                 ImageView card = new ImageView(
-                                                        Images.weaponsMap.get(c.getCardId()));
+                                                        Images.weaponsMap
+                                                                .get(c.getCardId()));
                                                 card.setFitWidth(100);
                                                 card.setFitHeight(150);
 
@@ -257,14 +278,16 @@ public class StateHandler {
                                                         String.valueOf(c.getCardId()));
 
                                                 cardsInSquare.getChildren().add(cardButton);
-                                                radioButton.setToggleGroup(cardsInSquareGroup);
+                                                radioButton
+                                                        .setToggleGroup(cardsInSquareGroup);
 
                                                 toggleBox.getChildren().add(radioButton);
 
                                                 cardButton.setOnMouseClicked(
                                                         mouseEvent1 ->
-                                                                cardsInSquareGroup.selectToggle(
-                                                                        radioButton));
+                                                                cardsInSquareGroup
+                                                                        .selectToggle(
+                                                                                radioButton));
                                             });
                                     root.getChildren().addAll(cardsInSquare, toggleBox);
 
@@ -272,13 +295,14 @@ public class StateHandler {
                                     HBox playerToggles = new HBox();
                                     playerToggles.setSpacing(100);
                                     ToggleGroup playerCardsGroup = new ToggleGroup();
-                                    BoardScreen.thisPlayerWeaponsList.forEach(w -> {
+                                    BoardScreen.getPlayerWeaponList().forEach(w -> {
 
                                         ImageView weaponImage = new ImageView(
                                                 Images.weaponsMap.get(w.getCardId()));
                                         weaponImage.setFitHeight(150);
                                         weaponImage.setFitWidth(100);
-                                        Button weaponCardButton = new GameButton(weaponImage);
+                                        Button weaponCardButton = new GameButton(
+                                                weaponImage);
 
                                         RadioButton weaponRadioButton = new RadioButton();
                                         weaponRadioButton.setUserData(
@@ -298,33 +322,40 @@ public class StateHandler {
                                     HBox myPowerUps = new HBox();
                                     HBox powerUpCheckBox = new HBox();
                                     powerUpCheckBox.setSpacing(100);
-                                    BoardScreen.powerUpList.stream().forEach(p -> {
+                                    BoardScreen.getPlayerPowerUpList().stream()
+                                            .forEach(p -> {
 
-                                        ImageView powerUpImage = new ImageView(
-                                                Images.powerUpsMap
-                                                        .get(new StringBuilder()
-                                                                .append(p.getName())
-                                                                .append(" ")
-                                                                .append(p.getColor())
-                                                                .toString()));
-                                        powerUpImage.setFitWidth(100);
-                                        powerUpImage.setFitHeight(150);
-                                        Button powerUpButton = new GameButton(powerUpImage);
+                                                ImageView powerUpImage = new ImageView(
+                                                        Images.powerUpsMap
+                                                                .get(new StringBuilder()
+                                                                        .append(p.getName())
+                                                                        .append(" ")
+                                                                        .append(p
+                                                                                .getColor())
+                                                                        .toString()));
+                                                powerUpImage.setFitWidth(100);
+                                                powerUpImage.setFitHeight(150);
+                                                Button powerUpButton = new GameButton(
+                                                        powerUpImage);
 
-                                        CheckBox checkBox = new CheckBox();
-                                        checkBox.setId(new StringBuilder().append(p.getName())
-                                                .append("-").append(p.getColor())
-                                                .toString());
+                                                CheckBox checkBox = new CheckBox();
+                                                checkBox.setId(new StringBuilder()
+                                                        .append(p.getName())
+                                                        .append("-").append(p.getColor())
+                                                        .toString());
 
-                                        myPowerUps.getChildren().addAll(powerUpButton);
-                                        powerUpCheckBox.getChildren().addAll(checkBox);
+                                                myPowerUps.getChildren()
+                                                        .addAll(powerUpButton);
+                                                powerUpCheckBox.getChildren()
+                                                        .addAll(checkBox);
 
-                                        powerUpButton.setOnMouseClicked(
-                                                mouseEvent1 ->
+                                                powerUpButton.setOnMouseClicked(
+                                                        mouseEvent1 ->
 
-                                                        checkBox.setSelected(
-                                                                !checkBox.isSelected()));
-                                    });
+                                                                checkBox.setSelected(
+                                                                        !checkBox
+                                                                                .isSelected()));
+                                            });
 
                                     root.getChildren().addAll(myPowerUps, powerUpCheckBox);
 
@@ -405,7 +436,9 @@ public class StateHandler {
 
                                 }
                             });
-                            BoardScreen.squareList.forEach(ButtonSquare::update);
+
+                            BoardScreen.getSquareList()
+                                    .forEach(ButtonSquare::update);
                             BoardScreen.collectiveButtons.getChildren().add(collectButton);
                             resizeButtons();
 
@@ -423,13 +456,15 @@ public class StateHandler {
 
                                 JsonQueue.add("method", "askActivateWeapon");
                                 JsonQueue.add("cardId", String.valueOf(
-                                        ((ButtonWeapon) mouseEvent.getSource()).getCardId()));
+                                        ((ButtonWeapon) mouseEvent.getSource())
+                                                .getCardId()));
 
                                 JsonQueue.send();
                             });
-                            BoardScreen.thisPlayerWeaponsList.forEach(ButtonWeapon::update);
+                            BoardScreen.getPlayerWeaponList().forEach(ButtonWeapon::update);
 
-                            BoardScreen.collectiveButtons.getChildren().add(activateCardButton);
+                            BoardScreen.collectiveButtons.getChildren()
+                                    .add(activateCardButton);
                             resizeButtons();
 
 
@@ -456,13 +491,15 @@ public class StateHandler {
 
                     object.getJsonArray("methods").forEach(x -> {
 
-                        String method = x.toString().substring(1, x.toString().length() - 1);
+                        String method = x.toString()
+                                .substring(1, x.toString().length() - 1);
 
                         if (method.equals("selectAction")) {
 
                             Button selezionaAzione = new GameButton("seleziona azione");
 
-                            BoardScreen.collectiveButtons.getChildren().add(selezionaAzione);
+                            BoardScreen.collectiveButtons.getChildren()
+                                    .add(selezionaAzione);
 
                             selezionaAzione.setOnMouseClicked(mouseEvent -> {
 
@@ -470,9 +507,11 @@ public class StateHandler {
                                 VBox root = new VBox();
                                 root.setSpacing(10);
                                 root.setBackground(new Background(
-                                        new BackgroundImage(Images.imagesMap.get("background"),
+                                        new BackgroundImage(
+                                                Images.imagesMap.get("background"),
                                                 BackgroundRepeat.REPEAT,
-                                                BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                                                BackgroundRepeat.REPEAT,
+                                                BackgroundPosition.DEFAULT,
                                                 BackgroundSize.DEFAULT)));
 
                                 HBox actions = new HBox();
@@ -480,8 +519,9 @@ public class StateHandler {
 
                                 BoardScreen.actionsList.forEach(k -> {
 
-                                    ImageView action = new ImageView(Images.possibleActionsMap
-                                            .get(BoardScreen.character + k));
+                                    ImageView action = new ImageView(
+                                            Images.possibleActionsMap
+                                                    .get(BoardScreen.character + k));
 
                                     int valueOfAction;
 
@@ -510,7 +550,8 @@ public class StateHandler {
                                             valueOfAction = k;
                                     }
 
-                                    String actionValueString = Integer.toString(valueOfAction);
+                                    String actionValueString = Integer
+                                            .toString(valueOfAction);
 
                                     Button actionButton = new GameButton(action);
 
@@ -545,7 +586,8 @@ public class StateHandler {
                                 //
                             });
 
-                            BoardScreen.powerUpList.forEach(ButtonPowerUp::update);
+                            BoardScreen.getPlayerPowerUpList()
+                                    .forEach(ButtonPowerUp::update);
                             //se schiacci powerUp usi powerup (usa effetto nuova finestra)
                             //setOnMouse
 
@@ -594,7 +636,7 @@ public class StateHandler {
         playerToggles.setSpacing(100);
         ToggleGroup playerCardsGroup = new ToggleGroup();
 
-        BoardScreen.thisPlayerWeaponsList.stream()
+        BoardScreen.getPlayerWeaponList().stream()
                 .filter(card -> !card.isLoaded())
                 .forEach(w -> {
 
@@ -613,8 +655,9 @@ public class StateHandler {
                     weaponRadioButton.setToggleGroup(playerCardsGroup);
                     playerToggles.getChildren().add(weaponRadioButton);
 
-                    weaponCardButton.setOnMouseClicked(mouseEvent -> playerCardsGroup.selectToggle(
-                            weaponRadioButton));
+                    weaponCardButton
+                            .setOnMouseClicked(mouseEvent -> playerCardsGroup.selectToggle(
+                                    weaponRadioButton));
                 });
 
         root.getChildren().addAll(myPlayerCards, playerToggles);
@@ -630,7 +673,7 @@ public class StateHandler {
         HBox myPowerUps = new HBox();
         HBox powerUpCheckBox = new HBox();
         powerUpCheckBox.setSpacing(100);
-        BoardScreen.powerUpList.stream()
+        BoardScreen.getPlayerPowerUpList().stream()
                 .forEach(p -> {
 
                     ImageView powerUpImage = new ImageView(
@@ -713,34 +756,41 @@ public class StateHandler {
     }
 
     private static void eliminateSetOnMouseClicked() {
-        ButtonPowerUp.setOnMouse(mouseEvent -> {
+
+        try {
+
+            ButtonPowerUp.setOnMouse(mouseEvent -> {
+
+                //
+            });
+            BoardScreen.getPlayerPowerUpList().forEach(ButtonPowerUp::update);
+
+            ButtonWeapon.setOnMouse(mouseEvent -> {
+
+                JsonQueue.add("method", "askCardInfo");
+                JsonQueue.add("cardId",
+                        Integer.toString(((ButtonWeapon) mouseEvent.getSource()).getCardId()));
+
+                JsonQueue.send();
+            });
+            BoardScreen.getPlayerWeaponList().forEach(ButtonWeapon::update);
+            BoardScreen.getSpawnWeaponList().forEach(ButtonWeapon::update);
+
+            ButtonSquare.setOnMouse1(mouseEvent -> {
+
+                //
+            });
+            ButtonSquare.setOnMouse2(mouseEvent -> {
+
+                //
+            });
+
+            BoardScreen.getSquareList().forEach(ButtonSquare::update);
+
+        } catch (NullPointerException e) {
 
             //
-        });
-        BoardScreen.powerUpList.forEach(ButtonPowerUp::update);
-
-        ButtonWeapon.setOnMouse(mouseEvent -> {
-
-            JsonQueue.add("method", "askCardInfo");
-            JsonQueue.add("cardId",
-                    Integer.toString(((ButtonWeapon) mouseEvent.getSource()).getCardId()));
-
-            JsonQueue.send();
-        });
-        BoardScreen.thisPlayerWeaponsList.forEach(ButtonWeapon::update);
-        BoardScreen.weaponsInSpawnSquare.forEach(ButtonWeapon::update);
-
-        ButtonSquare.setOnMouse1(mouseEvent -> {
-
-            //
-        });
-        ButtonSquare.setOnMouse2(mouseEvent -> {
-
-            //
-        });
-
-        BoardScreen.squareList.forEach(ButtonSquare::update);
-
+        }
     }
 
     private static void resizeButtons() {
@@ -763,7 +813,7 @@ public class StateHandler {
                 new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
-        AnchorPane board = (AnchorPane) BoardScreen
+        AnchorPane board = BoardScreen
                 .createBoard(false, 2);// scala della meta' in lunghezza
         HBox playersConnected = new HBox();
         HBox checkBoxes = new HBox();
@@ -845,7 +895,18 @@ public class StateHandler {
 
         HBox lineOfRadioAndButton = new HBox();
         RadioButton squareTarget = new RadioButton();
-        BoardScreen.squareListForShootState.stream().filter(ButtonSquare::isPresent)
+
+        board.getChildren().stream()
+                .filter(n -> n.getId().equals("squares"))
+                .map(n -> (VBox) n)
+                .flatMap(n -> n.getChildren().stream())
+                .map(n -> (HBox) n)
+                .flatMap(n -> n.getChildren().stream())
+                .map(n -> (StackPane) n)
+                .flatMap(n -> n.getChildren().stream())
+                .filter(n -> n.getId().equals("buttonSquare"))
+                .map(n -> (ButtonSquare) n)
+                .filter(ButtonSquare::isPresent)
                 .forEach(s -> s.setOnMouseClicked(
                         mouseEvent -> {
 
@@ -934,8 +995,6 @@ public class StateHandler {
         root.getChildren().addAll(cardAndRadioButtons, playersAndMap, endingButtons);
         shootStage.setScene(new Scene(root));
         shootStage.show();
-
-
     }
 
     private static void createDestination(VBox root, AnchorPane board, String effectType,
@@ -957,20 +1016,40 @@ public class StateHandler {
 
         skipButton.setOnMouseClicked(
                 mouseEvent -> thirdUseEffectScreen(root, effectType, target, destination));
-        BoardScreen.squareListForShootState.forEach(s -> {
-            s.setOpacity(0.0);
-            s.setOnMouseEntered(mouseEvent -> {
-                s.setOpacity(0.3);
-                s.getScene().setCursor(Cursor.HAND);
-            });
-            s.setOnMouseExited(mouseEvent -> {
-                s.setOpacity(0.0);
-                s.getScene().setCursor(Cursor.DEFAULT);
-            });
-        });
+        board.getChildren().stream()
+                .filter(n -> n.getId().equals("squares"))
+                .map(n -> (VBox) n)
+                .flatMap(n -> n.getChildren().stream())
+                .map(n -> (HBox) n)
+                .flatMap(n -> n.getChildren().stream())
+                .map(n -> (StackPane) n)
+                .flatMap(n -> n.getChildren().stream())
+                .filter(n -> n.getId().equals("buttonSquare"))
+                .map(n -> (ButtonSquare) n)
+                .filter(ButtonSquare::isPresent)
+                .forEach(s -> {
+                    s.setOpacity(0.0);
+                    s.setOnMouseEntered(mouseEvent -> {
+                        s.setOpacity(0.3);
+                        s.getScene().setCursor(Cursor.HAND);
+                    });
+                    s.setOnMouseExited(mouseEvent -> {
+                        s.setOpacity(0.0);
+                        s.getScene().setCursor(Cursor.DEFAULT);
+                    });
+                });
         board.setVisible(true);
         root.getChildren().addAll(selectDestinationLabel, board, skipButton);
-        BoardScreen.squareListForShootState.stream()
+        board.getChildren().stream()
+                .filter(n -> n.getId().equals("squares"))
+                .map(n -> (VBox) n)
+                .flatMap(n -> n.getChildren().stream())
+                .map(n -> (HBox) n)
+                .flatMap(n -> n.getChildren().stream())
+                .map(n -> (StackPane) n)
+                .flatMap(n -> n.getChildren().stream())
+                .filter(n -> n.getId().equals("buttonSquare"))
+                .map(n -> (ButtonSquare) n)
                 .filter(ButtonSquare::isPresent)
                 .forEach(s -> s.setOnMouseClicked(
                         mouseEvent -> {
@@ -1036,7 +1115,7 @@ public class StateHandler {
 
             checkBoxHBox.setSpacing(170);
 
-            BoardScreen.powerUpList.forEach(p -> {
+            BoardScreen.getPlayerPowerUpList().forEach(p -> {
 
                 String nameId = new StringBuilder().append(p.getName())
                         .append("-")

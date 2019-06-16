@@ -78,6 +78,8 @@ public class Images {
         guiView.notifyPreloader(new ProgressNotification(0.2));
         weaponsMap.put(21, new Image("images/cards/21.png"));
 
+        powerUpsMap.put("back",
+                new Image("images/cards/AD_powerups_IT_02.png"));
         powerUpsMap.put("GRANATAVENOM BLU",
                 new Image("images/cards/GRANATAVENOMBLUE.png"));
         powerUpsMap.put("GRANATAVENOM ROSSO",
