@@ -16,7 +16,7 @@ public class ButtonPowerUp extends ButtonFlip {
 
     public ButtonPowerUp(String name, String color, ImageView back, ImageView card) {
 
-        super(back, card, Rotate.Y_AXIS, true);
+        super(back, card, Rotate.Y_AXIS);
 
         this.name = name;
         this.color = color;

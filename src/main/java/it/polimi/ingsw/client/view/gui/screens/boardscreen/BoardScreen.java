@@ -16,7 +16,6 @@ import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -63,7 +62,6 @@ public class BoardScreen {
     private static final VBox bridges = new VBox();
     public static final VBox collectiveButtons = new VBox();
 
-    public static String character;
     public static int activatedWeapon;
     public static List<Integer> actionsList = new ArrayList<>();
     public static List<String> playersInGame = new ArrayList<>();
@@ -248,7 +246,6 @@ public class BoardScreen {
                                         0,
                                         61,
                                         92,
-                                        weaponDeck,
                                         sequentialTransition);
 
                             } else if (x.getString("color").equals("GIALLO")) {
@@ -261,7 +258,6 @@ public class BoardScreen {
                                         -90,
                                         92,
                                         61,
-                                        weaponDeck,
                                         sequentialTransition);
 
                             } else if (x.getString("color").equals("ROSSO")) {
@@ -274,7 +270,6 @@ public class BoardScreen {
                                         90,
                                         92,
                                         61,
-                                        weaponDeck,
                                         sequentialTransition);
                             }
                         });
@@ -372,6 +367,7 @@ public class BoardScreen {
                                 .findAny().get();
 
                         StackPane pane = (StackPane) tmp.getParent();
+                        //TODO
                         pane.getChildren().clear();
                         tilesInSquare.setAlignment(Pos.BOTTOM_CENTER);
                         tilesInSquare.setId("tiles");
@@ -409,7 +405,7 @@ public class BoardScreen {
                     .findFirst()
                     .get();
 
-            character = characterJson.getString("character");
+            GUIView.setCharacter(characterJson.getString("character"));
 
             characterJson.getJsonObject("bridge").getJsonObject("actionBridge")
                     .getJsonArray("possibleActionsArray").stream()
@@ -418,8 +414,9 @@ public class BoardScreen {
 
             /////////////////////////////////////////////////////////////////////////// centro powerUp e armi e tuoi cubes
 
-            //TODO
             playerCubes.getChildren().clear();
+
+            //TODO
             playerCards.getChildren().clear();
 
             JsonObject thisPlayerObject = jsonObject
@@ -456,8 +453,7 @@ public class BoardScreen {
                                 x.getInt("id"),
                                 back,
                                 card,
-                                Rotate.Y_AXIS,
-                                true);
+                                Rotate.Y_AXIS);
                         imageButton.setId("weapon");
 
                         imageButton.setLoaded(x.getBoolean("isLoaded"));
@@ -470,6 +466,9 @@ public class BoardScreen {
 
                             JsonQueue.send();
                         });
+
+                        imageButton.setVisible(false);
+                        imageButton.flipTransition(Duration.millis(1), actionEvent -> imageButton.setVisible(true)).play();
                         playerCards.getChildren().add(imageButton);
                     });
 
@@ -491,6 +490,8 @@ public class BoardScreen {
                         ButtonPowerUp powerUpButton = new ButtonPowerUp(x.getString("name"),
                                 x.getString("color"), back, powerUp);
                         powerUpButton.setId("powerUp");
+                        powerUpButton.setVisible(false);
+                        powerUpButton.flipTransition(Duration.millis(1), actionEvent -> powerUpButton.setVisible(true)).play();
                         playerCards.getChildren().add(powerUpButton);
                     });
 

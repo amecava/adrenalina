@@ -5,7 +5,6 @@ import it.polimi.ingsw.client.view.gui.buttons.ButtonWeapon;
 import it.polimi.ingsw.client.view.gui.handlers.JsonQueue;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
@@ -16,7 +15,6 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javax.json.JsonObject;
@@ -51,7 +49,7 @@ class BoardFunction {
     }
 
     static synchronized void addCardToSpawn(ObservableList<Node> children, String color, int id, Point3D axis, int rotate,
-            int width, int height, StackPane weaponDeck, SequentialTransition sequentialTransition) {
+            int width, int height, SequentialTransition sequentialTransition) {
 
         if (children.stream().map(z -> (ButtonWeapon) z)
                 .noneMatch(z -> z.getColor().equals(color) && z.getCardId() == id)) {
@@ -75,7 +73,7 @@ class BoardFunction {
             cardImageRotated.setFitWidth(width);
             cardImageRotated.setFitHeight(height);
 
-            final ButtonWeapon rotatedButton = new ButtonWeapon(id, backImageRotated, cardImageRotated, axis, false);
+            final ButtonWeapon rotatedButton = new ButtonWeapon(id, backImageRotated, cardImageRotated, axis);
 
             rotatedButton.setColor(color);
 
@@ -91,12 +89,12 @@ class BoardFunction {
 
             TranslateTransition move = new TranslateTransition(Duration.millis(500), rotatedButton);
 
-            move.setFromX(0);
-            move.setFromY(-600);
+            move.setFromX(calculateDeckDistanceX(rotate, children.size()));
+            move.setFromY(calculateDeckDistanceY(rotate, children.size()));
             move.setToX(0);
             move.setToY(0);
 
-            RotateTransition rotation = new RotateTransition(Duration.millis(300), rotatedButton);
+            RotateTransition rotation = new RotateTransition(Duration.millis(200), rotatedButton);
 
             rotation.setFromAngle(-rotate);
             rotation.setToAngle(0);
@@ -110,5 +108,33 @@ class BoardFunction {
 
             sequentialTransition.getChildren().addAll(move, rotation);
         }
+    }
+
+    private static int calculateDeckDistanceX(int rotate, int size) {
+
+        if (rotate == 0) {
+
+            return 256 - size * 82;
+
+        } else if (rotate == 90) {
+
+            return 633;
+        }
+
+        return -11;
+    }
+
+    private static int calculateDeckDistanceY(int rotate, int size) {
+
+        if (rotate == 0) {
+
+            return 158;
+
+        } else if (rotate == 90) {
+
+            return -30 - size * 82;
+        }
+
+        return -143 - size * 82;
     }
 }

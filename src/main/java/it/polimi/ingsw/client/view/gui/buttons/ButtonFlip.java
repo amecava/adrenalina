@@ -7,6 +7,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.image.ImageView;
@@ -18,11 +19,9 @@ abstract class ButtonFlip extends AbstractButton {
     private Point3D axis;
     private BooleanProperty showFront = new SimpleBooleanProperty(false);
 
-    ButtonFlip(ImageView back, ImageView card, Point3D axis, boolean showFront) {
+    ButtonFlip(ImageView back, ImageView card, Point3D axis) {
 
         super();
-
-        this.showFront.setValue(showFront);
 
         super.setGraphic(card);
 

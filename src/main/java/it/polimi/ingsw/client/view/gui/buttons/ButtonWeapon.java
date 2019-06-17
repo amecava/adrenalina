@@ -14,9 +14,9 @@ public class ButtonWeapon extends ButtonFlip {
 
     private static EventHandler<MouseEvent> eventHandler;
 
-    public ButtonWeapon(int id, ImageView back, ImageView card, Point3D axis, boolean showFront) {
+    public ButtonWeapon(int id, ImageView back, ImageView card, Point3D axis) {
 
-        super(back, card, axis, showFront);
+        super(back, card, axis);
 
         this.cardId = id;
 

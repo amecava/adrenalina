@@ -73,8 +73,6 @@ public class Notifications {
             Timeline animation = new Timeline(keyFrame);
             animation.play();
 
-            dialog.setOnShown(x -> GUIView.getCurrentStage().requestFocus());
-
             PauseTransition delay = new PauseTransition(Duration.seconds(3));
             delay.setOnFinished(event -> {
                 dialogList.remove(dialog);

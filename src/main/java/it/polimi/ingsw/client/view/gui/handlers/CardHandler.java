@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.gui.handlers;
 
+import it.polimi.ingsw.client.view.gui.GUIView;
 import it.polimi.ingsw.client.view.gui.animations.Images;
 import it.polimi.ingsw.client.view.gui.buttons.GameButton;
 import javafx.animation.PauseTransition;
@@ -16,6 +17,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.json.JsonObject;
@@ -33,6 +35,8 @@ public class CardHandler {
         Platform.runLater(() -> {
 
             Stage infocard = new Stage();
+            infocard.initModality(Modality.APPLICATION_MODAL);
+            infocard.initOwner(GUIView.getCurrentStage());
             HBox elements = new HBox();
             AnchorPane.setRightAnchor(elements, 20.0);
             AnchorPane.setTopAnchor(elements, 20.0);

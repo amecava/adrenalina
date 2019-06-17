@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.gui.handlers;
 
+import it.polimi.ingsw.client.view.gui.GUIView;
 import it.polimi.ingsw.client.view.gui.animations.Images;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonPowerUp;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonSquare;
@@ -34,7 +35,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.json.JsonObject;
 
 public class StateHandler {
@@ -50,6 +53,7 @@ public class StateHandler {
 
             eliminateSetOnMouseClicked();
 
+            // TODO
             if (BoardScreen.collectiveButtons != null) {
 
                 BoardScreen.collectiveButtons.getChildren().clear();
@@ -68,6 +72,8 @@ public class StateHandler {
                     infoCarte.setOnMouseClicked(mouseEvent -> {
 
                         Stage infoCarteStage = new Stage();
+                        infoCarteStage.initModality(Modality.APPLICATION_MODAL);
+                        infoCarteStage.initOwner(GUIView.getCurrentStage());
                         ScrollPane images = new ScrollPane();
                         HBox twoCrads = new HBox();
                         twoCrads.setSpacing(80);
@@ -78,7 +84,7 @@ public class StateHandler {
                             ImageView card = new ImageView(Images.weaponsMap.get(i));
                             card.setFitWidth(150);
                             card.setFitHeight(250);
-                            ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card, Rotate.Y_AXIS, true);
+                            ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card, Rotate.Y_AXIS);
 
                             buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
 
@@ -98,6 +104,9 @@ public class StateHandler {
 
 
                             }
+
+                            buttonWeapon.setVisible(false);
+                            buttonWeapon.flipTransition(Duration.millis(1), actionEvent -> buttonWeapon.setVisible(true)).play();
                         }
                         images.setContent(allcards);
                         images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
@@ -249,6 +258,8 @@ public class StateHandler {
                                 if (destination.isSpawn()) {
 
                                     Stage collectStage = new Stage();
+                                    collectStage.initModality(Modality.APPLICATION_MODAL);
+                                    collectStage.initOwner(GUIView.getCurrentStage());
 
                                     VBox root = new VBox();
                                     root.setSpacing(20);
@@ -504,6 +515,8 @@ public class StateHandler {
                             selezionaAzione.setOnMouseClicked(mouseEvent -> {
 
                                 Stage chooseAction = new Stage();
+                                chooseAction.initModality(Modality.APPLICATION_MODAL);
+                                chooseAction.initOwner(GUIView.getCurrentStage());
                                 VBox root = new VBox();
                                 root.setSpacing(10);
                                 root.setBackground(new Background(
@@ -521,7 +534,7 @@ public class StateHandler {
 
                                     ImageView action = new ImageView(
                                             Images.possibleActionsMap
-                                                    .get(BoardScreen.character + k));
+                                                    .get(GUIView.getCharacter() + k));
 
                                     int valueOfAction;
 
@@ -825,7 +838,7 @@ public class StateHandler {
         checkBoxes.setSpacing((495.0 / scaleFactor) + 10);
 
         BoardScreen.playersInGame.stream()
-                .filter(x -> !x.equals(BoardScreen.character))
+                .filter(x -> !x.equals(GUIView.getCharacter()))
                 .forEach(x -> {
 
                     ImageView playerConnected = new ImageView(Images.playersMap.get(x));
@@ -866,6 +879,8 @@ public class StateHandler {
         playersAndMap.setVisible(false);
         playersAndMap.getChildren().addAll(board, playersAndCheckBox);
         Stage shootStage = new Stage();
+        shootStage.initModality(Modality.APPLICATION_MODAL);
+        shootStage.initOwner(GUIView.getCurrentStage());
         HBox cardAndRadioButtons = new HBox();
         ToggleGroup radioButtonToggle = new ToggleGroup();
         ImageView cardImage = new ImageView(Images.weaponsMap.get(BoardScreen.activatedWeapon));

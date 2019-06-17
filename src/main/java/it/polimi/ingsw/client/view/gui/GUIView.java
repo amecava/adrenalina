@@ -33,13 +33,11 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -48,6 +46,7 @@ import javax.json.JsonObject;
 public class GUIView extends Application implements View, VirtualView {
 
     private static String playerId;
+    private static String character;
     private static Stage currentStage;
 
     private static BooleanProperty ready = new SimpleBooleanProperty(false);
@@ -60,6 +59,16 @@ public class GUIView extends Application implements View, VirtualView {
     public static void setPlayerId(String id) {
 
         playerId = id;
+    }
+
+    public static String getCharacter() {
+
+        return character;
+    }
+
+    public static void setCharacter(String player) {
+
+        character = player;
     }
 
     public static Stage getCurrentStage() {
@@ -144,7 +153,10 @@ public class GUIView extends Application implements View, VirtualView {
 
         initialize(this);
 
-        stage.setScene(new Scene(new BorderPane()));
+        Scene scene = new Scene(new BorderPane());
+        scene.setFill(Color.TRANSPARENT);
+
+        stage.setScene(scene);
 
         stage.setOnCloseRequest(x -> {
 
@@ -158,7 +170,6 @@ public class GUIView extends Application implements View, VirtualView {
         stage.centerOnScreen();
 
         setCurrentStage(stage);
-
     }
 
     /////////////////////////////////////////////////////////////////////////
