@@ -8,7 +8,7 @@ import java.util.Map;
 
 public enum Color {
 
-    GIALLO("Giallo", "\u001b[33m", ":D-strutt-OR3"),
+    GIALLO("Giallo", "\u001b[33m", ":DistruttOR3"),
     AZZURRO("Azzurro", "\u001b[36m", "Banshee"),
     GRIGIO("Grigio", "\u001b[37m", "Dozer"),
     VIOLA("Viola", "\u001b[35m", "Violetta"),

@@ -1,9 +1,9 @@
-package it.polimi.ingsw.client.view.console;
+package it.polimi.ingsw.client.view.console.terminal;
 
+import it.polimi.ingsw.client.view.console.ConsoleView;
 import it.polimi.ingsw.virtual.JsonUtility;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,12 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-class RegexJson {
+public class JsonRegex {
+
+    private JsonRegex() {
+
+        //
+    }
 
     private static final List<String> info = new ArrayList<>();
     private static final List<String> commands = new ArrayList<>();
@@ -44,7 +49,7 @@ class RegexJson {
 
     static {
 
-        InputStream in = RegexJson.class.getClassLoader().getResourceAsStream("Commands.json");
+        InputStream in = JsonRegex.class.getClassLoader().getResourceAsStream("Commands.json");
 
         JsonArray object = Json.createReader(in).readArray();
 
@@ -68,7 +73,7 @@ class RegexJson {
                 });
     }
 
-    static void updateState(JsonObject object) {
+    public static void updateState(JsonObject object) {
 
         info.clear();
         commands.clear();
@@ -98,7 +103,7 @@ class RegexJson {
                 .collect(Collectors.toList());
     }
 
-    static JsonObject toJsonObject(String[] parts) {
+    public static JsonObject toJsonObject(String[] parts) {
 
         JsonObjectBuilder builder = Json.createObjectBuilder();
 

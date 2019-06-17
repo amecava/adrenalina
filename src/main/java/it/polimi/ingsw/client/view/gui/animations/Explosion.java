@@ -1,6 +1,5 @@
-package it.polimi.ingsw.client.view.gui.animation;
+package it.polimi.ingsw.client.view.gui.animations;
 
-import it.polimi.ingsw.client.view.gui.Images;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import javafx.animation.Animation;
@@ -9,21 +8,21 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
-public class ExplosionAnimation {
-
-    private ExplosionAnimation() {
-
-        //
-    }
+public class Explosion {
 
     private static final int COLUMNS = 8;
     private static final int COUNT = 64;
     private static final int WIDTH = 512;
     private static final int HEIGHT = 512;
 
+    private Explosion() {
+
+        //
+    }
+
     public static Entry<ImageView, Animation> getExplosion(int id, MouseEvent event) {
 
-        ImageView imageView = new ImageView(Images.explosionsMap.get("explosion" + id));
+        ImageView imageView = new ImageView(Images.imagesMap.get("explosion" + id));
         imageView.setViewport(new Rectangle2D(0, 0, WIDTH, HEIGHT));
 
         imageView.setX(event.getSceneX() - ((double) WIDTH / 2));

@@ -31,7 +31,6 @@ class ViewInspector {
 
         // Return recursive distance if cardinal false
         return recursiveDistance(fromSquare.getMap(throughWalls), toSquare, throughWalls);
-
     }
 
     static boolean targetView(Square fromSquare, Square toSquare) {

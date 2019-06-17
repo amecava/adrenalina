@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class GUIPreloader extends Preloader {
-    private ImageView image;
+
     private ProgressBar bar;
 
     private Stage stage;
@@ -39,7 +39,7 @@ public class GUIPreloader extends Preloader {
         vBox.setBackground(new Background(
                 new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        image = new ImageView("images/adrenaline_icon.png");
+        ImageView image = new ImageView("images/adrenaline_icon.png");
         image.setPreserveRatio(true);
         image.setFitHeight(300);
 
@@ -63,7 +63,7 @@ public class GUIPreloader extends Preloader {
 
         if (pn.getProgress() != 1.0 || !noLoadingProgress) {
 
-            bar.setProgress(pn.getProgress()/2);
+            bar.setProgress(pn.getProgress() / 2);
 
             if (pn.getProgress() > 0) {
 
@@ -80,13 +80,14 @@ public class GUIPreloader extends Preloader {
 
     @Override
     public void handleApplicationNotification(PreloaderNotification pn) {
+
         if (pn instanceof ProgressNotification) {
 
             double v = ((ProgressNotification) pn).getProgress();
 
             if (!noLoadingProgress) {
 
-                v = 0.5 + v/2;
+                v = 0.5 + v / 2;
             }
 
             bar.setProgress(v);
