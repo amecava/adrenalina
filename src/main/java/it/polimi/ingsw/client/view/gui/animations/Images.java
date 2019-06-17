@@ -232,7 +232,7 @@ public class Images {
         cubesMap.put("BLU", new Image("images/cubes/BLU.png"));
 
         imagesMap.put("background", new Image("images/background.png"));
-        imagesMap.put("button", new Image("images/button-2.png"));
+        imagesMap.put("button", new Image("images/button.png"));
         imagesMap.put("adrenalina", new Image("images/adrenaline_text.png"));
         guiView.notifyPreloader(new ProgressNotification(0.95));
         imagesMap.put("rmi", new Image("images/cards/RMI.png"));

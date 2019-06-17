@@ -507,90 +507,63 @@ public class StateHandler {
 
                         if (method.equals("selectAction")) {
 
-                            Button selezionaAzione = new GameButton("seleziona azione");
+                            HBox actions = new HBox();
+                            actions.setSpacing(0);
+
+                            BoardScreen.actionsList.forEach(k -> {
+
+                                ImageView action = new ImageView(
+                                        Images.possibleActionsMap
+                                                .get(GUIView.getCharacter() + k));
+
+                                int valueOfAction;
+
+                                switch (k) {
+                                    case 0:
+                                        valueOfAction = 4;
+                                        break;
+
+                                    case 4:
+                                    case 7:
+                                    case 10:
+                                        valueOfAction = 2;
+                                        break;
+
+                                    case 5:
+                                    case 8:
+                                        valueOfAction = 3;
+                                        break;
+
+                                    case 6:
+                                    case 9:
+                                        valueOfAction = 1;
+                                        break;
+
+                                    default:
+                                        valueOfAction = k;
+                                }
+
+                                String actionValueString = Integer
+                                        .toString(valueOfAction);
+
+                                Button actionButton = new GameButton(action);
+
+                                actionButton.setOnMouseClicked(
+                                        mouseEvent1 -> {
+
+                                            JsonQueue.add("method", "selectAction");
+                                            JsonQueue.add("actionNumber",
+                                                    actionValueString);
+                                            JsonQueue.send();
+                                        });
+
+                                action.setFitHeight(80);
+                                action.setFitWidth(50);
+                                actions.getChildren().add(actionButton);
+                            });
 
                             BoardScreen.collectiveButtons.getChildren()
-                                    .add(selezionaAzione);
-
-                            selezionaAzione.setOnMouseClicked(mouseEvent -> {
-
-                                Stage chooseAction = new Stage();
-                                chooseAction.initModality(Modality.APPLICATION_MODAL);
-                                chooseAction.initOwner(GUIView.getCurrentStage());
-                                VBox root = new VBox();
-                                root.setSpacing(10);
-                                root.setBackground(new Background(
-                                        new BackgroundImage(
-                                                Images.imagesMap.get("background"),
-                                                BackgroundRepeat.REPEAT,
-                                                BackgroundRepeat.REPEAT,
-                                                BackgroundPosition.DEFAULT,
-                                                BackgroundSize.DEFAULT)));
-
-                                HBox actions = new HBox();
-                                actions.setSpacing(0);
-
-                                BoardScreen.actionsList.forEach(k -> {
-
-                                    ImageView action = new ImageView(
-                                            Images.possibleActionsMap
-                                                    .get(GUIView.getCharacter() + k));
-
-                                    int valueOfAction;
-
-                                    switch (k) {
-                                        case 0:
-                                            valueOfAction = 4;
-                                            break;
-
-                                        case 4:
-                                        case 7:
-                                        case 10:
-                                            valueOfAction = 2;
-                                            break;
-
-                                        case 5:
-                                        case 8:
-                                            valueOfAction = 3;
-                                            break;
-
-                                        case 6:
-                                        case 9:
-                                            valueOfAction = 1;
-                                            break;
-
-                                        default:
-                                            valueOfAction = k;
-                                    }
-
-                                    String actionValueString = Integer
-                                            .toString(valueOfAction);
-
-                                    Button actionButton = new GameButton(action);
-
-                                    actionButton.setOnMouseClicked(
-                                            mouseEvent1 -> {
-
-                                                JsonQueue.add("method", "selectAction");
-                                                JsonQueue.add("actionNumber",
-                                                        actionValueString);
-                                                JsonQueue.send();
-                                                chooseAction.close();
-
-                                            });
-
-                                    action.setFitHeight(80);
-                                    action.setFitWidth(50);
-                                    actions.getChildren().add(actionButton);
-                                });
-
-                                Button quit = new GameButton("quit");
-                                quit.setOnMouseClicked(mouseEvent1 -> chooseAction.close());
-
-                                root.getChildren().addAll(actions, quit);
-                                chooseAction.setScene(new Scene(root));
-                                chooseAction.show();
-                            });
+                                    .add(actions);
 
                         } else if (method.equals("askUsePowerUp")) {
 
