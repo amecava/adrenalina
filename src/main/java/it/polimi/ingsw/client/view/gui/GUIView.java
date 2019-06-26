@@ -2525,7 +2525,7 @@ public class GUIView extends Application implements View, VirtualView {
                 .createDestination(root, board, effectType, target, destination));
 
         playersAndCheckBox.getChildren()
-                .addAll(playersconnected, checkBoxes);
+                .addAll(playersConnected, checkBoxes);
 
         playersAndMap.setVisible(false);
         playersAndMap.getChildren().addAll(board, playersAndCheckBox);
