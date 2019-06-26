@@ -1,56 +1,54 @@
-package it.polimi.ingsw.client.view.gui;
+package it.polimi.ingsw.client.view.gui.animations;
 
-import java.util.AbstractMap.SimpleEntry;
+import it.polimi.ingsw.client.view.gui.GUIView;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import javafx.application.Preloader.ProgressNotification;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Images {
 
-    static final Map<String, Entry<Image, Image>> boardsMap = new HashMap<>();
+    public static final Map<String, Image> boardsMap = new HashMap<>();
+    public static final Map<String, Image> gameBoardMap = new HashMap<>();
 
-    static final Map<Integer, Image> weaponsMap = new HashMap<>();
-    static final Map<String, Image> powerUpsMap = new HashMap<>();
-    static final Map<String, Image> ammoTilesMap = new HashMap<>();
+    public static final Map<Integer, Image> weaponsMap = new HashMap<>();
+    public static final Map<String, Image> powerUpsMap = new HashMap<>();
+    public static final Map<String, Image> ammoTilesMap = new HashMap<>();
 
-    static final Map<String, Image> playersMap = new HashMap<>();
-    static final Map<String, Image> bridgesMap = new HashMap<>();
-    static final Map<String, Image> possibleActionsMap = new HashMap<>();
+    public static final Map<String, Image> playersMap = new HashMap<>();
+    public static final Map<String, Image> bridgesMap = new HashMap<>();
+    public static final Map<String, Image> possibleActionsMap = new HashMap<>();
 
+    public static final Map<String, Image> dropsMap = new HashMap<>();
+    public static final Map<String, Image> cubesMap = new HashMap<>();
+    public static final Map<String, Image> imagesMap = new HashMap<>();
 
-    static final Map<String, Image> dropsMap = new HashMap<>();
-    static final Map<String, Image> cubesMap = new HashMap<>();
-    static final Map<String, Image> imagesMap = new HashMap<>();
-
-    static final Map<String, Image> notifications = new HashMap<>();
-    public static final Map<String, Image> explosionsMap = new HashMap<>();
+    public static final Map<String, Image> notifications = new HashMap<>();
 
     private Images() {
 
         //
     }
 
-    static void loadImages(GUIView guiView) {
+    public static ImageView getImageView(String map, String key) {
+
+        return new ImageView();
+    }
+
+    public static void loadImages(GUIView guiView) {
 
         guiView.notifyPreloader(new ProgressNotification(0));
-        boardsMap.put("board1",
-                new SimpleEntry<>(
-                        new Image("images/boards/board1.png"),
-                        new Image("images/boards/board1 - select.png")));
-        boardsMap.put("board2",
-                new SimpleEntry<>(
-                        new Image("images/boards/board2.png"),
-                        new Image("images/boards/board2 - select.png")));
-        boardsMap.put("board3",
-                new SimpleEntry<>(
-                        new Image("images/boards/board3.png"),
-                        new Image("images/boards/board3 - select.png")));
-        boardsMap.put("board4",
-                new SimpleEntry<>(
-                        new Image("images/boards/board4.png"),
-                        new Image("images/boards/board4 - select.png")));
+
+        boardsMap.put("board1", new Image("images/boards/board1 - select.png"));
+        boardsMap.put("board2", new Image("images/boards/board2 - select.png"));
+        boardsMap.put("board3", new Image("images/boards/board3 - select.png"));
+        boardsMap.put("board4", new Image("images/boards/board4 - select.png"));
+
+        gameBoardMap.put("board1", new Image("images/boards/board1.png"));
+        gameBoardMap.put("board2", new Image("images/boards/board2.png"));
+        gameBoardMap.put("board3", new Image("images/boards/board3.png"));
+        gameBoardMap.put("board4", new Image("images/boards/board4.png"));
 
         guiView.notifyPreloader(new ProgressNotification(0.05));
 
@@ -80,6 +78,8 @@ public class Images {
         guiView.notifyPreloader(new ProgressNotification(0.2));
         weaponsMap.put(21, new Image("images/cards/21.png"));
 
+        powerUpsMap.put("back",
+                new Image("images/cards/AD_powerups_IT_02.png"));
         powerUpsMap.put("GRANATAVENOM BLU",
                 new Image("images/cards/GRANATAVENOMBLUE.png"));
         powerUpsMap.put("GRANATAVENOM ROSSO",
@@ -121,7 +121,7 @@ public class Images {
         ammoTilesMap.put("ROSSOGIALLOGIALLO", new Image("images/ammotiles/ROSSOGIALLOGIALLO.png"));
         ammoTilesMap.put("ROSSOROSSO", new Image("images/ammotiles/ROSSOROSSO.png"));
 
-        playersMap.put(":D-strutt-OR3", new Image("images/players/distruttore.png"));
+        playersMap.put(":DistruttOR3", new Image("images/players/distruttore.png"));
         playersMap.put("Sprog", new Image("images/players/sprog.png"));
         playersMap.put("Violetta", new Image("images/players/violetta.png"));
         guiView.notifyPreloader(new ProgressNotification(0.4));
@@ -145,9 +145,9 @@ public class Images {
                 new Image("images/playerboards/Sprogfalse.png"));
         bridgesMap.put("Sprogtrue",
                 new Image("images/playerboards/Sprogtrue.png"));
-        bridgesMap.put(":D-strutt-OR3false",
+        bridgesMap.put(":DistruttOR3false",
                 new Image("images/playerboards/D-strutt-OR3_false_frenesia.png"));
-        bridgesMap.put(":D-strutt-OR3true",
+        bridgesMap.put(":DistruttOR3true",
                 new Image("images/playerboards/D-strutt-OR3_true_frenesia.png"));
 
         possibleActionsMap.put("Banshee0", new Image("images/actions/Banshee0.png"));
@@ -163,23 +163,23 @@ public class Images {
         guiView.notifyPreloader(new ProgressNotification(0.55));
         possibleActionsMap.put("Banshee9", new Image("images/actions/Banshee9.png"));
         possibleActionsMap.put("Banshee10", new Image("images/actions/Banshee10.png"));
-        possibleActionsMap.put(":D-strutt-OR30", new Image("images/actions/D-strutt-OR30.png"));
-        possibleActionsMap.put(":D-strutt-OR31", new Image("images/actions/D-strutt-OR31.png"));
-        possibleActionsMap.put(":D-strutt-OR32", new Image("images/actions/D-strutt-OR32.png"));
-        possibleActionsMap.put(":D-strutt-OR33", new Image("images/actions/D-strutt-OR33.png"));
-        possibleActionsMap.put(":D-strutt-OR34", new Image("images/actions/D-strutt-OR34.png"));
+        possibleActionsMap.put(":DistruttOR30", new Image("images/actions/D-strutt-OR30.png"));
+        possibleActionsMap.put(":DistruttOR31", new Image("images/actions/D-strutt-OR31.png"));
+        possibleActionsMap.put(":DistruttOR32", new Image("images/actions/D-strutt-OR32.png"));
+        possibleActionsMap.put(":DistruttOR33", new Image("images/actions/D-strutt-OR33.png"));
+        possibleActionsMap.put(":DistruttOR34", new Image("images/actions/D-strutt-OR34.png"));
         guiView.notifyPreloader(new ProgressNotification(0.6));
-        possibleActionsMap.put(":D-strutt-OR35", new Image("images/actions/D-strutt-OR35.png"));
+        possibleActionsMap.put(":DistruttOR35", new Image("images/actions/D-strutt-OR35.png"));
         //possibleActionsMap
-        // .put(":D-strutt-OR36", new Image("images/actions/D-strutt-OR36.png"));
+        // .put(":DistruttOR36", new Image("animations/actions/D-strutt-OR36.png"));
         //possibleActionsMap
-        // .put(":D-strutt-OR37", new Image("images/actions/D-strutt-OR38.png"));
+        // .put(":DistruttOR37", new Image("animations/actions/D-strutt-OR38.png"));
         //possibleActionsMap
-        //.put(":D-strutt-OR38", new Image("images/actions/D-strutt-OR38.png"));
+        //.put(":DistruttOR38", new Image("animations/actions/D-strutt-OR38.png"));
         //possibleActionsMap
-        // .put(":D-strutt-OR39", new Image("images/actions/D-strutt-OR39.png"));
+        // .put(":DistruttOR39", new Image("animations/actions/D-strutt-OR39.png"));
         //possibleActionsMap
-        //  .put(":D-strutt-OR310", new Image("images/actions/D-strutt-OR310.png"));
+        //  .put(":DistruttOR310", new Image("animations/actions/D-strutt-OR310.png"));
         possibleActionsMap.put("Dozer0", new Image("images/actions/Dozer0.png"));
         guiView.notifyPreloader(new ProgressNotification(0.65));
         possibleActionsMap.put("Dozer1", new Image("images/actions/Dozer1.png"));
@@ -187,12 +187,12 @@ public class Images {
         possibleActionsMap.put("Dozer3", new Image("images/actions/Dozer3.png"));
         possibleActionsMap.put("Dozer4", new Image("images/actions/Dozer4.png"));
         possibleActionsMap.put("Dozer5", new Image("images/actions/Dozer5.png"));
-        //possibleActionsMap.put("Dozer6", new Image("images/actions/Dozer6.png"));
-        //possibleActionsMap.put("Dozer7", new Image("images/actions/Dozer7.png"));
+        //possibleActionsMap.put("Dozer6", new Image("animations/actions/Dozer6.png"));
+        //possibleActionsMap.put("Dozer7", new Image("animations/actions/Dozer7.png"));
         guiView.notifyPreloader(new ProgressNotification(0.7));
-        //possibleActionsMap.put("Dozer8", new Image("images/actions/Dozer8.png"));
-        //possibleActionsMap.put("Dozer9", new Image("images/actions/Dozer9.png"));
-        //possibleActionsMap.put("Dozer10", new Image("images/actions/Dozer10.png"));
+        //possibleActionsMap.put("Dozer8", new Image("animations/actions/Dozer8.png"));
+        //possibleActionsMap.put("Dozer9", new Image("animations/actions/Dozer9.png"));
+        //possibleActionsMap.put("Dozer10", new Image("animations/actions/Dozer10.png"));
         possibleActionsMap.put("Sprog0", new Image("images/actions/Sprog0.png"));
         possibleActionsMap.put("Sprog1", new Image("images/actions/Sprog1.png"));
         possibleActionsMap.put("Sprog2", new Image("images/actions/Sprog2.png"));
@@ -200,11 +200,11 @@ public class Images {
         guiView.notifyPreloader(new ProgressNotification(0.75));
         possibleActionsMap.put("Sprog4", new Image("images/actions/Sprog4.png"));
         possibleActionsMap.put("Sprog5", new Image("images/actions/Sprog5.png"));
-        //possibleActionsMap.put("Sprog6", new Image("images/actions/Sprog6.png"));
-        //possibleActionsMap.put("Sprog7", new Image("images/actions/Sprog7.png"));
-        //possibleActionsMap.put("Sprog8", new Image("images/actions/Sprog8.png"));
-        //possibleActionsMap.put("Sprog9", new Image("images/actions/Sprog9.png"));
-        //possibleActionsMap.put("Spro10", new Image("images/actions/Sprog10.png"));
+        //possibleActionsMap.put("Sprog6", new Image("animations/actions/Sprog6.png"));
+        //possibleActionsMap.put("Sprog7", new Image("animations/actions/Sprog7.png"));
+        //possibleActionsMap.put("Sprog8", new Image("animations/actions/Sprog8.png"));
+        //possibleActionsMap.put("Sprog9", new Image("animations/actions/Sprog9.png"));
+        //possibleActionsMap.put("Spro10", new Image("animations/actions/Sprog10.png"));
         guiView.notifyPreloader(new ProgressNotification(0.8));
         possibleActionsMap.put("Violetta0", new Image("images/actions/Violetta0.png"));
         possibleActionsMap.put("Violetta1", new Image("images/actions/Violetta1.png"));
@@ -212,12 +212,12 @@ public class Images {
         possibleActionsMap.put("Violetta3", new Image("images/actions/Violetta3.png"));
         possibleActionsMap.put("Violetta4", new Image("images/actions/Violetta4.png"));
         possibleActionsMap.put("Violetta5", new Image("images/actions/Violetta5.png"));
-        //possibleActionsMap.put("Violetta6", new Image("images/actions/Violetta6.png"));
+        //possibleActionsMap.put("Violetta6", new Image("animations/actions/Violetta6.png"));
         guiView.notifyPreloader(new ProgressNotification(0.85));
-        //possibleActionsMap.put("Violetta7", new Image("images/actions/Violetta7.png"));
-        //possibleActionsMap.put("Violetta8", new Image("images/actions/Violetta8.png"));
-        //possibleActionsMap.put("Violetta9", new Image("images/actions/Violetta9.png"));
-        //possibleActionsMap.put("Violetta10", new Image("images/actions/Violetta10.png"));
+        //possibleActionsMap.put("Violetta7", new Image("animations/actions/Violetta7.png"));
+        //possibleActionsMap.put("Violetta8", new Image("animations/actions/Violetta8.png"));
+        //possibleActionsMap.put("Violetta9", new Image("animations/actions/Violetta9.png"));
+        //possibleActionsMap.put("Violetta10", new Image("animations/actions/Violetta10.png"));
 
         dropsMap.put("GIALLO", new Image("images/drops/drop-yellow.png"));
         dropsMap.put("VERDE", new Image("images/drops/drop-green.png"));
@@ -232,21 +232,21 @@ public class Images {
         cubesMap.put("BLU", new Image("images/cubes/BLU.png"));
 
         imagesMap.put("background", new Image("images/background.png"));
-        imagesMap.put("button", new Image("images/button-2.png"));
+        imagesMap.put("button", new Image("images/button.png"));
         imagesMap.put("adrenalina", new Image("images/adrenaline_text.png"));
         guiView.notifyPreloader(new ProgressNotification(0.95));
         imagesMap.put("rmi", new Image("images/cards/RMI.png"));
         imagesMap.put("tcp", new Image("images/cards/TCP.png"));
         imagesMap.put("distructor", new Image("images/distruttore_big.png"));
-
-        explosionsMap.put("explosion1", new Image("images/explosions/explosion-1.png"));
-        explosionsMap.put("explosion2", new Image("images/explosions/explosion-2.png"));
-        explosionsMap.put("explosion3", new Image("images/explosions/explosion-3.png"));
-        explosionsMap.put("explosion4", new Image("images/explosions/explosion-4.png"));
+        imagesMap.put("explosion1", new Image("images/explosions/explosion-1.png"));
+        imagesMap.put("explosion2", new Image("images/explosions/explosion-2.png"));
+        imagesMap.put("explosion3", new Image("images/explosions/explosion-3.png"));
+        imagesMap.put("explosion4", new Image("images/explosions/explosion-4.png"));
 
         notifications.put("info", new Image("images/notifications/info-notification.png"));
         notifications.put("error", new Image("images/notifications/error-notification.png"));
-        notifications.put("broadcast", new Image("images/notifications/broadcast-notification.png"));
+        notifications
+                .put("broadcast", new Image("images/notifications/broadcast-notification.png"));
 
         guiView.notifyPreloader(new ProgressNotification(1));
     }

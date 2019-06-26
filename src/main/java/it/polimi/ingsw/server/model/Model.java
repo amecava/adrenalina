@@ -84,6 +84,7 @@ public class Model implements Serializable {
                 return player;
             }
         }
+
         throw new ColorException("Il personaggio che hai scelto non sta giocando.");
     }
 

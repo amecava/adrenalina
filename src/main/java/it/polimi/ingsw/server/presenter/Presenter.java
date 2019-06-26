@@ -110,6 +110,9 @@ public abstract class Presenter implements VirtualPresenter {
                     Json.createObjectBuilder(object)
                             .add("gameId", this.gameHandler.getGameId())
                             .add("gameStarted", this.gameHandler.isGameStarted())
+                            .add("board",
+                                    this.gameHandler.isGameStarted() ? this.gameHandler.getModel()
+                                            .getBoard().toJsonObject() : JsonValue.NULL)
                             .build().toString());
 
             ClientHandler.broadcast(x -> !x.getPlayerId().equals(this.playerId), "broadcast",
@@ -365,7 +368,9 @@ public abstract class Presenter implements VirtualPresenter {
                                         Integer.valueOf(object.getString("actionNumber")) - 1)
                                 .toString());
 
-                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
+                this.callRemoteMethod("updateState",
+                        StateHandler.createActionState(this.player, state.get("actionState"))
+                                .toString());
 
             } catch (IllegalActionException e) {
 
@@ -405,7 +410,9 @@ public abstract class Presenter implements VirtualPresenter {
                         "updateBoard",
                         this.gameHandler.toJsonObject().toString());
 
-                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
+                this.callRemoteMethod("updateState",
+                        StateHandler.createActionState(this.player, state.get("actionState"))
+                                .toString());
 
             } catch (ColorException | IllegalActionException | CardException | EffectException | PropertiesException e) {
 
@@ -464,7 +471,9 @@ public abstract class Presenter implements VirtualPresenter {
                         "updateBoard",
                         this.gameHandler.toJsonObject().toString());
 
-                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
+                this.callRemoteMethod("updateState",
+                        StateHandler.createActionState(this.player, state.get("actionState"))
+                                .toString());
 
 
             } catch (IllegalActionException |
@@ -500,7 +509,9 @@ public abstract class Presenter implements VirtualPresenter {
                         + "usaeffetto tipoEffetto | Target(un personaggio, un quadrato o una stanza) | destinazione(colore-idQiuadrato) | eventualiPowerup(nome-colore)\n"
                         + "Esempio: usaeffetto primario | sprog dozer (oppure \"rosso\" per selezionare un'intera stanza) | rosso-1 | mirino-rosso");
 
-                this.callRemoteMethod("updateState", StateHandler.createShootState(this.player, state.get("shootState")).toString());
+                this.callRemoteMethod("updateState",
+                        StateHandler.createShootState(this.player, state.get("shootState"))
+                                .toString());
 
             } catch (CardException | IllegalActionException e) {
 
@@ -631,7 +642,15 @@ public abstract class Presenter implements VirtualPresenter {
                 this.callRemoteMethod("infoMessage",
                         "Carta ricaricata! Adesso puoi solo finire il tuo turno con il comando \"fineturno\".");
 
-                this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "updateBoard",
+                        this.gameHandler.toJsonObject().toString());
+
+                this.callRemoteMethod("updateState",
+                        StateHandler.createActionState(this.player, state.get("actionState"))
+                                .toString());
 
             } catch (CardException | IllegalActionException e) {
 
@@ -665,6 +684,12 @@ public abstract class Presenter implements VirtualPresenter {
                             .toString());
 
             this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+
+            ClientHandler.gameBroadcast(
+                    this.gameHandler,
+                    x -> true,
+                    "updateBoard",
+                    this.gameHandler.toJsonObject().toString());
         }
     }
 
@@ -747,8 +772,10 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
-                EffectArgument effectArgument = EffectParser.effectArgument(this.gameHandler, object.getString("line"));
-                List<PowerUpCard> powerUpList = EffectParser.powerUps(this.player, object.getString("line"));
+                EffectArgument effectArgument = EffectParser
+                        .effectArgument(this.gameHandler, object.getString("line"));
+                List<PowerUpCard> powerUpList = EffectParser
+                        .powerUps(this.player, object.getString("line"));
 
                 this.player.useCard(effectType,
                         effectArgument,
@@ -772,7 +799,9 @@ public abstract class Presenter implements VirtualPresenter {
                 this.callRemoteMethod("infoMessage",
                         "L'effetto è stato eseguito con successo.");
 
-                this.callRemoteMethod("updateState", StateHandler.createShootState(this.player, state.get("shootState")).toString());
+                this.callRemoteMethod("updateState",
+                        StateHandler.createShootState(this.player, state.get("shootState"))
+                                .toString());
 
             } catch (ColorException | EffectException | CardException | IllegalActionException | PropertiesException e) {
 
@@ -799,11 +828,14 @@ public abstract class Presenter implements VirtualPresenter {
 
         } else if (this.player.isShooting()) {
 
-            this.callRemoteMethod("updateState", StateHandler.createShootState(this.player, state.get("shootState")).toString());
+            this.callRemoteMethod("updateState",
+                    StateHandler.createShootState(this.player, state.get("shootState")).toString());
 
         } else if (this.player.getCurrentAction() != null) {
 
-            this.callRemoteMethod("updateState", StateHandler.createActionState(this.player, state.get("actionState")).toString());
+            this.callRemoteMethod("updateState",
+                    StateHandler.createActionState(this.player, state.get("actionState"))
+                            .toString());
 
         } else {
 

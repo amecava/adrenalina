@@ -4,6 +4,9 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.connection.RmiConnection;
 import it.polimi.ingsw.client.view.connection.SocketConnection;
+import it.polimi.ingsw.client.view.console.terminal.BoardDrawer;
+import it.polimi.ingsw.client.view.console.terminal.JsonRegex;
+import it.polimi.ingsw.client.view.console.terminal.Terminal;
 import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
 import java.io.IOException;
@@ -41,7 +44,7 @@ public class ConsoleView implements View, VirtualView {
 
             try {
 
-                return RegexJson.toJsonObject(Terminal.input().split(" ", 2));
+                return JsonRegex.toJsonObject(Terminal.input().split(" ", 2));
 
             } catch (NoSuchElementException e) {
 
@@ -129,7 +132,7 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void gamesListScreen() {
+    public void gameListScreen() {
 
         this.splashScreen();
     }
@@ -152,17 +155,13 @@ public class ConsoleView implements View, VirtualView {
     }
 
     @Override
-    public void boardScreen(int id) {
+    public void boardScreen(JsonObject object) {
 
         Terminal.clearScreen();
-    }
 
-    @Override
-    public void updateState(String value) {
+        StringBuilder[] builder = BoardDrawer.drawBoard(object, this.id);
 
-        JsonObject object = JsonUtility.jsonDeserialize(value);
-
-        RegexJson.updateState(object);
+        Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
     }
 
     @Override
@@ -225,7 +224,7 @@ public class ConsoleView implements View, VirtualView {
 
         JsonArray jsonArray = object.getJsonArray("gameList");
 
-        this.gamesListScreen();
+        this.gameListScreen();
 
         if (jsonArray.isEmpty()) {
 
@@ -480,13 +479,13 @@ public class ConsoleView implements View, VirtualView {
     @Override
     public void updateBoard(String value) {
 
-        JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
+        this.boardScreen(JsonUtility.jsonDeserialize(value));
+    }
 
-        this.boardScreen(0);
+    @Override
+    public void updateState(String value) {
 
-        StringBuilder[] builder = BoardDrawer.drawBoard(jsonObject, this.id);
-
-        Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
+        JsonRegex.updateState(JsonUtility.jsonDeserialize(value));
     }
 
     private void splashScreen() {

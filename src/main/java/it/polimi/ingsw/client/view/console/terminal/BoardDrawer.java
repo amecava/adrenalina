@@ -1,5 +1,6 @@
-package it.polimi.ingsw.client.view.console;
+package it.polimi.ingsw.client.view.console.terminal;
 
+import it.polimi.ingsw.client.view.console.ConsoleView;
 import it.polimi.ingsw.server.model.board.rooms.Connection;
 import it.polimi.ingsw.server.model.players.Color;
 import java.io.InputStream;

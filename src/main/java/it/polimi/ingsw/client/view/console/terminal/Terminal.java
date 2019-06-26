@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.view.console;
+package it.polimi.ingsw.client.view.console.terminal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-class Terminal {
+public class Terminal {
 
     private Terminal() {
 
@@ -42,7 +42,7 @@ class Terminal {
         Arrays.fill(broadcast, "");
     }
 
-    static void addShutDownHook() {
+    public static void addShutDownHook() {
 
         Runtime.getRuntime()
                 .addShutdownHook(new Thread(() -> {
@@ -58,7 +58,7 @@ class Terminal {
                 }));
     }
 
-    static void terminalRefresh() {
+    public static void terminalRefresh() {
 
         try {
 
@@ -69,8 +69,8 @@ class Terminal {
                 if (messages) {
 
                     Arrays.stream(broadcast).forEach(Terminal::println);
-                    println("Info: " + RegexJson.getInfo());
-                    println("Comandi: " + RegexJson.getCommands() + "\n");
+                    println("Info: " + JsonRegex.getInfo());
+                    println("Comandi: " + JsonRegex.getCommands() + "\n");
                 }
 
                 println(response);
@@ -86,7 +86,7 @@ class Terminal {
         }
     }
 
-    static void inputReader() {
+    public static void inputReader() {
 
         try {
 
@@ -199,7 +199,7 @@ class Terminal {
         }
     }
 
-    static String input() {
+    public static String input() {
 
         synchronized (queue) {
 
@@ -218,17 +218,17 @@ class Terminal {
         }
     }
 
-    static void output(String value) {
+    public static void output(String value) {
 
         screen = screen + value + "\n";
     }
 
-    static void toggleMessages() {
+    public static void toggleMessages() {
 
         messages = !messages;
     }
 
-    static void broadcast(String value) {
+    public static void broadcast(String value) {
 
         value = "BROADCAST: " + value;
 
@@ -252,7 +252,7 @@ class Terminal {
         }
     }
 
-    static void gameBroadcast(String value) {
+    public static void gameBroadcast(String value) {
 
         value = "GAME: " + value;
 
@@ -276,22 +276,22 @@ class Terminal {
         }
     }
 
-    static void info(String value) {
+    public static void info(String value) {
 
         response = value;
     }
 
-    static void error(String value) {
+    public static void error(String value) {
 
         response = ANSI_RED + "ERROR: " + value + ANSI_RESET;
     }
 
-    static void clearScreen() {
+    public static void clearScreen() {
 
         screen = "";
     }
 
-    static void clearResponse() {
+    public static void clearResponse() {
 
         response = "";
     }
