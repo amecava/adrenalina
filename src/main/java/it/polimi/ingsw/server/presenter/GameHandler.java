@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.server.model.Model;
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
@@ -168,6 +169,11 @@ public class GameHandler implements Serializable {
                     player.setRespawn(false);
                 }
 
+                if (player.isActivePlayer()) {
+
+                    this.model.getEffectHandler().setActivePlayer(player);
+                }
+
                 notifyAll();
             }
 
@@ -188,7 +194,7 @@ public class GameHandler implements Serializable {
                 Presenter.state.get("spawnState").toString());
 
         ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() != null, "updateState",
-                Presenter.state.get("activePlayerState").toString());
+                StateHandler.createActivePlayerState(this.model.getActivePlayer(), Presenter.state.get("activePlayerState")).toString());
 
         ClientHandler.gameBroadcast(this, x -> !x.getKey().isActivePlayer(), "updateState",
                 Presenter.state.get("notActivePlayerState").toString());
@@ -200,20 +206,7 @@ public class GameHandler implements Serializable {
 
         Timer timer = new Timer();
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-                synchronized (GameHandler.this) {
-
-                    model.getPlayerList().stream()
-                            .filter(Player::isRespawn)
-                            .forEach(GameHandler.this::randomSpawn);
-                }
-            }
-        }, 60000);
-
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
 
             try {
                 synchronized (GameHandler.this) {
@@ -227,19 +220,41 @@ public class GameHandler implements Serializable {
                         ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(), "updateState",
                                 Presenter.state.get("spawnState").toString());
 
+                        ClientHandler.gameBroadcast(GameHandler.this, x -> !x.getKey().isRespawn(), "updateState",
+                                Presenter.state.get("notActivePlayerState").toString());
+
                         GameHandler.this.wait();
                     }
 
                     timer.cancel();
 
                     GameHandler.this.nextPlayer();
+
+                    ClientHandler.gameBroadcast(this, x -> true, "updateBoard", this.toJsonObject().toString());
+
                 }
             } catch (InterruptedException e) {
 
                 Thread.currentThread().interrupt();
             }
 
-        }).start();
+        });
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                synchronized (GameHandler.this) {
+
+                    model.getPlayerList().stream()
+                            .filter(Player::isRespawn)
+                            .forEach(GameHandler.this::randomSpawn);
+
+                }
+            }
+        }, 10000);
+
+        thread.start();
     }
 
     private void startGame() {

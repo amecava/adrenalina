@@ -16,6 +16,19 @@ class StateHandler {
         //
     }
 
+    static JsonObject createActivePlayerState(Player player, JsonObject object) {
+
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+
+        objectBuilder.add("state", "activePlayerState");
+        objectBuilder.add("info", object.getJsonArray("info"));
+        objectBuilder.add("methods", object.getJsonArray("methods"));
+
+        objectBuilder.add("bridge", player.getBridge().toJsonObject());
+
+        return objectBuilder.build();
+    }
+
     static JsonObject createActionState(Player player, JsonObject object) {
 
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
@@ -69,12 +82,14 @@ class StateHandler {
                     .get(EffectType.PRIMARY).isUsed()) {
 
                 arrayBuilder.add("askUsePrimary");
+                objectBuilder.add("askUsePrimary", weaponCard.getMap().get(EffectType.PRIMARY).getArgs());
             }
 
             if (weaponCard.getMap().get(EffectType.ALTERNATIVE) != null && !weaponCard.getMap()
                     .get(EffectType.ALTERNATIVE).isUsed()) {
 
                 arrayBuilder.add("askUseAlternative");
+                objectBuilder.add("askUseAlternative", weaponCard.getMap().get(EffectType.ALTERNATIVE).getArgs());
             }
 
             if (weaponCard.getMap().get(EffectType.OPTIONAL_1) != null && !weaponCard.getMap()
@@ -83,6 +98,7 @@ class StateHandler {
                     .get(EffectType.OPTIONAL_1).getActivated())) {
 
                 arrayBuilder.add("askUseOptional1");
+                objectBuilder.add("askUseOptional1", weaponCard.getMap().get(EffectType.OPTIONAL_1).getArgs());
             }
 
             if (weaponCard.getMap().get(EffectType.OPTIONAL_2) != null && !weaponCard.getMap()
@@ -91,6 +107,7 @@ class StateHandler {
                     .get(EffectType.OPTIONAL_2).getActivated())) {
 
                 arrayBuilder.add("askUseOptional2");
+                objectBuilder.add("askUseOptional2", weaponCard.getMap().get(EffectType.OPTIONAL_2).getArgs());
             }
         }
 
