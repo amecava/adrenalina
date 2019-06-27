@@ -1,10 +1,12 @@
 package it.polimi.ingsw.client.view.gui.screens.boardscreen;
 
 import it.polimi.ingsw.client.view.gui.animations.Images;
+import it.polimi.ingsw.client.view.gui.buttons.ButtonSquare;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonWeapon;
 import it.polimi.ingsw.client.view.gui.handlers.JsonQueue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
@@ -15,16 +17,34 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-class BoardFunction {
+public class BoardFunction {
 
     private BoardFunction() {
 
         //
+    }
+
+    public static List<ButtonSquare> getSquareList(AnchorPane board) {
+
+        return board.getChildren().stream()
+                .filter(x -> x.getId().equals("squares"))
+                .map(x -> (VBox) x)
+                .flatMap(x -> x.getChildren().stream().map(y -> (HBox) y))
+                .flatMap(x -> x.getChildren().stream().map(y -> (StackPane) y))
+                .flatMap(n -> n.getChildren().stream())
+                .filter(n -> n.getId().equals("button"))
+                .map(n -> (ButtonSquare) n)
+                .filter(ButtonSquare::isPresent)
+                .collect(Collectors.toList());
     }
 
     static synchronized void removeCardFromSpawn(ObservableList<Node> children, List<JsonObject> jsonList) {

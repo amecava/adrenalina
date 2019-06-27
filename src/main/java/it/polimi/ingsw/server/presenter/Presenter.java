@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
-import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -274,7 +274,9 @@ public abstract class Presenter implements VirtualPresenter {
 
                 if (this.player.isActivePlayer()) {
 
-                    this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+                    this.callRemoteMethod("updateState", StateHandler
+                            .createActivePlayerState(this.player, state.get("activePlayerState"))
+                            .toString());
 
                 } else {
 
@@ -331,7 +333,11 @@ public abstract class Presenter implements VirtualPresenter {
 
             } catch (EndGameException e) {
 
-                //TODO end game
+                e.getWinner().forEach(x -> {
+
+                    System.out.println(x.stream().map(y -> y.getPlayerId() + " " + y.getPoints())
+                            .collect(Collectors.joining(" | ")));
+                });
             }
         }
     }
@@ -683,7 +689,9 @@ public abstract class Presenter implements VirtualPresenter {
                     this.player.toJsonObject().getJsonObject("bridge").getJsonObject("actionBridge")
                             .toString());
 
-            this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+            this.callRemoteMethod("updateState", StateHandler
+                    .createActivePlayerState(this.player, state.get("activePlayerState"))
+                    .toString());
 
             ClientHandler.gameBroadcast(
                     this.gameHandler,
@@ -839,7 +847,9 @@ public abstract class Presenter implements VirtualPresenter {
 
         } else {
 
-            this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+            this.callRemoteMethod("updateState", StateHandler
+                    .createActivePlayerState(this.player, state.get("activePlayerState"))
+                    .toString());
         }
     }
 

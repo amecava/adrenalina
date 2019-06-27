@@ -117,7 +117,7 @@ public class Model implements Serializable {
 
         this.activePlayer.setActivePlayer(true);
 
-        this.effectHandler.setActivePlayer(activePlayer);
+        this.effectHandler.setActivePlayer(this.activePlayer);
 
         if (this.activePlayer.getAdrenalin().equals(Adrenalin.SECONDFRENZY)) {
 

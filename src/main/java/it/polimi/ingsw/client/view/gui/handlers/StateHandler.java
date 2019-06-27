@@ -6,6 +6,7 @@ import it.polimi.ingsw.client.view.gui.buttons.ButtonPowerUp;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonSquare;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonWeapon;
 import it.polimi.ingsw.client.view.gui.buttons.GameButton;
+import it.polimi.ingsw.client.view.gui.screens.boardscreen.BoardFunction;
 import it.polimi.ingsw.client.view.gui.screens.boardscreen.BoardScreen;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -38,7 +39,9 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 public class StateHandler {
 
@@ -84,7 +87,8 @@ public class StateHandler {
                             ImageView card = new ImageView(Images.weaponsMap.get(i));
                             card.setFitWidth(150);
                             card.setFitHeight(250);
-                            ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card, Rotate.Y_AXIS);
+                            ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card,
+                                    Rotate.Y_AXIS);
 
                             buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
 
@@ -106,7 +110,8 @@ public class StateHandler {
                             }
 
                             buttonWeapon.setVisible(false);
-                            buttonWeapon.flipTransition(Duration.millis(1), actionEvent -> buttonWeapon.setVisible(true)).play();
+                            buttonWeapon.flipTransition(Duration.millis(1),
+                                    actionEvent -> buttonWeapon.setVisible(true)).play();
                         }
                         images.setContent(allcards);
                         images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
@@ -167,7 +172,8 @@ public class StateHandler {
                             Button effettoPrimario = new GameButton("effetto primario");
 
                             effettoPrimario.setOnMouseClicked(
-                                    mouseEvent -> createShootStage("askUsePrimary"));
+                                    mouseEvent -> createShootStage("askUsePrimary",
+                                            object.getJsonNumber("askUsePrimary").doubleValue()));
                             BoardScreen.collectiveButtons.getChildren()
                                     .add(effettoPrimario);
                             resizeButtons();
@@ -178,7 +184,9 @@ public class StateHandler {
                                     "effetto alternativo");
 
                             effettoAlternativo.setOnMouseClicked(
-                                    mouseEvent -> createShootStage("askUseAlternative"));
+                                    mouseEvent -> createShootStage("askUseAlternative",
+                                            object.getJsonNumber("askUseAlternative")
+                                                    .doubleValue()));
                             BoardScreen.collectiveButtons.getChildren()
                                     .add(effettoAlternativo);
                             resizeButtons();
@@ -188,7 +196,8 @@ public class StateHandler {
                             Button opzionale1 = new GameButton("effetto opzionale 1");
 
                             opzionale1.setOnMouseClicked(
-                                    mouseEvent -> createShootStage("askUseOptional1"));
+                                    mouseEvent -> createShootStage("askUseOptional1",
+                                            object.getJsonNumber("askUseOptional1").doubleValue()));
                             BoardScreen.collectiveButtons.getChildren().add(opzionale1);
                             resizeButtons();
 
@@ -197,7 +206,8 @@ public class StateHandler {
                             Button opzionale2 = new GameButton("effetto opzionale 2");
 
                             opzionale2.setOnMouseClicked(
-                                    mouseEvent -> createShootStage("askUseOptional2"));
+                                    mouseEvent -> createShootStage("askUseOptional2",
+                                            object.getJsonNumber("askUseOptional2").doubleValue()));
                             BoardScreen.collectiveButtons.getChildren().add(opzionale2);
                             resizeButtons();
 
@@ -481,7 +491,7 @@ public class StateHandler {
 
                         } else if (method.equals("askReload")) {
 
-                            Button reloadButton = new GameButton("Ricarica");
+                            Button reloadButton = new GameButton("ricarica");
 
                             BoardScreen.collectiveButtons.getChildren().add(reloadButton);
 
@@ -510,60 +520,63 @@ public class StateHandler {
                             HBox actions = new HBox();
                             actions.setSpacing(0);
 
-                            BoardScreen.actionsList.forEach(k -> {
+                            object.getJsonObject("bridge").getJsonObject("actionBridge")
+                                    .getJsonArray("possibleActionsArray").stream()
+                                    .map(JsonValue::asJsonObject)
+                                    .map(y -> y.getInt("id"))
+                                    .forEach(k -> {
 
-                                ImageView action = new ImageView(
-                                        Images.possibleActionsMap
-                                                .get(GUIView.getCharacter() + k));
+                                        ImageView action = new ImageView(
+                                                Images.possibleActionsMap
+                                                        .get(GUIView.getCharacter() + k));
 
-                                int valueOfAction;
+                                        int valueOfAction;
 
-                                switch (k) {
-                                    case 0:
-                                        valueOfAction = 4;
-                                        break;
+                                        switch (k) {
+                                            case 0:
+                                                valueOfAction = 4;
+                                                break;
 
-                                    case 4:
-                                    case 7:
-                                    case 10:
-                                        valueOfAction = 2;
-                                        break;
+                                            case 4:
+                                            case 7:
+                                            case 10:
+                                                valueOfAction = 2;
+                                                break;
 
-                                    case 5:
-                                    case 8:
-                                        valueOfAction = 3;
-                                        break;
+                                            case 5:
+                                            case 8:
+                                                valueOfAction = 3;
+                                                break;
 
-                                    case 6:
-                                    case 9:
-                                        valueOfAction = 1;
-                                        break;
+                                            case 6:
+                                            case 9:
+                                                valueOfAction = 1;
+                                                break;
 
-                                    default:
-                                        valueOfAction = k;
-                                }
+                                            default:
+                                                valueOfAction = k;
+                                        }
 
-                                String actionValueString = Integer
-                                        .toString(valueOfAction);
+                                        String actionValueString = Integer
+                                                .toString(valueOfAction);
 
-                                Button actionButton = new GameButton(action);
+                                        Button actionButton = new GameButton(action);
 
-                                actionButton.setOnMouseClicked(
-                                        mouseEvent1 -> {
+                                        actionButton.setOnMouseClicked(
+                                                mouseEvent1 -> {
 
-                                            JsonQueue.add("method", "selectAction");
-                                            JsonQueue.add("actionNumber",
-                                                    actionValueString);
-                                            JsonQueue.send();
-                                        });
+                                                    JsonQueue.add("method", "selectAction");
+                                                    JsonQueue.add("actionNumber",
+                                                            actionValueString);
+                                                    JsonQueue.send();
+                                                });
 
-                                action.setFitHeight(80);
-                                action.setFitWidth(50);
-                                actions.getChildren().add(actionButton);
-                            });
+                                        action.setFitHeight(80);
+                                        action.setFitWidth(50);
+                                        actions.getChildren().add(actionButton);
+                                    });
 
-                            BoardScreen.collectiveButtons.getChildren()
-                                    .add(actions);
+                            BoardScreen.collectiveButtons.getChildren().add(actions);
 
                         } else if (method.equals("askUsePowerUp")) {
 
@@ -591,7 +604,6 @@ public class StateHandler {
 
                             BoardScreen.collectiveButtons.getChildren().add(fineTurno);
                             resizeButtons();
-
                         }
                     });
             }
@@ -789,7 +801,7 @@ public class StateHandler {
         }
     }
 
-    private static void createShootStage(String effectType) {
+    private static void createShootStage(String effectType, double args) {
 
         VBox root = new VBox();
         root.setSpacing(5);
@@ -799,8 +811,7 @@ public class StateHandler {
                 new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
-        AnchorPane board = BoardScreen
-                .createBoard(false, 2);// scala della meta' in lunghezza
+        AnchorPane board = BoardScreen.createBoard(false, 2);// scala della meta' in lunghezza
         HBox playersConnected = new HBox();
         HBox checkBoxes = new HBox();
         VBox playersAndCheckBox = new VBox();
@@ -884,40 +895,29 @@ public class StateHandler {
         HBox lineOfRadioAndButton = new HBox();
         RadioButton squareTarget = new RadioButton();
 
-        board.getChildren().stream()
-                .filter(n -> n.getId().equals("squares"))
-                .map(n -> (VBox) n)
-                .flatMap(n -> n.getChildren().stream())
-                .map(n -> (HBox) n)
-                .flatMap(n -> n.getChildren().stream())
-                .map(n -> (StackPane) n)
-                .flatMap(n -> n.getChildren().stream())
-                .filter(n -> n.getId().equals("buttonSquare"))
-                .map(n -> (ButtonSquare) n)
-                .filter(ButtonSquare::isPresent)
-                .forEach(s -> s.setOnMouseClicked(
-                        mouseEvent -> {
+        BoardFunction.getSquareList(board).forEach(s -> s.setOnMouseClicked(
+                mouseEvent -> {
 
-                            s.setOnMouseEntered(null);
-                            s.setOnMouseExited(null);
-                            s.setOpacity(0.9);
+                    s.setOnMouseEntered(null);
+                    s.setOnMouseExited(null);
+                    s.setOpacity(0.9);
 
-                            target.append(((ButtonSquare) mouseEvent.getSource())
-                                    .getColor().toLowerCase());
+                    target.append(((ButtonSquare) mouseEvent.getSource())
+                            .getColor().toLowerCase());
 
-                            if (squareTarget.isSelected()) {
+                    if (squareTarget.isSelected()) {
 
-                                target.append("-")
-                                        .append(((ButtonSquare) mouseEvent.getSource())
-                                                .getSquareId());
-                                target.append(" ");
-                            } else {
-                                target.append(")");
-                                createDestination(root, board, effectType, target,
-                                        destination);
-                            }
+                        target.append("-")
+                                .append(((ButtonSquare) mouseEvent.getSource())
+                                        .getSquareId());
+                        target.append(" ");
+                    } else {
+                        target.append(")");
+                        createDestination(root, board, effectType, target,
+                                destination);
+                    }
 
-                        }));
+                }));
         squareTarget.setOnMouseClicked(mouseEvent -> {
             target.setLength(0);
             target.append("target(");
@@ -998,63 +998,43 @@ public class StateHandler {
         selectDestinationLabel.setText("Seleziona la destinazione (se necessario):");
         selectDestinationLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
-        Button skipButton = new Button();
-        skipButton.setText("Salta");
-        skipButton.setStyle("-fx-text-inner-color: white; -fx-font: 20px Silom");
+        Button skipButton = new GameButton("salta");
 
         skipButton.setOnMouseClicked(
                 mouseEvent -> thirdUseEffectScreen(root, effectType, target, destination));
-        board.getChildren().stream()
-                .filter(n -> n.getId().equals("squares"))
-                .map(n -> (VBox) n)
-                .flatMap(n -> n.getChildren().stream())
-                .map(n -> (HBox) n)
-                .flatMap(n -> n.getChildren().stream())
-                .map(n -> (StackPane) n)
-                .flatMap(n -> n.getChildren().stream())
-                .filter(n -> n.getId().equals("buttonSquare"))
-                .map(n -> (ButtonSquare) n)
-                .filter(ButtonSquare::isPresent)
-                .forEach(s -> {
-                    s.setOpacity(0.0);
-                    s.setOnMouseEntered(mouseEvent -> {
-                        s.setOpacity(0.3);
-                        s.getScene().setCursor(Cursor.HAND);
-                    });
-                    s.setOnMouseExited(mouseEvent -> {
-                        s.setOpacity(0.0);
-                        s.getScene().setCursor(Cursor.DEFAULT);
-                    });
-                });
+        BoardFunction.getSquareList(board).forEach(s -> {
+            s.setOpacity(0.0);
+            s.setOnMouseEntered(mouseEvent -> {
+                s.setOpacity(0.3);
+                s.getScene().setCursor(Cursor.HAND);
+            });
+            s.setOnMouseExited(mouseEvent -> {
+                s.setOpacity(0.0);
+                s.getScene().setCursor(Cursor.DEFAULT);
+            });
+        });
         board.setVisible(true);
         root.getChildren().addAll(selectDestinationLabel, board, skipButton);
-        board.getChildren().stream()
-                .filter(n -> n.getId().equals("squares"))
-                .map(n -> (VBox) n)
-                .flatMap(n -> n.getChildren().stream())
-                .map(n -> (HBox) n)
-                .flatMap(n -> n.getChildren().stream())
-                .map(n -> (StackPane) n)
-                .flatMap(n -> n.getChildren().stream())
-                .filter(n -> n.getId().equals("buttonSquare"))
-                .map(n -> (ButtonSquare) n)
-                .filter(ButtonSquare::isPresent)
-                .forEach(s -> s.setOnMouseClicked(
-                        mouseEvent -> {
 
-                            destination.append("destinazione(")
-                                    .append(((ButtonSquare) mouseEvent.getSource())
-                                            .getColor().toLowerCase())
-                                    .append("-")
-                                    .append(((ButtonSquare) mouseEvent.getSource())
-                                            .getSquareId())
-                                    .append(")");
+        BoardFunction.getSquareList(board).forEach(s -> {
 
-                            thirdUseEffectScreen(root, effectType, target,
-                                    destination);
+            s.setOnMouseClicked(
+                    mouseEvent -> {
+
+                        destination.append("destinazione(")
+                                .append(((ButtonSquare) mouseEvent.getSource())
+                                        .getColor().toLowerCase())
+                                .append("-")
+                                .append(((ButtonSquare) mouseEvent.getSource())
+                                        .getSquareId())
+                                .append(")");
+
+                        thirdUseEffectScreen(root, effectType, target,
+                                destination);
 
 
-                        }));
+                    });
+        });
 
 
     }
