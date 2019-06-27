@@ -20,6 +20,15 @@ class ViewInspector {
         //
     }
 
+    /**
+     * Computes the distance between the to given inputs considering the given properties.
+     * @param fromSquare The distance is calculated starting from this square.
+     * @param toSquare Destination square.
+     * @param cardinal This boolean defines which algorithms are used to compute the distance.
+     * @param throughWalls This boolean defines which algorithms are used to compute the distance.
+     * @return The calculated distance.
+     * @throws SquareDistanceException
+     */
     static int computeDistance(Square fromSquare, Square toSquare, boolean cardinal,
             boolean throughWalls) throws SquareDistanceException {
 
@@ -33,6 +42,12 @@ class ViewInspector {
         return recursiveDistance(fromSquare.getMap(throughWalls), toSquare, throughWalls);
     }
 
+    /**
+     * Calculates the view property between squares.
+     * @param fromSquare Starting square.
+     * @param toSquare Target square.
+     * @return True if fromSquare sees toSquare, false otherwise.
+     */
     static boolean targetView(Square fromSquare, Square toSquare) {
 
         // Return true if same rooms
@@ -55,6 +70,12 @@ class ViewInspector {
         return false;
     }
 
+    /**
+     * Calculates the view property between a square and a list of rooms.
+     * @param fromSquare Starting square.
+     * @param targetList Target rooms.
+     * @return True if fromSquare sees all targets, false otherwise.
+     */
     static boolean roomView(Square fromSquare, List<Target> targetList) {
 
         int seen = 0;
@@ -77,6 +98,12 @@ class ViewInspector {
         return seen == targetList.size();
     }
 
+    /**
+     * Computes whether all the targets are on the same direction starting from fromSquare.
+     * @param fromSquare Starting square.
+     * @param targetList List of targets to compute on.
+     * @return True if all targets are on the same direction, false otherwise.
+     */
     static boolean sameDirection(Square fromSquare, List<Target> targetList) {
 
         int seen;
@@ -112,6 +139,14 @@ class ViewInspector {
         return false;
     }
 
+    /**
+     * Computes the distance in the case of cardinal boolean true.
+     * @param fromSquare From Square
+     * @param toSquare Destination Square
+     * @param throughWalls Boolean that states if the distance can be computed ignoring walls.
+     * @return Distance.
+     * @throws SquareDistanceException
+     */
     private static int computeCardinalDistance(Square fromSquare, Square toSquare,
             boolean throughWalls) throws SquareDistanceException {
 
@@ -146,6 +181,13 @@ class ViewInspector {
         throw new SquareDistanceException("Target not found with selected properties!");
     }
 
+    /**
+     * Recursive ausiliary method to compute distance.
+     * @param map The Square Map field used as memory.
+     * @param toSquare Destination Square.
+     * @param throughWalls Boolean that states if the distance can be computed ignoring walls.
+     * @return Distance.
+     */
     private static int recursiveDistance(Map<Square, Integer> map, Square toSquare,
             boolean throughWalls) {
 

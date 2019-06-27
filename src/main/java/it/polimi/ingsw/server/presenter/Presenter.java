@@ -760,7 +760,13 @@ public abstract class Presenter implements VirtualPresenter {
 
         JsonObject object = JsonUtility.jsonDeserialize(value);
 
-        if (this.gameHandler == null) {
+        System.out.println(value);
+        if (object.getString("line").chars().filter(c -> c == '(').count() != object
+                .getString("line").chars().filter(c -> c == ')').count()) {
+
+            this.callRemoteMethod("errorMessage", "Scrivi bene le parentesi.");
+
+        } else if (this.gameHandler == null) {
 
             this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
 

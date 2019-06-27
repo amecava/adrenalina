@@ -791,16 +791,19 @@ public class StateHandler {
 
     private static void createShootStage(String effectType) {
 
-        VBox root = new VBox();
-        root.setSpacing(5);
         StringBuilder target = new StringBuilder();
         StringBuilder destination = new StringBuilder();
+
+        VBox root = new VBox();
+        root.setSpacing(5);
         root.setBackground(new Background(
                 new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                         BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                         BackgroundSize.DEFAULT)));
+
         AnchorPane board = BoardScreen
                 .createBoard(false, 2);// scala della meta' in lunghezza
+
         HBox playersConnected = new HBox();
         HBox checkBoxes = new HBox();
         VBox playersAndCheckBox = new VBox();
@@ -844,7 +847,10 @@ public class StateHandler {
         skipTarget.prefHeightProperty().bind(confirm.prefHeightProperty());
         skipTarget.prefWidthProperty().bind(confirm.prefWidthProperty());
         skipTarget.setOnMouseClicked(
-                mouseEvent -> createDestination(root, board, effectType, target, destination));
+                mouseEvent -> {
+                    target.setLength(0);
+                    createDestination(root, board, effectType, target, destination);
+                });
 
         playersAndCheckBox.getChildren()
                 .addAll(playersConnected, checkBoxes);
@@ -884,6 +890,7 @@ public class StateHandler {
         HBox lineOfRadioAndButton = new HBox();
         RadioButton squareTarget = new RadioButton();
 
+        //TODO {"method":"askUsePrimary","line":"target("} manda questo, e cliccando la stanza non va in createDestination
         board.getChildren().stream()
                 .filter(n -> n.getId().equals("squares"))
                 .map(n -> (VBox) n)
@@ -897,6 +904,8 @@ public class StateHandler {
                 .filter(ButtonSquare::isPresent)
                 .forEach(s -> s.setOnMouseClicked(
                         mouseEvent -> {
+
+                            System.out.println("sono qui cazzo");
 
                             s.setOnMouseEntered(null);
                             s.setOnMouseExited(null);
@@ -968,12 +977,11 @@ public class StateHandler {
                             .forEach(c -> target.append(c.getId()).append(" "));
                     target.append(")");
 
-
                 }
                 createDestination(root, board, effectType, target, destination);
             } else {
-                target.deleteCharAt(target.length() - 1);
-                target.append(")");
+                //target.deleteCharAt(target.length() - 1);
+                target.append(" )");
                 createDestination(root, board, effectType, target,
                         destination);
             }
