@@ -21,8 +21,15 @@ import javax.json.JsonValue;
 
 public class ConsoleView implements View, VirtualView {
 
+    /**
+     * Player's id, a String with his username. Necessary to separate the information in the
+     * JsonObject.
+     */
     private String id;
 
+    /**
+     * Refreshes the static Terminal class that organizes the screens of the terminal.
+     */
     public ConsoleView() {
 
         Terminal.addShutDownHook();
@@ -164,12 +171,27 @@ public class ConsoleView implements View, VirtualView {
         Arrays.stream(builder).map(StringBuilder::toString).forEach(Terminal::output);
     }
 
+    /**
+     * This method sends a broadcast message to every client connected to the server.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void broadcast(String value) {
 
         Terminal.broadcast(value);
     }
 
+    /**
+     * This method sends a broadcast message to every client of a specific game connected to the
+     * server.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void gameBroadcast(String value) {
 
@@ -194,6 +216,14 @@ public class ConsoleView implements View, VirtualView {
         //
     }
 
+    /**
+     * This method completes the login action, making it possible to the player to enter the
+     * GameListScreen. It also stores the id of the player.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeLogin(String value) {
 
@@ -211,12 +241,29 @@ public class ConsoleView implements View, VirtualView {
         }
     }
 
+    /**
+     * This method completes the action of disconnecting the client who asked to be disconnected
+     * from the server.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeDisconnect(String value) {
 
         //
     }
 
+    /**
+     * This method updates the screen that shows to the player how many games have been created and
+     * who is currently logged into every game (eve if the client is currently disconnected from the
+     * server).
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void updateGameList(String value) {
 
@@ -257,12 +304,26 @@ public class ConsoleView implements View, VirtualView {
 
     }
 
+    /**
+     * This method notifies that the action "create game" has been completed successfully.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeCreateGame(String value) {
 
         Terminal.info("Partita creata con nome " + value + ".");
     }
 
+    /**
+     * This method notifies that the action "select game" has been completed successfully.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeSelectGame(String value) {
 
@@ -271,6 +332,15 @@ public class ConsoleView implements View, VirtualView {
         Terminal.info("Sei stato aggiunto con successo alla partita " + value + ".");
     }
 
+    /**
+     * This method updates the screen that is shown to the player when he selected the game he wants
+     * to be part of and he is waiting for the game to start. It updates also the countdown as soon
+     * as there are three players connected to the game.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void updateGameNotStartedScreen(String value) {
 
@@ -342,12 +412,29 @@ public class ConsoleView implements View, VirtualView {
 
     }
 
+    /**
+     * This method notifies the player that the action "vote board" has been completed
+     * successfully.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeVoteBoard(String value) {
 
         Terminal.info("Hai votato per giocare con l'arena " + value + ".");
     }
 
+    /**
+     * This method notifies the player that the action "select action" has been completed
+     * successfully, and guides the player by building a string that says what he can do with the
+     * action he selected.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeSelectAction(String value) {
 
@@ -368,17 +455,26 @@ public class ConsoleView implements View, VirtualView {
         }
         if (jSelectedAction.getBoolean("shoot")) {
 
-            line.append("- \"selezionaarma\" + idCarta (da definire)\n");
+            line.append("- \"selezionaarma\" + idCarta \n");
         }
         if (jSelectedAction.getBoolean("reload")) {
 
-            line.append("- \"ricarica\" + idCarta + (eventualmente)");
+            line.append("- \"ricarica\" + idCarta + (eventualmente i powerup)");
         }
 
         Terminal.info(line.toString());
 
     }
 
+    /**
+     * This method parses the deserialized JsonObject in order to show to the information of the
+     * weapon card asked by the player. It parses the JsonObject and builds the strings that will be
+     * printed.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeCardInfo(String value) {
 
@@ -387,6 +483,9 @@ public class ConsoleView implements View, VirtualView {
         StringBuilder info = new StringBuilder();
 
         info.append("Nome: ").append(jCardObject.getString("name")).append(" \n");
+
+        info.append("Costo di ricarica: ").append(jCardObject.getString("reloadCost"))
+                .append(" \n");
 
         info.append("Effetto primario: ").append(" \n");
         info.append(" -> Nome: ").append(jCardObject.getJsonObject("primary").getString("name"))
@@ -407,7 +506,7 @@ public class ConsoleView implements View, VirtualView {
 
             if (jCardObject.getJsonObject("alternative").get("cost") != null) {
 
-                info.append(" -> Costo: ")
+                info.append(" -> Costo effetto alternativo: ")
                         .append(jCardObject.getJsonObject("alternative").getString("cost"))
                         .append(" \n");
             }
@@ -422,7 +521,7 @@ public class ConsoleView implements View, VirtualView {
             info.append(" -> Descrizione: ")
                     .append(jCardObject.getJsonObject("optional1").getString("description"))
                     .append(" \n");
-            info.append(" -> Costo: ")
+            info.append(" -> Costo effetto opzionale 1: ")
                     .append(jCardObject.getJsonObject("optional1").getString("cost"))
                     .append(" \n");
         }
@@ -436,7 +535,7 @@ public class ConsoleView implements View, VirtualView {
             info.append(" -> Descrizione: ")
                     .append(jCardObject.getJsonObject("optional2").getString("description"))
                     .append(" \n");
-            info.append(" -> Costo: ")
+            info.append(" -> Costo effetto opzionale 2: ")
                     .append(jCardObject.getJsonObject("optional2").getString("cost"))
                     .append(" \n");
         }
@@ -446,6 +545,14 @@ public class ConsoleView implements View, VirtualView {
         Terminal.info(info.toString());
     }
 
+    /**
+     * This method parses the deserialized JsonObject in order to show to the information of the
+     * power up asked by the player.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completePowerUpInfo(String value) throws RemoteException {
 
@@ -455,10 +562,18 @@ public class ConsoleView implements View, VirtualView {
                 .append("Nome: ")
                 .append(jPowerUpObject.getString("name"))
                 .append("\n")
-                .append("Info specifiche da scrivere ... ")
+                .append(jPowerUpObject.getString("info"))
                 .toString());
     }
 
+    /**
+     * This method notifies the player that the action "end action" has been completed
+     * successfully.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void completeEndAction(String value) {
 
@@ -476,12 +591,28 @@ public class ConsoleView implements View, VirtualView {
 
     }
 
+    /**
+     * This method updates the board of every player whenever it is called by the server, so that
+     * players can see how the match is evolving.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void updateBoard(String value) {
 
         this.boardScreen(JsonUtility.jsonDeserialize(value));
     }
 
+    /**
+     * This method updates the game state of a specific player, guiding him through the game by
+     * showing him only what he can do in the moment of the game in which this method is called.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
     @Override
     public void updateState(String value) {
 
@@ -498,5 +629,32 @@ public class ConsoleView implements View, VirtualView {
         Terminal.output(
                 " \u001b[31m / _ \\| |) |   /\u001b[36m _\u001b[31m||\u001b[36m .` \u001b[31m|/ _ \u001b[36m\\| |__ | || .` |/ _ \\ ");
         Terminal.output(" \u001b[0m/_/ \\_\\___/|_|_\\___|_|\\_/_/ \\_\\____|___|_|\\_/_/ \\_\\\n");
+    }
+
+    /**
+     * This method shows the last screen when the game ends.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     * server
+     */
+    @Override
+    public void endGameScreen(String value) throws RemoteException {
+
+        JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
+
+        StringBuilder line = new StringBuilder();
+
+        for (JsonValue playersObject: jsonObject.getJsonArray("array")) {
+
+            line.append(playersObject.asJsonObject().getString("playerId"))
+                    .append(": ")
+                    .append(playersObject.asJsonObject().getInt("points"))
+                    .append(" punti!\n");
+        }
+
+        Terminal.clearScreen();
+
+        Terminal.output(line.toString());
     }
 }

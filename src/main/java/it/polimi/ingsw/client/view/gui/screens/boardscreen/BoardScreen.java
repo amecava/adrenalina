@@ -2,6 +2,8 @@ package it.polimi.ingsw.client.view.gui.screens.boardscreen;
 
 import it.polimi.ingsw.client.view.gui.GUIView;
 import it.polimi.ingsw.client.view.gui.animations.Images;
+import it.polimi.ingsw.client.view.gui.buttons.GameButton;
+import it.polimi.ingsw.client.view.gui.handlers.CardHandler;
 import it.polimi.ingsw.client.view.gui.handlers.JsonQueue;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonPowerUp;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonSquare;
@@ -9,6 +11,7 @@ import it.polimi.ingsw.client.view.gui.buttons.ButtonWeapon;
 import it.polimi.ingsw.server.model.board.Board;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,7 +24,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -43,6 +48,8 @@ public class BoardScreen {
 
     private static int boardId;
     private static JsonObject jsonObject;
+
+    public static boolean isSpawnState = true;
 
     private static AnchorPane board;
 
@@ -452,7 +459,8 @@ public class BoardScreen {
                         });
 
                         imageButton.setVisible(false);
-                        imageButton.flipTransition(Duration.millis(1), actionEvent -> imageButton.setVisible(true)).play();
+                        imageButton.flipTransition(Duration.millis(1),
+                                actionEvent -> imageButton.setVisible(true)).play();
                         playerCards.getChildren().add(imageButton);
                     });
 
@@ -475,7 +483,13 @@ public class BoardScreen {
                                 x.getString("color"), back, powerUp);
                         powerUpButton.setId("powerUp");
                         powerUpButton.setVisible(false);
-                        powerUpButton.flipTransition(Duration.millis(1), actionEvent -> powerUpButton.setVisible(true)).play();
+
+                        if (!isSpawnState) {
+
+                            powerUpButton.setOnMouseClicked(mouseEvent -> CardHandler.powerUpCardInfo(x));
+                        }
+                        powerUpButton.flipTransition(Duration.millis(1),
+                                actionEvent -> powerUpButton.setVisible(true)).play();
                         playerCards.getChildren().add(powerUpButton);
                     });
 
@@ -494,6 +508,9 @@ public class BoardScreen {
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
 
+                        StackPane imageAndButton = new StackPane();
+                        imageAndButton.setId(x.getString("character"));
+
                         ImageView bridge = new ImageView(
                                 Images.bridgesMap.get(new StringBuilder()
                                         .append(x.getString("character"))
@@ -504,7 +521,36 @@ public class BoardScreen {
                         bridge.setId(x.getString("character"));
                         bridge.setFitWidth(990.0 / 3 + 150);
                         bridge.setFitHeight(565.0 / 5);
-                        bridges.getChildren().add(bridge);
+
+                        Button toShowCards = new Button();
+                        toShowCards.setId(x.getString("character"));
+                        toShowCards.setBackground(new Background(
+                                new BackgroundFill(Color.WHITE, CornerRadii.EMPTY,
+                                        Insets.EMPTY)));
+                        toShowCards.setPrefWidth(bridge.getFitWidth());
+                        toShowCards.setPrefHeight(bridge.getFitHeight());
+                        toShowCards.setOpacity(0);
+                        toShowCards.setOnMouseEntered(
+                                mouseEvent -> {
+                                    GUIView.getCurrentStage().getScene()
+                                            .setCursor(Cursor.HAND);
+                                    toShowCards.setOpacity(0.2);
+                                }
+                        );
+                        toShowCards.setOnMouseExited(
+                                mouseEvent -> {
+                                    GUIView.getCurrentStage().getScene()
+                                            .setCursor(Cursor.DEFAULT);
+                                    toShowCards.setOpacity(0);
+                                }
+                        );
+                        toShowCards.setOnMouseClicked(
+                                mouseEvent -> CardHandler.specificWeaponCardInfo(x));
+
+                        imageAndButton.getChildren().addAll(bridge, toShowCards);
+
+                        bridges.getChildren().add(imageAndButton);
+
                     });
 
             /////////////////////////////metto segnalini danno su giocatori e segnalini morti

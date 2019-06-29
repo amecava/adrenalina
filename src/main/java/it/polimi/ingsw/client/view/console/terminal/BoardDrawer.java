@@ -156,7 +156,7 @@ public class BoardDrawer {
         JsonObject damageBridge = object.getJsonObject("damageBridge");
         StringBuilder line = new StringBuilder();
 
-        line.append("Plancia delle morti:          ");
+        line.append("Plancia delle morti: ");
 
         damageBridge.getJsonArray("shots")
                 .stream()
@@ -165,8 +165,7 @@ public class BoardDrawer {
                 .map(Color::ansiColorOf)
                 .forEach(x -> {
 
-                    line.append(x);
-                    line.append("◉");
+                    line.append(x).append("x").append(" ");
                 });
 
         line.append(Color.ansiColorOf("ALL"));
@@ -175,10 +174,10 @@ public class BoardDrawer {
                 i < object.getInt("numberOfDeaths") - damageBridge.getJsonArray("shots").size();
                 i++) {
 
-            line.append("-");
+            line.append("- ");
         }
 
-        return line.append(fixLength(48, 30 + object.getInt("numberOfDeaths"))).toString();
+        return line.append(fixLength(48, 21 + object.getInt("numberOfDeaths") * 2)).toString();
     }
 
     /**

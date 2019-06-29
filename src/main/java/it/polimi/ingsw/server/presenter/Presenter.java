@@ -24,7 +24,9 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 public abstract class Presenter implements VirtualPresenter {
@@ -191,7 +193,7 @@ public abstract class Presenter implements VirtualPresenter {
 
             } else if (!ClientHandler.isGameHandlerPresent(object.getString("gameId"))) {
 
-                this.callRemoteMethod("errorMessage", "Non esiste questa partita cazzo.");
+                this.callRemoteMethod("errorMessage", "Non esiste questa partita.");
 
             } else {
 
@@ -333,11 +335,20 @@ public abstract class Presenter implements VirtualPresenter {
 
             } catch (EndGameException e) {
 
-                e.getWinner().forEach(x -> {
+                JsonArrayBuilder array = Json.createArrayBuilder();
 
-                    System.out.println(x.stream().map(y -> y.getPlayerId() + " " + y.getPoints())
-                            .collect(Collectors.joining(" | ")));
-                });
+                e.getWinner().stream()
+                        .flatMap(x -> x.stream())
+                        .forEach(x ->
+
+                                array.add(
+                                        Json.createObjectBuilder()
+                                                .add("playerId", x.getPlayerId())
+                                                .add("points", x.getPoints()).build())
+                        );
+
+                this.callRemoteMethod("endGameScreen",
+                        Json.createObjectBuilder().add("array", array.build()).build().toString());
             }
         }
     }
@@ -510,10 +521,7 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.player.activateCard(Integer.parseInt(object.getString("cardId")));
 
-                this.callRemoteMethod("infoMessage", "Hai selezionato la carta da usare, "
-                        + "adesso per usare un effetto puoi scrivere:\n"
-                        + "usaeffetto tipoEffetto | Target(un personaggio, un quadrato o una stanza) | destinazione(colore-idQiuadrato) | eventualiPowerup(nome-colore)\n"
-                        + "Esempio: usaeffetto primario | sprog dozer (oppure \"rosso\" per selezionare un'intera stanza) | rosso-1 | mirino-rosso");
+                this.callRemoteMethod("infoMessage", "Hai selezionato la carta da usare!");
 
                 this.callRemoteMethod("updateState",
                         StateHandler.createShootState(this.player, state.get("shootState"))
@@ -573,7 +581,7 @@ public abstract class Presenter implements VirtualPresenter {
 
                     this.callRemoteMethod("errorMessage",
                             "Per favore, per usare un power up scrivi:\n"
-                                    + "usapowerup powerup(nomePowerUp-colorePowerUp) | target(eventualeTarget) | paga(eventualeColore).");
+                                    + "usapowerup powerup(nomePowerUp-colorePowerUp) target(eventualeTarget)  paga(eventualeColore).");
                 } else {
 
                     PowerUpCard powerUpCard = EffectParser

@@ -58,9 +58,7 @@ public class GameListScreen {
         scrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
         scrollPane.setMaxWidth(800);
         scrollPane.setBackground(new Background(
-                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                        BackgroundSize.DEFAULT)));
+                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         scrollPane.setContent(games);
 
@@ -144,7 +142,10 @@ public class GameListScreen {
 
             games.setPrefWidth(scrollPane.getMaxWidth());
             games.setBackground(new Background(
-                    new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
 
             if (jsonArray.isEmpty()) {
 

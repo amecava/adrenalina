@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
@@ -124,7 +125,8 @@ public class WeaponCard implements Card, Serializable {
         return optionalList;
     }
 
-    public void reloadWeapon(List<PowerUpCard> powerUpCardList) throws IllegalActionException, CostException {
+    public void reloadWeapon(List<PowerUpCard> powerUpCardList)
+            throws IllegalActionException, CostException {
 
         if (this.isLoaded()) {
 
@@ -235,6 +237,9 @@ public class WeaponCard implements Card, Serializable {
                 .add("name", this.name)
                 .add("id", this.id)
                 .add("isLoaded", this.loaded)
+                .add("reloadCost", this.reloadCost.stream()
+                        .map(Color::toString)
+                        .collect(Collectors.joining(" ")))
                 .add("notes", (this.notes != null) ? this.notes : " ")
                 .add("primary", this.map.get(EffectType.PRIMARY).toJsonObject())
                 .add("alternative", this.map.containsKey(EffectType.ALTERNATIVE)

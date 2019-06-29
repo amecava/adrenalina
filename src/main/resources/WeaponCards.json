@@ -2,8 +2,8 @@
     {
         "id": 1,
 
-        "name": "LOCK RIFLE",
-        "reloadCost": ["BLU", "BLU"],
+        "name": "DISTRUTTORE",
+        "reloadCost": ["BLU", "BLU"], 
 
         "primary": 1,
         "optional1": 2
@@ -11,53 +11,53 @@
     {
         "id": 2,
 
-        "name": "MACHINE GUN",
+        "name": "MITRAGLIATRICE",
         "reloadCost": ["BLU", "ROSSO"],
 
         "primary": 3,
         "optional1": 4,
         "optional2": 5,
 
-        "notes": "If you deal both additional points of damage, they must be dealt to 2 different targets. If you see only 2 targets, you deal 2 to each if you use both optional effects. If you use the basic effect on only 1 target, you can still use the the turret tripod to give it 1 additional damage."
+        "notes": "Se hai dato entrambi i punti aggiuntivi di danno, devono essere dati a 2 bersagli diversi. Se puoi vedere solo 2 bersagli, dai 2 danni a entrambi se usi entrambi gli effetti opzionali. Se usi l'effetto base solo su 1 bersaglio, puoi comunque usare il tripode di supporto per dare 1 danno aggiuntivo."
     },
     {
         "id": 3,
 
-        "name": "T.H.O.R.",
+        "name": "TORPEDINE",
         "reloadCost": ["BLU", "ROSSO"],
 
         "primary": 6,
         "optional1": 7,
         "optional2": 8,
 
-        "notes": "This card constrains the order in which you can use its effects. (Most cards don't.) Also note that each target must be a different player."
+        "notes": "Questa carta limita l'ordine in cui puoi utilizzare i suoi effetti. (Molte carte non lo fanno.) Inoltre ogni bersaglio deve essere un giocatore differente."
     },
     {
         "id": 4,
 
-        "name": "PLASMA GUN",
+        "name": "FUCILE AL PLASMA",
         "reloadCost": ["BLU", "GIALLO"],
 
         "primary": 9,
         "optional1": 10,
         "optional2": 11,
 
-        "notes": "The two moves have no ammo cost. You don't have to be able to see your target when you play the card. For example, you can move 2 squares and shoot a target you now see. You cannot use 1 move before shooting and 1 move after."
+        "notes": "I due movimenti non hanno costo in munizioni. Non hai bisogno di vedere il tuo bersaglio quando giochi la carta. Per esempio puoi muovere di 2 quadrati e sparare al bersaglio che ora puoi vedere. Non puoi usare 1 movimento prima di sparare e 1 dopo aver sparato."
     },
     {
         "id": 5,
 
-        "name": "WHISPER",
+        "name": "FUCILE DI PRECISIONE",
         "reloadCost": ["BLU", "BLU" , "GIALLO"],
 
         "primary": 12,
 
-        "notes": "For example, in the 2-by-2 room, you cannot shoot a target on an adjacent square, but you can shoot a target on the diagonal. If you are beside a door, you can't shoot a target on the other side of the door, but you can shoot a target on a different square of that room."
+        "notes": "Per esempio, nella stanza 2x2, non puoi sparare a un bersaglio in un quadrato adiacente, ma puoi sparare a un bersaglio lungo la diagonale. Se sei vicino a una porta non puoi sparare a un bersaglio dall'altra parte della porta, ma puoi sparare a un bersaglio su un quadrato diverso in quella stanza."
     },
     {
         "id": 6,
 
-        "name": "ELECTROSCYTHE",
+        "name": "FALCE PROTONICA",
         "reloadCost": ["BLU"],
 
         "primary": 13,
@@ -66,29 +66,29 @@
     {
         "id": 7,
 
-        "name": "TRACTOR BEAM",
+        "name": "RAGGIO TRAENTE",
         "reloadCost": ["BLU"],
 
         "primary": 15,
         "alternative": 16,
 
-        "notes": "You can move a target even if you can't see it. The target ends up in a place where you can see and damage it. The moves do not have to be in the same direction."
+        "notes": "Puoi muovere un bersaglio anche se non puoi vederlo. Il bersaglio finisce in una posizione in cui puoi vederlo e danneggiarlo. I movimenti possono non essere nella stessa direzione."
     },
     {
         "id": 8,
 
-        "name": "VORTEX CANNON",
+        "name": "CANNONE VORTEX",
         "reloadCost": ["ROSSO", "BLU"],
 
         "primary": 17,
         "optional1": 18,
 
-        "notes": "The 3 targets must be different, but some might start on the same square. It is legal to choose targets on your square, on the vortex, or even on squares you can't see. They all end up on the vortex."
+        "notes": "I 3 bersagli devono essere diversi, ma alcuni di loro potrebbero partire dallo stesso quadrato (anche nel quadrato in cui ti trovi tu). Finiscono tutti sullo stesso quadrato con il vortice. Non hai bisogno di vedere i bersagli. Spari al quadrato che puoi vedere, crei un vortice lì e i tuoi bersagli vi vengono risucchiati."
     },
     {
         "id": 9,
 
-        "name": "FURNACE",
+        "name": "VULCANIZZATORE",
         "reloadCost": ["ROSSO", "BLU"],
 
         "primary": 19,
@@ -97,17 +97,17 @@
     {
         "id": 10,
 
-        "name": "HEATSEEKER",
+        "name": "RAZZO TERMICO",
         "reloadCost": ["ROSSO", "ROSSO", "GIALLO"],
 
         "primary": 21,
 
-        "notes": "Yes, this can only hit targets you cannot see."
+        "notes": "Si, può colpire solo bersagli che non puoi vedere."
     },
     {
         "id": 11,
 
-        "name": "HELLION",
+        "name": "RAGGIO SOLARE",
         "reloadCost": ["ROSSO", "GIALLO"],
 
         "primary": 22,
@@ -116,59 +116,59 @@
     {
         "id": 12,
 
-        "name": "FLAMETHROWER",
+        "name": "LANCIAFIAMME",
         "reloadCost": ["ROSSO"],
 
         "primary": 24,
         "alternative": 25,
 
-        "notes": "This weapon cannot damage anyone in your square. However, it can sometimes damage a target you can't see – the flame won't go through walls, but it will go through doors. Think of it as a straight-line blast of flame that can travel 2 squares in a cardinal direction."
+        "notes": "Quest'arma non può danneggiare nessuno nel tuo quadrato. Tuttavia può a volte danneggiare un bersaglio che non vedi, le fiamme non passano attraverso i muri ma passano attraverso le porte. Immaginatelo come una esplosione di fuoco in linea retta che si muove di 2 quadrati in una direzione cardinale."
     },
     {
         "id": 13,
 
-        "name": "GRENADE LAUNCHER",
+        "name": "LANCIAGRANATE",
         "reloadCost": ["ROSSO"],
 
         "primary": 26,
         "optional1": 27,
 
-        "notes": "For example, you can shoot a target, move it onto a square with other targets, then damage everyone including the first target. Or you can deal 2 to a main target, 1 to everyone else on that square, then move the main target. Or you can deal 1 to an isolated target and 1 to everyone on a different square. If you target your own square, you will not be moved or damaged."
+        "notes": "Per esempio puoi sparare a un bersaglio, muoverlo in un quadrato con altri bersagli e danneggiare chiunque, incluso il primo bersaglio. Oppure puoi dare 2 danni a un bersaglio principale e 1 a tutti gli altri in quel quadrato, e poi muovere il bersaglio principale. Oppure puoi dare 1 danno a un bersaglio isolato e 1 a chiunque in quadrato diverso. Se bersagli il quadrato in cui ti trovi non potrai essere mosso o danneggiato."
     },
     {
         "id": 14,
 
-        "name": "ROCKET LAUNCHER",
+        "name": "LANCIARAZZI",
         "reloadCost": ["ROSSO", "ROSSO"],
 
         "primary": 28,
         "optional1": 29,
         "optional2": 30,
 
-        "notes": "If you use the rocket jump before the basic effect, you consider only your new square when determining if a target is legal. You can even move off a square so you can shoot someone on it. If you use the fragmenting warhead, you deal damage to everyone on the target's square before you move the target – your target will take 3 damage total."
+        "notes": "Se usi i razzi portatili prima dell'effetto base considera solo il tuo nuovo quadrato per determinare se il bersaglio è valido. Puoi anche spostarti di 1 quadrato per potergli sparare. Usando la testata a frammentazione dai danno a chiunque si trovi nel quadrato in cui il bersaglio si trovava prima di muoversi. Il bersaglio riceve così 3 danni in totale."
     },
     {
         "id": 15,
 
-        "name": "RAILGUN",
+        "name": "FUCILE LASER",
         "reloadCost": ["GIALLO", "GIALLO", "BLU"],
 
         "primary": 31,
         "alternative": 32,
 
-        "notes": "Basically, you're shooting in a straight line and ignoring walls. You don't have to pick a target on the other side of a wall – it could even be someone on your own square – but shooting through walls sure is fun. There are only 4 cardinal directions. You imagine facing one wall or door, square-on, and firing in that direction. Anyone on a square in that direction (including yours) is a valid target. In piercing mode, the 2 targets can be on the same square or on different squares."
+        "notes": "In pratica spari in linea retta ignorando i muri. Non hai bisogno di scegliere un bersaglio dall'altro lato del muro, potrebbe anche essere qualcuno nel tuo stesso quadrato, ma sparare attraverso i muri è sicuramente divertente. Ci sono solo 4 direzioni cardinali. Immagina di essere di fronte a un muro o una porta, imbracciare il fucile e sparare in quella direzione. Chiunque si trovi su un quadrato in quella direzione (incluso il tuo) è un bersaglio valido. In modalità perforazione i 2 bersagli possono essere nello stesso quadrato o in quadrati diversi."
     },
     {
         "id": 16,
 
-        "name": "CYBERBLADE",
+        "name": "SPADA FOTONICA",
         "reloadCost": ["GIALLO", "ROSSO"],
 
         "primary": 33,
         "optional1": 34,
         "optional2": 35,
 
-        "notes": "Combining all effects allows you to move onto a square and whack 2 people; or whack somebody, move, and whack somebody else; or whack 2 people and then move."
+        "notes": "Combinare tutti gli effetti permette di muoversi in un quadrato e colpire 2 persone; oppure di colpire qualcuno, muovere e colpire qualcun altro. Oppure ancora colpire 2 persone"
     },
     {
         "id": 17,
@@ -179,12 +179,12 @@
         "primary": 36,
         "alternative": 37,
 
-        "notes": "Remember that the 3 targets can be in 3 different rooms."
+        "notes": "Ricorda che i 3 bersagli possono anche essere in 3 stanze diverse."
     },
     {
         "id": 18,
 
-        "name": "SHOTGUN",
+        "name": "FUCILE A POMPA",
         "reloadCost": ["GIALLO", "GIALLO"],
 
         "primary": 38,
@@ -193,18 +193,18 @@
     {
         "id": 19,
 
-        "name": "POWER GLOVE",
+        "name": "CYBERGUANTO",
         "reloadCost": ["GIALLO", "BLU"],
 
         "primary": 40,
         "alternative": 41,
 
-        "notes": "In rocket fist mode, you're flying 2 squares in a straight line, punching 1 person per square."
+        "notes": "Nella modalità cento pugni stai volando per 2 quadrati in linea retta, prendendo a pugni 1 persona per quadrato."
     },
     {
         "id": 20,
 
-        "name": "SHOCKWAVE",
+        "name": "ONDA D'URTO",
         "reloadCost": ["GIALLO"],
 
         "primary": 42,
@@ -213,12 +213,12 @@
     {
         "id": 21,
 
-        "name": "SLEDGEHAMMER",
+        "name": "MARTELLO IONICO",
         "reloadCost": ["GIALLO"],
 
         "primary": 44,
         "alternative": 45,
 
-        "notes": "Remember that moves go through doors, but not walls."
+        "notes": "Ricordati che i movimenti passano attraverso le porte ma non attraverso le pareti."
     }
 ]
