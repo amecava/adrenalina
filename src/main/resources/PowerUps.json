@@ -3,6 +3,8 @@
         "name": "MIRINO",
         "color": "ROSSO",
 
+        "info": "Puoi giocare questa carta quando stai dando danno a uno o più bersagli. Paga 1 cubo munizioni di qualsiasi colore. Scegli 1 dei bersagli e dagli 1 segnalino danno aggiuntivo. Nota: non puoi usare questo potenziamento per dare 1 danno a un bersaglio che sta solo ricevendo marchi.",
+
         "effect": {
             "args": 1, 
             "cost": ["ALL"],
@@ -25,6 +27,8 @@
         "name": "MIRINO",
         "color": "BLU",
 
+        "info": "Puoi giocare questa carta quando stai dando danno a uno o più bersagli. Paga 1 cubo munizioni di qualsiasi colore. Scegli 1 dei bersagli e dagli 1 segnalino danno aggiuntivo. Nota: non puoi usare questo potenziamento per dare 1 danno a un bersaglio che sta solo ricevendo marchi.",
+
         "effect": {
             "args": 1, 
             "cost": ["ALL"],
@@ -46,6 +50,8 @@
     {
         "name": "MIRINO",
         "color": "GIALLO",
+
+        "info": "Puoi giocare questa carta quando stai dando danno a uno o più bersagli. Paga 1 cubo munizioni di qualsiasi colore. Scegli 1 dei bersagli e dagli 1 segnalino danno aggiuntivo. Nota: non puoi usare questo potenziamento per dare 1 danno a un bersaglio che sta solo ricevendo marchi.",
 
         "effect": {
             "args": 1, 
@@ -69,6 +75,8 @@
         "name": "RAGGIOCINETICO",
         "color": "ROSSO",
         
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Scegli la miniatura di un altro giocatore e muovila di 1 o 2 quadrati in una direzione. (Non puoi usare questo potenziamento per muovere una miniatura dopo che è stata rigenerata alla fine del tuo turno, è troppo tardi.)",
+
         "effect": {
             "args": 2,
             
@@ -92,6 +100,8 @@
         "name": "RAGGIOCINETICO",
         "color": "BLU",
         
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Scegli la miniatura di un altro giocatore e muovila di 1 o 2 quadrati in una direzione. (Non puoi usare questo potenziamento per muovere una miniatura dopo che è stata rigenerata alla fine del tuo turno, è troppo tardi.)",
+
         "effect": {
             "args": 2,
             
@@ -115,6 +125,8 @@
         "name": "RAGGIOCINETICO",
         "color": "GIALLO",
         
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Scegli la miniatura di un altro giocatore e muovila di 1 o 2 quadrati in una direzione. (Non puoi usare questo potenziamento per muovere una miniatura dopo che è stata rigenerata alla fine del tuo turno, è troppo tardi.)",
+
         "effect": {
             "args": 2,
             
@@ -138,6 +150,8 @@
         "name": "GRANATAVENOM",
         "color": "ROSSO",
 
+        "info": "Puoi giocare questa carta quando ricevi un danno da un giocatore che puoi vedere. Dai 1 marchio a quel giocatore.",
+
         "effect": {
             "args": 0,   
 
@@ -157,6 +171,8 @@
         "name": "GRANATAVENOM",
         "color": "BLU",
 
+        "info": "Puoi giocare questa carta quando ricevi un danno da un giocatore che puoi vedere. Dai 1 marchio a quel giocatore.",
+
         "effect": {
             "args": 0,   
 
@@ -175,6 +191,8 @@
     {
         "name": "GRANATAVENOM",
         "color": "GIALLO",
+
+        "info": "Puoi giocare questa carta quando ricevi un danno da un giocatore che puoi vedere. Dai 1 marchio a quel giocatore.",
 
         "effect": {
             "args": 0,   
@@ -194,6 +212,8 @@
     {
         "name": "TELETRASPORTO",
         "color": "ROSSO",
+
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Prendi la tua miniatura e piazzala in un qualsiasi quadrato sulla plancia. (Non puoi usare questo potenziamento dopo che hai visto dove un altro giocatore si rigenera alla fine del tuo turno, è troppo tardi.)",
 
         "effect": {
             "args": 0.5,
@@ -217,269 +237,7 @@
         "name": "TELETRASPORTO",
         "color": "BLU",
 
-        "effect": {
-            "args": 0.5,
-
-            "sameAsPlayer": false,
-
-            "next": {
-
-                "args": 0.5,
-                "targetType": "PLAYER",
-
-                "sameAsPlayer": true,
-
-                "maxTargets": 1,
-
-                "atomicEffectList": ["MOVE"]
-            }
-            
-        }
-
-    },
-    {
-        "name": "TELETRASPORTO",
-        "color": "GIALLO",
-
-        "effect": {
-            "args": 0.5,
-
-            "sameAsPlayer": false,
-
-            "next": {
-
-                "args": 0.5,
-                "targetType": "PLAYER",
-
-                "sameAsPlayer": true,
-
-                "maxTargets": 1,
-
-                "atomicEffectList": ["MOVE"]
-            }
-            
-        }
-
-    },
-    {
-        "name": "MIRINO",
-        "color": "ROSSO",
-
-        "effect": {
-            "args": 1, 
-            "cost": ["ALL"],
-            
-            "sameAsPlayer": false,
-            
-            "next":{
-                "args": 1, 
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "sameAsFather": [true],
-
-                "atomicEffectList": ["DAMAGE"]
-            }
-        }
-    }, 
-    {
-        "name": "MIRINO",
-        "color": "BLU",
-
-        "effect": {
-            "args": 1, 
-            "cost": ["ALL"],
-            
-            "sameAsPlayer": false,
-            
-            "next":{
-                "args": 1, 
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "sameAsFather": [true],
-
-                "atomicEffectList": ["DAMAGE"]
-            }
-        }
-    },
-    {
-        "name": "MIRINO",
-        "color": "GIALLO",
-
-        "effect": {
-            "args": 1, 
-            "cost": ["ALL"],
-            
-            "sameAsPlayer": false,
-            
-            "next":{
-                "args": 1, 
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "sameAsFather": [true],
-
-                "atomicEffectList": ["DAMAGE"]
-            }
-        }
-    },
-    {
-        "name": "RAGGIOCINETICO",
-        "color": "ROSSO",
-        
-        "effect": {
-            "args": 2,
-            
-            "sameAsPlayer": false,
-
-            "next": {
-                "args": 2,
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "minDist": 1,
-                "maxDist": 2,
-                "cardinal": true,
-
-                "atomicEffectList": ["MOVE"]
-            }
-        }
-    }, 
-    {
-        "name": "RAGGIOCINETICO",
-        "color": "BLU",
-        
-        "effect": {
-            "args": 2,
-            
-            "sameAsPlayer": false,
-
-            "next": {
-                "args": 2,
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "minDist": 1,
-                "maxDist": 2,
-                "cardinal": true,
-
-                "atomicEffectList": ["MOVE"]
-            }
-        }
-    },
-    {
-        "name": "RAGGIOCINETICO",
-        "color": "GIALLO",
-        
-        "effect": {
-            "args": 2,
-            
-            "sameAsPlayer": false,
-
-            "next": {
-                "args": 2,
-                "targetType": "PLAYER",
-
-                "maxTargets": 1,
-
-                "minDist": 1,
-                "maxDist": 2,
-                "cardinal": true,
-
-                "atomicEffectList": ["MOVE"]
-            }
-        }
-    },
-    {
-        "name": "GRANATAVENOM",
-        "color": "ROSSO",
-
-        "effect": {
-            "args": 0,   
-
-            "sameAsPlayer": true,
-
-            "next": {
-        
-                "args": 1,           
-                "targetType": "PLAYER",
-    
-                "atomicEffectList": ["MARK"]
-            }
-        }
-
-    }, 
-    {
-        "name": "GRANATAVENOM",
-        "color": "BLU",
-
-        "effect": {
-            "args": 0,   
-
-            "sameAsPlayer": true,
-
-            "next": {
-        
-                "args": 1,           
-                "targetType": "PLAYER",
-    
-                "atomicEffectList": ["MARK"]
-            }
-        }
-
-    },
-    {
-        "name": "GRANATAVENOM",
-        "color": "GIALLO",
-
-        "effect": {
-            "args": 0,   
-
-            "sameAsPlayer": true,
-
-            "next": {
-        
-                "args": 1,           
-                "targetType": "PLAYER",
-    
-                "atomicEffectList": ["MARK"]
-            }
-        }
-
-    },
-    {
-        "name": "TELETRASPORTO",
-        "color": "ROSSO",
-
-        "effect": {
-            "args": 0.5,
-
-            "sameAsPlayer": false,
-
-            "next": {
-
-                "args": 0.5,
-                "targetType": "PLAYER",
-
-                "sameAsPlayer": true,
-
-                "maxTargets": 1,
-
-                "atomicEffectList": ["MOVE"]
-            }
-            
-        }
-
-    }, 
-    {
-        "name": "TELETRASPORTO",
-        "color": "BLU",
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Prendi la tua miniatura e piazzala in un qualsiasi quadrato sulla plancia. (Non puoi usare questo potenziamento dopo che hai visto dove un altro giocatore si rigenera alla fine del tuo turno, è troppo tardi.)",
 
         "effect": {
             "args": 0.5,
@@ -504,6 +262,296 @@
     {
         "name": "TELETRASPORTO",
         "color": "GIALLO",
+
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Prendi la tua miniatura e piazzala in un qualsiasi quadrato sulla plancia. (Non puoi usare questo potenziamento dopo che hai visto dove un altro giocatore si rigenera alla fine del tuo turno, è troppo tardi.)",
+
+        "effect": {
+            "args": 0.5,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 0.5,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    },
+    {
+        "name": "MIRINO",
+        "color": "ROSSO",
+
+        "info": "Puoi giocare questa carta quando stai dando danno a uno o più bersagli. Paga 1 cubo munizioni di qualsiasi colore. Scegli 1 dei bersagli e dagli 1 segnalino danno aggiuntivo. Nota: non puoi usare questo potenziamento per dare 1 danno a un bersaglio che sta solo ricevendo marchi.",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ALL"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    }, 
+    {
+        "name": "MIRINO",
+        "color": "BLU",
+
+        "info": "Puoi giocare questa carta quando stai dando danno a uno o più bersagli. Paga 1 cubo munizioni di qualsiasi colore. Scegli 1 dei bersagli e dagli 1 segnalino danno aggiuntivo. Nota: non puoi usare questo potenziamento per dare 1 danno a un bersaglio che sta solo ricevendo marchi.",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ALL"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
+    {
+        "name": "MIRINO",
+        "color": "GIALLO",
+
+        "info": "Puoi giocare questa carta quando stai dando danno a uno o più bersagli. Paga 1 cubo munizioni di qualsiasi colore. Scegli 1 dei bersagli e dagli 1 segnalino danno aggiuntivo. Nota: non puoi usare questo potenziamento per dare 1 danno a un bersaglio che sta solo ricevendo marchi.",
+
+        "effect": {
+            "args": 1, 
+            "cost": ["ALL"],
+            
+            "sameAsPlayer": false,
+            
+            "next":{
+                "args": 1, 
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "sameAsFather": [true],
+
+                "atomicEffectList": ["DAMAGE"]
+            }
+        }
+    },
+    {
+        "name": "RAGGIOCINETICO",
+        "color": "ROSSO",
+        
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Scegli la miniatura di un altro giocatore e muovila di 1 o 2 quadrati in una direzione. (Non puoi usare questo potenziamento per muovere una miniatura dopo che è stata rigenerata alla fine del tuo turno, è troppo tardi.)",
+
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    }, 
+    {
+        "name": "RAGGIOCINETICO",
+        "color": "BLU",
+        
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Scegli la miniatura di un altro giocatore e muovila di 1 o 2 quadrati in una direzione. (Non puoi usare questo potenziamento per muovere una miniatura dopo che è stata rigenerata alla fine del tuo turno, è troppo tardi.)",
+
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
+        "name": "RAGGIOCINETICO",
+        "color": "GIALLO",
+        
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Scegli la miniatura di un altro giocatore e muovila di 1 o 2 quadrati in una direzione. (Non puoi usare questo potenziamento per muovere una miniatura dopo che è stata rigenerata alla fine del tuo turno, è troppo tardi.)",
+
+        "effect": {
+            "args": 2,
+            
+            "sameAsPlayer": false,
+
+            "next": {
+                "args": 2,
+                "targetType": "PLAYER",
+
+                "maxTargets": 1,
+
+                "minDist": 1,
+                "maxDist": 2,
+                "cardinal": true,
+
+                "atomicEffectList": ["MOVE"]
+            }
+        }
+    },
+    {
+        "name": "GRANATAVENOM",
+        "color": "ROSSO",
+
+        "info": "Puoi giocare questa carta quando ricevi un danno da un giocatore che puoi vedere. Dai 1 marchio a quel giocatore.",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    }, 
+    {
+        "name": "GRANATAVENOM",
+        "color": "BLU",
+
+        "info": "Puoi giocare questa carta quando ricevi un danno da un giocatore che puoi vedere. Dai 1 marchio a quel giocatore.",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
+        "name": "GRANATAVENOM",
+        "color": "GIALLO",
+
+        "info": "Puoi giocare questa carta quando ricevi un danno da un giocatore che puoi vedere. Dai 1 marchio a quel giocatore.",
+
+        "effect": {
+            "args": 0,   
+
+            "sameAsPlayer": true,
+
+            "next": {
+        
+                "args": 1,           
+                "targetType": "PLAYER",
+    
+                "atomicEffectList": ["MARK"]
+            }
+        }
+
+    },
+    {
+        "name": "TELETRASPORTO",
+        "color": "ROSSO",
+
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Prendi la tua miniatura e piazzala in un qualsiasi quadrato sulla plancia. (Non puoi usare questo potenziamento dopo che hai visto dove un altro giocatore si rigenera alla fine del tuo turno, è troppo tardi.)",
+
+        "effect": {
+            "args": 0.5,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 0.5,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    }, 
+    {
+        "name": "TELETRASPORTO",
+        "color": "BLU",
+
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Prendi la tua miniatura e piazzala in un qualsiasi quadrato sulla plancia. (Non puoi usare questo potenziamento dopo che hai visto dove un altro giocatore si rigenera alla fine del tuo turno, è troppo tardi.)",
+
+        "effect": {
+            "args": 0.5,
+
+            "sameAsPlayer": false,
+
+            "next": {
+
+                "args": 0.5,
+                "targetType": "PLAYER",
+
+                "sameAsPlayer": true,
+
+                "maxTargets": 1,
+
+                "atomicEffectList": ["MOVE"]
+            }
+            
+        }
+
+    },
+    {
+        "name": "TELETRASPORTO",
+        "color": "GIALLO",
+
+        "info": "Puoi giocare questa carta nel tuo turno prima o dopo aver svolto qualsiasi azione. Prendi la tua miniatura e piazzala in un qualsiasi quadrato sulla plancia. (Non puoi usare questo potenziamento dopo che hai visto dove un altro giocatore si rigenera alla fine del tuo turno, è troppo tardi.)",
 
         "effect": {
             "args": 0.5,

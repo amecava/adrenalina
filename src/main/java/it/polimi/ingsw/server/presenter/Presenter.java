@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
-import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
@@ -22,9 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 public abstract class Presenter implements VirtualPresenter {
@@ -191,7 +193,7 @@ public abstract class Presenter implements VirtualPresenter {
 
             } else if (!ClientHandler.isGameHandlerPresent(object.getString("gameId"))) {
 
-                this.callRemoteMethod("errorMessage", "Non esiste questa partita cazzo.");
+                this.callRemoteMethod("errorMessage", "Non esiste questa partita.");
 
             } else {
 
@@ -274,7 +276,9 @@ public abstract class Presenter implements VirtualPresenter {
 
                 if (this.player.isActivePlayer()) {
 
-                    this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+                    this.callRemoteMethod("updateState", StateHandler
+                            .createActivePlayerState(this.player, state.get("activePlayerState"))
+                            .toString());
 
                 } else {
 
@@ -331,7 +335,20 @@ public abstract class Presenter implements VirtualPresenter {
 
             } catch (EndGameException e) {
 
-                //TODO end game
+                JsonArrayBuilder array = Json.createArrayBuilder();
+
+                e.getWinner().stream()
+                        .flatMap(x -> x.stream())
+                        .forEach(x ->
+
+                                array.add(
+                                        Json.createObjectBuilder()
+                                                .add("playerId", x.getPlayerId())
+                                                .add("points", x.getPoints()).build())
+                        );
+
+                this.callRemoteMethod("endGameScreen",
+                        Json.createObjectBuilder().add("array", array.build()).build().toString());
             }
         }
     }
@@ -504,10 +521,7 @@ public abstract class Presenter implements VirtualPresenter {
 
                 this.player.activateCard(Integer.parseInt(object.getString("cardId")));
 
-                this.callRemoteMethod("infoMessage", "Hai selezionato la carta da usare, "
-                        + "adesso per usare un effetto puoi scrivere:\n"
-                        + "usaeffetto tipoEffetto | Target(un personaggio, un quadrato o una stanza) | destinazione(colore-idQiuadrato) | eventualiPowerup(nome-colore)\n"
-                        + "Esempio: usaeffetto primario | sprog dozer (oppure \"rosso\" per selezionare un'intera stanza) | rosso-1 | mirino-rosso");
+                this.callRemoteMethod("infoMessage", "Hai selezionato la carta da usare!");
 
                 this.callRemoteMethod("updateState",
                         StateHandler.createShootState(this.player, state.get("shootState"))
@@ -567,7 +581,7 @@ public abstract class Presenter implements VirtualPresenter {
 
                     this.callRemoteMethod("errorMessage",
                             "Per favore, per usare un power up scrivi:\n"
-                                    + "usapowerup powerup(nomePowerUp-colorePowerUp) | target(eventualeTarget) | paga(eventualeColore).");
+                                    + "usapowerup powerup(nomePowerUp-colorePowerUp) target(eventualeTarget)  paga(eventualeColore).");
                 } else {
 
                     PowerUpCard powerUpCard = EffectParser
@@ -683,7 +697,9 @@ public abstract class Presenter implements VirtualPresenter {
                     this.player.toJsonObject().getJsonObject("bridge").getJsonObject("actionBridge")
                             .toString());
 
-            this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+            this.callRemoteMethod("updateState", StateHandler
+                    .createActivePlayerState(this.player, state.get("activePlayerState"))
+                    .toString());
 
             ClientHandler.gameBroadcast(
                     this.gameHandler,
@@ -760,7 +776,13 @@ public abstract class Presenter implements VirtualPresenter {
 
         JsonObject object = JsonUtility.jsonDeserialize(value);
 
-        if (this.gameHandler == null) {
+        System.out.println(value);
+        if (object.getString("line").chars().filter(c -> c == '(').count() != object
+                .getString("line").chars().filter(c -> c == ')').count()) {
+
+            this.callRemoteMethod("errorMessage", "Scrivi bene le parentesi.");
+
+        } else if (this.gameHandler == null) {
 
             this.callRemoteMethod("errorMessage", "Non sei connesso a nessuna partita.");
 
@@ -839,7 +861,9 @@ public abstract class Presenter implements VirtualPresenter {
 
         } else {
 
-            this.callRemoteMethod("updateState", state.get("activePlayerState").toString());
+            this.callRemoteMethod("updateState", StateHandler
+                    .createActivePlayerState(this.player, state.get("activePlayerState"))
+                    .toString());
         }
     }
 

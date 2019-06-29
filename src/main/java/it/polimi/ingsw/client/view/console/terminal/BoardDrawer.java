@@ -13,12 +13,34 @@ import javax.json.JsonValue;
 
 public class BoardDrawer {
 
+    /**
+     * Number of rows of the squares that will be printed.
+     */
     private static final int MAX_VERT_TILES = 5; //rows.
 
+    /**
+     * StringBuilder to print the cubes in the square.
+     */
     private static StringBuilder cubesSubString = new StringBuilder();
-    private static StringBuilder playersSubString = new StringBuilder();
-    private static StringBuilder[] squareLine = new StringBuilder[MAX_VERT_TILES * 3 + 6];
 
+    /**
+     * Total height of the array of strings that will be printed.
+     */
+    private static final int TOTAL_HEIGHT = 21; //rows.
+
+    /**
+     * StringBuilder to print the players in the square.
+     */
+    private static StringBuilder playersSubString = new StringBuilder();
+
+    /**
+     * Array of StringBuilders that will be printed.
+     */
+    private static StringBuilder[] squareLine = new StringBuilder[TOTAL_HEIGHT];
+
+    /**
+     * JsonArray containing all the characters of the squares.
+     */
     private static JsonArray jDrawSquares;
 
     static {
@@ -28,6 +50,16 @@ public class BoardDrawer {
         jDrawSquares = Json.createReader(in).readArray();
     }
 
+    /**
+     * For each square this method combines walls and all the information contained in the
+     * jsonObject given as a parameter to build dynamically the array of strings with players, ammo
+     * cubes and the id of the cards.
+     *
+     * @param jsonObject JsonObject created every time the board needs to be updated containing
+     * every necessary information.
+     * @param playerId The id of the player that's playing on that client.
+     * @return Built Array of strings.
+     */
     public static StringBuilder[] drawBoard(JsonObject jsonObject, String playerId)
             throws IllegalArgumentException {
 
@@ -37,13 +69,12 @@ public class BoardDrawer {
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
 
-        //TODO here
         JsonArray jsonArray = jsonObject.getJsonObject("board").getJsonArray("arrays");
         JsonArray jDrawSquaresArray = jDrawSquares
                 .getJsonArray(jsonObject.getJsonObject("board").getInt("boardId"));
 
         squareLine[0] = new StringBuilder()
-                .append("Plancia delle morti           xxxxxxxx          ");
+                .append(addBoardDeaths(jsonObject.getJsonObject("deaths")));
 
         //for each line of the map
         for (int row = 0; row < 3; row++) {
@@ -114,6 +145,46 @@ public class BoardDrawer {
         return addPlayersBridges(squareLine, jsonObject);
     }
 
+    /**
+     * Adds the deaths of the match.
+     *
+     * @param object JsonObject of the board.
+     * @return The string with the deaths updated.
+     */
+    private static String addBoardDeaths(JsonObject object) {
+
+        JsonObject damageBridge = object.getJsonObject("damageBridge");
+        StringBuilder line = new StringBuilder();
+
+        line.append("Plancia delle morti: ");
+
+        damageBridge.getJsonArray("shots")
+                .stream()
+                .map(JsonValue::toString)
+                .map(x -> x.substring(1, x.length() - 1))
+                .map(Color::ansiColorOf)
+                .forEach(x -> {
+
+                    line.append(x).append("x").append(" ");
+                });
+
+        line.append(Color.ansiColorOf("ALL"));
+
+        for (int i = 0;
+                i < object.getInt("numberOfDeaths") - damageBridge.getJsonArray("shots").size();
+                i++) {
+
+            line.append("- ");
+        }
+
+        return line.append(fixLength(48, 21 + object.getInt("numberOfDeaths") * 2)).toString();
+    }
+
+    /**
+     * Adds the ammo cubes of the player.
+     *
+     * @param thisPlayerObject JsonObject of the player.
+     */
     private static void addMyCubes(JsonObject thisPlayerObject) {
 
         squareLine[20].append(Color.ansiColorOf(Color.getColor(thisPlayerObject
@@ -132,6 +203,11 @@ public class BoardDrawer {
                         .size()))).append(Color.ansiColorOf("ALL"));
     }
 
+    /**
+     * Adds the power ups of the player.
+     *
+     * @param thisPlayerObject JsonObject of the player.
+     */
     private static void addMyPowerUps(JsonObject thisPlayerObject) {
 
         StringBuilder thisPlayerPowerUps = new StringBuilder();
@@ -155,6 +231,11 @@ public class BoardDrawer {
                         .size())));
     }
 
+    /**
+     * Adds the cards of the player.
+     *
+     * @param thisPlayerObject JsonObject of the player.
+     */
     private static void addMyCards(JsonObject thisPlayerObject) {
 
         for (int cards = 0; cards < thisPlayerObject.getJsonArray("weapons").size(); cards++) {
@@ -186,6 +267,14 @@ public class BoardDrawer {
         }
     }
 
+    /**
+     * Fixes the length of each string with enough spaces to be long distReach, starting from its
+     * initial length.
+     *
+     * @param distReach Length of the final string.
+     * @param length Initial length of the string.
+     * @return A string full of spaces that will be appended by the caller.
+     */
     private static String fixLength(int distReach, int length) {
 
         StringBuilder line = new StringBuilder();
@@ -198,6 +287,15 @@ public class BoardDrawer {
         return line.toString();
     }
 
+    /**
+     * Adds the ammo cubes in every square based on the information contained in the jsonArray.
+     *
+     * @param cubesSubString StringBuilder to be filled.
+     * @param jsonArray Array containing all the information necessary to build the strings.
+     * @param row Number of the row of the square that needs to be filled.
+     * @param squareInRow Number of the column of the square that needs to be filled.
+     * @return Filled string.
+     */
     private static String addTiles(StringBuilder cubesSubString, JsonArray jsonArray,
             int row, int squareInRow) {
 
@@ -278,6 +376,15 @@ public class BoardDrawer {
         return cubesSubString.toString();
     }
 
+    /**
+     * Adds the players in every square based on the information contained in the jsonArray.
+     *
+     * @param playersSubString StringBuilder to be filled.
+     * @param jsonArray Array containing all the information necessary to build the strings.
+     * @param row Number of the row of the square that needs to be filled.
+     * @param squareInRow Number of the column of the square that needs to be filled.
+     * @return Filled string.
+     */
     private static String addPlayers(StringBuilder playersSubString, JsonArray jsonArray,
             int row, int squareInRow) {
 
@@ -334,7 +441,14 @@ public class BoardDrawer {
         return playersSubString.toString();
     }
 
-
+    /**
+     * Adds the bridges of each player to the array of strings that will be printed.
+     *
+     * @param squareLine Array of strings needed to build the bridges.
+     * @param jGameHandlerObject JsonObject containing all the information needed to update the
+     * bridges.
+     * @return A StringBuilder with the strings updated.
+     */
     private static StringBuilder[] addPlayersBridges(StringBuilder[] squareLine,
             JsonObject jGameHandlerObject) {
 
@@ -390,6 +504,12 @@ public class BoardDrawer {
         return squareLine;
     }
 
+    /**
+     * Auxiliary of addPlayersBridges. Adds the cards of each player to his bridge.
+     *
+     * @param jPlayerObject JsonObject containing all the information needed to update the strings.
+     * @return The updated string with the cards.
+     */
     private static String addOthersCards(JsonObject jPlayerObject) {
 
         StringBuilder cards = new StringBuilder();
@@ -417,6 +537,12 @@ public class BoardDrawer {
 
     }
 
+    /**
+     * Auxiliary of addPlayersBridges. Adds the damages of each player to his bridge.
+     *
+     * @param jPlayerObject JsonObject containing all the information needed to update the strings.
+     * @return The updated string with the damages.
+     */
     private static String addDamages(JsonObject jPlayerObject) {
 
         StringBuilder line = new StringBuilder();
@@ -442,6 +568,12 @@ public class BoardDrawer {
                 .getJsonArray("marks"))).toString();
     }
 
+    /**
+     * Auxiliary of addPlayersBridges. Adds the marks of each player to his bridge.
+     *
+     * @param jMarksArray JsonArray containing all the information needed to update the strings.
+     * @return The updated string with the marks.
+     */
     private static String addMarks(JsonArray jMarksArray) {
 
         StringBuilder line = new StringBuilder();
@@ -461,6 +593,12 @@ public class BoardDrawer {
         return line.toString();
     }
 
+    /**
+     * Auxiliary of addPlayersBridges. Adds the possible actions of each player to his bridge.
+     *
+     * @param jPlayerObject JsonObject containing all the information needed to update the strings.
+     * @return The updated string with the actions.
+     */
     private static String addActions(JsonObject jPlayerObject) {
 
         StringBuilder line = new StringBuilder();
@@ -495,6 +633,12 @@ public class BoardDrawer {
         return line.toString();
     }
 
+    /**
+     * Auxiliary of addPlayersBridges. Adds the death points of each player to his bridge.
+     *
+     * @param jPlayerObject JsonObject containing all the information needed to update the strings.
+     * @return The updated string with the death points.
+     */
     private static String addDeaths(JsonObject jPlayerObject) {
 
         StringBuilder line = new StringBuilder();
@@ -505,7 +649,7 @@ public class BoardDrawer {
 
             if (x.getBoolean("used")) {
 
-                line.append("x");
+                line.append("\uD83D\uDC80");
 
             } else {
 

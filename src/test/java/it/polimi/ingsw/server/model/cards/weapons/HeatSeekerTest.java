@@ -22,7 +22,7 @@ class HeatSeekerTest {
     private EffectHandler effectHandler = new EffectHandler();
 
     @Test
-    void primaryEffect() {
+    void primaryEffect1() {
 
         Board board = new Board.BoardBuilder(this.effectHandler).build(0);
         WeaponDeck weaponDeck = board.getWeaponDeck();
@@ -127,6 +127,43 @@ class HeatSeekerTest {
         }
 
         effectArgument = new EffectArgument(Arrays.asList(target3));
+
+        // Can see target
+        try {
+            tester.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
+            assertTrue(true);
+        } catch (CardException | EffectException | PropertiesException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void primaryEffect2() {
+
+        Board board = new Board.BoardBuilder(this.effectHandler).build(0);
+        WeaponDeck weaponDeck = board.getWeaponDeck();
+
+        Player source = new Player("source", Color.GRIGIO);
+        Player target = new Player("target1", Color.GRIGIO);
+
+        EffectArgument effectArgument;
+
+        source.movePlayer(board.getRoom(0).getSquare(0));
+        target.movePlayer(board.getRoom(2).getSquare(1));
+
+        WeaponCard tester = weaponDeck.getCard(10);
+        tester.setOwner(source);
+
+        effectHandler.setActivePlayer(source);
+
+        try {
+            tester.activateCard();
+            assertTrue(true);
+        } catch (CardException e) {
+            fail();
+        }
+
+        effectArgument = new EffectArgument(Arrays.asList(target));
 
         // Can see target
         try {

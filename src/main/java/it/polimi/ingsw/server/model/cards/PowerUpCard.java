@@ -23,6 +23,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
 
     private String name;
     private Color color;
+    private String info;
 
     private Player owner;
 
@@ -46,6 +47,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
 
         this.name = builder.name;
         this.color = builder.color;
+        this.info = builder.info;
 
         this.effect = builder.effect;
 
@@ -62,12 +64,12 @@ public class PowerUpCard implements Card, Ammo, Serializable {
         // Launch exception if wrong method call
         if (this.effect.getArgs() != target.getArgs()) {
 
-            throw new EffectCallException("Wrong number of arguments to method call!");
+            throw new EffectCallException("Errore! Riprova selezionando le cose giuste.");
         }
 
         if (!this.effect.getCost().isEmpty()) {
 
-            throw new EffectCallException("Wrong method call!");
+            throw new EffectCallException("Attenzione: errore! Riprova");
         }
 
         target.setWeaponCard(false);
@@ -96,7 +98,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
 
         } else {
 
-            throw new CardNotLoadedException("You can't use a power up right now!");
+            throw new CardNotLoadedException("Non puoi usare questo power up adesso!");
         }
     }
 
@@ -106,25 +108,25 @@ public class PowerUpCard implements Card, Ammo, Serializable {
         // Launch exception if wrong method call
         if (effect.getArgs() != target.getArgs()) {
 
-            throw new EffectCallException("Wrong number of arguments to method call!");
+            throw new EffectCallException("Errore! Riprova selezionando le cose giuste.");
         }
 
         if (color == null || this.effect.getCost().isEmpty()) {
 
-            throw new EffectCallException("Wrong method call!");
+            throw new EffectCallException("Attenzione: errore! Riprova");
         }
 
         if (effect.isSameAsPlayer() || !this.owner
                 .equals(effectHandler.getActivePlayer())
                 || this.owner.getRemainingActions() == -1) {
 
-            throw new CardNotLoadedException("You can't use a power up right now!");
+            throw new CardNotLoadedException("Non puoi usare questo power up adesso!");
         }
 
         AmmoCube ammoCube = this.owner.getAmmoCubesList().stream()
                 .filter(x -> x.getColor().equals(color) && !x.isUsed())
                 .findAny()
-                .orElseThrow(() -> new CostException("Non hai l'ammocube selezionato."));
+                .orElseThrow(() -> new CostException("Non hai il cubo munizione selezionato."));
 
         target.setWeaponCard(false);
 
@@ -139,6 +141,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
         return Json.createObjectBuilder()
                 .add("name", this.name)
                 .add("color", this.color.toString())
+                .add("info", this.info)
                 .build();
     }
 
@@ -148,6 +151,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
 
         private String name;
         private Color color;
+        private String info;
 
         private Effect effect;
 
@@ -160,6 +164,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
 
             this.name = jsonObject.getString("name");
             this.color = Color.valueOf(jsonObject.getString("color"));
+            this.info = jsonObject.getString("info");
 
             this.effect = new Effect.EffectBuilder(jsonObject.getJsonObject("effect")).build();
 

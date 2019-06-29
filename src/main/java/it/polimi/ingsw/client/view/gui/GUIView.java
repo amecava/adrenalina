@@ -19,6 +19,7 @@ import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualView;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.rmi.RemoteException;
 import java.util.Map.Entry;
 import javafx.animation.Animation;
 import javafx.application.Application;
@@ -433,5 +434,11 @@ public class GUIView extends Application implements View, VirtualView {
     public synchronized void updateState(String value) {
 
         StateHandler.updateState(JsonUtility.jsonDeserialize(value));
+    }
+
+    @Override
+    public void endGameScreen(String value) throws RemoteException {
+
+        //TODO
     }
 }
