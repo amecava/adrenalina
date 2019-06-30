@@ -486,7 +486,8 @@ public class BoardScreen {
 
                         if (!isSpawnState) {
 
-                            powerUpButton.setOnMouseClicked(mouseEvent -> CardHandler.powerUpCardInfo(x));
+                            powerUpButton.setOnMouseClicked(
+                                    mouseEvent -> CardHandler.powerUpCardInfo(x));
                         }
                         powerUpButton.flipTransition(Duration.millis(1),
                                 actionEvent -> powerUpButton.setVisible(true)).play();

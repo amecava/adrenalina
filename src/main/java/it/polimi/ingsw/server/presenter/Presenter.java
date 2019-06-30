@@ -9,6 +9,7 @@ import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
+import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
@@ -344,11 +345,17 @@ public abstract class Presenter implements VirtualPresenter {
                                 array.add(
                                         Json.createObjectBuilder()
                                                 .add("playerId", x.getPlayerId())
-                                                .add("points", x.getPoints()).build())
+                                                .add("character", x.getColor().getCharacter())
+                                                .add("points", x.getPoints())
+                                                .build())
                         );
 
-                this.callRemoteMethod("endGameScreen",
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "endGameScreen",
                         Json.createObjectBuilder().add("array", array.build()).build().toString());
+
             }
         }
     }

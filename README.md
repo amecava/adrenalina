@@ -8,13 +8,13 @@
 
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
-| Basic rules | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| Complete rules | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| Socket | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| RMI | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
+| Basic rules | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
+| Complete rules | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
+| Socket | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
+| RMI | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | GUI | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| CLI | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
-| Multiple games | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
+| CLI | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
+| Multiple games | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | Persistence | [![RED](https://placehold.it/15/ffdd00/ffdd00)](#) |
 | Domination or Towers modes | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
 | Terminator | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
@@ -24,3 +24,28 @@
 [![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#)
 [![GREEN](https://placehold.it/15/44bb44/44bb44)](#)
 -->
+
+## Usage
+
+
+## Run server 
+>  **Note:** "data.ser" is the saving file. If you want to delete history, just delete the file. The server loads and saves automatically. If you log in with a username you already used you will be reconnected the saved match.
+
+From project's directory:
+
+``
+./adrenalina -s 
+``
+
+## Run client (gui version) 
+From project's directory:
+
+``
+./adrenalina -g 
+``
+## Run client (cli version) 
+From project's directory:
+
+``
+./adrenalina -c 
+``
