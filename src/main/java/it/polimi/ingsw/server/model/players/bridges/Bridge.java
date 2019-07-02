@@ -96,6 +96,12 @@ public class Bridge implements Serializable {
 
     public Adrenalin getAdrenalin() {
 
+        if (this.actionBridge.getAdrenalin().equals(Adrenalin.FIRSTFRENZY) ||
+                this.actionBridge.getAdrenalin().equals(Adrenalin.SECONDFRENZY)) {
+
+            return this.actionBridge.getAdrenalin();
+        }
+
         return this.damageBridge.getAdrenalin();
     }
 

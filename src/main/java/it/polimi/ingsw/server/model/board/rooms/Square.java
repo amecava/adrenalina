@@ -22,19 +22,57 @@ import javax.json.JsonValue;
 
 public class Square implements Target, Serializable {
 
+    /**
+     * An integer to identify a specific square in its room.
+     */
     private int squareId;
+
+    /**
+     * A reference to the room in which the square is.
+     */
     private Room room;
 
+    /**
+     * A boolean that says if this is a square in which the players can spawn either in the first
+     * turn or after death.
+     */
     private boolean spawn;
+
+    /**
+     * The list of what's in the square. If the "spawn" boolean is true this is (dynamically) a list
+     * of WeaponCard, otherwise it is a list (with a single) AmmoTile.
+     */
     private List<Card> tools;
 
+    /**
+     * A "memory" of the distance of any other square in the map (built dynamically). The key of the
+     * outer map is a Boolean corresponding to the "throughWalls" property. The inner map saves for
+     * each square its distance from this square.
+     */
     private Map<Boolean, HashMap<Square, Integer>> map = new HashMap<>();
 
+    /**
+     * A map that links this to its adjacent square (or null if the connection is "ENDMAP") in every
+     * direction.
+     */
     private Map<Direction, Square> adjacent = new EnumMap<>(Direction.class);
+
+    /**
+     * A map that, for every directions, says which kind of connection this square has.
+     */
     private Map<Direction, Connection> connection = new EnumMap<>(Direction.class);
 
+    /**
+     * The list of players that are currently in this square.
+     */
     private List<Player> players = new ArrayList<>();
 
+    /**
+     * Creates the square and initializes the distance map.
+     *
+     * @param squareId The id of this square.
+     * @param spawn The boolean spawn property.
+     */
     public Square(int squareId, boolean spawn) {
 
         this.squareId = squareId;
@@ -86,6 +124,11 @@ public class Square implements Target, Serializable {
         return this.tools;
     }
 
+    /**
+     * Builds a list of all adjacent squares.
+     *
+     * @return The list of all the adjacent squares.
+     */
     public List<Square> getAdjacent() {
 
         return new ArrayList<>(this.adjacent.values());
@@ -123,21 +166,42 @@ public class Square implements Target, Serializable {
         return this.players;
     }
 
+    /**
+     * Adds a player to the list.
+     *
+     * @param player The player.
+     */
     public void addPlayer(Player player) {
 
         this.players.add(player);
     }
 
+    /**
+     * When a player moves away from this square, is removed from the list.
+     *
+     * @param player The moving player.
+     */
     public void removePlayer(Player player) {
 
         this.players.remove(player);
     }
 
+    /**
+     * Updates the tools list with new Cards.
+     *
+     * @param tool The WeaponCard/AmmoTile that will be added.
+     */
     public void addTool(Card tool) {
 
         this.tools.add(tool);
     }
 
+    /**
+     * This method does the "collect" action when the player is in a different square from a
+     * spawn-square.
+     *
+     * @return The AmmoTile in the square.
+     */
     public AmmoTile collectAmmoTile() throws EmptySquareException {
 
         if (!this.tools.isEmpty()) {
@@ -148,7 +212,14 @@ public class Square implements Target, Serializable {
         throw new EmptySquareException("Hai già raccolto le munizioni in questo quadrato.");
     }
 
-    public List<Color> getCostOfCard(int id) throws EmptySquareException{
+    /**
+     * Searches in the tools list the card specified by the parameter and, if is able to find it,
+     * returns the list of Color corresponding to its cost.
+     *
+     * @param id The id of the card.
+     * @return The List of Color - the cost of the card.
+     */
+    public List<Color> getCostOfCard(int id) throws EmptySquareException {
 
         return this.tools.stream()
                 .map(x -> (WeaponCard) x)
@@ -160,6 +231,14 @@ public class Square implements Target, Serializable {
                 .getReloadCost();
     }
 
+    /**
+     * This method does the "collect" action when the player is in a spawn square and he doesn't
+     * need to discard a card because he doesn't have three cards in his hand. It throws an
+     * exception if the card isn't in this square.
+     *
+     * @param id The card the player wants to collect.
+     * @return The desired card.
+     */
     public Card collectWeaponCard(int id) throws EmptySquareException {
 
         return this.tools.remove(this.tools.indexOf(
@@ -171,6 +250,14 @@ public class Square implements Target, Serializable {
                                 "La carta che vuoi raccogliere non è in questo quadrato."))));
     }
 
+    /**
+     * This method does the "collect" action when the player is in a spawn square and needs to also
+     * discard  one of the three cards in his hand.
+     *
+     * @param playerCard The WeaponCard that the user chose to discard.
+     * @param squareCardId The id of the card that he wants to collect.
+     * @return The desired card.
+     */
     public Card collectWeaponCard(WeaponCard playerCard, int squareCardId)
             throws EmptySquareException {
 
@@ -186,6 +273,14 @@ public class Square implements Target, Serializable {
         return this.tools.remove(index);
     }
 
+    /**
+     * It adds every attribute necessary to identify this square to a JsonObject, and it also build
+     * two JsonArray for the players in the square and the tools. This method creates a JsonObject
+     * containing all the information needed in the View. The said JsonObject will add up to every
+     * other JsonObject of every other (necessary) class and will be sent to the view when needed.
+     *
+     * @return The JsonObject of the square.
+     */
     public JsonObject toJsonObject() {
 
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
@@ -205,7 +300,8 @@ public class Square implements Target, Serializable {
                 .add("squareId", this.squareId)
                 .add("isSpawn", this.spawn)
                 .add("tools", toolsBuilder.build())
-                .add("playersIn", (this.players.isEmpty()) ? JsonValue.NULL : playersBuilder.build())
+                .add("playersIn",
+                        (this.players.isEmpty()) ? JsonValue.NULL : playersBuilder.build())
                 .add("eastConnection", this.connection.get(Direction.EAST).toString())
                 .build();
     }

@@ -21,13 +21,37 @@ class EffectParser {
         //
     }
 
-    private static final String TIPO = "tipo";
+    /**
+     * A final string used to search in the string the target the user wants to shoot.
+     */
     private static final String TARGET = "target";
-    private static final String DESTINAZIONE = "destinazione";
-    private static final String POWER_UP = "powerup";
-    private static final String AMMOCOLOR = "paga";
-    private static final String CARD_ID = "id";
 
+    /**
+     * A final string used to search in the string the destination in which the user wants send his
+     * targets.
+     */
+    private static final String DESTINAZIONE = "destinazione";
+
+    /**
+     * A final string used to search in the string the power ups the user wants to use.
+     */
+    private static final String POWER_UP = "powerup";
+
+    /**
+     * A final string used to search in the string the ammo cube the user wants to discard when
+     * using the power up that needs it.
+     */
+    private static final String AMMOCOLOR = "paga";
+
+    /**
+     * Method used to convert the user's string into an effective EffectArgument by calling his
+     * auxiliary methods.
+     *
+     * @param gameHandler This method needs the GmeHandler because it uses some methods of the model
+     * to search some information.
+     * @param request The string sent by the user.
+     * @return An EffectArgument based on what the user asked.
+     */
     static EffectArgument effectArgument(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
 
@@ -42,6 +66,10 @@ class EffectParser {
         return effectArgument;
     }
 
+    /**
+     * Method that inspects the users's String in order to find which ammo cube the user wants to
+     * discard when using the power up that needs it.
+     */
     static Color paymentCube(String line) throws ColorException {
 
         int startPar;
@@ -69,6 +97,15 @@ class EffectParser {
         return Color.ofName(line);
     }
 
+    /**
+     * Method that inspects the users's String in order to find the targets the user wants to
+     * shoot.
+     *
+     * @param gameHandler This method needs the GmeHandler because it uses some methods of the model
+     * to search some information.
+     * @param request The string sent by the user.
+     * @return The list of targets found.
+     */
     static List<Target> target(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
 
@@ -137,6 +174,14 @@ class EffectParser {
         return targetList;
     }
 
+    /**
+     * Method that inspects the users's String in order to find the destination in which the user wants to send the targets.
+     *
+     * @param gameHandler This method needs the GameHandler because it uses some methods of the model
+     * to search some information.
+     * @param request The string sent by the user.
+     * @return The square found.
+     */
     static Square destination(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
 
@@ -184,6 +229,14 @@ class EffectParser {
         }
     }
 
+    /**
+     * Method that inspects the users's String in order to find the power ups the user wants to use.
+     *
+     * @param player This method needs the Player because it uses some methods of Player
+     * to search some information.
+     * @param request The string sent by the user.
+     * @return The list of power ups found.
+     */
     static List<PowerUpCard> powerUps(Player player, String request) throws CardException {
 
         List<PowerUpCard> list = new ArrayList<>();

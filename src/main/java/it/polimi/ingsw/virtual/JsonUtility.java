@@ -11,11 +11,25 @@ public class JsonUtility {
         //
     }
 
+    /**
+     * Static method to deserialize the JsonObject sent from the server.
+     *
+     * @param line JsonObect as a String.
+     * @return deserialized JsonObject
+     */
     public static JsonObject jsonDeserialize(String line) {
 
         return Json.createReader(new StringReader(line)).readObject();
     }
 
+    /**
+     * Method that deals with typos in the cli. The Levenshtein distance is how many steps it takes
+     * to transform the string input into the string match.
+     *
+     * @param input Users's string
+     * @param match String that is expected.
+     * @return Levenshtein's distance.
+     */
     public static int levenshteinDistance(String input, String match) {
 
         input = input.toLowerCase();

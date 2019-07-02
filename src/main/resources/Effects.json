@@ -471,7 +471,7 @@
     },
     {
         "id": 29,
-        "args": 1,
+        "args": 0.5,
         "name": "razzi portatili",
         "description": "Muovi di 1 o 2 quadrati. Questo effetto può essere usato prima o dopo l'effetto base.",
         "targetType": "PLAYER",

@@ -93,7 +93,7 @@ public class PointHandler {
                     tempPlayer = getNextPlayer(playerList, tempPlayer);
                 }
 
-                while (tempPlayer != activePlayer) {
+                while (tempPlayer != getNextPlayer(playerList, activePlayer)) {
 
                     tempPlayer.setAdrenalin(Adrenalin.SECONDFRENZY);
                     tempPlayer = getNextPlayer(playerList, tempPlayer);
@@ -102,7 +102,6 @@ public class PointHandler {
                 deaths.setFirstFrenzyPlayer(getNextPlayer(playerList, activePlayer));
 
                 return false;
-
             }
 
             return getNextPlayer(playerList, activePlayer) == deaths.getFirstFrenzyPlayer();

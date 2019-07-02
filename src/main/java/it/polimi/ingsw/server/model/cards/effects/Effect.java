@@ -13,34 +13,123 @@ import javax.json.JsonObject;
 
 public class Effect implements Serializable {
 
+    /**
+     * The id of the effect.
+     */
     private int id;
+
+    /**
+     * The number of arguments needed to execute this effect.
+     */
     private double args;
+
+    /**
+     * The name of the effect.
+     */
     private String name;
+
+    /**
+     * The description of the effect.
+     */
     private String description;
+
+    /**
+     * The TargetType of the effect.
+     */
     private TargetType targetType;
 
+    /**
+     * A boolean that says if this effect has been used or is available.
+     */
     private boolean used;
 
+    /**
+     * A reference to an effect that needs to be applied right after this effect.
+     */
     private Effect next;
+
+    /**
+     * The list of the ids of optional effects that are consequences of this effect.
+     */
     private List<Integer> optionalId;
 
+    /**
+     * The list of color that is the cost of this effect.
+     */
     private List<Color> cost;
+
+    /**
+     * A Boolean that says if this effect has been activated or not.
+     */
     private Boolean activated;
 
+    /**
+     * The integer that say the maximum number of targets on which this effect can be applied.
+     */
     private Integer maxTargets;
+
+    /**
+     * A lis tof Boolean that says if the targets of this effect need to be the same of the targets
+     * of the effect that have been executed right before.
+     */
     private List<Boolean> sameAsFather;
+
+    /**
+     * A boolean that says if the target of this effect needs to be the same of the player who wants
+     * to execute it.
+     */
     private boolean sameAsPlayer;
+
+    /**
+     * A Boolean that says if the target of this effect has to be viewable by the player who is
+     * executing it.
+     */
     private Boolean targetView;
+
+    /**
+     * A boolean that says if the target of this effect has to be viewable by the targets in the
+     * "active" list of the EffectHandler.
+     */
     private boolean seenByActive;
 
+    /**
+     * An integer that says which is the minimum distance (in term of squares) that must occur
+     * between the source and the target of this effect.
+     */
     private Integer minDist;
+
+    /**
+     * An integer that says which is the maximum distance (in term of squares) that must occur
+     * between the source and the target of this effect.
+     */
     private Integer maxDist;
+
+    /**
+     * A boolean that say if the target has to be in a cardinal direction with the player.
+     */
     private boolean cardinal;
+
+    /**
+     * A boolean that says if this effect can be applied ignoring walls.
+     */
     private boolean throughWalls;
+
+    /**
+     * A boolean that say if the square of the target (a square can be a target itself) and the
+     * square of the player has to be different.
+     */
     private boolean differentSquares;
 
+    /**
+     * The list of atomic effects.
+     */
     private List<AtomicEffect> atomicEffectList;
 
+    /**
+     * Builds the effect based on the builder.
+     *
+     * @param builder The builder.
+     */
     private Effect(EffectBuilder builder) {
 
         this.id = builder.id;
@@ -182,6 +271,12 @@ public class Effect implements Serializable {
         return this.differentSquares;
     }
 
+    /**
+     * Executes the effect.
+     *
+     * @param source The player who wants to execute this effect.
+     * @param target The targets on which the player who wants to execute this effect.
+     */
     public void execute(Player source, EffectArgument target) {
 
         for (AtomicEffect atomicEffect : this.atomicEffectList) {
@@ -190,12 +285,18 @@ public class Effect implements Serializable {
         }
     }
 
+    /**
+     * This method creates a JsonObject containing all the information needed in the View. The said
+     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
+     * sent to the view when needed.
+     */
     public JsonObject toJsonObject() {
 
         return Json.createObjectBuilder()
                 .add("name", this.name)
                 .add("description", this.description)
-                .add("cost", this.cost.stream().map(Color::toString).collect(Collectors.joining(" ")))
+                .add("cost",
+                        this.cost.stream().map(Color::toString).collect(Collectors.joining(" ")))
                 .build();
     }
 
@@ -236,6 +337,11 @@ public class Effect implements Serializable {
             this.jEffectObject = jEffectObject;
         }
 
+        /**
+         * Builds the effect reading the information in the JsonObject "jEffectObject.
+         *
+         * @return The effect built.
+         */
         public Effect build() {
 
             if (this.jEffectObject.containsKey("id")) {

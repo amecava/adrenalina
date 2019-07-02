@@ -24,13 +24,20 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
@@ -40,6 +47,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
@@ -196,12 +205,102 @@ public class BoardScreen {
 
         borderPane.setRight(right);
 
+        ImageView backCard = new ImageView(Images.weaponsMap.get(0));
+        backCard.setFitHeight(92);
+        backCard.setFitWidth(61);
+
+        Button infoCard = new GameButton(backCard);
+        infoCard.setId("infoCard");
+
+        infoCard.setOnMouseClicked(mouseEvent -> {
+
+            Stage infoCardStage = new Stage();
+            infoCardStage.setMinWidth(430);
+            infoCardStage.setMaxWidth(430);
+            infoCardStage.initModality(Modality.APPLICATION_MODAL);
+            infoCardStage.initOwner(GUIView.getCurrentStage());
+
+            ScrollPane images = new ScrollPane();
+            images.setBackground(new Background(
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
+            HBox twoCards = new HBox();
+            twoCards.setMaxWidth(500);
+            twoCards.setSpacing(80);
+            twoCards.setBackground(new Background(
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
+            VBox allCards = new VBox();
+            allCards.setMaxWidth(500);
+            allCards.setSpacing(0);
+            allCards.setBackground(new Background(
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
+            for (int i = 1; i < 22; i++) {
+                ImageView back = new ImageView(Images.weaponsMap.get(0));
+                ImageView card = new ImageView(Images.weaponsMap.get(i));
+                card.setFitWidth(150);
+                card.setFitHeight(250);
+                ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card,
+                        Rotate.Y_AXIS);
+
+                buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
+
+                    JsonQueue.add("method", "askCardInfo");
+                    JsonQueue.add("cardId", Integer.toString(
+                            ((ButtonWeapon) weaponMouseEvent.getSource())
+                                    .getCardId()));
+                    JsonQueue.send();
+                });
+                twoCards.getChildren().add(buttonWeapon);
+
+                if (twoCards.getChildren().size() == 2) {
+
+                    allCards.getChildren().add(twoCards);
+                    twoCards = new HBox();
+                    twoCards.setSpacing(80);
+                    twoCards.setBackground(new Background(
+                            new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                                    BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                                    BackgroundSize.DEFAULT)));
+                }
+
+                buttonWeapon.setVisible(false);
+                buttonWeapon.flipTransition(Duration.millis(1),
+                        actionEvent -> buttonWeapon.setVisible(true)).play();
+            }
+            images.setMaxWidth(500);
+            images.setContent(allCards);
+            images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+            images.setHbarPolicy(ScrollBarPolicy.NEVER);
+            Scene imagesScene = new Scene(new StackPane(images), 450, 500);
+            infoCardStage.setResizable(false);
+            infoCardStage.setScene(imagesScene);
+            infoCardStage.show();
+        });
+        infoCard.setAlignment(Pos.CENTER);
+
+        AnchorPane.setLeftAnchor(infoCard, 649.0);
+        AnchorPane.setTopAnchor(infoCard, 160.0);
+
+        board.getChildren().add(infoCard);
         ready.setValue(true);
 
         GUIView.changeScene(borderPane);
     }
 
     public static synchronized void updateScreen(JsonObject object) {
+
+        if (object == null) {
+
+            return;
+        }
 
         jsonObject = object;
 
@@ -480,7 +579,11 @@ public class BoardScreen {
                         powerUp.setFitWidth(130);
                         powerUp.setFitHeight((565.0 / 3) + 15);
                         ButtonPowerUp powerUpButton = new ButtonPowerUp(x.getString("name"),
-                                x.getString("color"), back, powerUp);
+                                x.getString("color"),
+                                x.getString("targetType"),
+                                x.getJsonNumber("args").doubleValue(),
+                                x.getBoolean("hasCost"),
+                                back, powerUp);
                         powerUpButton.setId("powerUp");
                         powerUpButton.setVisible(false);
 

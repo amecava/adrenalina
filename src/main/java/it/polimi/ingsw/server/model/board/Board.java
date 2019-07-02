@@ -28,14 +28,36 @@ import javax.json.JsonValue;
 
 public class Board implements Serializable {
 
+    /**
+     * An integer that identifies one board from the other three possible boards.
+     */
     private int boardId;
 
+    /**
+     * The list of all rooms of this board.
+     */
     private List<Room> roomsList;
 
+    /**
+     * The deck of weapon cards.
+     */
     private WeaponDeck weaponDeck;
+
+    /**
+     * The deck of Ammo Tiles.
+     */
     private AmmoTilesDeck ammoTilesDeck;
+
+    /**
+     * The deck of Power Ups.
+     */
     private PowerUpDeck powerUpDeck;
 
+    /**
+     * It builds the board using the BoardBuilder.
+     *
+     * @param builder The builder.
+     */
     private Board(BoardBuilder builder) {
 
         this.boardId = builder.boardId;
@@ -78,6 +100,10 @@ public class Board implements Serializable {
         return this.powerUpDeck.getPowerUpCard();
     }
 
+    /**
+     * This method updates the "tools" list of every square. For example, if a player collects
+     * something, at the end of his turn, it has to be replaced.
+     */
     public void fillBoard() {
 
         this.roomsList.stream()
@@ -94,6 +120,13 @@ public class Board implements Serializable {
                 });
     }
 
+    /**
+     * Searches the spawn square in a said room (represented by the color sent as a parameter).
+     *
+     * @param color The color of the room in which you want to search the spawn square.
+     * @return The spawn square of the room.
+     */
+
     public Square findSpawn(Color color) throws SquareException {
 
         return this.roomsList.stream()
@@ -104,6 +137,13 @@ public class Board implements Serializable {
                 .orElseThrow(() -> new SquareException("In questa stanza non c'è uno spawn."));
     }
 
+    /**
+     * Searches a square from a color and an id. If it doesn't exist, it throws an exception.
+     *
+     * @param name The color of the square.
+     * @param id The id of the square.
+     * @return The square with "name" color and "id" id.
+     */
     public Square findSquare(String name, String id) throws SquareException, ColorException {
 
         try {
@@ -128,6 +168,13 @@ public class Board implements Serializable {
         }
     }
 
+    /**
+     * Searches a specific card to get information about it. A card can be in the WeaponDeck, in a
+     * spawn square or in a player's hand.
+     *
+     * @param cardId the id of the Card.
+     * @return The JsonObject of the card.
+     */
     public JsonObject getInfoCard(String cardId) {
 
         if (this.weaponDeck.getDeck().stream()
@@ -166,6 +213,12 @@ public class Board implements Serializable {
                 .toJsonObject();
     }
 
+    /**
+     * Searches in the powerUpDeck if the power up named "powerUpName".
+     *
+     * @param powerUpName The name of the power up that needs to be found.
+     * @return The JsonObject of the power up.
+     */
     public JsonObject getInfoPowerUp(String powerUpName) {
 
         if (this.getPowerUpDeck().getDeck().stream().anyMatch(x -> JsonUtility
@@ -179,6 +232,15 @@ public class Board implements Serializable {
         return null;
     }
 
+    /**
+     * For each line of squares it builds a JsonArray that will be added to a JsonArray containing
+     * every line of the board. Building it in this way makes it possible to scan it with a
+     * JsonArray used to build the strings of the cli. This method creates a JsonObject containing
+     * all the information needed in the View. The said JsonObject will add up to every other
+     * JsonObject of every other (necessary) class and will be sent to the view when needed.
+     *
+     * @return The JsonObject of the board.
+     */
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder builder;
@@ -242,27 +304,85 @@ public class Board implements Serializable {
 
     public static class BoardBuilder {
 
+        /**
+         * An integer that identifies one board from the other three possible boards.
+         */
         private int boardId;
 
+        /**
+         * The list of all rooms of this board.
+         */
         private List<Room> roomsList = new ArrayList<>();
 
+        /**
+         * The deck of weapon cards.
+         */
         private WeaponDeck weaponDeck;
-        private PowerUpDeck powerUpDeck;
+
+        /**
+         * The deck of Ammo Tiles.
+         */
         private AmmoTilesDeck ammoTilesDeck;
 
+        /**
+         * The deck of Power Ups.
+         */
+        private PowerUpDeck powerUpDeck;
+
+
+        /**
+         * The key of the JsonArray containing all the rooms.
+         */
         private static final String ROOMS = "rooms";
+
+        /**
+         * The key for the integer of the room id.
+         */
         private static final String ROOM_ID = "roomId";
+
+        /**
+         * The key for the String of the color of the room.
+         */
         private static final String ROOM_COLOR = "roomColor";
 
+        /**
+         * The key for the JsonArray of every square of a room.
+         */
         private static final String SQUARES = "squares";
+
+        /**
+         * The key of the integer of the square id.
+         */
         private static final String SQUARE_ID = "squareId";
+
+        /**
+         * The key of the boolean of the spawn property of a square.
+         */
         private static final String SPAWN = "spawn";
+
+        /**
+         * The key of the JsonObject of the adjacent Square.
+         */
         private static final String ADJACENT = "adjacent";
+
+        /**
+         * The key of the direction of a square.
+         */
         private static final String DIRECTION = "direction";
+
+        /**
+         * The key of a connection.
+         */
         private static final String CONNECTION = "connection";
 
+        /**
+         * The JsonArray of every board.
+         */
         private static JsonArray object;
 
+        /**
+         * Statically opens the "Boards.json" resource file.
+         */
         static {
 
             InputStream in = BoardBuilder.class.getClassLoader().getResourceAsStream("Board.json");
@@ -270,6 +390,9 @@ public class Board implements Serializable {
             object = Json.createReader(in).readArray();
         }
 
+        /**
+         * Initializes the various decks and creates the builder.
+         */
         public BoardBuilder(EffectHandler effectHandler) {
 
             this.weaponDeck = new WeaponDeck.WeaponDeckBuilder(effectHandler).build();
@@ -277,6 +400,11 @@ public class Board implements Serializable {
             this.ammoTilesDeck = new AmmoTilesDeck.AmmoTilesDeckBuilder(this.powerUpDeck).build();
         }
 
+        /**
+         * Reads from the Json file the information needed to build the board with id "boardId".
+         *
+         * @param boardID The id of the board that has to be built.
+         */
         private void readFromJson(int boardID) {
 
             this.boardId = boardID;
@@ -302,6 +430,12 @@ public class Board implements Serializable {
             this.connectSquares(jRoomsArray);
         }
 
+        /**
+         * Reading the information in the Json file creates the graph of squares with every
+         * connection.
+         *
+         * @param jRoomsArray The JsonArray of every room of that board.
+         */
         private void connectSquares(JsonArray jRoomsArray) {
 
             int i = 0;
@@ -335,6 +469,12 @@ public class Board implements Serializable {
             }
         }
 
+        /**
+         * Build the board "boardId".
+         *
+         * @param boardID The id of the board that has to be built.
+         * @return The board.
+         */
         public Board build(int boardID) {
 
             this.readFromJson(boardID);

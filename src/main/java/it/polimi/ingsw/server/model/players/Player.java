@@ -326,7 +326,8 @@ public class Player implements Target, Serializable {
     public PowerUpCard findPowerUp(String name, Color color) throws CardNotFoundException {
 
         return this.powerUpsList.stream()
-                .filter(x -> JsonUtility.levenshteinDistance(name, x.getName()) <= 3 && x.getColor().equals(color))
+                .filter(x -> JsonUtility.levenshteinDistance(name, x.getName()) <= 3 && x.getColor()
+                        .equals(color))
                 .findAny()
                 .orElseThrow(() -> new CardNotFoundException(
                         "Non hai in mano il powerup che hai selezionato."));
@@ -382,7 +383,8 @@ public class Player implements Target, Serializable {
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null || !this
                 .getCurrentAction().isCollect()) {
 
-            throw new IllegalActionException("Non puoi raccogliere adesso, seleziona un'altra azione.");
+            throw new IllegalActionException(
+                    "Non puoi raccogliere adesso, seleziona un'altra azione.");
         }
 
         if (this.currentPosition.isSpawn()) {
@@ -408,7 +410,8 @@ public class Player implements Target, Serializable {
         return tmpTile;
     }
 
-    public void collect(int cardId, List<PowerUpCard> powerUpCards) throws CardException, IllegalActionException {
+    public void collect(int cardId, List<PowerUpCard> powerUpCards)
+            throws CardException, IllegalActionException {
 
         if (this.getCurrentAction() == null || this.getCurrentAction().isCollect() == null
                 || !this.getCurrentAction().isCollect()) {

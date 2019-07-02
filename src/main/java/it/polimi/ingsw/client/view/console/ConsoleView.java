@@ -661,7 +661,7 @@ public class ConsoleView implements View, VirtualView {
                     .append(playersObject.asJsonObject().getInt("points"))
                     .append(" punti\n");
         }
-        
+
         Terminal.clearScreen();
 
         Terminal.output(screen.append(line.toString()).toString());
