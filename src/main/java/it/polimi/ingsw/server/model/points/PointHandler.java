@@ -40,7 +40,8 @@ public class PointHandler {
                         player.getShots().get(player.getShots().size() - 1),
                         player.getShots().size() >= 12);
 
-                if (deaths.getFirstFrenzyPlayer() != null && !(player.getBridge().isKillStreakCount())) {
+                if (deaths.getFirstFrenzyPlayer() != null && !(player.getBridge()
+                        .isKillStreakCount())) {
 
                     player.getBridge().setFrenzy();
                     player.getBridge().setKillStreakCount();

@@ -40,10 +40,12 @@ public class RmiConnection implements Runnable {
 
         try {
 
-            Registry registry = LocateRegistry.getRegistry(this.inetAddress.getHostAddress(), this.port);
+            Registry registry = LocateRegistry
+                    .getRegistry(this.inetAddress.getHostAddress(), this.port);
             VirtualAccessPoint access = (VirtualAccessPoint) registry.lookup("AccessPoint");
 
-            VirtualView skeleton = (VirtualView) UnicastRemoteObject.exportObject((VirtualView) this.view, 0);
+            VirtualView skeleton = (VirtualView) UnicastRemoteObject
+                    .exportObject((VirtualView) this.view, 0);
             VirtualPresenter stub = access.callBack(skeleton);
 
             this.view.loginScreen();
@@ -81,7 +83,6 @@ public class RmiConnection implements Runnable {
             LOGGER.log(Level.SEVERE, "Method visibility qualifiers violated.", e);
 
         } catch (InvocationTargetException e) {
-
 
             LOGGER.log(Level.SEVERE, "Invocation target exception.", e);
         }

@@ -82,18 +82,24 @@ class StateHandler {
                     .get(EffectType.PRIMARY).isUsed()) {
 
                 arrayBuilder.add("askUsePrimary");
-                objectBuilder.add("primaryArgs", weaponCard.getMap().get(EffectType.PRIMARY).getArgs());
-                objectBuilder.add("primaryCost", !weaponCard.getMap().get(EffectType.PRIMARY).getCost().isEmpty());
-                objectBuilder.add("primaryTargetType", weaponCard.getMap().get(EffectType.PRIMARY).getTargetType().toString());
+                objectBuilder
+                        .add("primaryArgs", weaponCard.getMap().get(EffectType.PRIMARY).getArgs());
+                objectBuilder.add("primaryCost",
+                        !weaponCard.getMap().get(EffectType.PRIMARY).getCost().isEmpty());
+                objectBuilder.add("primaryTargetType",
+                        weaponCard.getMap().get(EffectType.PRIMARY).getTargetType().toString());
             }
 
             if (weaponCard.getMap().get(EffectType.ALTERNATIVE) != null && !weaponCard.getMap()
                     .get(EffectType.ALTERNATIVE).isUsed()) {
 
                 arrayBuilder.add("askUseAlternative");
-                objectBuilder.add("alternativeArgs", weaponCard.getMap().get(EffectType.ALTERNATIVE).getArgs());
-                objectBuilder.add("alternativeCost", !weaponCard.getMap().get(EffectType.ALTERNATIVE).getCost().isEmpty());
-                objectBuilder.add("alternativeTargetType", weaponCard.getMap().get(EffectType.ALTERNATIVE).getTargetType().toString());
+                objectBuilder.add("alternativeArgs",
+                        weaponCard.getMap().get(EffectType.ALTERNATIVE).getArgs());
+                objectBuilder.add("alternativeCost",
+                        !weaponCard.getMap().get(EffectType.ALTERNATIVE).getCost().isEmpty());
+                objectBuilder.add("alternativeTargetType",
+                        weaponCard.getMap().get(EffectType.ALTERNATIVE).getTargetType().toString());
             }
 
             if (weaponCard.getMap().get(EffectType.OPTIONAL_1) != null && !weaponCard.getMap()
@@ -102,9 +108,12 @@ class StateHandler {
                     .get(EffectType.OPTIONAL_1).getActivated())) {
 
                 arrayBuilder.add("askUseOptional1");
-                objectBuilder.add("optional1Args", weaponCard.getMap().get(EffectType.OPTIONAL_1).getArgs());
-                objectBuilder.add("optional1Cost", !weaponCard.getMap().get(EffectType.OPTIONAL_1).getCost().isEmpty());
-                objectBuilder.add("optional1TargetType", weaponCard.getMap().get(EffectType.OPTIONAL_1).getTargetType().toString());
+                objectBuilder.add("optional1Args",
+                        weaponCard.getMap().get(EffectType.OPTIONAL_1).getArgs());
+                objectBuilder.add("optional1Cost",
+                        !weaponCard.getMap().get(EffectType.OPTIONAL_1).getCost().isEmpty());
+                objectBuilder.add("optional1TargetType",
+                        weaponCard.getMap().get(EffectType.OPTIONAL_1).getTargetType().toString());
             }
 
             if (weaponCard.getMap().get(EffectType.OPTIONAL_2) != null && !weaponCard.getMap()
@@ -113,9 +122,12 @@ class StateHandler {
                     .get(EffectType.OPTIONAL_2).getActivated())) {
 
                 arrayBuilder.add("askUseOptional2");
-                objectBuilder.add("optional2Args", weaponCard.getMap().get(EffectType.OPTIONAL_2).getArgs());
-                objectBuilder.add("optional2Cost", !weaponCard.getMap().get(EffectType.OPTIONAL_2).getCost().isEmpty());
-                objectBuilder.add("optional2TargetType", weaponCard.getMap().get(EffectType.OPTIONAL_2).getTargetType().toString());
+                objectBuilder.add("optional2Args",
+                        weaponCard.getMap().get(EffectType.OPTIONAL_2).getArgs());
+                objectBuilder.add("optional2Cost",
+                        !weaponCard.getMap().get(EffectType.OPTIONAL_2).getCost().isEmpty());
+                objectBuilder.add("optional2TargetType",
+                        weaponCard.getMap().get(EffectType.OPTIONAL_2).getTargetType().toString());
             }
         }
 

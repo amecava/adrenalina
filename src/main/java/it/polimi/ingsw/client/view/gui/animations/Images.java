@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Preloader.ProgressNotification;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class Images {
 

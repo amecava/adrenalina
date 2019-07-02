@@ -9,7 +9,6 @@ import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.exceptions.jacop.EndGameException;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
-import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
@@ -18,16 +17,15 @@ import it.polimi.ingsw.virtual.JsonUtility;
 import it.polimi.ingsw.virtual.VirtualPresenter;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 public abstract class Presenter implements VirtualPresenter {
@@ -171,7 +169,7 @@ public abstract class Presenter implements VirtualPresenter {
             this.callRemoteMethod("updateState", state.get("noGameState").toString());
 
             ClientHandler.broadcast(
-                    (x) -> !x.getPlayerId().equals(this.playerId),
+                    x -> !x.getPlayerId().equals(this.playerId),
                     "broadcast",
                     this.playerId + ": connesso al server.");
 
@@ -403,7 +401,7 @@ public abstract class Presenter implements VirtualPresenter {
                 JsonArrayBuilder array = Json.createArrayBuilder();
 
                 e.getWinner().stream()
-                        .flatMap(x -> x.stream())
+                        .flatMap(Collection::stream)
                         .forEach(x ->
 
                                 array.add(
@@ -947,7 +945,6 @@ public abstract class Presenter implements VirtualPresenter {
 
         JsonObject object = JsonUtility.jsonDeserialize(value);
 
-        System.out.println(value);
         if (object.getString("line").chars().filter(c -> c == '(').count() != object
                 .getString("line").chars().filter(c -> c == ')').count()) {
 

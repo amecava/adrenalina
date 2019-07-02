@@ -50,6 +50,11 @@ public class BoardDrawer {
         jDrawSquares = Json.createReader(in).readArray();
     }
 
+    private BoardDrawer() {
+
+        //
+    }
+
     /**
      * For each square this method combines walls and all the information contained in the
      * jsonObject given as a parameter to build dynamically the array of strings with players, ammo
@@ -60,8 +65,7 @@ public class BoardDrawer {
      * @param playerId The id of the player that's playing on that client.
      * @return Built Array of strings.
      */
-    public static StringBuilder[] drawBoard(JsonObject jsonObject, String playerId)
-            throws IllegalArgumentException {
+    public static StringBuilder[] drawBoard(JsonObject jsonObject, String playerId) {
 
         JsonObject thisPlayerObject = jsonObject.getJsonArray("playerList").stream()
                 .map(JsonValue::asJsonObject)
@@ -163,10 +167,7 @@ public class BoardDrawer {
                 .map(JsonValue::toString)
                 .map(x -> x.substring(1, x.length() - 1))
                 .map(Color::ansiColorOf)
-                .forEach(x -> {
-
-                    line.append(x).append("x").append(" ");
-                });
+                .forEach(x -> line.append(x).append("x").append(" "));
 
         line.append(Color.ansiColorOf("ALL"));
 
@@ -193,10 +194,8 @@ public class BoardDrawer {
 
         thisPlayerObject.getJsonArray("ammoCubes").stream()
                 .map(x -> x.toString().substring(1, x.toString().length() - 1))
-                .forEach(x -> {
-                    squareLine[20].append(Color.ansiColorOf(x))
-                            .append("◆");
-                });
+                .forEach(x -> squareLine[20].append(Color.ansiColorOf(x))
+                        .append("◆"));
 
         squareLine[20].append(fixLength(48,
                 squareLine[20].length() - 5 - (5 * thisPlayerObject.getJsonArray("ammoCubes")
@@ -215,11 +214,11 @@ public class BoardDrawer {
         thisPlayerObject.getJsonArray("powerUps")
                 .stream()
                 .map(JsonValue::asJsonObject)
-                .forEach(x -> {
-                    thisPlayerPowerUps.append(Color.ansiColorOf(x.getString("color")))
-                            .append(x.getString("name").substring(0, 3))
-                            .append(" ");
-                });
+                .forEach(x ->
+                        thisPlayerPowerUps.append(Color.ansiColorOf(x.getString("color")))
+                                .append(x.getString("name").substring(0, 3))
+                                .append(" ")
+                );
 
         squareLine[16].append(Color.ansiColorOf(Color.getColor(thisPlayerObject
                 .getString("character")).toString()))
@@ -345,7 +344,7 @@ public class BoardDrawer {
                         .getJsonArray("tools")
                         .getJsonObject(0)
                         .getJsonArray("colors").stream()
-                        .map(x -> x.toString()).count() + 1));
+                        .map(JsonValue::toString).count() + 1));
             }
         }
 

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.server.model.Model;
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
@@ -190,11 +189,16 @@ public class GameHandler implements Serializable {
         ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer(), "infoMessage",
                 "È il tuo turno, digita aiuto per vedere la lista di comandi.");
 
-        ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() == null, "updateState",
+        ClientHandler.gameBroadcast(this,
+                x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() == null,
+                "updateState",
                 Presenter.state.get("spawnState").toString());
 
-        ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() != null, "updateState",
-                StateHandler.createActivePlayerState(this.model.getActivePlayer(), Presenter.state.get("activePlayerState")).toString());
+        ClientHandler.gameBroadcast(this,
+                x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() != null,
+                "updateState",
+                StateHandler.createActivePlayerState(this.model.getActivePlayer(),
+                        Presenter.state.get("activePlayerState")).toString());
 
         ClientHandler.gameBroadcast(this, x -> !x.getKey().isActivePlayer(), "updateState",
                 Presenter.state.get("notActivePlayerState").toString());
@@ -217,10 +221,12 @@ public class GameHandler implements Serializable {
                                 "infoMessage",
                                 "Devi fare il respawn.");
 
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(), "updateState",
+                        ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(),
+                                "updateState",
                                 Presenter.state.get("spawnState").toString());
 
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> !x.getKey().isRespawn(), "updateState",
+                        ClientHandler.gameBroadcast(GameHandler.this, x -> !x.getKey().isRespawn(),
+                                "updateState",
                                 Presenter.state.get("notActivePlayerState").toString());
 
                         GameHandler.this.wait();
@@ -230,7 +236,8 @@ public class GameHandler implements Serializable {
 
                     GameHandler.this.nextPlayer();
 
-                    ClientHandler.gameBroadcast(this, x -> true, "updateBoard", this.toJsonObject().toString());
+                    ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
+                            this.toJsonObject().toString());
 
                 }
             } catch (InterruptedException e) {

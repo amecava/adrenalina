@@ -7,7 +7,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.image.ImageView;
@@ -25,7 +24,8 @@ abstract class ButtonFlip extends AbstractButton {
 
         super.setGraphic(card);
 
-        card.imageProperty().bind(Bindings.when(this.showFront).then(card.getImage()).otherwise(back.getImage()));
+        card.imageProperty().bind(Bindings.when(this.showFront).then(card.getImage())
+                .otherwise(back.getImage()));
 
         this.axis = axis;
 
@@ -48,10 +48,7 @@ abstract class ButtonFlip extends AbstractButton {
         rotator1.setInterpolator(Interpolator.LINEAR);
         rotator1.setCycleCount(1);
 
-        rotator1.setOnFinished(actionEvent -> {
-
-            this.flip();
-        });
+        rotator1.setOnFinished(actionEvent -> this.flip());
 
         RotateTransition rotator2 = new RotateTransition(duration, this);
         rotator2.setAxis(this.axis);

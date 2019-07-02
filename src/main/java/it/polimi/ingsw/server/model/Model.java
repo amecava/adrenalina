@@ -56,7 +56,8 @@ public class Model implements Serializable {
         return this.effectHandler;
     }
 
-    public Player addPlayer(String playerId, String character) throws LoginException, ColorException {
+    public Player addPlayer(String playerId, String character)
+            throws LoginException, ColorException {
 
         Color color = Color.ofCharacter(character);
 
@@ -77,7 +78,7 @@ public class Model implements Serializable {
 
         Color color = Color.ofCharacter(name);
 
-        for (Player player: this.playerList) {
+        for (Player player : this.playerList) {
 
             if (player.getColor().equals(color)) {
 
@@ -150,7 +151,7 @@ public class Model implements Serializable {
 
         this.board.fillBoard();
     }
-    
+
     public JsonObjectBuilder toJsonObject() {
 
         JsonArrayBuilder builder = Json.createArrayBuilder();

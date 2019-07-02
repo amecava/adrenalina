@@ -319,7 +319,7 @@ public class Terminal {
 
         String cmd = "stty " + args + " < /dev/tty";
 
-        return exec(new String[] {"sh", "-c", cmd});
+        return exec(new String[]{"sh", "-c", cmd});
     }
 
     private static String exec(final String[] cmd) throws IOException, InterruptedException {

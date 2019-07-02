@@ -9,6 +9,7 @@ public class AtomicMark implements AtomicEffect, Serializable {
 
     /**
      * Applies one mark to the targets in the target parameter by the player "source".
+     *
      * @param source The source of the mark.
      * @param target The target(s) that will be marked.
      */
