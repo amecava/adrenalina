@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import com.sun.javafx.application.LauncherImpl;
+import com.sun.tools.javac.util.List;
 import it.polimi.ingsw.client.view.console.ConsoleView;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.gui.GUIView;
@@ -10,6 +11,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Client {
 
@@ -28,7 +31,7 @@ public class Client {
 
     private void start(String[] args) {
 
-        if (args[0].equals("c")) {
+        if (Arrays.stream(args).anyMatch("c"::equals)) {
 
             this.view = new ConsoleView();
 
@@ -97,18 +100,14 @@ public class Client {
 
     private static void launch(String[] args) {
 
-        LauncherImpl.launchApplication(GUIView.class, GUIPreloader.class, args);
+        System.setProperty("javafx.preloader", "it.polimi.ingsw.client.view.gui.GUIPreloader");
+        GUIView.launch(GUIView.class, args);
     }
 
     public static void main(String[] args) {
 
         Client client = new Client(4560, 4561, 4562);
 
-        if (args.length == 1 &&
-                (args[0].equals("c") || args[0].equals("g"))) {
-
-            client.start(args);
-
-        }
+        client.start(args);
     }
 }
