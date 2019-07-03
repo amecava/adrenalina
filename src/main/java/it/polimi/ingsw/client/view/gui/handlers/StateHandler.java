@@ -547,44 +547,41 @@ public class StateHandler {
 
                         } else if (method.equals("askUsePowerUp")) {
 
-                            Button usePowerUpButton = new GameButton("usa power up");
+                            Button usePowerUpButton = new InfoButton("clicca un powerUp per usarlo");
 
-                            usePowerUpButton.setOnMouseClicked(mouseEvent -> {
+                            ButtonPowerUp.setOnMouse(mouseEvent2 ->
 
-                                ButtonPowerUp.setOnMouse(mouseEvent2 ->
+                                    createShootStage("askUsePowerUp",
+                                            ((ButtonPowerUp) mouseEvent2
+                                                    .getSource()).getArgs(),
+                                            ((ButtonPowerUp) mouseEvent2
+                                                    .getSource()).hasCost(),
+                                            ((ButtonPowerUp) mouseEvent2
+                                                    .getSource()).getTargetType(),
+                                            new StringBuilder()
+                                                    .append("powerup( ")
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getName())
+                                                    .append("-")
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getColor())
+                                                    .append(" )")
+                                                    .toString(),
+                                            new StringBuilder()
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getName())
+                                                    .append(" ")
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getColor())
+                                                    .toString())
+                            );
 
-                                        createShootStage("askUsePowerUp",
-                                                ((ButtonPowerUp) mouseEvent2
-                                                        .getSource()).getArgs(),
-                                                ((ButtonPowerUp) mouseEvent2
-                                                        .getSource()).hasCost(),
-                                                ((ButtonPowerUp) mouseEvent2
-                                                        .getSource()).getTargetType(),
-                                                new StringBuilder()
-                                                        .append("powerup( ")
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getName())
-                                                        .append("-")
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getColor())
-                                                        .append(" )")
-                                                        .toString(),
-                                                new StringBuilder()
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getName())
-                                                        .append(" ")
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getColor())
-                                                        .toString())
-                                );
-
-                                BoardScreen.getPlayerPowerUpList()
-                                        .forEach(ButtonPowerUp::update);
-                            });
+                            BoardScreen.getPlayerPowerUpList()
+                                    .forEach(ButtonPowerUp::update);
 
                             BoardScreen.collectiveButtons.getChildren().add(usePowerUpButton);
 
@@ -663,7 +660,10 @@ public class StateHandler {
         root.getChildren().addAll(myPlayerCards, playerToggles);
 
         Label powerUpsLabel = new Label();
-        powerUpsLabel.setText("I tuoi powerUp:");
+
+        if (!BoardScreen.getPlayerPowerUpList().isEmpty()) {
+            powerUpsLabel.setText("I tuoi powerUp:");
+        }
         powerUpsLabel.setWrapText(true);
         powerUpsLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
         powerUpsLabel.setTextFill(Color.WHITE);
@@ -743,7 +743,7 @@ public class StateHandler {
                 reloadStage.close();
             } else {
 
-                Notifications.createNotification("Attenzione!",
+                Notifications.createNotification("error",
                         "Devi selezionare quale carta vuoi ricaricare.");
             }
         });
@@ -864,19 +864,12 @@ public class StateHandler {
             StringBuilder target, StringBuilder destination, String powerString,
             String powerUpName) {
 
-        ImageView cardImage = powerString == null ? new ImageView(
-                Images.weaponsMap.get(BoardScreen.activatedWeapon))
-                : new ImageView(Images.powerUpsMap.get(powerUpName));
-
-        cardImage.setFitWidth(100);
-        cardImage.setFitHeight(150);
-
         Label label = new Label();
         label.setFont(Font.font("Silom", 25));
         label.setTextFill(Color.WHITE);
         label.setAlignment(Pos.CENTER);
 
-        root.getChildren().addAll(cardImage, label);
+        root.getChildren().add(label);
 
         Button confirm = new GameButton("conferma");
         confirm.setVisible(false);
@@ -951,7 +944,7 @@ public class StateHandler {
 
                 }
 
-                if (args == 1 && !hasCost) {
+                if (args == 1 && (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty())) {
 
                     JsonQueue.add("method", effectType);
                     JsonQueue.add("line",
@@ -992,7 +985,7 @@ public class StateHandler {
 
                 target.append(" )");
 
-                if (args == 1 && !hasCost) {
+                if (args == 1 && (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty())) {
 
                     JsonQueue.add("method", effectType);
                     JsonQueue.add("line",
@@ -1080,35 +1073,35 @@ public class StateHandler {
 
         BoardFunction.getSquareList(board).forEach(s ->
 
-            s.setOnMouseClicked(
-                    mouseEvent -> {
+                s.setOnMouseClicked(
+                        mouseEvent -> {
 
-                        destination.append("destinazione(")
-                                .append(((ButtonSquare) mouseEvent.getSource())
-                                        .getColor().toLowerCase())
-                                .append("-")
-                                .append(((ButtonSquare) mouseEvent.getSource())
-                                        .getSquareId())
-                                .append(")");
+                            destination.append("destinazione(")
+                                    .append(((ButtonSquare) mouseEvent.getSource())
+                                            .getColor().toLowerCase())
+                                    .append("-")
+                                    .append(((ButtonSquare) mouseEvent.getSource())
+                                            .getSquareId())
+                                    .append(")");
 
-                        if (!hasCost) {
+                            if (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty()) {
 
-                            JsonQueue.add("method", effectType);
-                            JsonQueue.add("line",
-                                    new StringBuilder().append(target.toString())
-                                            .append(destination.toString())
-                                            .append(powerUpString == null ? "" : powerUpString)
-                                            .toString());
-                            JsonQueue.send();
+                                JsonQueue.add("method", effectType);
+                                JsonQueue.add("line",
+                                        new StringBuilder().append(target.toString())
+                                                .append(destination.toString())
+                                                .append(powerUpString == null ? "" : powerUpString)
+                                                .toString());
+                                JsonQueue.send();
 
-                            shootStage.close();
+                                shootStage.close();
 
-                        } else {
+                            } else {
 
-                            thirdUseEffectScreen(shootStage, root, effectType, target,
-                                    destination, powerUpString);
-                        }
-                    }));
+                                thirdUseEffectScreen(shootStage, root, effectType, target,
+                                        destination, powerUpString);
+                            }
+                        }));
 
         if (!shootStage.isShowing()) {
 
@@ -1131,7 +1124,7 @@ public class StateHandler {
         if (!effectType.equals("askUsePowerUp")) {
 
             Label selectPaymentLabel = new Label();
-            selectPaymentLabel.setText("Puoi pagare l'effetto con un power up");
+            selectPaymentLabel.setText("Puoi pagare con un power up");
             selectPaymentLabel.setFont(Font.font("Silom", FontWeight.BOLD, 25));
             selectPaymentLabel.setTextFill(Color.WHITE);
 
