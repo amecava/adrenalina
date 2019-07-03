@@ -20,42 +20,92 @@ import javax.json.JsonValue;
 
 public class Model implements Serializable {
 
+    /**
+     * The list of the players of the match.
+     */
     private List<Player> playerList = new ArrayList<>();
 
+    /**
+     * The board of the match.
+     */
     private Board board;
+
+    /**
+     * The Death Bridge of the board.
+     */
     private Deaths deaths;
 
+    /**
+     * The EffectHandler of the match.
+     */
     private EffectHandler effectHandler = new EffectHandler();
 
+    /**
+     * The current activePlayer.
+     */
     private Player activePlayer;
 
+    /**
+     * Creates the model by setting the properties sent as parameters.
+     *
+     * @param numberOfDeaths The number of death of the match.
+     * @param frenzy If the final frenzy turn will be played.
+     */
     public Model(int numberOfDeaths, boolean frenzy) {
 
         this.deaths = new Deaths(numberOfDeaths);
         this.deaths.setFrenzy(frenzy);
     }
 
-
+    /**
+     * Gets the playersList.
+     *
+     * @return The list of players.
+     */
     public List<Player> getPlayerList() {
 
         return this.playerList;
     }
 
+    /**
+     * Creates the board.
+     *
+     * @param vote The number of the most voted board (or the randomly chosed one).
+     */
     public void createBoard(int vote) {
 
         this.board = new Board.BoardBuilder(this.effectHandler).build(vote);
     }
 
+    /**
+     * Gets the board.
+     *
+     * @return The Board.
+     */
     public Board getBoard() {
 
         return this.board;
     }
 
+    /**
+     * Gets the EffectHandler of the match.
+     *
+     * @return The EffectHandler.
+     */
     public EffectHandler getEffectHandler() {
 
         return this.effectHandler;
     }
 
+    /**
+     * Adds a player to playerList (if possible).
+     *
+     * @param playerId The id the player chose.
+     * @param character The Character chosen by the player.
+     * @return The Player Object.
+     * @throws LoginException If the character has already been chosen.
+     * @throws ColorException If occurs an error during the character/Color conversion.
+     */
     public Player addPlayer(String playerId, String character)
             throws LoginException, ColorException {
 
@@ -74,6 +124,13 @@ public class Model implements Serializable {
         return player;
     }
 
+    /**
+     * Searches a Player based on his id.
+     *
+     * @param name The id of the player.
+     * @return The Player object.
+     * @throws ColorException If occurs an error during the character/Color conversion.
+     */
     public Player searchPlayer(String name) throws ColorException {
 
         Color color = Color.ofCharacter(name);
@@ -94,6 +151,9 @@ public class Model implements Serializable {
         return this.activePlayer;
     }
 
+    /**
+     * Furthers the game by setting the active player to the next one of the playersList.
+     */
     public synchronized void nextPlayer() {
 
         if (this.activePlayer != null) {
@@ -130,6 +190,11 @@ public class Model implements Serializable {
         }
     }
 
+    /**
+     * Performs the "endOfTurn" action, checks if there are players that need to respawn.
+     *
+     * @throws EndGameException When the game ends.
+     */
     public void endOfTurn() throws EndGameException {
 
         this.activePlayer.endAction();
@@ -152,6 +217,13 @@ public class Model implements Serializable {
         this.board.fillBoard();
     }
 
+    /**
+     * This method creates a JsonObjectBuilder containing all the information needed in the View. To
+     * the said JsonObjectBuilder will be added some JsonValues in the GameHandler.toJsonObject()
+     * method, and that will be sent to the view when needed.
+     *
+     * @return The JsonObect containig all the information of this card.
+     */
     public JsonObjectBuilder toJsonObject() {
 
         JsonArrayBuilder builder = Json.createArrayBuilder();

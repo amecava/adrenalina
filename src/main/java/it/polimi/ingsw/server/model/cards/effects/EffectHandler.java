@@ -76,14 +76,14 @@ public class EffectHandler implements Serializable {
             if (effect.getArgs() != target.getArgs()) {
 
                 throw new EffectCallException(
-                        "Il numerod di parametri che hai scritto è sbagliato.");
+                        "Hai selezionato troppe cose! Riprova.");
             }
 
             // Launch exception if wrong target type
             if (target.getTargetList().stream().anyMatch(x ->
                     x.getTargetType() != effect.getTargetType())) {
 
-                throw new TargetTypeException("Il target che hai selezionato non è valido.");
+                throw new TargetTypeException("Il bersaglio che hai selezionato non è valido.");
             }
 
             // Create properties related target list

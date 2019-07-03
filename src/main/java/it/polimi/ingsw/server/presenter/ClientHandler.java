@@ -23,20 +23,38 @@ import javax.json.JsonObject;
 
 public class ClientHandler {
 
+    /**
+     * A list that holds the players that are waiting for a match to start.
+     */
     private static List<Presenter> clientList = new ArrayList<>();
 
+    /**
+     * A Map that for every match holds a map containing every player of the match with his
+     * Presenter.
+     */
     private static Map<GameHandler, HashMap<Player, Presenter>> map = new HashMap<>();
 
+    /**
+     * The Logger that prints updates on the server.
+     */
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
-    private ClientHandler(){
+    /**
+     * Initializes the ClientHandler.
+     */
+    private ClientHandler() {
 
         //
     }
 
+    /**
+     * Adds a new Client to the server.
+     *
+     * @param presenter The presenter of that client.
+     */
     static synchronized void addClient(Presenter presenter) {
 
         clientList.add(presenter);
@@ -53,6 +71,11 @@ public class ClientHandler {
         LOGGER.log(Level.INFO, "Client connected to server.");
     }
 
+    /**
+     * Removes a client from the server.
+     *
+     * @param presenter The Presenter of the client that will be removed from the server.
+     */
     static synchronized void removeClient(Presenter presenter) {
 
         if (clientList.contains(presenter)) {
@@ -77,6 +100,12 @@ public class ClientHandler {
         }
     }
 
+    /**
+     * Check if a certain client is present in the list of players waiting for a game to start.
+     *
+     * @param playerId The id of the player.
+     * @return A boolean that says if the player is present.
+     */
     static synchronized boolean isClientPresent(String playerId) {
 
         return clientList.stream()
@@ -84,6 +113,13 @@ public class ClientHandler {
                 .anyMatch(x -> x.equals(playerId));
     }
 
+    /**
+     * Calls a method on the view of every player in the clientList based on a filter Predicate.
+     *
+     * @param filter The condition on which the method is called or not.
+     * @param method The name of the method that will be called.
+     * @param value The value that will be sent as a parameter.
+     */
     public static synchronized void broadcast(Predicate<Presenter> filter, String method,
             String value) {
 
@@ -110,6 +146,15 @@ public class ClientHandler {
         disconnected.forEach(ClientHandler::removeClient);
     }
 
+    /**
+     * Calls a method on the view of every player in the map that is key of a GameHandler based on a
+     * filter Predicate.
+     *
+     * @param gameHandler The GameHandler of the game on which you want to call the method.
+     * @param filter The condition on which the method is called or not.
+     * @param method The name of the method that will be called.
+     * @param value The value that will be sent as a parameter.
+     */
     public static synchronized void gameBroadcast(GameHandler gameHandler,
             Predicate<Entry<Player, Presenter>> filter,
             String method, String value) {
@@ -138,6 +183,11 @@ public class ClientHandler {
         disconnected.forEach(ClientHandler::removeClient);
     }
 
+    /**
+     * Gets a GameHandler based on a filter Predicate.
+     * @param filter The Predicate that is the condition for getting th right GameHandler.
+     * @return The GameHandler.
+     */
     static synchronized GameHandler getGameHandler(Predicate<GameHandler> filter) {
 
         return map.keySet().stream()
@@ -146,6 +196,12 @@ public class ClientHandler {
                 .orElseThrow(NoSuchElementException::new);
     }
 
+    /**
+     * Get a Player of a match based on a filter Predicate.
+     * @param gameHandler The GameHandler of the match in which the player should be.
+     * @param filter The filter Predicate.
+     * @return The Player.
+     */
     static synchronized Player getPlayer(GameHandler gameHandler, Predicate<Player> filter) {
 
         return map.get(gameHandler).keySet().stream()
@@ -155,7 +211,12 @@ public class ClientHandler {
                 .setConnected(true);
     }
 
-
+    /**
+     *
+     * @param gameHandler
+     * @param filter
+     * @return
+     */
     public static synchronized Presenter getPresenter(GameHandler gameHandler,
             Predicate<Entry<Player, Presenter>> filter) {
 
@@ -165,17 +226,34 @@ public class ClientHandler {
                 .orElseThrow(NoSuchElementException::new);
     }
 
+    /**
+     * Adds a new GameHandler to the Map: creates a new Game.
+     * @param gameId The id of the game that has been created.
+     * @param numberOdDeaths The number of deaths of the new game.
+     * @param frenzy A boolean that says if the created game will have the final frenzy turn.
+     */
     static synchronized void addGameHandler(String gameId, int numberOdDeaths,
             boolean frenzy) {
 
         map.put(new GameHandler(gameId, numberOdDeaths, frenzy), new HashMap<>());
     }
 
+    /**
+     * Checks if a certain GameHandler is present in the maps: checks if a game has already been created.
+     * @param gameId The id of the game you're searching.
+     * @return A boolean that says if the gameHandler is present.
+     */
     static synchronized boolean isGameHandlerPresent(String gameId) {
 
         return map.keySet().stream().map(GameHandler::getGameId).anyMatch(x -> x.equals(gameId));
     }
 
+    /**
+     * Adds a new Key-Value(Player-Presenter) tuple to the map which is value of a certain GameHandler: adds a player to a match.
+     * @param gameHandler The GameHandler in which the player has to be added.
+     * @param player The player that has to be added.
+     * @param presenter The Presenter of the Player that has to be added.
+     */
     static synchronized void putPlayerPresenter(GameHandler gameHandler, Player player,
             Presenter presenter) {
 
@@ -188,6 +266,11 @@ public class ClientHandler {
         }
     }
 
+    /**
+     * Checks if a player is present in the map.
+     * @param playerId The id of the player that has to be found.
+     * @return A boolean that says if the player i present.
+     */
     static synchronized boolean isPlayerPresent(String playerId) {
 
         return map.values().stream()
@@ -196,6 +279,10 @@ public class ClientHandler {
                 .anyMatch(x -> x.equals(playerId));
     }
 
+    /**
+     * Creates a JsonObject with the information of the games that have been created and the Players in.
+     * @return The JsonObject with the information of the games that have been created and the Players in.
+     */
     static synchronized JsonObject getGameHandlerJsonArray() {
 
         JsonArrayBuilder builder = Json.createArrayBuilder();
@@ -205,6 +292,10 @@ public class ClientHandler {
         return Json.createObjectBuilder().add("gameList", builder.build()).build();
     }
 
+    /**
+     * Saves a game to the saving file specified in the path string.
+     * @param path The path of the saving file.
+     */
     public static void save(String path) {
 
         try {
@@ -244,6 +335,10 @@ public class ClientHandler {
         }
     }
 
+    /**
+     * Loads a game from the saving file specified in the path string
+     * @param path The path of the saving file.
+     */
     public static void load(String path) {
 
         try (FileInputStream fileStream = new FileInputStream(path);

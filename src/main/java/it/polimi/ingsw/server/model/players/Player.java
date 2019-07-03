@@ -35,22 +35,61 @@ import javax.json.JsonObject;
 
 public class Player implements Target, Serializable {
 
+    /**
+     * The id of the player.
+     */
     private String playerId;
 
+    /**
+     * It says if this player is still connected.
+     */
     private boolean connected = true;
+
+    /**
+     * It says if this player is the activePlayer.
+     */
     private boolean activePlayer = false;
 
+    /**
+     * The last position of this player.
+     */
     private Square oldPosition;
+
+    /**
+     * The current position of the player.
+     */
     private Square currentPosition;
 
+    /**
+     * The Bridge of this player.
+     */
     private Bridge bridge;
+
+    /**
+     * The point structure that counts the points of this player.
+     */
     private PointStructure pointStructure;
 
+    /**
+     * The list AmmoCube of the player.
+     */
     private List<AmmoCube> ammoCubesList = new ArrayList<>();
 
+    /**
+     * The list WeaponCard of the player.
+     */
     private List<WeaponCard> weaponCardList = new ArrayList<>();
+
+    /**
+     * The list PowerUpCard of the player.
+     */
     private List<PowerUpCard> powerUpsList = new ArrayList<>();
 
+    /**
+     * Creates the player based on the parameters.
+     * @param playerId The id of the player.
+     * @param playerColor The color of the player.
+     */
     public Player(String playerId, Color playerColor) {
 
         this.playerId = playerId;
@@ -71,29 +110,50 @@ public class Player implements Target, Serializable {
         this.ammoCubesList.add(new AmmoCube(Color.GIALLO, true));
     }
 
+    /**
+     * Gets the TargetType corresponding to Player.
+     * @return The TargetType.
+     */
     @Override
     public TargetType getTargetType() {
 
         return TargetType.PLAYER;
     }
 
+    /**
+     * Gets the current position of the player.
+     * @return The Square which is the current position of the player.
+     */
     @Override
     public Square getCurrentPosition() {
 
         return this.currentPosition;
     }
 
+    /**
+     * Gets a list containing only this player.
+     * @return A list containing only this player.
+     */
     @Override
     public List<Player> getPlayers() {
 
         return Arrays.asList(this);
     }
 
+    /**
+     * Gets the id of the player.
+     * @return The id of the player.
+     */
     public String getPlayerId() {
 
         return this.playerId;
     }
 
+    /**
+     * Sets the connection status of the player.
+     * @param connected The connection status of the player.
+     * @return This player.
+     */
     public Player setConnected(boolean connected) {
 
         this.connected = connected;
@@ -101,11 +161,19 @@ public class Player implements Target, Serializable {
         return this;
     }
 
+    /**
+     * Checks if this is the current active player.
+     * @return a boolean that says if this is the current active player.
+     */
     public boolean isActivePlayer() {
 
         return this.activePlayer;
     }
 
+    /**
+     * Sets the activePlayer property.
+     * @param activePlayer The new state.
+     */
     public void setActivePlayer(boolean activePlayer) {
 
         this.activePlayer = activePlayer;
