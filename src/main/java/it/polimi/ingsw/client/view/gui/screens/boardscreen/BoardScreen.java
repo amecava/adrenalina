@@ -667,12 +667,30 @@ public class BoardScreen {
                                 .filter(k -> k.getId().equals(allPlayersCharacter))
                                 .findFirst()
                                 .get();
+
+                        HBox marks = new HBox();
+                        marks.setId("marks");
+
                         HBox shots = new HBox();
                         shots.setId("shots");
                         shots.setSpacing(2);
+
                         HBox kills = new HBox();
                         kills.setId("kills");
+
                         int numberOfBridge = bridges.getChildren().indexOf(characterBridge);
+
+                        x.getJsonObject("bridge").getJsonObject("damageBridge")
+                                .getJsonArray("marks").forEach(m -> {
+
+                            ImageView mark = new ImageView(Images.dropsMap.get(
+                                    m.toString().substring(1, m.toString().length() - 1)));
+
+                            mark.setFitHeight(25);
+                            mark.setFitWidth(15);
+                            marks.getChildren().add(mark);
+                        });
+
                         x.getJsonObject("bridge").getJsonArray("deathBridgeArray").stream()
                                 .map(JsonValue::asJsonObject)
                                 .filter(z -> z.getBoolean("used"))
@@ -684,6 +702,7 @@ public class BoardScreen {
                                     kill.setFitWidth(25);
                                     kills.getChildren().add(kill);
                                 });
+
                         x.getJsonObject("bridge").getJsonObject("damageBridge")
                                 .getJsonArray("shots").forEach(z -> {
                             ImageView shot = new ImageView(Images.dropsMap.get(
@@ -694,14 +713,20 @@ public class BoardScreen {
                             shots.getChildren().add(shot);
 
                         });
+
+                        AnchorPane.setTopAnchor(marks,
+                                (double) numberOfBridge * (565.0 / 5));
+                        AnchorPane.setLeftAnchor(marks, 258.0);
+
                         AnchorPane.setTopAnchor(kills,
                                 (double) numberOfBridge * (565.0 / 5) + 115 - 30);
                         AnchorPane.setLeftAnchor(kills, 103.0);
+
                         AnchorPane.setTopAnchor(shots,
                                 (double) numberOfBridge * (565.0 / 5) + 35);
                         AnchorPane.setLeftAnchor(shots, 40.0);
                         AnchorPane.setRightAnchor(shots, 120.0);
-                        right.getChildren().addAll(shots, kills);
+                        right.getChildren().addAll(shots, kills, marks);
                     });
         });
     }

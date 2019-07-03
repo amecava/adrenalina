@@ -142,7 +142,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
                 .add("name", this.name)
                 .add("color", this.color.toString())
                 .add("targetType", this.effect.getNext().getTargetType().toString())
-                .add("args", this.effect.getNext().getArgs())
+                .add("args", this.effect.getArgs())
                 .add("hasCost", !this.effect.getCost().isEmpty())
                 .add("info", this.info)
                 .build();
