@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
+import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.WeaponCard;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.players.Player;
@@ -29,7 +30,7 @@ class StateHandler {
         return objectBuilder.build();
     }
 
-    static JsonObject createActionState(Player player, JsonObject object) {
+    static JsonObject createActionState(Board board, Player player, JsonObject object) {
 
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
         JsonArrayBuilder arrayBuilder = Json
@@ -43,6 +44,8 @@ class StateHandler {
         if (action.getMove() != null && action.getMove()) {
 
             arrayBuilder.add("moveAction");
+
+            objectBuilder.add("available", board.getReachableJsonArray(player.getCurrentPosition(), action.getEffect()));
         }
 
         if (action.isCollect() != null && action.isCollect()) {

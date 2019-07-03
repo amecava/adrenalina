@@ -191,7 +191,7 @@ public class StateHandler {
 
                                 moveActionButton.setMouseTransparent(true);
 
-                                ButtonSquare.setOnMouse1(mouseEvent -> {
+                                ButtonSquare.setOnMouse1(object.getJsonArray("available"), mouseEvent -> {
 
                                     ButtonSquare destination = ((ButtonSquare) mouseEvent
                                             .getSource());
@@ -204,8 +204,7 @@ public class StateHandler {
                                     JsonQueue.send();
                                 });
 
-                                BoardScreen.getSquareList()
-                                        .forEach(ButtonSquare::update);
+                                BoardScreen.getSquareList().forEach(ButtonSquare::update);
 
                                 BoardScreen.collectiveButtons.getChildren()
                                         .add(moveActionButton);
@@ -214,8 +213,7 @@ public class StateHandler {
 
                             } else if (method.equals("askCollect")) {
 
-                                Button collectButton = new InfoButton(
-                                        "clicca il tuo quadrato e raccogli");
+                                Button collectButton = new InfoButton("clicca il tuo quadrato e raccogli");
 
                                 collectButton.setMouseTransparent(true);
 
@@ -415,17 +413,16 @@ public class StateHandler {
                                         collectStage.show();
 
                                     } else {
+
                                         JsonQueue.add("method", "askCollect");
                                         JsonQueue.add("cardIdCollect", "");
                                         JsonQueue.add("cardIdDiscard", "");
                                         JsonQueue.add("powerups", "");
                                         JsonQueue.send();
-
                                     }
                                 });
 
-                                BoardScreen.getSquareList()
-                                        .forEach(ButtonSquare::update);
+                                BoardScreen.getSquareList().forEach(ButtonSquare::update);
                                 BoardScreen.collectiveButtons.getChildren().add(collectButton);
                                 resizeButtons();
 
@@ -776,14 +773,8 @@ public class StateHandler {
             BoardScreen.getPlayerWeaponList().forEach(ButtonWeapon::update);
             BoardScreen.getSpawnWeaponList().forEach(ButtonWeapon::update);
 
-            ButtonSquare.setOnMouse1(mouseEvent -> {
-
-                //
-            });
-            ButtonSquare.setOnMouse2(mouseEvent -> {
-
-                //
-            });
+            ButtonSquare.setOnMouse1(null, null);
+            ButtonSquare.setOnMouse2(null);
 
             BoardScreen.getSquareList().forEach(ButtonSquare::update);
 

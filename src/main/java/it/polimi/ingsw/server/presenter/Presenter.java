@@ -461,7 +461,7 @@ public abstract class Presenter implements VirtualPresenter {
                                 .toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(), this.player, state.get("actionState"))
                                 .toString());
 
             } catch (IllegalActionException e) {
@@ -510,7 +510,7 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(), this.player, state.get("actionState"))
                                 .toString());
 
             } catch (ColorException | IllegalActionException | CardException | EffectException | PropertiesException e) {
@@ -580,7 +580,7 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(), this.player, state.get("actionState"))
                                 .toString());
 
 
@@ -812,7 +812,7 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(), this.player, state.get("actionState"))
                                 .toString());
 
             } catch (CardException | IllegalActionException e) {
@@ -1027,7 +1027,7 @@ public abstract class Presenter implements VirtualPresenter {
         } else if (this.player.getCurrentAction() != null) {
 
             this.callRemoteMethod("updateState",
-                    StateHandler.createActionState(this.player, state.get("actionState"))
+                    StateHandler.createActionState(this.gameHandler.getModel().getBoard(), this.player, state.get("actionState"))
                             .toString());
 
         } else {
