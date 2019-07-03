@@ -40,7 +40,8 @@ public class PointHandler {
                         player.getShots().get(player.getShots().size() - 1),
                         player.getShots().size() >= 12);
 
-                if (deaths.getFirstFrenzyPlayer() != null && !(player.getBridge().isKillStreakCount())) {
+                if (deaths.getFirstFrenzyPlayer() != null && !(player.getBridge()
+                        .isKillStreakCount())) {
 
                     player.getBridge().setFrenzy();
                     player.getBridge().setKillStreakCount();
@@ -93,7 +94,7 @@ public class PointHandler {
                     tempPlayer = getNextPlayer(playerList, tempPlayer);
                 }
 
-                while (tempPlayer != activePlayer) {
+                while (tempPlayer != getNextPlayer(playerList, activePlayer)) {
 
                     tempPlayer.setAdrenalin(Adrenalin.SECONDFRENZY);
                     tempPlayer = getNextPlayer(playerList, tempPlayer);
@@ -102,7 +103,6 @@ public class PointHandler {
                 deaths.setFirstFrenzyPlayer(getNextPlayer(playerList, activePlayer));
 
                 return false;
-
             }
 
             return getNextPlayer(playerList, activePlayer) == deaths.getFirstFrenzyPlayer();

@@ -41,12 +41,12 @@ class WeaponDeckTest {
 
         assertEquals(
                 tester.getName(),
-                "LOCK RIFLE"
+                "DISTRUTTORE"
         );
 
-        assertEquals(tester.getOptionalList().get(0).getName(), "with second lock");
+        assertEquals(tester.getOptionalList().get(0).getName(), "secondo aggancio");
 
-        assertEquals(tester.getOptionalList().get(0).getDescription(), "Deal 1 mark to a different target you can see.");
+        assertEquals(tester.getOptionalList().get(0).getDescription(), "Dai 1 marchio a un altro bersaglio che puoi vedere.");
 
         assertNull(effect.getActivated());
 

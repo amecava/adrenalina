@@ -6,7 +6,6 @@ import it.polimi.ingsw.server.model.board.rooms.Room;
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.exceptions.properties.SquareDistanceException;
-import it.polimi.ingsw.server.model.exceptions.properties.TargetViewException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +21,12 @@ class ViewInspector {
 
     /**
      * Computes the distance between the to given inputs considering the given properties.
+     *
      * @param fromSquare The distance is calculated starting from this square.
      * @param toSquare Destination square.
      * @param cardinal This boolean defines which algorithms are used to compute the distance.
      * @param throughWalls This boolean defines which algorithms are used to compute the distance.
      * @return The calculated distance.
-     * @throws SquareDistanceException
      */
     static int computeDistance(Square fromSquare, Square toSquare, boolean cardinal,
             boolean throughWalls) throws SquareDistanceException {
@@ -44,6 +43,7 @@ class ViewInspector {
 
     /**
      * Calculates the view property between squares.
+     *
      * @param fromSquare Starting square.
      * @param toSquare Target square.
      * @return True if fromSquare sees toSquare, false otherwise.
@@ -72,6 +72,7 @@ class ViewInspector {
 
     /**
      * Calculates the view property between a square and a list of rooms.
+     *
      * @param fromSquare Starting square.
      * @param targetList Target rooms.
      * @return True if fromSquare sees all targets, false otherwise.
@@ -100,6 +101,7 @@ class ViewInspector {
 
     /**
      * Computes whether all the targets are on the same direction starting from fromSquare.
+     *
      * @param fromSquare Starting square.
      * @param targetList List of targets to compute on.
      * @return True if all targets are on the same direction, false otherwise.
@@ -141,11 +143,11 @@ class ViewInspector {
 
     /**
      * Computes the distance in the case of cardinal boolean true.
+     *
      * @param fromSquare From Square
      * @param toSquare Destination Square
      * @param throughWalls Boolean that states if the distance can be computed ignoring walls.
      * @return Distance.
-     * @throws SquareDistanceException
      */
     private static int computeCardinalDistance(Square fromSquare, Square toSquare,
             boolean throughWalls) throws SquareDistanceException {
@@ -183,6 +185,7 @@ class ViewInspector {
 
     /**
      * Recursive ausiliary method to compute distance.
+     *
      * @param map The Square Map field used as memory.
      * @param toSquare Destination Square.
      * @param throughWalls Boolean that states if the distance can be computed ignoring walls.
@@ -217,12 +220,6 @@ class ViewInspector {
 
                                 // Update starting node map
                                 map.putIfAbsent(x.getKey().getAdjacent(y), x.getValue() + 1);
-
-                                // Update visited adjacent nodes
-                                //x.getKey().getMap(throughWalls)
-                                //        .putIfAbsent(x.getKey().getAdjacent(y), 1);
-                                //x.getKey().getAdjacent(y).getMap(throughWalls)
-                                //        .putIfAbsent(x.getKey(), 1);
                             }
                         })
                 );

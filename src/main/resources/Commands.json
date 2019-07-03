@@ -149,7 +149,7 @@
         "method": "askUsePowerUp",
         "value": [
             {
-                "name": "name",
+                "name": "line",
                 "regex": "(\\s*)(.*)(\\s*)",
                 "error": "Devi scrivere il nome di un power up."
             }

@@ -3,7 +3,6 @@ package it.polimi.ingsw.client.view.gui.handlers;
 import it.polimi.ingsw.client.view.gui.GUIView;
 import it.polimi.ingsw.client.view.gui.animations.Images;
 import it.polimi.ingsw.client.view.gui.buttons.GameButton;
-import it.polimi.ingsw.virtual.JsonUtility;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -11,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -26,7 +24,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,8 +31,6 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 public class CardHandler {
-
-    private static final String STYLE = " -fx-text-inner-color: white; -fx-font: 18px Silom";
 
     private CardHandler() {
 

@@ -13,7 +13,13 @@ public class Cost {
         //
     }
 
-    public static void checkCost(Player player, List<Color> cost, List<PowerUpCard> powerUpList) throws CostException {
+    /**
+     * This method checks if the player has enough resources to reload/collect/use an effect. It is
+     * static because it is needed in different contexts. If this method terminates without throwing
+     * exceptions it means the action is legal.
+     */
+    public static void checkCost(Player player, List<Color> cost, List<PowerUpCard> powerUpList)
+            throws CostException {
 
         try {
 

@@ -10,13 +10,14 @@ import it.polimi.ingsw.client.view.gui.animations.Images;
 import it.polimi.ingsw.client.view.gui.handlers.CardHandler;
 import it.polimi.ingsw.client.view.gui.handlers.JsonQueue;
 import it.polimi.ingsw.client.view.gui.handlers.Notifications;
+import it.polimi.ingsw.client.view.gui.screens.EndGameScreen;
 import it.polimi.ingsw.client.view.gui.screens.boardscreen.BoardScreen;
 import it.polimi.ingsw.client.view.gui.screens.GameListScreen;
 import it.polimi.ingsw.client.view.gui.screens.GameNotStartedScreen;
 import it.polimi.ingsw.client.view.gui.screens.LoginScreen;
 import it.polimi.ingsw.client.view.gui.handlers.StateHandler;
-import it.polimi.ingsw.virtual.JsonUtility;
-import it.polimi.ingsw.virtual.VirtualView;
+import it.polimi.ingsw.common.JsonUtility;
+import it.polimi.ingsw.common.VirtualView;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
@@ -439,6 +440,6 @@ public class GUIView extends Application implements View, VirtualView {
     @Override
     public void endGameScreen(String value) throws RemoteException {
 
-        //TODO
+        EndGameScreen.generateScreen(JsonUtility.jsonDeserialize(value));
     }
 }

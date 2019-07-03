@@ -32,6 +32,11 @@ public class ClientHandler {
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
+    private ClientHandler(){
+
+        //
+    }
+
     static synchronized void addClient(Presenter presenter) {
 
         clientList.add(presenter);
@@ -151,10 +156,11 @@ public class ClientHandler {
     }
 
 
-    public static synchronized Presenter getPresenter(GameHandler gameHandler, Predicate<Entry<Player,Presenter>> filter) {
+    public static synchronized Presenter getPresenter(GameHandler gameHandler,
+            Predicate<Entry<Player, Presenter>> filter) {
 
         return map.get(gameHandler).entrySet().stream()
-                .filter(filter).map(x-> x.getValue())
+                .filter(filter).map(Entry::getValue)
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }

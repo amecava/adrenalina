@@ -12,6 +12,7 @@ import javax.json.JsonArray;
 
 public class PowerUpDeck implements Serializable {
 
+
     private List<PowerUpCard> deck;
 
     private PowerUpDeck(PowerUpDeckBuilder builder) {
@@ -44,7 +45,8 @@ public class PowerUpDeck implements Serializable {
 
         static {
 
-            InputStream in = PowerUpDeckBuilder.class.getClassLoader().getResourceAsStream("PowerUps.json");
+            InputStream in = PowerUpDeckBuilder.class.getClassLoader()
+                    .getResourceAsStream("PowerUps.json");
 
             object = Json.createReader(in).readArray();
         }

@@ -1,9 +1,9 @@
 package it.polimi.ingsw.client.view.connection;
 
 import it.polimi.ingsw.client.view.View;
-import it.polimi.ingsw.virtual.VirtualAccessPoint;
-import it.polimi.ingsw.virtual.VirtualPresenter;
-import it.polimi.ingsw.virtual.VirtualView;
+import it.polimi.ingsw.common.VirtualAccessPoint;
+import it.polimi.ingsw.common.VirtualPresenter;
+import it.polimi.ingsw.common.VirtualView;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.rmi.NotBoundException;
@@ -40,10 +40,12 @@ public class RmiConnection implements Runnable {
 
         try {
 
-            Registry registry = LocateRegistry.getRegistry(this.inetAddress.getHostAddress(), this.port);
+            Registry registry = LocateRegistry
+                    .getRegistry(this.inetAddress.getHostAddress(), this.port);
             VirtualAccessPoint access = (VirtualAccessPoint) registry.lookup("AccessPoint");
 
-            VirtualView skeleton = (VirtualView) UnicastRemoteObject.exportObject((VirtualView) this.view, 0);
+            VirtualView skeleton = (VirtualView) UnicastRemoteObject
+                    .exportObject((VirtualView) this.view, 0);
             VirtualPresenter stub = access.callBack(skeleton);
 
             this.view.loginScreen();
@@ -81,7 +83,6 @@ public class RmiConnection implements Runnable {
             LOGGER.log(Level.SEVERE, "Method visibility qualifiers violated.", e);
 
         } catch (InvocationTargetException e) {
-
 
             LOGGER.log(Level.SEVERE, "Invocation target exception.", e);
         }

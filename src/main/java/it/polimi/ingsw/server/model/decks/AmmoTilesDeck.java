@@ -12,8 +12,16 @@ import javax.json.JsonArray;
 
 public class AmmoTilesDeck implements Serializable {
 
+    /**
+     * The list of AmmoTile that are currently in the deck.
+     */
     private List<AmmoTile> ammoTilesList;
 
+    /**
+     * Builds the deck based on the builder and shuffles the cards.
+     *
+     * @param builder The builder.
+     */
     private AmmoTilesDeck(AmmoTilesDeckBuilder builder) {
 
         this.ammoTilesList = builder.ammoTilesList;
@@ -30,6 +38,9 @@ public class AmmoTilesDeck implements Serializable {
         return this.ammoTilesList.remove(0);
     }
 
+    /**
+     * Adds an AmmoTile to the deck.
+     */
     public void addTile(AmmoTile tile) {
 
         this.ammoTilesList.add(tile);
@@ -37,19 +48,38 @@ public class AmmoTilesDeck implements Serializable {
 
     public static class AmmoTilesDeckBuilder {
 
+        /**
+         * The deck of powerUps.
+         */
         private PowerUpDeck powerUpDeck;
 
+        /**
+         * The list of every AmmoTile.
+         */
         private List<AmmoTile> ammoTilesList = new ArrayList<>();
 
+        /**
+         * The JsonObject with the information to build the deck.
+         */
         private static JsonArray object;
 
+        /**
+         * Statically opens the "AmmoTiles.json" resource file.
+         */
         static {
 
-            InputStream in = AmmoTilesDeckBuilder.class.getClassLoader().getResourceAsStream("AmmoTiles.json");
+            InputStream in = AmmoTilesDeckBuilder.class.getClassLoader()
+                    .getResourceAsStream("AmmoTiles.json");
 
             object = Json.createReader(in).readArray();
         }
 
+        /**
+         * Builds the deck and assigns the reference to the PowerUpDeck to the AmmoTiles that need
+         * it.
+         *
+         * @param powerUpDeck The deck with all the power ups.
+         */
         public AmmoTilesDeckBuilder(PowerUpDeck powerUpDeck) {
 
             this.powerUpDeck = powerUpDeck;
@@ -57,6 +87,9 @@ public class AmmoTilesDeck implements Serializable {
             this.readTilesFromJson();
         }
 
+        /**
+         * Read from Json file the information needed to build the deck.
+         */
         private void readTilesFromJson() {
 
             object.forEach(x -> this.ammoTilesList
@@ -64,6 +97,11 @@ public class AmmoTilesDeck implements Serializable {
             );
         }
 
+        /**
+         * Builds the Deck.
+         *
+         * @return The deck.
+         */
         public AmmoTilesDeck build() {
 
             return new AmmoTilesDeck(this);

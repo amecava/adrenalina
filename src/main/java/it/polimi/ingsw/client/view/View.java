@@ -13,8 +13,10 @@ public interface View {
     void initialScreen(int discoveryPort, int rmiPort, int socketPort);
 
     void loginScreen();
+
     void gameListScreen();
 
     void gameNotStartedScreen();
+
     void boardScreen(JsonObject object);
 }

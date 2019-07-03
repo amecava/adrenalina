@@ -84,17 +84,17 @@ public class PowerUpCard implements Card, Ammo, Serializable {
                 (this.effectHandler.getActive().contains(this.owner)
                         || effectHandler.getInactive().contains(this.owner))) {
 
-                synchronized (EffectHandler.class) {
+            synchronized (EffectHandler.class) {
 
-                    Player player = effectHandler.getActivePlayer();
-                    target.appendTarget(player);
+                Player player = effectHandler.getActivePlayer();
+                target.appendTarget(player);
 
-                    this.effectHandler.setActivePlayer(this.owner);
+                this.effectHandler.setActivePlayer(this.owner);
 
-                    this.effectHandler.useEffect(this.effect.getNext(), target);
+                this.effectHandler.useEffect(this.effect.getNext(), target);
 
-                    this.effectHandler.setActivePlayer(player);
-                }
+                this.effectHandler.setActivePlayer(player);
+            }
 
         } else {
 
@@ -141,6 +141,9 @@ public class PowerUpCard implements Card, Ammo, Serializable {
         return Json.createObjectBuilder()
                 .add("name", this.name)
                 .add("color", this.color.toString())
+                .add("targetType", this.effect.getNext().getTargetType().toString())
+                .add("args", this.effect.getArgs())
+                .add("hasCost", !this.effect.getCost().isEmpty())
                 .add("info", this.info)
                 .build();
     }

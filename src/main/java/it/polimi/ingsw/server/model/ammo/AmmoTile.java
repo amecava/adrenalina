@@ -13,7 +13,15 @@ import javax.json.JsonObject;
 
 public class AmmoTile implements Card, Serializable {
 
+    /**
+     * A reference to the PowerUpDeck. Some of the ammo tiles only has two ammo cubes. In that cases
+     * the player is allowed to draw a power up from the PowerUpDeck.
+     */
     private PowerUpDeck powerUpDeck;
+
+    /**
+     * The ammo tile has two or three colors representing the ammo cube the player needs to draw.
+     */
     private List<Color> ammoCubesList;
 
     private AmmoTile(AmmoTileBuilder builder) {
@@ -22,6 +30,10 @@ public class AmmoTile implements Card, Serializable {
         this.ammoCubesList = builder.ammoCubes;
     }
 
+    /**
+     * This is an unsupported operation since this class implements Card, an interface that declares
+     * this method that, by the way, is meaningless here.
+     */
     @Override
     public String getName() {
 
@@ -39,17 +51,31 @@ public class AmmoTile implements Card, Serializable {
         return this.ammoCubesList;
     }
 
+    /**
+     * This method says if the ammo tile gives the player the opportunity to draw a power up.
+     *
+     * @return True/false based on the property cited in the attributes documentation.
+     */
     public boolean hasPowerUpCard() {
 
         return this.ammoCubesList.size() != 3 && !this.powerUpDeck.getDeck().isEmpty();
     }
 
+    /**
+     * When the ammo tile has the property of giving the power up to the player, this method makes
+     * it available to do so from this class.
+     */
     public PowerUpCard getPowerUpCard() {
 
         return this.powerUpDeck.getPowerUpCard();
     }
 
 
+    /**
+     * This method creates a JsonObject containing all the information needed in the View. The said
+     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
+     * sent to the view when needed.
+     */
     @Override
     public JsonObject toJsonObject() {
 
@@ -69,6 +95,10 @@ public class AmmoTile implements Card, Serializable {
         private PowerUpDeck powerUpDeck;
         private List<Color> ammoCubes = new ArrayList<>();
 
+        /**
+         * Analyzes the JsonObject read from the Resources package to dynamically build the ammo
+         * tiles.
+         */
         public AmmoTileBuilder(JsonObject jTileObject, PowerUpDeck powerUpDeck) {
 
             this.powerUpDeck = powerUpDeck;

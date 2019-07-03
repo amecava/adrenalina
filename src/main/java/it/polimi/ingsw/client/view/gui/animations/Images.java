@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Preloader.ProgressNotification;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class Images {
 
@@ -29,11 +28,6 @@ public class Images {
     private Images() {
 
         //
-    }
-
-    public static ImageView getImageView(String map, String key) {
-
-        return new ImageView();
     }
 
     public static void loadImages(GUIView guiView) {
@@ -204,7 +198,7 @@ public class Images {
         possibleActionsMap.put("Sprog7", new Image("images/actions/Sprog7.png"));
         possibleActionsMap.put("Sprog8", new Image("images/actions/Sprog8.png"));
         possibleActionsMap.put("Sprog9", new Image("images/actions/Sprog9.png"));
-        possibleActionsMap.put("Spro10", new Image("images/actions/Sprog10.png"));
+        possibleActionsMap.put("Sprog10", new Image("images/actions/Sprog10.png"));
         guiView.notifyPreloader(new ProgressNotification(0.8));
         possibleActionsMap.put("Violetta0", new Image("images/actions/Violetta0.png"));
         possibleActionsMap.put("Violetta1", new Image("images/actions/Violetta1.png"));

@@ -7,8 +7,8 @@ import it.polimi.ingsw.client.view.connection.SocketConnection;
 import it.polimi.ingsw.client.view.console.terminal.BoardDrawer;
 import it.polimi.ingsw.client.view.console.terminal.JsonRegex;
 import it.polimi.ingsw.client.view.console.terminal.Terminal;
-import it.polimi.ingsw.virtual.JsonUtility;
-import it.polimi.ingsw.virtual.VirtualView;
+import it.polimi.ingsw.common.JsonUtility;
+import it.polimi.ingsw.common.VirtualView;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
@@ -639,22 +639,31 @@ public class ConsoleView implements View, VirtualView {
      * server
      */
     @Override
-    public void endGameScreen(String value) throws RemoteException {
+    public void endGameScreen(String value) {
 
         JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
 
+        StringBuilder screen = new StringBuilder();
+
+        screen.append("La partita è terminata: complimenti ")
+                .append(jsonObject.getJsonArray("array").get(0).asJsonObject()
+                        .getString("playerId"))
+                .append("!\n\n\n");
+
         StringBuilder line = new StringBuilder();
 
-        for (JsonValue playersObject: jsonObject.getJsonArray("array")) {
+        for (JsonValue playersObject : jsonObject.getJsonArray("array")) {
 
             line.append(playersObject.asJsonObject().getString("playerId"))
-                    .append(": ")
+                    .append(" (")
+                    .append(playersObject.asJsonObject().getString("character"))
+                    .append("): ")
                     .append(playersObject.asJsonObject().getInt("points"))
-                    .append(" punti!\n");
+                    .append(" punti\n");
         }
 
         Terminal.clearScreen();
 
-        Terminal.output(line.toString());
+        Terminal.output(screen.append(line.toString()).toString());
     }
 }

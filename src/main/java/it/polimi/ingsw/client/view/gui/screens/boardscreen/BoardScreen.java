@@ -8,10 +8,8 @@ import it.polimi.ingsw.client.view.gui.handlers.JsonQueue;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonPowerUp;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonSquare;
 import it.polimi.ingsw.client.view.gui.buttons.ButtonWeapon;
-import it.polimi.ingsw.server.model.board.Board;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,13 +22,19 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
@@ -40,6 +44,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
@@ -196,12 +202,99 @@ public class BoardScreen {
 
         borderPane.setRight(right);
 
+        ImageView backCard = new ImageView(Images.weaponsMap.get(0));
+        backCard.setFitHeight(92);
+        backCard.setFitWidth(61);
+
+        Button infoCard = new GameButton(backCard);
+        infoCard.setId("infoCard");
+
+        infoCard.setOnMouseClicked(mouseEvent -> {
+
+            Stage infoCardStage = new Stage();
+            infoCardStage.setHeight(575);
+            infoCardStage.initModality(Modality.APPLICATION_MODAL);
+            infoCardStage.initOwner(GUIView.getCurrentStage());
+
+            ScrollPane images = new ScrollPane();
+            images.setBackground(new Background(
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
+            HBox threeCards = new HBox();
+            threeCards.setSpacing(40);
+            threeCards.setBackground(new Background(
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
+            VBox allCards = new VBox();
+            allCards.setSpacing(20);
+            allCards.setBackground(new Background(
+                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT)));
+
+            for (int i = 1; i < 22; i++) {
+                ImageView back = new ImageView(Images.weaponsMap.get(0));
+                ImageView card = new ImageView(Images.weaponsMap.get(i));
+                card.setFitWidth(150);
+                card.setFitHeight(250);
+                ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card,
+                        Rotate.Y_AXIS);
+
+                buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
+
+                    JsonQueue.add("method", "askCardInfo");
+                    JsonQueue.add("cardId", Integer.toString(
+                            ((ButtonWeapon) weaponMouseEvent.getSource())
+                                    .getCardId()));
+                    JsonQueue.send();
+                });
+                threeCards.getChildren().add(buttonWeapon);
+
+                if (threeCards.getChildren().size() == 3) {
+
+                    allCards.getChildren().add(threeCards);
+                    threeCards = new HBox();
+                    threeCards.setSpacing(40);
+                    threeCards.setBackground(new Background(
+                            new BackgroundImage(Images.imagesMap.get("background"),
+                                    BackgroundRepeat.REPEAT,
+                                    BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                                    BackgroundSize.DEFAULT)));
+                }
+
+                buttonWeapon.setVisible(false);
+                buttonWeapon.flipTransition(Duration.millis(1),
+                        actionEvent -> buttonWeapon.setVisible(true)).play();
+            }
+            images.setContent(allCards);
+            images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+            images.setHbarPolicy(ScrollBarPolicy.NEVER);
+            Scene imagesScene = new Scene(new StackPane(images));
+            infoCardStage.setResizable(false);
+            infoCardStage.setScene(imagesScene);
+            infoCardStage.show();
+        });
+        infoCard.setAlignment(Pos.CENTER);
+
+        AnchorPane.setLeftAnchor(infoCard, 649.0);
+        AnchorPane.setTopAnchor(infoCard, 160.0);
+
+        board.getChildren().add(infoCard);
         ready.setValue(true);
 
         GUIView.changeScene(borderPane);
     }
 
     public static synchronized void updateScreen(JsonObject object) {
+
+        if (object == null) {
+
+            return;
+        }
 
         jsonObject = object;
 
@@ -229,58 +322,56 @@ public class BoardScreen {
 
             SequentialTransition sequentialTransition = new SequentialTransition();
 
-            jsonList.forEach(x -> {
+            jsonList.forEach(x ->
 
-                x.getJsonArray("tools").stream()
-                        .map(JsonValue::asJsonObject)
-                        .forEach(y -> {
+                    x.getJsonArray("tools").stream()
+                            .map(JsonValue::asJsonObject)
+                            .forEach(y -> {
 
-                            if (x.getString("color").equals("BLU")) {
+                                if (x.getString("color").equals("BLU")) {
 
-                                BoardFunction.addCardToSpawn(
-                                        weaponsTop.getChildren(),
-                                        x.getString("color"),
-                                        y.getInt("id"),
-                                        Rotate.Y_AXIS,
-                                        0,
-                                        61,
-                                        92,
-                                        sequentialTransition);
+                                    BoardFunction.addCardToSpawn(
+                                            weaponsTop.getChildren(),
+                                            x.getString("color"),
+                                            y.getInt("id"),
+                                            Rotate.Y_AXIS,
+                                            0,
+                                            61,
+                                            92,
+                                            sequentialTransition);
 
-                            } else if (x.getString("color").equals("GIALLO")) {
+                                } else if (x.getString("color").equals("GIALLO")) {
 
-                                BoardFunction.addCardToSpawn(
-                                        weaponsDx.getChildren(),
-                                        x.getString("color"),
-                                        y.getInt("id"),
-                                        Rotate.X_AXIS,
-                                        -90,
-                                        92,
-                                        61,
-                                        sequentialTransition);
+                                    BoardFunction.addCardToSpawn(
+                                            weaponsDx.getChildren(),
+                                            x.getString("color"),
+                                            y.getInt("id"),
+                                            Rotate.X_AXIS,
+                                            -90,
+                                            92,
+                                            61,
+                                            sequentialTransition);
 
-                            } else if (x.getString("color").equals("ROSSO")) {
+                                } else if (x.getString("color").equals("ROSSO")) {
 
-                                BoardFunction.addCardToSpawn(
-                                        weaponsSx.getChildren(),
-                                        x.getString("color"),
-                                        y.getInt("id"),
-                                        Rotate.X_AXIS,
-                                        90,
-                                        92,
-                                        61,
-                                        sequentialTransition);
-                            }
-                        });
-
-            });
+                                    BoardFunction.addCardToSpawn(
+                                            weaponsSx.getChildren(),
+                                            x.getString("color"),
+                                            y.getInt("id"),
+                                            Rotate.X_AXIS,
+                                            90,
+                                            92,
+                                            61,
+                                            sequentialTransition);
+                                }
+                            })
+            );
 
             sequentialTransition.getChildren().add(0, new PauseTransition(Duration.seconds(1)));
             sequentialTransition.play();
 
             ///////////////////////////////////////////////////////////////////////////////
 
-            //TODO
             playersInGame.clear();
             jsonObject.getJsonObject("board").getJsonArray("arrays").stream()
                     .flatMap(x -> x.asJsonArray().stream())
@@ -366,7 +457,6 @@ public class BoardScreen {
                                 .findAny().get();
 
                         StackPane pane = (StackPane) tmp.getParent();
-                        //TODO
                         pane.getChildren().clear();
                         tilesInSquare.setAlignment(Pos.BOTTOM_CENTER);
                         tilesInSquare.setId("tiles");
@@ -377,7 +467,6 @@ public class BoardScreen {
 
             //////////////////////////////////centro metto morti nella plncia morti board
 
-            //TODO
             killsOfAllPlayers.getChildren().clear();
 
             jsonObject.getJsonObject("deaths").getJsonArray("deathBridgeArray").stream()
@@ -406,8 +495,6 @@ public class BoardScreen {
             /////////////////////////////////////////////////////////////////////////// centro powerUp e armi e tuoi cubes
 
             playerCubes.getChildren().clear();
-
-            //TODO
             playerCards.getChildren().clear();
 
             JsonObject thisPlayerObject = jsonObject
@@ -480,13 +567,18 @@ public class BoardScreen {
                         powerUp.setFitWidth(130);
                         powerUp.setFitHeight((565.0 / 3) + 15);
                         ButtonPowerUp powerUpButton = new ButtonPowerUp(x.getString("name"),
-                                x.getString("color"), back, powerUp);
+                                x.getString("color"),
+                                x.getString("targetType"),
+                                x.getJsonNumber("args").doubleValue(),
+                                x.getBoolean("hasCost"),
+                                back, powerUp);
                         powerUpButton.setId("powerUp");
                         powerUpButton.setVisible(false);
 
                         if (!isSpawnState) {
 
-                            powerUpButton.setOnMouseClicked(mouseEvent -> CardHandler.powerUpCardInfo(x));
+                            powerUpButton.setOnMouseClicked(
+                                    mouseEvent -> CardHandler.powerUpCardInfo(x));
                         }
                         powerUpButton.flipTransition(Duration.millis(1),
                                 actionEvent -> powerUpButton.setVisible(true)).play();
@@ -497,7 +589,6 @@ public class BoardScreen {
 
             /////////////////////////////////////////////////destra metto plance giocatori
 
-            //TODO
             bridges.getChildren().clear();
 
             new ArrayList<>(right.getChildren()).stream()
@@ -563,12 +654,30 @@ public class BoardScreen {
                                 .filter(k -> k.getId().equals(allPlayersCharacter))
                                 .findFirst()
                                 .get();
+
+                        HBox marks = new HBox();
+                        marks.setId("marks");
+
                         HBox shots = new HBox();
                         shots.setId("shots");
                         shots.setSpacing(2);
+
                         HBox kills = new HBox();
                         kills.setId("kills");
+
                         int numberOfBridge = bridges.getChildren().indexOf(characterBridge);
+
+                        x.getJsonObject("bridge").getJsonObject("damageBridge")
+                                .getJsonArray("marks").forEach(m -> {
+
+                            ImageView mark = new ImageView(Images.dropsMap.get(
+                                    m.toString().substring(1, m.toString().length() - 1)));
+
+                            mark.setFitHeight(25);
+                            mark.setFitWidth(15);
+                            marks.getChildren().add(mark);
+                        });
+
                         x.getJsonObject("bridge").getJsonArray("deathBridgeArray").stream()
                                 .map(JsonValue::asJsonObject)
                                 .filter(z -> z.getBoolean("used"))
@@ -580,6 +689,7 @@ public class BoardScreen {
                                     kill.setFitWidth(25);
                                     kills.getChildren().add(kill);
                                 });
+
                         x.getJsonObject("bridge").getJsonObject("damageBridge")
                                 .getJsonArray("shots").forEach(z -> {
                             ImageView shot = new ImageView(Images.dropsMap.get(
@@ -590,14 +700,20 @@ public class BoardScreen {
                             shots.getChildren().add(shot);
 
                         });
+
+                        AnchorPane.setTopAnchor(marks,
+                                (double) numberOfBridge * (565.0 / 5));
+                        AnchorPane.setLeftAnchor(marks, 258.0);
+
                         AnchorPane.setTopAnchor(kills,
                                 (double) numberOfBridge * (565.0 / 5) + 115 - 30);
                         AnchorPane.setLeftAnchor(kills, 103.0);
+
                         AnchorPane.setTopAnchor(shots,
                                 (double) numberOfBridge * (565.0 / 5) + 35);
                         AnchorPane.setLeftAnchor(shots, 40.0);
                         AnchorPane.setRightAnchor(shots, 120.0);
-                        right.getChildren().addAll(shots, kills);
+                        right.getChildren().addAll(shots, kills, marks);
                     });
         });
     }

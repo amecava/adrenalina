@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 
 public class InfoButton extends javafx.scene.control.Button {
 
-    public InfoButton (String infoText) {
+    public InfoButton(String infoText) {
 
         super();
 

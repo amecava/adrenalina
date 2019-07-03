@@ -13,31 +13,48 @@ import it.polimi.ingsw.server.presenter.exceptions.BoardVoteException;
 import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.server.presenter.exceptions.SpawnException;
-import it.polimi.ingsw.virtual.JsonUtility;
-import it.polimi.ingsw.virtual.VirtualPresenter;
+import it.polimi.ingsw.common.JsonUtility;
+import it.polimi.ingsw.common.VirtualPresenter;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 public abstract class Presenter implements VirtualPresenter {
 
+    /**
+     * The player id. It is initialized at "Client" to differentiate active players and disconnected
+     * ones.
+     */
     private String playerId = "Client";
 
+    /**
+     * A reference to the user's Player object.
+     */
     private Player player;
+
+    /**
+     * The GameHandler of the game the user's currently playing.
+     */
     private GameHandler gameHandler;
 
+    /**
+     * The key of this Map is the player id, the value is the JsonObject with all the possible
+     * actions of the state in which the user currently is.
+     */
     static final Map<String, JsonObject> state = new HashMap<>();
 
+    /**
+     * Statically loads the state of the game.
+     */
     static {
 
         InputStream in = Presenter.class.getClassLoader().getResourceAsStream("GameState.json");
@@ -54,6 +71,12 @@ public abstract class Presenter implements VirtualPresenter {
 
     abstract void disconnectPresenter();
 
+    /**
+     * The method is responsible of talking to the client. Declares this abstract method that will
+     * be implemented by one of the two subclasses of Presenter: RmiPresenter or SocketPresenter.
+     * Thanks to this design, "login" method are implemented only once, and the connection method
+     * will be implemented by the subclasses.
+     */
     abstract void callRemoteMethod(String method, String value) throws RemoteException;
 
     String getPlayerId() {
@@ -71,6 +94,11 @@ public abstract class Presenter implements VirtualPresenter {
         return this.gameHandler;
     }
 
+    /**
+     * Method that is called when the user wants to disconnect himself from the server.
+     *
+     * @param value A serialized JsonObject with the name of this method.
+     */
     @Override
     public void remoteDisconnect(String value) throws RemoteException {
 
@@ -81,6 +109,11 @@ public abstract class Presenter implements VirtualPresenter {
         this.updateLoginGame();
     }
 
+    /**
+     * Method that is called when the user wants to set his player id.
+     *
+     * @param value A serialized JsonObject with the name that the user chose.
+     */
     @Override
     public void selectPlayerId(String value) throws RemoteException {
 
@@ -136,7 +169,7 @@ public abstract class Presenter implements VirtualPresenter {
             this.callRemoteMethod("updateState", state.get("noGameState").toString());
 
             ClientHandler.broadcast(
-                    (x) -> !x.getPlayerId().equals(this.playerId),
+                    x -> !x.getPlayerId().equals(this.playerId),
                     "broadcast",
                     this.playerId + ": connesso al server.");
 
@@ -144,6 +177,12 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user asks to create a new game.
+     *
+     * @param value A serialized JsonObject with the name of the new game, the number of deaths and
+     * a boolean that says if the user wanted to play with the final frenzy mode.
+     */
     @Override
     public void askCreateGame(String value) throws RemoteException {
 
@@ -170,6 +209,13 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user asks to enter in a game that has already been created
+     * either by himself or someone else.
+     *
+     * @param value A serialized JsonObject with the name of the game and the character he wants to
+     * be.
+     */
     @Override
     public void selectGame(String value) throws RemoteException {
 
@@ -223,6 +269,11 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user asks to vote the board he prefers.
+     *
+     * @param value A serialized JsonObject with the integer of the board he wants to use.
+     */
     @Override
     public void voteBoard(String value) throws RemoteException {
 
@@ -252,6 +303,13 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user asks to spawn in a certain square, either in the first
+     * turn or after he dies.
+     *
+     * @param value A serialized JsonObject with the name of the power uo he wants to discard and
+     * its color.
+     */
     @Override
     public void spawn(String value) throws RemoteException {
 
@@ -300,6 +358,11 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user wants to end his turn.
+     *
+     * @param value A serialized JsonObject with the name of this method.
+     */
     @Override
     public void endOfTurn(String value) throws RemoteException {
 
@@ -338,21 +401,33 @@ public abstract class Presenter implements VirtualPresenter {
                 JsonArrayBuilder array = Json.createArrayBuilder();
 
                 e.getWinner().stream()
-                        .flatMap(x -> x.stream())
+                        .flatMap(Collection::stream)
                         .forEach(x ->
 
                                 array.add(
                                         Json.createObjectBuilder()
                                                 .add("playerId", x.getPlayerId())
-                                                .add("points", x.getPoints()).build())
+                                                .add("character", x.getColor().getCharacter())
+                                                .add("points", x.getPoints())
+                                                .build())
                         );
 
-                this.callRemoteMethod("endGameScreen",
+                ClientHandler.gameBroadcast(
+                        this.gameHandler,
+                        x -> true,
+                        "endGameScreen",
                         Json.createObjectBuilder().add("array", array.build()).build().toString());
+
             }
         }
     }
 
+    /**
+     * Method that is called when the user needs to decide which action he wants to perform (run,
+     * collect, etc...).
+     *
+     * @param value A serialized JsonObject with the integer of the action he wants to perform.
+     */
     @Override
     public void selectAction(String value) throws RemoteException {
 
@@ -398,6 +473,13 @@ public abstract class Presenter implements VirtualPresenter {
 
     }
 
+    /**
+     * Method that is called when the user already "activated" the "move" action and wants to
+     * perform it.
+     *
+     * @param value A serialized JsonObject with color and the integer that identify the square the
+     * user wants to reach.
+     */
     @Override
     public void moveAction(String value) throws RemoteException {
 
@@ -438,6 +520,15 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user already "activated" the "collect" action and wants to
+     * perform it.
+     *
+     * @param value A serialized JsonObject with an optional integer that says which card the user
+     * wants to collect, that (if it's present) can be followed by an optional integer that says
+     * which card the user wants to discard, and eventually a String that says with which power ups
+     * the user wants to pay the cost of the card
+     */
     @Override
     public void askCollect(String value) throws RemoteException {
 
@@ -502,6 +593,13 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user already "activated" the "shoot" action and wants to
+     * activate the weapon he wants to use.
+     *
+     * @param value A serialized JsonObject with the integer of the card that the user wants to
+     * activate.
+     */
     @Override
     public void askActivateWeapon(String value) throws RemoteException {
 
@@ -534,30 +632,73 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user already "activated" the weapon card and wants to use the
+     * primary effect. Calls askUseEffect with the specific EffectType.
+     *
+     * @param value A serialized JsonObject with all the information needed to use the said effect:
+     * target(*name of the character*) destination(*colorOfSquare-numberOfSquare*)
+     * powerup(powerUpName-color). All these are optional, and need to be written only if
+     * necessary.
+     */
     @Override
     public void askUsePrimary(String value) throws RemoteException {
 
         this.askUseEffect(EffectType.PRIMARY, value);
     }
 
+    /**
+     * Method that is called when the user already "activated" the weapon card and wants to use the
+     * alternative effect. Calls askUseEffect with the specific EffectType.
+     *
+     * @param value A serialized JsonObject with all the information needed to use the said effect:
+     * target(*name of the character*) destination(*colorOfSquare-numberOfSquare*)
+     * powerup(powerUpName-color). All these are optional, and need to be written only if
+     * necessary.
+     */
     @Override
     public void askUseAlternative(String value) throws RemoteException {
 
         this.askUseEffect(EffectType.ALTERNATIVE, value);
     }
 
+    /**
+     * Method that is called when the user already "activated" the weapon card and wants to use the
+     * first optional effect. Calls askUseEffect with the specific EffectType.
+     *
+     * @param value A serialized JsonObject with all the information needed to use the said effect:
+     * target(*name of the character*) destination(*colorOfSquare-numberOfSquare*)
+     * powerup(powerUpName-color). All these are optional, and need to be written only if
+     * necessary.
+     */
     @Override
     public void askUseOptional1(String value) throws RemoteException {
 
         this.askUseEffect(EffectType.OPTIONAL_1, value);
     }
 
+    /**
+     * Method that is called when the user already "activated" the weapon card and wants to use the
+     * second optional effect. Calls askUseEffect with the specific EffectType.
+     *
+     * @param value A serialized JsonObject with all the information needed to use the said effect:
+     * target(*name of the character*) destination(*colorOfSquare-numberOfSquare*)
+     * powerup(powerUpName-color). All these are optional, and need to be written only if
+     * necessary.
+     */
     @Override
     public void askUseOptional2(String value) throws RemoteException {
 
         this.askUseEffect(EffectType.OPTIONAL_2, value);
     }
 
+    /**
+     * Method that is called when the user wants to use a power up.
+     *
+     * @param value A serialized JsonObject with all the information needed to use the said power
+     * up: target(*name of the character*) destination(*colorOfSquare-numberOfSquare*)
+     * paga(colorOfAmmoCube). All these are optional, and need to be written only if necessary.
+     */
     @Override
     public void askUsePowerUp(String value) throws RemoteException {
 
@@ -575,7 +716,7 @@ public abstract class Presenter implements VirtualPresenter {
 
             try {
 
-                String line = object.getString("name");
+                String line = object.getString("line");
 
                 if (!line.contains("powerup")) {
 
@@ -598,14 +739,15 @@ public abstract class Presenter implements VirtualPresenter {
                                 EffectParser.paymentCube(line));
                     }
 
+                    this.gameHandler.getModel().getBoard().getPowerUpDeck()
+                            .addPowerUpCard(this.player.removePowerUp(powerUpCard));
+
                     ClientHandler.gameBroadcast(
                             this.gameHandler,
                             x -> true,
                             "updateBoard",
                             this.gameHandler.toJsonObject().toString());
 
-                    this.gameHandler.getModel().getBoard().getPowerUpDeck()
-                            .addPowerUpCard(this.player.removePowerUp(powerUpCard));
                 }
 
 
@@ -616,6 +758,13 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user wants to reload a weapon.
+     *
+     * @param value A serialized JsonObject with all the information needed to reload: the id of the
+     * card that the user wants to reload, and an optional list of power ups he wants to use instead
+     * of his ammo cubes.
+     */
     @Override
     public void askReload(String value) throws RemoteException {
 
@@ -678,6 +827,11 @@ public abstract class Presenter implements VirtualPresenter {
 
     }
 
+    /**
+     * Method that is called when the user wants to end the action he is performing now.
+     *
+     * @param value A serialized JsonObject with the name of this method.
+     */
     @Override
     public void endAction(String value) throws RemoteException {
 
@@ -709,6 +863,11 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user wants to know some information about a specific card.
+     *
+     * @param value A serialized JsonObject with an integer: the id of the card.
+     */
     @Override
     public void askCardInfo(String value) throws RemoteException {
 
@@ -730,6 +889,12 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Method that is called when the user wants to know some information about a specific power
+     * up.
+     *
+     * @param value A serialized JsonObject with the name and color of the power up.
+     */
     @Override
     public void askInfoPowerUp(String value) throws RemoteException {
 
@@ -772,11 +937,14 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * Either "askUsePrimary", "askUseAlternative", "askUseOptional1", "askUseOptional2", call this
+     * method, that is the method that actually uses the model to perform the action.
+     */
     private void askUseEffect(EffectType effectType, String value) throws RemoteException {
 
         JsonObject object = JsonUtility.jsonDeserialize(value);
 
-        System.out.println(value);
         if (object.getString("line").chars().filter(c -> c == '(').count() != object
                 .getString("line").chars().filter(c -> c == ')').count()) {
 
@@ -833,6 +1001,9 @@ public abstract class Presenter implements VirtualPresenter {
 
     }
 
+    /**
+     * This method updates the state of the game of a player who just reconnected to the game.
+     */
     private void reconnectPlayer() throws RemoteException {
 
         if (!this.gameHandler.isGameStarted()) {
@@ -867,6 +1038,9 @@ public abstract class Presenter implements VirtualPresenter {
         }
     }
 
+    /**
+     * This method updates the login state of a match by updating the proper screen.
+     */
     private void updateLoginGame() {
 
         ClientHandler.broadcast(
