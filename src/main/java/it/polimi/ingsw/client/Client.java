@@ -1,17 +1,13 @@
 package it.polimi.ingsw.client;
 
-import com.sun.javafx.application.LauncherImpl;
-import com.sun.tools.javac.util.List;
 import it.polimi.ingsw.client.view.console.ConsoleView;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.view.gui.GUIView;
-import it.polimi.ingsw.client.view.gui.GUIPreloader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Client {
