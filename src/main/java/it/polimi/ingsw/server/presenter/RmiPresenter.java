@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.virtual.VirtualView;
+import it.polimi.ingsw.common.VirtualView;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

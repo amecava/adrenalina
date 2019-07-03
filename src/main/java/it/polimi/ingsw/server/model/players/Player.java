@@ -25,7 +25,7 @@ import it.polimi.ingsw.server.model.players.bridges.Bridge;
 import it.polimi.ingsw.server.model.points.PointStructure;
 import it.polimi.ingsw.server.model.cards.Target;
 import java.io.Serializable;
-import it.polimi.ingsw.virtual.JsonUtility;
+import it.polimi.ingsw.common.JsonUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

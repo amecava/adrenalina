@@ -1,4 +1,4 @@
-package it.polimi.ingsw.virtual;
+package it.polimi.ingsw.common;
 
 import java.io.StringReader;
 import javax.json.Json;
