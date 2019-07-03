@@ -19,28 +19,63 @@ import javax.json.JsonObject;
 
 public class PowerUpCard implements Card, Ammo, Serializable {
 
+    /**
+     * The EffectHandler of the game.
+     */
     private EffectHandler effectHandler;
 
+    /**
+     * The name of the Power Up.
+     */
     private String name;
+
+    /**
+     * The color of the Power Up.
+     */
     private Color color;
+
+    /**
+     * The description of the Power Up.
+     */
     private String info;
 
+    /**
+     * The current owner of the Power Up.
+     */
     private Player owner;
 
+    /**
+     * The Effect object with the information on how to execute the effect of the Power Up.
+     */
     private Effect effect;
 
+    /**
+     * Gets the name of the Power Up.
+     *
+     * @return The name of the Power Up.
+     */
     @Override
     public String getName() {
 
         return this.name;
     }
 
+    /**
+     * The Color of the Power up.
+     *
+     * @return The Color of the Power Up.
+     */
     @Override
     public Color getColor() {
 
         return this.color;
     }
 
+    /**
+     * Build the power up based on the builder.
+     *
+     * @param builder The builder.
+     */
     private PowerUpCard(PowerUpCardBuilder builder) {
 
         this.effectHandler = builder.effectHandler;
@@ -53,11 +88,24 @@ public class PowerUpCard implements Card, Ammo, Serializable {
 
     }
 
+    /**
+     * Sets the current owner of the Card.
+     *
+     * @param owner The Player who owns the card.
+     */
     public void setOwner(Player owner) {
 
         this.owner = owner;
     }
 
+    /**
+     * This method performs the "usePowerUp" action by applying its effect.
+     *
+     * @param target The target of the effect.
+     * @throws EffectException If the said effect cannot be used right now.
+     * @throws PropertiesException If some properties of the target are not respected.
+     * @throws CardException If the card cannot be used right now.
+     */
     public void useCard(EffectArgument target)
             throws EffectException, PropertiesException, CardNotLoadedException {
 
@@ -102,6 +150,17 @@ public class PowerUpCard implements Card, Ammo, Serializable {
         }
     }
 
+    /**
+     * This method performs the "usePowerUp" action by applying its effect. This is the case of the
+     * power up that needs an ammo cube as a payments
+     *
+     * @param target The target of the effect.
+     * @param color The color of the ammo cube that the user wanted to use in order to pay the
+     * effect.
+     * @throws EffectException If the said effect cannot be used right now.
+     * @throws PropertiesException If some properties of the target are not respected.
+     * @throws CardException If the card cannot be used right now.
+     */
     public void useCard(EffectArgument target, Color color)
             throws EffectException, PropertiesException, CardException {
 
@@ -135,6 +194,13 @@ public class PowerUpCard implements Card, Ammo, Serializable {
         ammoCube.setUsed(true);
     }
 
+    /**
+     * This method creates a JsonObject containing all the information needed in the View. The said
+     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
+     * sent to the view when needed.
+     *
+     * @return The JsonObject containing all the information of this card.
+     */
     @Override
     public JsonObject toJsonObject() {
 
@@ -150,19 +216,47 @@ public class PowerUpCard implements Card, Ammo, Serializable {
 
     public static class PowerUpCardBuilder {
 
+        /**
+         * The EffectHandler of the game.
+         */
         private EffectHandler effectHandler;
 
+        /**
+         * The name of the power up.
+         */
         private String name;
+
+        /**
+         * The color of the power up.
+         */
         private Color color;
+
+        /**
+         * The description of the power up.
+         */
         private String info;
 
+        /**
+         * The effect of the power up.
+         */
         private Effect effect;
 
+        /**
+         * Creates the builder by initializing the effectHandler.
+         *
+         * @param effectHandler The effectHandler of the game.
+         */
         public PowerUpCardBuilder(EffectHandler effectHandler) {
 
             this.effectHandler = effectHandler;
         }
 
+        /**
+         * Builds the PowerUpCard by reading the information of the card.
+         *
+         * @param jsonObject The JsonObject with the information of the Power Up.
+         * @return The built PowerUpCard.
+         */
         public PowerUpCard build(JsonObject jsonObject) {
 
             this.name = jsonObject.getString("name");

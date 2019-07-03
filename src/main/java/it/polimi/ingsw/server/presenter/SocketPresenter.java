@@ -17,29 +17,64 @@ import javax.json.JsonObject;
 
 public class SocketPresenter extends Presenter implements Runnable {
 
+    /**
+     * The Scanner for the input stream.
+     */
     private Scanner in;
+
+    /**
+     * The PrintWriter for the output stream.
+     */
     private PrintWriter out;
 
+    /**
+     * A queue for the game messages, not the ping/pong messages that say if a client is still
+     * connected.
+     */
     private final Queue<JsonObject> data = new ArrayDeque<>();
+
+    /**
+     * A queue for the ping/pong messages that say if a client is still connected.
+     */
     private final Queue<JsonObject> ping = new ArrayDeque<>();
 
+    /**
+     * A Logger that prints updates on the server.
+     */
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
+    /**
+     * Creates the SocketPresenter by initializing the input/output streams.
+     *
+     * @param socket The Socket used for the connection
+     * @throws IOException Thrown by the Socket class.
+     */
     public SocketPresenter(Socket socket) throws IOException {
 
         this.in = new Scanner(socket.getInputStream());
         this.out = new PrintWriter(socket.getOutputStream());
     }
 
+    /**
+     * Disconnects the Presenter by closing the output stream.
+     */
     @Override
     public void disconnectPresenter() {
 
         this.out.close();
     }
 
+    /**
+     * Uses the output stream to call the method "method" on the object exported by the client, with
+     * the parameter "value". Practical example: if method = "updateBoard", the method "updateBoard"
+     * will be called on the client's View, and the board of that client will be updated.
+     *
+     * @param method The name of the method that will be called on the View.
+     * @param value The value that will be given as a parameter to "method" method.
+     */
     @Override
     public void callRemoteMethod(String method, String value) throws RemoteException {
 
@@ -66,6 +101,9 @@ public class SocketPresenter extends Presenter implements Runnable {
         }
     }
 
+    /**
+     * Runs the Thread of the server.
+     */
     @Override
     public void run() {
 
@@ -113,6 +151,9 @@ public class SocketPresenter extends Presenter implements Runnable {
         }
     }
 
+    /**
+     * Reads the data in the input stream and sorts the messages in the correct queue.
+     */
     private void inputStream() {
 
         try {

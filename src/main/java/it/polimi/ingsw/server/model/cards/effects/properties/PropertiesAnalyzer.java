@@ -30,14 +30,14 @@ public class PropertiesAnalyzer {
         // Launch exception if duplicates found
         if (target.size() != target.stream().distinct().collect(Collectors.toList()).size()) {
 
-            throw new DuplicateException("Too many targets in the target list!");
+            throw new DuplicateException("Hai selezionato troppe cose! Riprova.");
         }
 
         // Launch exception if max targets property is violated
         if (effect.getMaxTargets() != null &&
                 target.size() > effect.getMaxTargets()) {
 
-            throw new MaxTargetsException("Too many targets in the target list!");
+            throw new MaxTargetsException("Hai selezionato troppe cose! Riprova.");
         }
     }
 
@@ -71,7 +71,7 @@ public class PropertiesAnalyzer {
                 //
             } catch (IllegalArgumentException e) {
 
-                throw new SameAsFatherException("Same as father violated!");
+                throw new SameAsFatherException("Devi sparare allo stesso giocatore di prima.");
             }
         }
     }
@@ -95,7 +95,7 @@ public class PropertiesAnalyzer {
                                     target.getCurrentPosition())
                             && effect.getTargetView())) {
 
-                        throw new TargetViewException("Target view exception!");
+                        throw new TargetViewException("Non puoi vedere il tuo target! Riprova.");
                     }
                 }
 
@@ -103,7 +103,7 @@ public class PropertiesAnalyzer {
             } else if (effect.getTargetView() && !ViewInspector
                     .roomView(activePlayer.getCurrentPosition(), targetList)) {
 
-                throw new TargetViewException("Room view exception!");
+                throw new TargetViewException("Non vedi la stanza che hai scelto! Riprova.");
             }
         }
     }
@@ -121,7 +121,8 @@ public class PropertiesAnalyzer {
                     if (!ViewInspector.targetView(active.getCurrentPosition(),
                             target.getCurrentPosition())) {
 
-                        throw new TargetViewException("Target not seen by active!");
+                        throw new TargetViewException(
+                                "Devi scegliere qualcuno che può essere visto\nda chi hi appena colpito!");
                     }
                 }
             }
@@ -145,13 +146,13 @@ public class PropertiesAnalyzer {
                 // Launch exception if the distance is lower than the minDist property
                 if (effect.getMinDist() != null && distance < effect.getMinDist()) {
 
-                    throw new SquareDistanceException("Distance metrics not troototoooooo!");
+                    throw new SquareDistanceException("Hai scelto un bersaglio troppo vicino a te! Riprova.");
                 }
 
                 // Launch exception if the distance is greater than the maxDist property
                 if (effect.getMaxDist() != null && distance > effect.getMaxDist()) {
 
-                    throw new SquareDistanceException("Distance metrics not trottoto!");
+                    throw new SquareDistanceException("Hai scelto un bersaglio troppo lontano! Riprova.");
                 }
             }
         }
@@ -164,7 +165,7 @@ public class PropertiesAnalyzer {
         if (effect.isCardinal() && !ViewInspector
                 .sameDirection(activeSquare, targetList)) {
 
-            throw new CardinalException("Targets are not on same cardinal direction!");
+            throw new CardinalException("Attenzione: i bersagli devono essere lungo una direzione cardinale.");
         }
 
         // If the different squares flag is true
@@ -176,7 +177,7 @@ public class PropertiesAnalyzer {
             // Launch exception if not all targets can be added to the set
             if (!targetList.stream().map(Target::getCurrentPosition).allMatch(duplicate::add)) {
 
-                throw new CardinalException("Some targets are in the same square!");
+                throw new CardinalException("Attenziona: alcuni bersagli sono nello stesso quadrato.");
             }
         }
     }
@@ -191,7 +192,7 @@ public class PropertiesAnalyzer {
             if (effect.getArgs() == 2 && target.stream().anyMatch(
                     x -> !x.getCurrentPosition().equals(activePlayer.getCurrentPosition()))) {
 
-                throw new SameAsPlayerException("Targets on different position of active player!");
+                throw new SameAsPlayerException("I bersagli devono essere nello stesso quadrato in cui sei tu.");
             }
 
             // Launch exception if any target on same position of active player
@@ -199,7 +200,7 @@ public class PropertiesAnalyzer {
                 effect.getTargetType().equals(TargetType.ROOM) && target.stream()
                         .anyMatch(x -> x.equals(activePlayer.getCurrentPosition().getRoom())))) {
 
-            throw new SameAsPlayerException("Same as player flag is false!");
+            throw new SameAsPlayerException("Il bersaglio puoi essere solo tu!");
         }
     }
 }

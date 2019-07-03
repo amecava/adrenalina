@@ -69,6 +69,9 @@ public abstract class Presenter implements VirtualPresenter {
                 );
     }
 
+    /**
+     * Disconnects the Presenter.
+     */
     abstract void disconnectPresenter();
 
     /**
@@ -79,16 +82,28 @@ public abstract class Presenter implements VirtualPresenter {
      */
     abstract void callRemoteMethod(String method, String value) throws RemoteException;
 
+    /**
+     * Gets the id of the player of this presenter.
+     * @return The player id.
+     */
     String getPlayerId() {
 
         return this.playerId;
     }
 
+    /**
+     * Gets the player of this presenter.
+     * @return The Player of this presenter.
+     */
     Player getPlayer() {
 
         return this.player;
     }
 
+    /**
+     * Gets the GameHandler of this presenter.
+     * @return The GameHandler of this presenter.
+     */
     GameHandler getGameHandler() {
 
         return this.gameHandler;
@@ -424,7 +439,7 @@ public abstract class Presenter implements VirtualPresenter {
 
     /**
      * Method that is called when the user needs to decide which action he wants to perform (run,
-     * collect, etc...).
+     * collect, reload).
      *
      * @param value A serialized JsonObject with the integer of the action he wants to perform.
      */

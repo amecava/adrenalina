@@ -12,11 +12,23 @@ import javax.json.JsonObjectBuilder;
 
 class StateHandler {
 
+    /**
+     * Creates the StateHandler.
+     */
     private StateHandler() {
 
         //
     }
 
+    /**
+     * Creates the ActivePlayerState based on what the player should be able to do, adding the
+     * possible actions that the player can perform in the moment of the game this method is
+     * called.
+     *
+     * @param player The Player that needs his State to be updated.
+     * @param object The JsonObject with the information of the state of the player.
+     * @return The JsonObject with the possible actions that the player can perform.
+     */
     static JsonObject createActivePlayerState(Player player, JsonObject object) {
 
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
@@ -30,6 +42,15 @@ class StateHandler {
         return objectBuilder.build();
     }
 
+    /**
+     * Creates the ActionState based on what the player should be able to do, adding the possible
+     * actions that the player can perform in the moment of the game this method is called.
+     *
+     * @param board The board of the current game.
+     * @param player The Player that needs his State to be updated.
+     * @param object The JsonObject with the information of the state of the player.
+     * @return The JsonObject with the possible actions that the player can perform.
+     */
     static JsonObject createActionState(Board board, Player player, JsonObject object) {
 
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
@@ -68,6 +89,14 @@ class StateHandler {
         return objectBuilder.build();
     }
 
+    /**
+     * Creates the ShootState based on what the player should be able to do, adding the
+     * effects that the player can execute in the moment of the game this method is called.
+     *
+     * @param player The Player that needs his State to be updated.
+     * @param object The JsonObject with the information of the state of the player.
+     * @return The JsonObject with the possible actions that the player can perform.
+     */
     static JsonObject createShootState(Player player, JsonObject object) {
 
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
