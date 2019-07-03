@@ -19,13 +19,13 @@ fi
 while getopts ":scg" opt; do
   case ${opt} in
     s )
-      $_java -jar out/artifacts/Server/AM48.jar
+      $_java -jar jar/server-jar-with-dependencies.jar
       ;;
     c )
-      $_java -jar out/artifacts/Client/AM48.jar c
+      $_java -jar jar/client-jar-with-dependencies.jar c
       ;;
     g )
-      $_java -jar out/artifacts/Client/AM48.jar g
+      $_java -jar jar/client-jar-with-dependencies.jar
       ;;
     \? )
       echo "Invalid option: $OPTARG" 1>&2

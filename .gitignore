@@ -2,9 +2,9 @@
 !src/
 !pom.xml
 !README.md
-!resources/
 !.gitignore
 !.gitattributes
 !deliverable/
+!jar/
 !adrenalina
 .DS_store

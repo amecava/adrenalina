@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.model.players;
 
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
-import it.polimi.ingsw.virtual.JsonUtility;
+import it.polimi.ingsw.common.JsonUtility;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

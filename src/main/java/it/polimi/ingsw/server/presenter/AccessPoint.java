@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.virtual.VirtualPresenter;
-import it.polimi.ingsw.virtual.VirtualAccessPoint;
-import it.polimi.ingsw.virtual.VirtualView;
+import it.polimi.ingsw.common.VirtualPresenter;
+import it.polimi.ingsw.common.VirtualAccessPoint;
+import it.polimi.ingsw.common.VirtualView;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 

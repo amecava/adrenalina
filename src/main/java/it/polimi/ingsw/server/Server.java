@@ -3,7 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.server.presenter.ClientHandler;
 import it.polimi.ingsw.server.presenter.AccessPoint;
 import it.polimi.ingsw.server.presenter.SocketPresenter;
-import it.polimi.ingsw.virtual.VirtualAccessPoint;
+import it.polimi.ingsw.common.VirtualAccessPoint;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

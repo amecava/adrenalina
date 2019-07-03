@@ -1,9 +1,9 @@
 package it.polimi.ingsw.client.view.connection;
 
 import it.polimi.ingsw.client.view.View;
-import it.polimi.ingsw.virtual.VirtualAccessPoint;
-import it.polimi.ingsw.virtual.VirtualPresenter;
-import it.polimi.ingsw.virtual.VirtualView;
+import it.polimi.ingsw.common.VirtualAccessPoint;
+import it.polimi.ingsw.common.VirtualPresenter;
+import it.polimi.ingsw.common.VirtualView;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.rmi.NotBoundException;

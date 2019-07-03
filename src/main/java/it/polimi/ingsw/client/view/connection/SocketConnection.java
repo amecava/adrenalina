@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.view.connection;
 
 import it.polimi.ingsw.client.view.View;
-import it.polimi.ingsw.virtual.VirtualView;
+import it.polimi.ingsw.common.VirtualView;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;

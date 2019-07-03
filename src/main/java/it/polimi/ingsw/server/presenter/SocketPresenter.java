@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.virtual.JsonUtility;
+import it.polimi.ingsw.common.JsonUtility;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;

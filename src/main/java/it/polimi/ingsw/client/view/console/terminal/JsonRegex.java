@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.view.console.terminal;
 
 import it.polimi.ingsw.client.view.console.ConsoleView;
-import it.polimi.ingsw.virtual.JsonUtility;
+import it.polimi.ingsw.common.JsonUtility;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;

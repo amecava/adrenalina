@@ -13,7 +13,7 @@ import it.polimi.ingsw.server.model.decks.AmmoTilesDeck;
 import it.polimi.ingsw.server.model.decks.PowerUpDeck;
 import it.polimi.ingsw.server.model.decks.WeaponDeck;
 import it.polimi.ingsw.server.model.board.rooms.Room;
-import it.polimi.ingsw.virtual.JsonUtility;
+import it.polimi.ingsw.common.JsonUtility;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
