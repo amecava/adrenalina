@@ -63,9 +63,6 @@ public class BoardScreen {
     private static final HBox weaponsTop = new HBox();
     private static final VBox weaponsDx = new VBox();
     private static final VBox weaponsSx = new VBox();
-    private static final StackPane weaponDeck = new StackPane();
-    private static final StackPane powerUpDeck = new StackPane();
-
 
     private static final Label playerPoints = new Label();
     private static final HBox playerCubes = new HBox();
@@ -142,11 +139,6 @@ public class BoardScreen {
         weaponsDx.setSpacing(10);
         weaponsTop.setSpacing(3);
 
-        weaponDeck.setId("weaponDeck");
-        weaponDeck.setMouseTransparent(false);
-        weaponDeck.setPrefWidth(61);
-        weaponDeck.setPrefHeight(92);
-
         AnchorPane.setTopAnchor(weaponsTop, 3.0);
         AnchorPane.setLeftAnchor(weaponsTop, 393.0);
 
@@ -156,10 +148,7 @@ public class BoardScreen {
         AnchorPane.setTopAnchor(weaponsDx, 320.0);
         AnchorPane.setLeftAnchor(weaponsDx, 644.0);
 
-        AnchorPane.setTopAnchor(weaponDeck, 165.0);
-        AnchorPane.setLeftAnchor(weaponDeck, 658.0);
-
-        board.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop, weaponDeck);
+        board.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop);
 
         killsOfAllPlayers.setId("kills");
         AnchorPane.setLeftAnchor(killsOfAllPlayers, 70.0);
@@ -575,11 +564,6 @@ public class BoardScreen {
                         powerUpButton.setId("powerUp");
                         powerUpButton.setVisible(false);
 
-                        if (!isSpawnState) {
-
-                            powerUpButton.setOnMouseClicked(
-                                    mouseEvent -> CardHandler.powerUpCardInfo(x));
-                        }
                         powerUpButton.flipTransition(Duration.millis(1),
                                 actionEvent -> powerUpButton.setVisible(true)).play();
                         playerCards.getChildren().add(powerUpButton);

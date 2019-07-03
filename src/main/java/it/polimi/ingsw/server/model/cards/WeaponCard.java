@@ -279,7 +279,7 @@ public class WeaponCard implements Card, Serializable {
         }
 
         this.effectHandler.getActive().clear();
-        this.effectHandler.getActive().clear();
+        this.effectHandler.getInactive().clear();
 
         return this;
     }
