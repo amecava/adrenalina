@@ -639,7 +639,7 @@ public class ConsoleView implements View, VirtualView {
      * server
      */
     @Override
-    public void endGameScreen(String value) throws RemoteException {
+    public void endGameScreen(String value) {
 
         JsonObject jsonObject = JsonUtility.jsonDeserialize(value);
 

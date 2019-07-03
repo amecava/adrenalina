@@ -34,6 +34,7 @@ public enum AtomicType {
 
     /**
      * Gets the AtomicEffect object corresponding to the enum value.
+     *
      * @return The AtomicEffect object corresponding to the enum value.
      */
     public AtomicEffect getAtomicEffect() {

@@ -30,7 +30,9 @@ public class Room implements Target, Serializable {
     }
 
     /**
-     * Since a room can be a target of a weapon, this class implements this method to differentiate the target types.
+     * Since a room can be a target of a weapon, this class implements this method to differentiate
+     * the target types.
+     *
      * @return The enum that defines the target type "room".
      */
     @Override
@@ -41,6 +43,7 @@ public class Room implements Target, Serializable {
 
     /**
      * An unsupported operation that occurs because of the the target interface the is implemented.
+     *
      * @return An Exception is always thrown.
      */
     @Override
@@ -51,7 +54,6 @@ public class Room implements Target, Serializable {
 
     /**
      * Searches in every square of the squaresList the players in those squares.
-     * @return
      */
     @Override
     public List<Player> getPlayers() {
@@ -88,10 +90,11 @@ public class Room implements Target, Serializable {
     }
 
     /**
-     * It builds a JsonArray of every square and adds it to a JsonObect. It starts from the
-     * This method creates a JsonObject containing all the information needed in the View. The said
-     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be sent to the
-     * view when needed.
+     * It builds a JsonArray of every square and adds it to a JsonObect. It starts from the This
+     * method creates a JsonObject containing all the information needed in the View. The said
+     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
+     * sent to the view when needed.
+     *
      * @return The JsonObject of the class.
      */
     public JsonObject toJsonObject() {

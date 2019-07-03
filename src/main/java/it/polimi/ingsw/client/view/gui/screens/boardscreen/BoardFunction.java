@@ -47,7 +47,8 @@ public class BoardFunction {
                 .collect(Collectors.toList());
     }
 
-    static synchronized void removeCardFromSpawn(ObservableList<Node> children, List<JsonObject> jsonList) {
+    static synchronized void removeCardFromSpawn(ObservableList<Node> children,
+            List<JsonObject> jsonList) {
 
         new ArrayList<>(children).stream()
                 .map(x -> (ButtonWeapon) x)
@@ -59,16 +60,17 @@ public class BoardFunction {
                                     .map(JsonValue::asJsonObject)
                                     .anyMatch(w -> w.getInt("id") == x.getCardId()))) {
 
-                        x.flipTransition(Duration.millis(300), actionEvent -> {
+                        x.flipTransition(Duration.millis(300), actionEvent ->
 
-                            children.remove(x);
+                                children.remove(x)
 
-                        }).play();
+                        ).play();
                     }
                 });
     }
 
-    static synchronized void addCardToSpawn(ObservableList<Node> children, String color, int id, Point3D axis, int rotate,
+    static synchronized void addCardToSpawn(ObservableList<Node> children, String color, int id,
+            Point3D axis, int rotate,
             int width, int height, SequentialTransition sequentialTransition) {
 
         if (children.stream().map(z -> (ButtonWeapon) z)
@@ -93,7 +95,8 @@ public class BoardFunction {
             cardImageRotated.setFitWidth(width);
             cardImageRotated.setFitHeight(height);
 
-            final ButtonWeapon rotatedButton = new ButtonWeapon(id, backImageRotated, cardImageRotated, axis);
+            final ButtonWeapon rotatedButton = new ButtonWeapon(id, backImageRotated,
+                    cardImageRotated, axis);
 
             rotatedButton.setColor(color);
 
@@ -119,10 +122,9 @@ public class BoardFunction {
             rotation.setFromAngle(-rotate);
             rotation.setToAngle(0);
 
-            rotation.setOnFinished(actionEvent -> {
+            rotation.setOnFinished(actionEvent ->
 
-                rotatedButton.flipTransition(Duration.millis(300), Event::consume).play();
-            });
+                    rotatedButton.flipTransition(Duration.millis(300), Event::consume).play());
 
             children.add(rotatedButton);
 

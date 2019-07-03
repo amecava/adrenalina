@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.cards;
 import it.polimi.ingsw.server.model.ammo.Cost;
 import it.polimi.ingsw.server.model.exceptions.jacop.IllegalActionException;
 import it.polimi.ingsw.server.model.players.Color;
-import it.polimi.ingsw.server.model.ammo.AmmoCube;
 import it.polimi.ingsw.server.model.cards.effects.Effect;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.cards.effects.EffectType;
@@ -210,11 +209,6 @@ public class WeaponCard implements Card, Serializable {
         }
 
         List<Color> costCopy = new ArrayList<>(this.map.get(effectType).getCost());
-
-        System.out.print("cost: ");
-        this.map.get(effectType).getCost().forEach(System.out::print);
-
-        powerUpCardList.stream().map(PowerUpCard::getColor).forEach(System.out::println);
 
         Cost.checkCost(this.owner, costCopy, powerUpCardList);
 

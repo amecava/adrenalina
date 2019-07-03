@@ -132,7 +132,8 @@ class ActionBridge implements Serializable {
 
         } else if (this.currentAction != null) {
 
-            throw new IllegalActionException("Prima completa l'azione che hai selezionato in precedenza scrivendo \"fineazione\".");
+            throw new IllegalActionException(
+                    "Prima completa l'azione che hai selezionato in precedenza scrivendo \"fineazione\".");
         }
 
         this.currentAction = this.possibleActions.get(number);
@@ -146,7 +147,7 @@ class ActionBridge implements Serializable {
 
             this.currentAction = null;
         }
-        if (this.currentWeaponCard!=null) {
+        if (this.currentWeaponCard != null) {
 
             this.currentWeaponCard.setLoaded(false);
             this.currentWeaponCard = null;
@@ -245,7 +246,8 @@ class ActionBridge implements Serializable {
 
         static {
 
-            InputStream in = ActionBridgeBuilder.class.getClassLoader().getResourceAsStream("PlayerActions.json");
+            InputStream in = ActionBridgeBuilder.class.getClassLoader()
+                    .getResourceAsStream("PlayerActions.json");
 
             object = Json.createReader(in).readArray();
         }

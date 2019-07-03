@@ -73,8 +73,8 @@ public class AmmoTile implements Card, Serializable {
 
     /**
      * This method creates a JsonObject containing all the information needed in the View. The said
-     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be sent to the
-     * view when needed.
+     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
+     * sent to the view when needed.
      */
     @Override
     public JsonObject toJsonObject() {
@@ -96,9 +96,8 @@ public class AmmoTile implements Card, Serializable {
         private List<Color> ammoCubes = new ArrayList<>();
 
         /**
-         * Analyzes the JsonObject read from the Resources package to dynamically build the ammo tiles.
-         * @param jTileObject
-         * @param powerUpDeck
+         * Analyzes the JsonObject read from the Resources package to dynamically build the ammo
+         * tiles.
          */
         public AmmoTileBuilder(JsonObject jTileObject, PowerUpDeck powerUpDeck) {
 

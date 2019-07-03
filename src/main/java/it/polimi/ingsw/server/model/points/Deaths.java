@@ -74,7 +74,8 @@ public class Deaths extends Bridge implements Serializable {
         return Json.createObjectBuilder(this.toJsonObject())
                 .add("numberOfDeaths", this.numberOfDeaths)
                 .add("frenzyEnabled", this.frenzyEnabled)
-                .add("firstFrenzyPlayer", this.firstFrenzyPlayer != null ? this.firstFrenzyPlayer.getPlayerId() : "")
+                .add("firstFrenzyPlayer",
+                        this.firstFrenzyPlayer != null ? this.firstFrenzyPlayer.getPlayerId() : "")
                 .build();
     }
 }

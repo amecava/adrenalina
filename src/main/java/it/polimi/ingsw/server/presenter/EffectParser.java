@@ -4,10 +4,8 @@ import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
 import it.polimi.ingsw.server.model.cards.Target;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
-import it.polimi.ingsw.server.model.cards.effects.EffectType;
 import it.polimi.ingsw.server.model.exceptions.cards.CardException;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
-import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
@@ -81,11 +79,11 @@ class EffectParser {
         }
 
         line = line
-                .substring(line.indexOf(AMMOCOLOR), line.indexOf(")", line.indexOf(AMMOCOLOR)) + 1);
+                .substring(line.indexOf(AMMOCOLOR), line.indexOf(')', line.indexOf(AMMOCOLOR)) + 1);
         line = line.replaceAll("paga(\\s*)", "paga");
 
         startPar = line.indexOf(AMMOCOLOR) + AMMOCOLOR.length();
-        endPar = line.indexOf(")");
+        endPar = line.indexOf(')');
 
         line = line.substring(startPar + 1, endPar).trim();
 
@@ -122,11 +120,11 @@ class EffectParser {
             int endPar;
 
             String targetLine = request.substring(request.indexOf(TARGET),
-                    request.indexOf(")", request.indexOf(TARGET)) + 1);
-            targetLine = targetLine.replaceAll("target(\\s*)", "target");
+                    request.indexOf(')', request.indexOf(TARGET)) + 1);
+            targetLine = targetLine.replaceAll("target(\\s*)", TARGET);
 
             startPar = targetLine.indexOf(TARGET) + TARGET.length();
-            endPar = targetLine.indexOf(")");
+            endPar = targetLine.indexOf(')');
 
             targetLine = targetLine.substring(startPar + 1, endPar).trim();
 
@@ -175,10 +173,11 @@ class EffectParser {
     }
 
     /**
-     * Method that inspects the users's String in order to find the destination in which the user wants to send the targets.
+     * Method that inspects the users's String in order to find the destination in which the user
+     * wants to send the targets.
      *
-     * @param gameHandler This method needs the GameHandler because it uses some methods of the model
-     * to search some information.
+     * @param gameHandler This method needs the GameHandler because it uses some methods of the
+     * model to search some information.
      * @param request The string sent by the user.
      * @return The square found.
      */
@@ -197,11 +196,11 @@ class EffectParser {
 
             String destinationLine = request
                     .substring(request.indexOf(DESTINAZIONE),
-                            request.indexOf(")", request.indexOf(DESTINAZIONE)) + 1);
-            destinationLine = destinationLine.replaceAll("destinazione(\\s*)", "destinazione");
+                            request.indexOf(')', request.indexOf(DESTINAZIONE)) + 1);
+            destinationLine = destinationLine.replaceAll("destinazione(\\s*)", DESTINAZIONE);
 
             startPar = destinationLine.indexOf(DESTINAZIONE) + DESTINAZIONE.length();
-            endPar = destinationLine.indexOf(")");
+            endPar = destinationLine.indexOf(')');
 
             destinationLine = destinationLine.substring(startPar + 1, endPar).trim();
 
@@ -230,10 +229,11 @@ class EffectParser {
     }
 
     /**
-     * Method that inspects the users's String in order to find the power ups the user wants to use.
+     * Method that inspects the users's String in order to find the power ups the user wants to
+     * use.
      *
-     * @param player This method needs the Player because it uses some methods of Player
-     * to search some information.
+     * @param player This method needs the Player because it uses some methods of Player to search
+     * some information.
      * @param request The string sent by the user.
      * @return The list of power ups found.
      */
@@ -253,11 +253,11 @@ class EffectParser {
 
             String powerUpsLine = request
                     .substring(request.indexOf(POWER_UP),
-                            request.indexOf(")", request.indexOf(POWER_UP)) + 1);
-            powerUpsLine = powerUpsLine.replaceAll("powerup(\\s*)", "powerup");
+                            request.indexOf(')', request.indexOf(POWER_UP)) + 1);
+            powerUpsLine = powerUpsLine.replaceAll("powerup(\\s*)", POWER_UP);
 
             startPar = powerUpsLine.indexOf(POWER_UP) + POWER_UP.length();
-            endPar = powerUpsLine.indexOf(")");
+            endPar = powerUpsLine.indexOf(')');
 
             powerUpsLine = powerUpsLine.substring(startPar + 1, endPar).trim();
 

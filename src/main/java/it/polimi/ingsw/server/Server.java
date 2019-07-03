@@ -139,8 +139,7 @@ public class Server {
 
             LOGGER.log(Level.INFO, "Creating server...");
 
-            System.setProperty("java.rmi.server.hostname",
-                    InetAddress.getLocalHost().getHostAddress());
+            System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostAddress());
 
             Thread discovery = new Thread(() -> Server.discoveryServer(4560));
 
@@ -151,7 +150,6 @@ public class Server {
 
             new Thread(() -> Server.rmiServer(4561)).start();
             new Thread(() -> Server.socketServer(4562)).start();
-
 
         } catch (UnknownHostException e) {
 

@@ -5,7 +5,6 @@ import it.polimi.ingsw.client.view.gui.animations.Images;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -21,6 +20,11 @@ public class EndGameScreen {
 
     private static HBox characters = new HBox();
     private static VBox center = new VBox();
+
+    private EndGameScreen() {
+
+        //
+    }
 
     public static void generateScreen(JsonObject object) {
 

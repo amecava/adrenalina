@@ -19,6 +19,7 @@ public class AmmoTilesDeck implements Serializable {
 
     /**
      * Builds the deck based on the builder and shuffles the cards.
+     *
      * @param builder The builder.
      */
     private AmmoTilesDeck(AmmoTilesDeckBuilder builder) {
@@ -39,7 +40,6 @@ public class AmmoTilesDeck implements Serializable {
 
     /**
      * Adds an AmmoTile to the deck.
-     * @param tile
      */
     public void addTile(AmmoTile tile) {
 
@@ -68,13 +68,16 @@ public class AmmoTilesDeck implements Serializable {
          */
         static {
 
-            InputStream in = AmmoTilesDeckBuilder.class.getClassLoader().getResourceAsStream("AmmoTiles.json");
+            InputStream in = AmmoTilesDeckBuilder.class.getClassLoader()
+                    .getResourceAsStream("AmmoTiles.json");
 
             object = Json.createReader(in).readArray();
         }
 
         /**
-         * Builds the deck and assigns the reference to the PowerUpDeck to the AmmoTiles that need it.
+         * Builds the deck and assigns the reference to the PowerUpDeck to the AmmoTiles that need
+         * it.
+         *
          * @param powerUpDeck The deck with all the power ups.
          */
         public AmmoTilesDeckBuilder(PowerUpDeck powerUpDeck) {
@@ -96,6 +99,7 @@ public class AmmoTilesDeck implements Serializable {
 
         /**
          * Builds the Deck.
+         *
          * @return The deck.
          */
         public AmmoTilesDeck build() {

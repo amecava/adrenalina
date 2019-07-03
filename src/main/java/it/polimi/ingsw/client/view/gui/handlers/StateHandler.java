@@ -29,7 +29,6 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -52,7 +51,6 @@ public class StateHandler {
 
             eliminateSetOnMouseClicked();
 
-            // TODO
             if (BoardScreen.collectiveButtons != null) {
 
                 BoardScreen.collectiveButtons.getChildren().clear();
@@ -80,8 +78,7 @@ public class StateHandler {
 
                     BoardScreen.getPlayerPowerUpList().forEach(ButtonPowerUp::update);
 
-                    Button spawnButton = new InfoButton(
-                            "clicca un powerup per spawnare");
+                    Button spawnButton = new InfoButton("clicca un powerup per spawnare");
 
                     spawnButton.setMouseTransparent(true);
 
@@ -233,6 +230,7 @@ public class StateHandler {
                                         collectStage.initOwner(GUIView.getCurrentStage());
 
                                         VBox root = new VBox();
+                                        root.setAlignment(Pos.CENTER);
                                         root.setBackground(new Background(
                                                 new BackgroundImage(
                                                         Images.imagesMap.get("background"),
@@ -826,10 +824,13 @@ public class StateHandler {
 
             VBox root = new VBox();
             root.setSpacing(5);
+            root.setAlignment(Pos.CENTER);
             root.setBackground(new Background(
                     new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                             BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                             BackgroundSize.DEFAULT)));
+            root.setAlignment(Pos.CENTER);
+            root.getChildren().add(new Label());
 
             shootStage.setScene(new Scene(root));
 
@@ -863,7 +864,6 @@ public class StateHandler {
             StringBuilder target, StringBuilder destination, String powerString,
             String powerUpName) {
 
-
         ImageView cardImage = powerString == null ? new ImageView(
                 Images.weaponsMap.get(BoardScreen.activatedWeapon))
                 : new ImageView(Images.powerUpsMap.get(powerUpName));
@@ -871,7 +871,12 @@ public class StateHandler {
         cardImage.setFitWidth(100);
         cardImage.setFitHeight(150);
 
-        root.getChildren().add(cardImage);
+        Label label = new Label();
+        label.setFont(Font.font("Silom", 25));
+        label.setTextFill(Color.WHITE);
+        label.setAlignment(Pos.CENTER);
+
+        root.getChildren().addAll(cardImage, label);
 
         Button confirm = new GameButton("conferma");
         confirm.setVisible(false);
@@ -880,6 +885,7 @@ public class StateHandler {
         if (targetType.equals("PLAYER") || targetType.equals("RECOIL") || targetType
                 .equals("MOVE")) {
 
+            label.setText("Seleziona uno o più target");
 
             HBox playersConnected = new HBox();
 
@@ -969,9 +975,46 @@ public class StateHandler {
 
         } else if (targetType.equals("SQUARE") || targetType.equals("ROOM")) {
 
+            if (targetType.equals("SQUARE")) {
+
+                label.setText("Seleziona uno o più square");
+
+            } else {
+
+                label.setText("Seleziona una stanza");
+            }
+
             target.append("target(");
 
             root.getChildren().addAll(board, confirm);
+
+            confirm.setOnAction(mouseEvent -> {
+
+                target.append(" )");
+
+                if (args == 1 && !hasCost) {
+
+                    JsonQueue.add("method", effectType);
+                    JsonQueue.add("line",
+                            new StringBuilder().append(target.toString())
+                                    .toString());
+                    JsonQueue.send();
+
+                    shootStage.close();
+
+                } else if (args == 1 && hasCost) {
+
+                    thirdUseEffectScreen(shootStage, root, effectType, target, destination,
+                            powerString);
+
+                } else if (args == 2) {
+
+                    createDestination(shootStage, root, board, effectType, args, hasCost, target,
+                            destination, powerString);
+                }
+            });
+
+            confirm.setOnMouseClicked(event -> confirm.fire());
 
             BoardFunction.getSquareList(board).forEach(s -> s.setOnMouseClicked(
                     mouseEvent -> {
@@ -983,13 +1026,13 @@ public class StateHandler {
                         target.append(((ButtonSquare) mouseEvent.getSource())
                                 .getColor().toLowerCase());
 
-
-                        if (targetType.equals("SQUARE") ) {
+                        if (targetType.equals("SQUARE")) {
 
                             target.append("-")
                                     .append(((ButtonSquare) mouseEvent.getSource())
                                             .getSquareId());
                             target.append(" ");
+
                         } else {
 
                             confirm.fire();
@@ -998,35 +1041,6 @@ public class StateHandler {
                         confirm.setVisible(true);
                         confirm.setMouseTransparent(false);
                     }));
-
-            confirm.setOnMouseClicked(mouseEvent -> {
-
-                    //target.deleteCharAt(target.length() - 1);
-                    target.append(" )");
-
-                    if (args == 1 && !hasCost) {
-
-                        JsonQueue.add("method", effectType);
-                        JsonQueue.add("line",
-                                new StringBuilder().append(target.toString())
-                                        .toString());
-                        JsonQueue.send();
-
-                        ;
-
-                        shootStage.close();
-
-                    } else if (args == 1 && hasCost) {
-
-                        thirdUseEffectScreen(shootStage, root, effectType, target, destination,
-                                powerString);
-
-                    } else if (args == 2) {
-
-                        createDestination(shootStage, root, board, effectType, args, hasCost, target,
-                                destination, powerString);
-                    }
-            });
         }
 
         if (!shootStage.isShowing()) {
@@ -1046,8 +1060,8 @@ public class StateHandler {
                         BackgroundSize.DEFAULT)));
 
         Label selectDestinationLabel = new Label();
-        selectDestinationLabel.setText("Seleziona la destinazione (se necessario):");
-        selectDestinationLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+        selectDestinationLabel.setText("Seleziona la destinazione");
+        selectDestinationLabel.setFont(Font.font("Silom", FontWeight.BOLD, 25));
         selectDestinationLabel.setTextFill(Color.WHITE);
 
         BoardFunction.getSquareList(board).forEach(s -> {
@@ -1064,7 +1078,7 @@ public class StateHandler {
         board.setVisible(true);
         root.getChildren().addAll(selectDestinationLabel, board);
 
-        BoardFunction.getSquareList(board).forEach(s -> {
+        BoardFunction.getSquareList(board).forEach(s ->
 
             s.setOnMouseClicked(
                     mouseEvent -> {
@@ -1094,8 +1108,7 @@ public class StateHandler {
                             thirdUseEffectScreen(shootStage, root, effectType, target,
                                     destination, powerUpString);
                         }
-                    });
-        });
+                    }));
 
         if (!shootStage.isShowing()) {
 
@@ -1118,8 +1131,8 @@ public class StateHandler {
         if (!effectType.equals("askUsePowerUp")) {
 
             Label selectPaymentLabel = new Label();
-            selectPaymentLabel.setText("Se vuoi pagare l'effetto con un power up, selezionane uno");
-            selectPaymentLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+            selectPaymentLabel.setText("Puoi pagare l'effetto con un power up");
+            selectPaymentLabel.setFont(Font.font("Silom", FontWeight.BOLD, 25));
             selectPaymentLabel.setTextFill(Color.WHITE);
 
             root.getChildren().add(selectPaymentLabel);
@@ -1206,8 +1219,8 @@ public class StateHandler {
         } else {
 
             Label payWithCube = new Label();
-            payWithCube.setText("Se serve, seleziona il cubo che vuoi usare");
-            payWithCube.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+            payWithCube.setText("Seleziona il cubo che vuoi usare");
+            payWithCube.setFont(Font.font("Silom", FontWeight.BOLD, 25));
             payWithCube.setTextFill(Color.WHITE);
 
             root.getChildren().add(payWithCube);

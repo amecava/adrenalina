@@ -24,7 +24,8 @@ public class PropertiesAnalyzer {
         //
     }
 
-    public static void maxTargets(Effect effect, List<Target> target) throws DuplicateException, MaxTargetsException {
+    public static void maxTargets(Effect effect, List<Target> target)
+            throws DuplicateException, MaxTargetsException {
 
         // Launch exception if duplicates found
         if (target.size() != target.stream().distinct().collect(Collectors.toList()).size()) {

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model.cards.effects;
 
 import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
-import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.virtual.JsonUtility;
 import java.util.Arrays;
 

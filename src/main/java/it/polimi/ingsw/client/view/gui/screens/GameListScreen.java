@@ -146,7 +146,6 @@ public class GameListScreen {
                             BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                             BackgroundSize.DEFAULT)));
 
-
             if (jsonArray.isEmpty()) {
 
                 empty = true;
@@ -258,7 +257,7 @@ public class GameListScreen {
 
         back.setOnMouseClicked(mouseEvent ->
 
-            Platform.runLater(GameListScreen::generateScreen)
+                Platform.runLater(GameListScreen::generateScreen)
         );
 
         vBox.getChildren().addAll(label, characters, back);
