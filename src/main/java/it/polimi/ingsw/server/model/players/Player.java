@@ -33,6 +33,9 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+/**
+ * The class representing a player of the match.
+ */
 public class Player implements Target, Serializable {
 
     /**
@@ -87,6 +90,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Creates the player based on the parameters.
+     *
      * @param playerId The id of the player.
      * @param playerColor The color of the player.
      */
@@ -112,6 +116,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the TargetType corresponding to Player.
+     *
      * @return The TargetType.
      */
     @Override
@@ -122,6 +127,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the current position of the player.
+     *
      * @return The Square which is the current position of the player.
      */
     @Override
@@ -132,6 +138,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets a list containing only this player.
+     *
      * @return A list containing only this player.
      */
     @Override
@@ -142,6 +149,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the id of the player.
+     *
      * @return The id of the player.
      */
     public String getPlayerId() {
@@ -151,6 +159,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Sets the connection status of the player.
+     *
      * @param connected The connection status of the player.
      * @return This player.
      */
@@ -163,6 +172,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Checks if this is the current active player.
+     *
      * @return a boolean that says if this is the current active player.
      */
     public boolean isActivePlayer() {
@@ -172,6 +182,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Sets the activePlayer property.
+     *
      * @param activePlayer The new state.
      */
     public void setActivePlayer(boolean activePlayer) {
@@ -179,67 +190,127 @@ public class Player implements Target, Serializable {
         this.activePlayer = activePlayer;
     }
 
+    /**
+     * Gets the last position of the player.
+     *
+     * @return The Square corresponding to the last position of the player.
+     */
     public Square getOldPosition() {
 
         return this.oldPosition;
     }
 
+    /**
+     * Gets the bridge of the player.
+     *
+     * @return The
+     */
     public Bridge getBridge() {
 
         return this.bridge;
     }
 
+    /**
+     * Gets the color of the player.
+     *
+     * @return The Color of the player.
+     */
     public Color getColor() {
 
         return this.bridge.getColor();
     }
 
+    /**
+     * Gets the points of the player.
+     *
+     * @return The integer value of the points.
+     */
     public int getPoints() {
 
         return this.bridge.getPoints();
     }
 
+    /**
+     * Sets the points of the player.
+     *
+     * @param points The integer value of the points of the player.
+     */
     public void setPoints(int points) {
 
         this.bridge.setPoints(points);
     }
 
+    /**
+     * Adds a kill to the bridge of the player.
+     */
     public void addKill() {
 
         this.bridge.addKill();
     }
 
+    /**
+     * Sets the frenzy mode to the player.
+     */
     public void setFrenzy() {
 
         this.bridge.setFrenzy();
         this.bridge.setKillStreakCount();
     }
 
+    /**
+     * Sets a point used to the bridge of the player.
+     */
     public void setPointsUsed() {
 
         this.bridge.setPointsUsed();
     }
 
+    /**
+     * Gets the damages of the player.
+     *
+     * @return The list of Color of the damages.
+     */
     public List<Color> getShots() {
 
         return this.bridge.getShots();
     }
 
+    /**
+     * Gets the marks of the player.
+     *
+     * @return The list of Color of the marks of the player.
+     */
     public List<Color> getMarks() {
 
         return this.bridge.getMarks();
     }
 
+    /**
+     * Adds a mark to the bridge of the player.
+     *
+     * @param color The Color of the damage that will be added.
+     * @param checkMarks A boolean that says if this damage implies adding the marks.
+     */
     public void damagePlayer(Color color, boolean checkMarks) {
 
         this.bridge.appendShot(color, checkMarks);
     }
 
+    /**
+     * Adds a mark to the bridge of the player.
+     *
+     * @param color The Color of the mark that will be added.
+     */
     public void markPlayer(Color color) {
 
         this.bridge.appendMark(color);
     }
 
+    /**
+     * Performs the "move" action. Moves the player to the square "destination".
+     *
+     * @param destination The Square which is the final destination of the movement.
+     */
     public void movePlayer(Square destination) {
 
         if (this.currentPosition != null) {
@@ -252,21 +323,39 @@ public class Player implements Target, Serializable {
         this.currentPosition.addPlayer(this);
     }
 
+    /**
+     * Checks if the player is dead.
+     *
+     * @return A boolean that says if the player is dead.
+     */
     public boolean isDead() {
 
         return this.bridge.isDead();
     }
 
+    /**
+     * Gets the level of adrenalin of the player.
+     *
+     * @return The Adrenalin enum value.
+     */
     public Adrenalin getAdrenalin() {
 
         return this.bridge.getAdrenalin();
     }
 
+    /**
+     * Sets the adrenalin level of the player.
+     *
+     * @param adrenalin The new adrenalin level of the player.
+     */
     public void setAdrenalin(Adrenalin adrenalin) {
 
         this.bridge.setAdrenalin(adrenalin);
     }
 
+    /**
+     * Checks the adrenalin level of the player.
+     */
     public void checkAdrenalin() {
 
         if (!this.bridge.isFrenzyActions()) {
@@ -274,62 +363,118 @@ public class Player implements Target, Serializable {
         }
     }
 
+    /**
+     * Gets the action of the player currently activated.
+     *
+     * @return The ActionStructure of the action.
+     */
     public ActionStructure getCurrentAction() {
 
         return this.bridge.getCurrentAction();
     }
 
+    /**
+     * Gets the weaponCard currently activated by the user.
+     *
+     * @return The WeaponCard currently activated by the user.
+     */
     public WeaponCard getCurrentWeaponCard() {
 
         return this.bridge.getCurrentWeaponCard();
     }
 
+    /**
+     * Checks if the player is shooting.
+     *
+     * @return A boolean that says if the player is shooting.
+     */
     public boolean isShooting() {
 
         return this.bridge.isShooting();
     }
 
+    /**
+     * Checks if the player is the first one of the turn.
+     *
+     * @return A boolean that says if the first one of the turn.
+     */
     public boolean isFirstPlayer() {
 
         return this.bridge.isFirstPlayer();
     }
 
+    /**
+     * Sets the firstPlayer property according to the boolean parameter.
+     *
+     * @param firstPlayer The boolean value of the firstPlayer property. True if this is the first player.
+     */
     public void setFirstPlayer(boolean firstPlayer) {
 
         this.bridge.setFirstPlayer(firstPlayer);
     }
 
+    /**
+     * Sets the frenzyActions property according to the boolean parameter.
+     *
+     * @param frenzyActions The boolean value of the frenzyAction property. True if the player is in
+     * a state in which he has frenzy actions.
+     */
     public void setFrenzyActions(boolean frenzyActions) {
 
         this.bridge.setFrenzyActions(frenzyActions);
     }
 
+    /**
+     * Checks if the player needs to respawn.
+     * @return The boolean that says if the player needs to respawn.
+     */
     public boolean isRespawn() {
 
         return this.bridge.isRespawn();
     }
 
+    /**
+     * Sets the respawn boolean.
+     * @param respawn The boolean value that the player needs.
+     */
     public void setRespawn(boolean respawn) {
 
         this.bridge.setRespawn(respawn);
 
     }
 
+    /**
+     * Gets the remaining actions of the player.
+     * @return The integer corresponding to the number of remaining actions of the player.
+     */
     public int getRemainingActions() {
 
         return this.bridge.getRemainingActions();
     }
 
+    /**
+     * Sets the number of remaining actions of the player.
+     * @param remainingActions The integer of the remaining actions of the player.
+     */
     public void setRemainingActions(int remainingActions) {
 
         this.bridge.setRemainingActions(remainingActions);
     }
 
+    /**
+     * Gets the actions of the player.
+     * @return The list of ActionStructure of the player.
+     */
     public List<ActionStructure> getActions() {
 
         return this.bridge.getActions();
     }
 
+    /**
+     * Selects the action that the user wants to perform.
+     * @param actionId The number of the action that the user wants to perform.
+     * @throws IllegalActionException If the action cannot be performed at the moment.
+     */
     public void selectAction(int actionId) throws IllegalActionException {
 
         if ((this.getRemainingActions() == -1) || !this.activePlayer) {
@@ -354,43 +499,78 @@ public class Player implements Target, Serializable {
         this.setRemainingActions(actionId == 4 ? 0 : this.getRemainingActions() - 1);
     }
 
+    /**
+     * End the action the player is currently performing.
+     */
     public void endAction() {
 
         this.bridge.endAction();
     }
 
+    /**
+     * Creates a PointStructure for the shots list of color.
+     * @param shots The List of Color that will be added to the structure.
+     * @return The PointStructure.
+     */
     public PointStructure createPointStructure(List<Color> shots) {
 
         return this.pointStructure.createPointStructure(shots);
     }
 
+    /**
+     * Gets the list of cubes of the player.
+     * @return The List of AmmoCube.
+     */
     public List<AmmoCube> getAmmoCubesList() {
 
         return this.ammoCubesList;
     }
 
+    /**
+     * Gets the list of power ups of the player.
+     * @return The List of AmmoCube.
+     */
     public List<PowerUpCard> getPowerUpsList() {
 
         return this.powerUpsList;
     }
 
+    /**
+     * Gets the list of weapons of the player.
+     * @return The List of AmmoCube.
+     */
     public List<WeaponCard> getWeaponCardList() {
 
         return this.weaponCardList;
     }
 
+    /**
+     * Adds a weaponCard to the hand of the player.
+     * @param weaponCard The WeaponCard to be added.
+     */
     void addWeaponCard(WeaponCard weaponCard) {
 
         weaponCard.setOwner(this);
         this.weaponCardList.add(weaponCard);
     }
 
+    /**
+     * Adds a powerUp to the hand of the player.
+     * @param powerUp The powerUp to be added.
+     */
     public void addPowerUp(PowerUpCard powerUp) {
 
         powerUp.setOwner(this);
         this.powerUpsList.add(powerUp);
     }
 
+    /**
+     * Searches a power up based on its name and color.
+     * @param name The name of the power up.
+     * @param color The color o the power up.
+     * @return The PowerUpCard object.
+     * @throws CardNotFoundException If the searched power up is not present in player's hande.
+     */
     public PowerUpCard findPowerUp(String name, Color color) throws CardNotFoundException {
 
         return this.powerUpsList.stream()
@@ -401,6 +581,13 @@ public class Player implements Target, Serializable {
                         "Non hai in mano il powerup che hai selezionato."));
     }
 
+    /**
+     * Removes a power up from player's
+     * @param name
+     * @param color
+     * @return
+     * @throws CardNotFoundException
+     */
     private PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
 
         PowerUpCard powerUpCard = this.powerUpsList.stream()

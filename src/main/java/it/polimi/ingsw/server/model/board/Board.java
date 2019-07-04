@@ -217,6 +217,34 @@ public class Board implements Serializable {
     }
 
     /**
+     * Finds the object of a power up given the name.
+     *
+     * @param name The name of the power up.
+     * @return The JsonObject of the power up.
+     */
+    private JsonObject findPowerUpObject(String name) {
+
+        if (this.getInfoPowerUp(name)
+                != null) {
+
+            return this.getInfoPowerUp(name);
+
+        } else {
+
+            return this.roomsList.stream()
+                    .flatMap(x -> x.getSquaresList().stream())
+                    .flatMap(y -> y.getPlayers().stream())
+                    .flatMap(x -> x.getPowerUpsList().stream())
+                    .filter(y -> JsonUtility
+                            .levenshteinDistance(name,
+                                    y.getName()) <= 3)
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new)
+                    .toJsonObject();
+        }
+    }
+
+    /**
      * Searches in the powerUpDeck if the power up named "powerUpName".
      *
      * @param powerUpName The name of the power up that needs to be found.
@@ -277,6 +305,14 @@ public class Board implements Serializable {
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder builder;
+
+        JsonArrayBuilder fourPowerUpsBuilder = Json.createArrayBuilder();
+
+        fourPowerUpsBuilder.add(this.findPowerUpObject("RAGGIOCINETICO"));
+        fourPowerUpsBuilder.add(this.findPowerUpObject("GRANATAVENOM"));
+        fourPowerUpsBuilder.add(this.findPowerUpObject("TELETRASPORTO"));
+        fourPowerUpsBuilder.add(this.findPowerUpObject("MIRINO"));
+
         List<JsonArray> board = new ArrayList<>();
 
         int i = 0;
@@ -332,6 +368,7 @@ public class Board implements Serializable {
         return Json.createObjectBuilder()
                 .add("boardId", this.boardId)
                 .add("arrays", builder.build())
+                .add("fourPowerUps", fourPowerUpsBuilder.build())
                 .build();
     }
 

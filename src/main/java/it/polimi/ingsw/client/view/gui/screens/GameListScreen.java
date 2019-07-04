@@ -33,6 +33,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
@@ -64,32 +65,62 @@ public class GameListScreen {
 
         borderPane.setCenter(scrollPane);
 
-        HBox newGame = new HBox();
+        VBox newGame = new VBox();
+        newGame.setAlignment(Pos.CENTER);
         newGame.setSpacing(20);
 
-        HBox show = new HBox();
-        show.setSpacing(20);
+        Button createGame = new GameButton("crea partita");
+        createGame.setAlignment(Pos.CENTER);
 
-        Button createGame = new GameButton("crea Partita");
+        VBox newGameFieldsVBox = new VBox();
+        newGameFieldsVBox.setAlignment(Pos.CENTER);
+        newGameFieldsVBox.setBackground(new Background(
+                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
+                        Insets.EMPTY)));
+
+        HBox nameAndTextField = new HBox();
+        nameAndTextField.setAlignment(Pos.CENTER);
+        nameAndTextField.setSpacing(10);
 
         Label gameName = new Label("Nome:");
+        gameName.setAlignment(Pos.CENTER);
         gameName.setTextFill(Color.WHITE);
         gameName.setWrapText(true);
+        gameName.setFont(Font.font("Silom", 20));
+        gameName.setTextAlignment(TextAlignment.CENTER);
+
 
         TextField insertGameName = new TextField();
+        insertGameName.setAlignment(Pos.CENTER);
+        insertGameName.setFont(Font.font("Silom", FontWeight.NORMAL, 20));
+        insertGameName.setStyle("-fx-background-color: transparent; -fx-text-inner-color: white");
+        insertGameName.setPrefSize(80, 20);
         insertGameName.setOnKeyTyped(keyEvent -> {
 
             if (keyEvent.getCharacter().equals(" ")) {
                 ((TextField) keyEvent.getSource()).deletePreviousChar();
             }
         });
-        insertGameName.setPrefSize(80, 30);
+
+        nameAndTextField.getChildren().addAll(gameName, insertGameName);
+
+        HBox deathLabelAndTextField = new HBox();
+        deathLabelAndTextField.setAlignment(Pos.CENTER);
+        deathLabelAndTextField.setSpacing(10);
 
         Label numberOfDeaths = new Label("Morti:");
+        numberOfDeaths.setAlignment(Pos.CENTER);
         numberOfDeaths.setTextFill(Color.WHITE);
         numberOfDeaths.setWrapText(true);
+        numberOfDeaths.setFont(Font.font("Silom", 20));
+        numberOfDeaths.setTextAlignment(TextAlignment.CENTER);
 
         TextField insertNumberOdDeaths = new TextField();
+        insertNumberOdDeaths.setFont(Font.font("Silom", FontWeight.NORMAL, 20));
+        insertNumberOdDeaths.setStyle("-fx-background-color: transparent; -fx-text-inner-color: white");
+        insertNumberOdDeaths.setAlignment(Pos.CENTER);
+
+        insertNumberOdDeaths.setPrefSize(60, 12);
         insertNumberOdDeaths.setOnKeyTyped(keyEvent -> {
 
             if (insertNumberOdDeaths.getCharacters().toString().length() > 1) {
@@ -99,38 +130,56 @@ public class GameListScreen {
             } else if (!insertNumberOdDeaths.getCharacters().toString().matches("([5-8])")) {
 
                 insertNumberOdDeaths.deletePreviousChar();
-                Notifications.createNotification("error", "Metti un numero da 5 a 8");
+                Notifications.createNotification("error", "Deve essere un numero da 5 a 8");
             }
         });
 
-        insertNumberOdDeaths.setPrefSize(60, 20);
+        deathLabelAndTextField.getChildren().addAll(numberOfDeaths, insertNumberOdDeaths);
+
+        HBox frenzyLabelAndCheckBox = new HBox();
+        frenzyLabelAndCheckBox.setAlignment(Pos.CENTER);
+        frenzyLabelAndCheckBox.setSpacing(10);
+
         Label frenzy = new Label("Frensia finale:");
+        frenzy.setAlignment(Pos.CENTER);
         frenzy.setTextFill(Color.WHITE);
         frenzy.setWrapText(true);
+        frenzy.setFont(Font.font("Silom", 20));
+        frenzy.setTextAlignment(TextAlignment.CENTER);
 
         CheckBox checkBoxFrenzy = new CheckBox();
+
+        frenzyLabelAndCheckBox.getChildren().addAll(frenzy, checkBoxFrenzy);
+
         Button confirmGame = new GameButton("crea");
 
-        /////////////////////////////////////////////
         confirmGame.setOnMouseClicked(mouseEvent -> {
 
-            JsonQueue.add("method", "askCreateGame");
-            JsonQueue.add("gameId", insertGameName.getText());
-            JsonQueue.add("numberOfDeaths", insertNumberOdDeaths.getText());
-            JsonQueue.add("frenzy", checkBoxFrenzy.isSelected() ? "frenesia" : "");
+            if (!insertGameName.getText().equals("") && !insertNumberOdDeaths.getText().equals("")) {
 
-            JsonQueue.send();
+                JsonQueue.add("method", "askCreateGame");
+                JsonQueue.add("gameId", insertGameName.getText());
+                JsonQueue.add("numberOfDeaths", insertNumberOdDeaths.getText());
+                JsonQueue.add("frenzy", checkBoxFrenzy.isSelected() ? "frenesia" : "");
+                JsonQueue.send();
+            } else {
+
+                Notifications.createNotification("error", "Riempi i campi nome e numero morti.");
+            }
         });
-        show.getChildren()
-                .addAll(gameName, insertGameName, numberOfDeaths, insertNumberOdDeaths, frenzy,
-                        checkBoxFrenzy, confirmGame);
-        show.setVisible(false);
-        show.setMinWidth(500);
-        newGame.getChildren().addAll(createGame, show);
-        createGame.setOnMouseClicked(mouseEvent -> show.setVisible(!show.isVisible()));
+
+        newGameFieldsVBox.getChildren().addAll(nameAndTextField, deathLabelAndTextField, frenzyLabelAndCheckBox, confirmGame);
+
+        newGame.getChildren().addAll(createGame, newGameFieldsVBox);
+
+        newGameFieldsVBox.setVisible(false);
+
+        createGame.setOnMouseClicked(mouseEvent -> newGameFieldsVBox.setVisible(!newGameFieldsVBox.isVisible()));
+
         borderPane.setBottom(newGame);
-        BorderPane.setAlignment(newGame, Pos.BOTTOM_LEFT);
-        createGame.prefHeightProperty().bind(show.prefHeightProperty());
+
+        BorderPane.setAlignment(newGame, Pos.CENTER);
+
         Platform.runLater(() -> GUIView.changeScene(borderPane));
     }
 

@@ -157,7 +157,7 @@ public class CardHandler {
                     new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                             BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                             BackgroundSize.DEFAULT)));
-            Scene infoCardScene = new Scene(vBox, 700, 500);
+            Scene infoCardScene = new Scene(vBox, 800, 600);
             infoCard.setScene(infoCardScene);
             PauseTransition delay = new PauseTransition(Duration.seconds(50));
             delay.setOnFinished(event -> infoCard.close());

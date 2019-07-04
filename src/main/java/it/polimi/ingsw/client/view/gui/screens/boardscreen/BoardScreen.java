@@ -47,6 +47,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
@@ -198,85 +199,171 @@ public class BoardScreen {
         Button infoCard = new GameButton(backCard);
         infoCard.setId("infoCard");
 
+        ImageView backPowerUp = new ImageView(Images.powerUpsMap.get("back"));
+        backPowerUp.setFitHeight(69);
+        backPowerUp.setFitWidth(45);
+
+        Button infoPowerUp = new GameButton(backPowerUp);
+        infoPowerUp.setId("infoPowerUp");
+
+        infoPowerUp.setOnMouseClicked(mouseEvent -> {
+
+            createInfoPowerUpsStage(jsonObject.getJsonObject("board").getJsonArray("fourPowerUps"));
+        });
+
         infoCard.setOnMouseClicked(mouseEvent -> {
 
-            Stage infoCardStage = new Stage();
-            infoCardStage.setHeight(575);
-            infoCardStage.initModality(Modality.APPLICATION_MODAL);
-            infoCardStage.initOwner(GUIView.getCurrentStage());
-
-            ScrollPane images = new ScrollPane();
-            images.setBackground(new Background(
-                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT)));
-
-            HBox threeCards = new HBox();
-            threeCards.setSpacing(40);
-            threeCards.setBackground(new Background(
-                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT)));
-
-            VBox allCards = new VBox();
-            allCards.setSpacing(20);
-            allCards.setBackground(new Background(
-                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT)));
-
-            for (int i = 1; i < 22; i++) {
-                ImageView back = new ImageView(Images.weaponsMap.get(0));
-                ImageView card = new ImageView(Images.weaponsMap.get(i));
-                card.setFitWidth(150);
-                card.setFitHeight(250);
-                ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card,
-                        Rotate.Y_AXIS);
-
-                buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
-
-                    JsonQueue.add("method", "askCardInfo");
-                    JsonQueue.add("cardId", Integer.toString(
-                            ((ButtonWeapon) weaponMouseEvent.getSource())
-                                    .getCardId()));
-                    JsonQueue.send();
-                });
-                threeCards.getChildren().add(buttonWeapon);
-
-                if (threeCards.getChildren().size() == 3) {
-
-                    allCards.getChildren().add(threeCards);
-                    threeCards = new HBox();
-                    threeCards.setSpacing(40);
-                    threeCards.setBackground(new Background(
-                            new BackgroundImage(Images.imagesMap.get("background"),
-                                    BackgroundRepeat.REPEAT,
-                                    BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                                    BackgroundSize.DEFAULT)));
-                }
-
-                buttonWeapon.setVisible(false);
-                buttonWeapon.flipTransition(Duration.millis(1),
-                        actionEvent -> buttonWeapon.setVisible(true)).play();
-            }
-            images.setContent(allCards);
-            images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-            images.setHbarPolicy(ScrollBarPolicy.NEVER);
-            Scene imagesScene = new Scene(new StackPane(images));
-            infoCardStage.setResizable(false);
-            infoCardStage.setScene(imagesScene);
-            infoCardStage.show();
+            createInfoCardStage();
         });
+
         infoCard.setAlignment(Pos.CENTER);
+
+        AnchorPane.setLeftAnchor(infoPowerUp, 667.0);
+        AnchorPane.setTopAnchor(infoPowerUp, 30.0);
 
         AnchorPane.setLeftAnchor(infoCard, 649.0);
         AnchorPane.setTopAnchor(infoCard, 160.0);
 
         board.getChildren().add(infoCard);
+        board.getChildren().add(infoPowerUp);
         ready.setValue(true);
 
         GUIView.changeScene(borderPane);
     }
+
+    private static void createInfoCardStage(){
+
+        Stage infoCardStage = new Stage();
+        infoCardStage.setHeight(575);
+        infoCardStage.initModality(Modality.APPLICATION_MODAL);
+        infoCardStage.initOwner(GUIView.getCurrentStage());
+
+        ScrollPane images = new ScrollPane();
+        images.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        HBox threeCards = new HBox();
+        threeCards.setSpacing(40);
+        threeCards.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        VBox allCards = new VBox();
+        allCards.setSpacing(20);
+        allCards.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        for (int i = 1; i < 22; i++) {
+
+            ImageView back = new ImageView(Images.weaponsMap.get(0));
+            ImageView card = new ImageView(Images.weaponsMap.get(i));
+            card.setFitWidth(150);
+            card.setFitHeight(250);
+            ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card,
+                    Rotate.Y_AXIS);
+
+            buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
+
+                JsonQueue.add("method", "askCardInfo");
+                JsonQueue.add("cardId", Integer.toString(
+                        ((ButtonWeapon) weaponMouseEvent.getSource())
+                                .getCardId()));
+                JsonQueue.send();
+            });
+            threeCards.getChildren().add(buttonWeapon);
+
+            if (threeCards.getChildren().size() == 3) {
+
+                allCards.getChildren().add(threeCards);
+                threeCards = new HBox();
+                threeCards.setSpacing(40);
+                threeCards.setBackground(new Background(
+                        new BackgroundImage(Images.imagesMap.get("background"),
+                                BackgroundRepeat.REPEAT,
+                                BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                                BackgroundSize.DEFAULT)));
+            }
+
+            buttonWeapon.setVisible(false);
+            buttonWeapon.flipTransition(Duration.millis(1),
+                    actionEvent -> buttonWeapon.setVisible(true)).play();
+        }
+        images.setContent(allCards);
+        images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+        images.setHbarPolicy(ScrollBarPolicy.NEVER);
+        Scene imagesScene = new Scene(new StackPane(images));
+        infoCardStage.setResizable(false);
+        infoCardStage.setScene(imagesScene);
+        infoCardStage.show();
+    }
+
+    private static void createInfoPowerUpsStage(JsonArray fourPowerUpsArray) {
+
+        Stage infoCardStage = new Stage();
+        infoCardStage.setHeight(450);
+        infoCardStage.setWidth(800);
+        infoCardStage.initModality(Modality.APPLICATION_MODAL);
+        infoCardStage.initOwner(GUIView.getCurrentStage());
+
+        VBox cardsAndButton = new VBox();
+        cardsAndButton.setSpacing(20);
+        cardsAndButton.setAlignment(Pos.CENTER);
+        cardsAndButton.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"),
+                        BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        HBox fourCards = new HBox();
+        fourCards.setAlignment(Pos.CENTER);
+        fourCards.setBackground(new Background(
+                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
+                        Insets.EMPTY)));
+
+        for (JsonValue object : fourPowerUpsArray) {
+
+            ImageView back = new ImageView(
+                    Images.powerUpsMap.get("back"));
+
+            ImageView powerUp = new ImageView(
+                    Images.powerUpsMap.get(new StringBuilder()
+                            .append(object.asJsonObject().getString("name"))
+                            .append(" ")
+                            .append(object.asJsonObject().getString("color"))
+                            .toString()));
+
+            ButtonPowerUp powerUpButton = new ButtonPowerUp(object.asJsonObject().getString("name"),
+                    object.asJsonObject().getString("color"),
+                    object.asJsonObject().getString("targetType"),
+                    object.asJsonObject().getJsonNumber("args").doubleValue(),
+                    object.asJsonObject().getBoolean("hasCost"),
+                    back, powerUp);
+
+            powerUpButton.setId("powerUp");
+            powerUpButton.flipTransition(Duration.millis(1),
+                    actionEvent -> powerUpButton.setVisible(true)).play();
+            powerUpButton.setOnMouseClicked(
+                    mouseEvent -> CardHandler.powerUpCardInfo(object.asJsonObject()));
+
+            fourCards.getChildren().add(powerUpButton);
+        }
+
+        Button quitButton = new GameButton("chiudi");
+        quitButton.setOnMouseClicked(mouseEvent -> infoCardStage.close());
+
+        cardsAndButton.getChildren().addAll(fourCards, quitButton);
+
+        Scene imagesScene = new Scene(cardsAndButton);
+        infoCardStage.setResizable(false);
+        infoCardStage.setScene(imagesScene);
+        infoCardStage.show();
+    }
+
 
     public static synchronized void updateScreen(JsonObject object) {
 

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.presenter;
 
+import it.polimi.ingsw.common.JsonUtility;
 import it.polimi.ingsw.server.model.Model;
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
@@ -24,6 +25,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
 public class GameHandler implements Serializable {
@@ -365,14 +368,17 @@ public class GameHandler implements Serializable {
                 this.toJsonObject().toString());
     }
 
+
+
     /**
      * This method creates a JsonObject containing all the information needed in the View. The said
      * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
      * sent to the view when needed.
      *
-     * @return The JsonObect containig all the information of this card.
+     * @return The JsonObject containing all the information of this card.
      */
     public JsonObject toJsonObject() {
+
 
         return this.model.toJsonObject()
                 .add("gameId", this.gameId)

@@ -804,7 +804,7 @@ public class StateHandler {
         if (args == 0 && !hasCost) {
 
             JsonQueue.add("method", effectType);
-            JsonQueue.add("line", "");
+            JsonQueue.add("line", powerString == null ? "" : powerString);
             JsonQueue.send();
 
         } else {
