@@ -177,7 +177,7 @@ public class BoardScreen {
         AnchorPane.setLeftAnchor(playerPoints, 10.0);
         AnchorPane.setBottomAnchor(playerPoints, 65.0);
         AnchorPane.setLeftAnchor(character, 10.0);
-        AnchorPane.setBottomAnchor(character, 35.0);
+        AnchorPane.setBottomAnchor(character, 39.0);
         AnchorPane.setLeftAnchor(playerCubes, 0.0);
         AnchorPane.setBottomAnchor(playerCubes, 0.0);
 
@@ -673,7 +673,8 @@ public class BoardScreen {
             bridges.getChildren().clear();
 
             new ArrayList<>(right.getChildren()).stream()
-                    .filter(x -> x.getId().equals("shots") || x.getId().equals("kills"))
+                    .filter(x -> x.getId().equals("shots") ||
+                            x.getId().equals("kills") || x.getId().equals("marks"))
                     .forEach(x -> right.getChildren().remove(x));
 
             jsonObject.getJsonArray("playerList").stream()

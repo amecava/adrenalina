@@ -46,6 +46,9 @@ public class PointHandler {
                     player.getBridge().setFrenzy();
                     player.getBridge().setKillStreakCount();
 
+                    player.setPointsUsed();
+                    player.addKill();
+
                 } else {
 
                     player.setPointsUsed();

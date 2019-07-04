@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.presenter;
 
-import it.polimi.ingsw.common.JsonUtility;
 import it.polimi.ingsw.server.model.Model;
 import it.polimi.ingsw.server.model.board.rooms.Square;
 import it.polimi.ingsw.server.model.cards.PowerUpCard;
@@ -55,7 +54,7 @@ public class GameHandler implements Serializable {
     /**
      * Turn timer.
      */
-    private Timer turn;
+    private transient Timer turn;
 
     /**
      * Creates the GameHandler.
@@ -310,7 +309,10 @@ public class GameHandler implements Serializable {
 
         synchronized (this) {
 
-            turn.cancel();
+            if (turn != null) {
+
+                turn.cancel();
+            }
 
             try {
 

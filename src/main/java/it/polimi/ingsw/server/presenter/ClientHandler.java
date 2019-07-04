@@ -353,6 +353,8 @@ public class ClientHandler {
 
         } catch (IOException | ClassNotFoundException e) {
 
+            LOGGER.log(Level.WARNING, "Loading from file unsuccessful.");
+
             map = new HashMap<>();
         }
     }
