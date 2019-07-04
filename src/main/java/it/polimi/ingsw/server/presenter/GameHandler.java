@@ -14,6 +14,7 @@ import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.server.presenter.exceptions.SpawnException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
 public class GameHandler implements Serializable {
@@ -47,6 +50,11 @@ public class GameHandler implements Serializable {
      * The model of the game.
      */
     private Model model;
+
+    /**
+     * Turn timer.
+     */
+    private Timer turn;
 
     /**
      * Creates the GameHandler.
@@ -279,71 +287,120 @@ public class GameHandler implements Serializable {
 
         ClientHandler.gameBroadcast(this, x -> !x.getKey().isActivePlayer(), "updateState",
                 Presenter.state.get("notActivePlayerState").toString());
+
+        turn = new Timer();
+
+        turn.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                synchronized (this) {
+
+                    endOfTurn();
+                }
+            }
+        }, 180000);
     }
 
     /**
      * Performs the "endOfTurn" action, checks if there are players that need to respawn.
-     *
-     * @throws EndGameException When the game ends.
      */
-    void endOfTurn() throws EndGameException {
+    void endOfTurn() {
 
-        this.model.endOfTurn();
+        synchronized (this) {
 
-        Timer timer = new Timer();
-
-        Thread thread = new Thread(() -> {
+            turn.cancel();
 
             try {
-                synchronized (GameHandler.this) {
 
-                    while (this.model.getPlayerList().stream().anyMatch(Player::isRespawn)) {
+                this.model.endOfTurn();
 
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(),
-                                "infoMessage",
-                                "Devi fare il respawn.");
+                Timer spawn = new Timer();
 
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(),
-                                "updateState",
-                                Presenter.state.get("spawnState").toString());
+                Thread thread = new Thread(() -> {
 
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> !x.getKey().isRespawn(),
-                                "updateState",
-                                Presenter.state.get("notActivePlayerState").toString());
+                    try {
+                        synchronized (GameHandler.this) {
 
-                        GameHandler.this.wait();
+                            while (this.model.getPlayerList().stream()
+                                    .anyMatch(Player::isRespawn)) {
+
+                                ClientHandler
+                                        .gameBroadcast(GameHandler.this,
+                                                x -> x.getKey().isRespawn(),
+                                                "infoMessage",
+                                                "Devi fare il respawn.");
+
+                                ClientHandler
+                                        .gameBroadcast(GameHandler.this,
+                                                x -> x.getKey().isRespawn(),
+                                                "updateState",
+                                                Presenter.state.get("spawnState").toString());
+
+                                ClientHandler
+                                        .gameBroadcast(GameHandler.this,
+                                                x -> !x.getKey().isRespawn(),
+                                                "updateState",
+                                                Presenter.state.get("notActivePlayerState")
+                                                        .toString());
+
+                                GameHandler.this.wait();
+                            }
+
+                            spawn.cancel();
+
+                            GameHandler.this.nextPlayer();
+
+                            ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
+                                    this.toJsonObject().toString());
+
+                        }
+                    } catch (InterruptedException e) {
+
+                        Thread.currentThread().interrupt();
                     }
 
-                    timer.cancel();
+                });
 
-                    GameHandler.this.nextPlayer();
+                spawn.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
 
-                    ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
-                            this.toJsonObject().toString());
+                        synchronized (GameHandler.this) {
 
-                }
-            } catch (InterruptedException e) {
+                            model.getPlayerList().stream()
+                                    .filter(Player::isRespawn)
+                                    .forEach(GameHandler.this::randomSpawn);
 
-                Thread.currentThread().interrupt();
+                        }
+                    }
+                }, 10000);
+
+                thread.start();
+
+            } catch (EndGameException e) {
+
+                JsonArrayBuilder array = Json.createArrayBuilder();
+
+                e.getWinner().stream()
+                        .flatMap(Collection::stream)
+                        .forEach(x ->
+
+                                array.add(
+                                        Json.createObjectBuilder()
+                                                .add("playerId", x.getPlayerId())
+                                                .add("character", x.getColor().getCharacter())
+                                                .add("points", x.getPoints())
+                                                .build())
+                        );
+
+                ClientHandler.gameBroadcast(
+                        this,
+                        x -> true,
+                        "endGameScreen",
+                        Json.createObjectBuilder().add("array", array.build()).build().toString());
             }
-
-        });
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-                synchronized (GameHandler.this) {
-
-                    model.getPlayerList().stream()
-                            .filter(Player::isRespawn)
-                            .forEach(GameHandler.this::randomSpawn);
-
-                }
-            }
-        }, 10000);
-
-        thread.start();
+        }
     }
 
     /**

@@ -32,6 +32,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -152,6 +153,9 @@ public class GUIView extends Application implements View, VirtualView {
 
     @Override
     public void start(Stage stage) {
+
+        stage.setTitle("Adrenalina");
+        stage.getIcons().add(new Image("images/adrenaline_icon.png"));
 
         initialize(this);
 

@@ -214,6 +214,9 @@ public class Model implements Serializable {
             throw new EndGameException(PointHandler.endGame(this.deaths, this.playerList));
         }
 
+        this.effectHandler.getActive().clear();
+        this.effectHandler.getInactive().clear();
+
         this.board.fillBoard();
     }
 

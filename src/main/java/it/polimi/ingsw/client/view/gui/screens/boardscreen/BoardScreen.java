@@ -64,6 +64,7 @@ public class BoardScreen {
     private static final VBox weaponsDx = new VBox();
     private static final VBox weaponsSx = new VBox();
 
+    private static final Label character = new Label();
     private static final Label playerPoints = new Label();
     private static final HBox playerCubes = new HBox();
     private static final HBox playerCards = new HBox();
@@ -156,6 +157,7 @@ public class BoardScreen {
 
         playerCubes.setId("cubes");
         playerCubes.setPrefHeight(30);
+        playerCubes.setSpacing(-16);
 
         playerCards.setId("cards");
         playerCards.setPrefWidth(990);
@@ -165,14 +167,20 @@ public class BoardScreen {
 
         playerPoints.setId("points");
         playerPoints.setTextFill(Color.WHITE);
-        playerPoints.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+        playerPoints.setFont(Font.font("Silom", FontWeight.BOLD, 15));
+
+        character.setId("character");
+        character.setTextFill(Color.WHITE);
+        character.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         AnchorPane.setLeftAnchor(playerPoints, 10.0);
-        AnchorPane.setBottomAnchor(playerPoints, 35.0);
-        AnchorPane.setLeftAnchor(playerCubes, 10.0);
+        AnchorPane.setBottomAnchor(playerPoints, 65.0);
+        AnchorPane.setLeftAnchor(character, 10.0);
+        AnchorPane.setBottomAnchor(character, 35.0);
+        AnchorPane.setLeftAnchor(playerCubes, 0.0);
         AnchorPane.setBottomAnchor(playerCubes, 0.0);
 
-        board.getChildren().addAll(killsOfAllPlayers, playerPoints, playerCubes);
+        board.getChildren().addAll(killsOfAllPlayers, playerPoints, character, playerCubes);
 
         centre.setSpacing(0);
         borderPane.setCenter(centre);
@@ -500,7 +508,8 @@ public class BoardScreen {
                         ImageView cubeView = new ImageView(Images.cubesMap.get(cube));
                         cubeView.setFitHeight(30);
                         cubeView.setFitWidth(30);
-                        playerCubes.getChildren().add(cubeView);
+                        Button ammo = new GameButton(cubeView);
+                        playerCubes.getChildren().add(ammo);
                     });
 
             thisPlayerObject.getJsonArray("weapons").stream()
@@ -569,6 +578,7 @@ public class BoardScreen {
                         playerCards.getChildren().add(powerUpButton);
                     });
 
+            character.setText(GUIView.getCharacter());
             playerPoints.setText("Punti: " + thisPlayerObject.getInt("points"));
 
             /////////////////////////////////////////////////destra metto plance giocatori
