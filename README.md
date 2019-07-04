@@ -29,26 +29,46 @@
 
 
 ## Run server 
->  **Note:** "data.ser" is the saving file. If you want to delete history, just delete the file. The server loads and saves automatically. If you log in with a username you already used you will be reconnected to the saved match.
+> **Note:** "data.ser" is the serialization data, when the server is disconnected all the available matches are saved to this file. The server loads and saves automatically. If you want a fresh start just delete it from the project's directory.'<br>
+> .<br>
+> └── ing-sw-2019-Bertolini-Cavallo-Capaccio<br>
+> &ensp;&ensp;&ensp;&ensp;├── data.ser<br>
+> &ensp;&ensp;&ensp;&ensp;└── jar<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;└── server-jar-with-dependencies.jar
 
-From project's directory:
+
+To run the server, open a terminal in the project's directory and type:
 
 ``
 ./adrenalina -s 
 ``
 
-## Run client (gui version) 
->  **Warning:** JavaFx is required to run the GUI version, download the OS dependent version to "javafx" folder in the project directory.
+> **WARNING:** The server requires an IP address in addition to the loopback (127.0.0.1) to set the "java.rmi.server.hostname" system property for RMI connections. Please either connect to a Wi-Fi, plug the server to an ethernet switch, or connect to any available network. No internet connection is required.
 
-From project's directory:
+## Run client (CLI version)
+
+To run the client in CLI version of Adrenalina, open a terminal in the project's directory and type:
+
+``
+./adrenalina -c 
+``
+
+## Run client (gui version) 
+
+To run the client in GUI version of Adrenalina, open a terminal in the project's directory and type:
 
 ``
 ./adrenalina -g 
 ``
 
-## Run client (cli version) 
-From project's directory:
-
-``
-./adrenalina -c 
-``
+> **Warning:** The JavaFX SDK is required to run the GUI version of Adrenalina, follow these steps to correctly download and install all the required packages:
+> 1. Download the OS dependend version of JavaFX SDK from [this site](https://openjfx.io/).
+> 2. Unzip the downloaded zip file in the project's directory.
+> 3. Rename the extracted folder (ex. "javafx-sdk-12.0.1/") to "javafx/".<br>
+> .<br>
+> └── ing-sw-2019-Bertolini-Cavallo-Capaccio<br>
+> &ensp;&ensp;&ensp;&ensp;├── javafx<br>
+> &ensp;&ensp;&ensp;&ensp;|&ensp;&ensp;&ensp;&ensp;├── ...<br>
+> &ensp;&ensp;&ensp;&ensp;|&ensp;&ensp;&ensp;&ensp;└── lib<br>
+> &ensp;&ensp;&ensp;&ensp;└── jar<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;└── client-jar-with-dependencies.jar
