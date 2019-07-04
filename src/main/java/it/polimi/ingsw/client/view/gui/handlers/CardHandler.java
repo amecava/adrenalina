@@ -187,16 +187,26 @@ public class CardHandler {
                     new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
             playerObject.getJsonArray("weapons").stream()
-                    .filter(x -> x.asJsonObject().getBoolean("isLoaded"))
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
 
-                        ImageView card = new ImageView(Images.weaponsMap.get(x.getInt("id")));
-                        card.setFitWidth(200);
-                        card.setFitHeight(300);
+                        if (x.getBoolean("isLoaded")) {
 
-                        elements.getChildren()
-                                .add(card);
+                            ImageView card = new ImageView(Images.weaponsMap.get(x.getInt("id")));
+                            card.setFitWidth(200);
+                            card.setFitHeight(300);
+
+                            elements.getChildren()
+                                    .add(card);
+
+                        } else {
+
+                            ImageView back = new ImageView(Images.weaponsMap.get(0));
+                            back.setFitWidth(200);
+                            back.setFitHeight(300);
+
+                            elements.getChildren().add(back);
+                        }
                     });
 
             Button exit = new GameButton("chiudi");
@@ -204,6 +214,7 @@ public class CardHandler {
             exit.setAlignment(Pos.CENTER);
 
             cardsAndClose.getChildren().addAll(elements, exit);
+            cardsAndClose.setAlignment(Pos.CENTER);
 
             Scene infoCardScene = new Scene(cardsAndClose);
             infoCard.setScene(infoCardScene);

@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 
 public class Server {
 
+    private static Registry registry;
+
     private static final Thread pingThread = new Thread(Server::pingServer);
 
     private static final Logger LOGGER = Logger.getLogger(
@@ -62,7 +64,7 @@ public class Server {
 
         try {
 
-            Registry registry = LocateRegistry.createRegistry(port);
+            registry = LocateRegistry.createRegistry(port);
             VirtualAccessPoint stub = (VirtualAccessPoint) UnicastRemoteObject
                     .exportObject(new AccessPoint(), 0);
 

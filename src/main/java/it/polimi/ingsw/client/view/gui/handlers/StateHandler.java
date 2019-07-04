@@ -191,18 +191,19 @@ public class StateHandler {
 
                                 moveActionButton.setMouseTransparent(true);
 
-                                ButtonSquare.setOnMouse1(object.getJsonArray("available"), mouseEvent -> {
+                                ButtonSquare.setOnMouse1(object.getJsonArray("available"),
+                                        mouseEvent -> {
 
-                                    ButtonSquare destination = ((ButtonSquare) mouseEvent
-                                            .getSource());
+                                            ButtonSquare destination = ((ButtonSquare) mouseEvent
+                                                    .getSource());
 
-                                    JsonQueue.add("method", "moveAction");
-                                    JsonQueue.add("squareColor", destination.getColor());
-                                    JsonQueue.add("squareId",
-                                            String.valueOf(destination.getSquareId()));
+                                            JsonQueue.add("method", "moveAction");
+                                            JsonQueue.add("squareColor", destination.getColor());
+                                            JsonQueue.add("squareId",
+                                                    String.valueOf(destination.getSquareId()));
 
-                                    JsonQueue.send();
-                                });
+                                            JsonQueue.send();
+                                        });
 
                                 BoardScreen.getSquareList().forEach(ButtonSquare::update);
 
@@ -213,7 +214,8 @@ public class StateHandler {
 
                             } else if (method.equals("askCollect")) {
 
-                                Button collectButton = new InfoButton("clicca il tuo quadrato e raccogli");
+                                Button collectButton = new InfoButton(
+                                        "clicca il tuo quadrato e raccogli");
 
                                 collectButton.setMouseTransparent(true);
 
@@ -525,6 +527,7 @@ public class StateHandler {
                                                 .toString(valueOfAction);
 
                                         Button actionButton = new GameButton(action);
+                                        actionButton.setId(String.valueOf(valueOfAction));
 
                                         actionButton.setOnMouseClicked(
                                                 mouseEvent1 -> {
@@ -542,9 +545,22 @@ public class StateHandler {
 
                             BoardScreen.collectiveButtons.getChildren().add(actions);
 
+                            if (object.getJsonObject("bridge").getJsonObject("actionBridge")
+                                    .getInt("remainingActions") == 0) {
+
+                                actions.getChildren().stream()
+                                        .filter(y -> !y.getId().equals("4"))
+                                        .map(y -> (Button) y)
+                                        .forEach(y -> {
+
+                                            y.setMouseTransparent(true);
+                                        });
+                            }
+
                         } else if (method.equals("askUsePowerUp")) {
 
-                            Button usePowerUpButton = new InfoButton("clicca un powerUp per usarlo");
+                            Button usePowerUpButton = new InfoButton(
+                                    "clicca un powerUp per usarlo");
 
                             ButtonPowerUp.setOnMouse(mouseEvent2 ->
 
@@ -1203,67 +1219,49 @@ public class StateHandler {
         } else {
 
             Label payWithCube = new Label();
-            payWithCube.setText("Seleziona il cubo che vuoi usare");
+            payWithCube.setText("Seleziona un cubo");
             payWithCube.setFont(Font.font("Silom", FontWeight.BOLD, 25));
             payWithCube.setTextFill(Color.WHITE);
 
             root.getChildren().add(payWithCube);
 
-            HBox cubesButtonsHBox = new HBox();
-            HBox radioButtonsHBox = new HBox();
-            ToggleGroup radioButtonToggle = new ToggleGroup();
-            RadioButton yellowRadioButton = new RadioButton();
-            RadioButton redRadioButton = new RadioButton();
-            RadioButton blueRadioButton = new RadioButton();
-            Button confirmButton = new GameButton("vai!");
+            Button yellow = new GameButton(new ImageView(Images.cubesMap.get("GIALLO")));
+            Button red = new GameButton(new ImageView(Images.cubesMap.get("ROSSO")));
+            Button blue = new GameButton(new ImageView(Images.cubesMap.get("BLU")));
+            yellow.setId("GIALLO");
+            red.setId("ROSSO");
+            blue.setId("BLU");
 
-            yellowRadioButton.setId("giallo");
-            redRadioButton.setId("rosso");
-            blueRadioButton.setId("blu");
+            HBox cubes = new HBox();
+            cubes.setAlignment(Pos.CENTER);
+            cubes.setSpacing(10);
 
-            yellowRadioButton.setToggleGroup(radioButtonToggle);
-            redRadioButton.setToggleGroup(radioButtonToggle);
-            blueRadioButton.setToggleGroup(radioButtonToggle);
+            cubes.getChildren().addAll(yellow, red, blue);
 
-            radioButtonsHBox.getChildren()
-                    .addAll(yellowRadioButton, redRadioButton, blueRadioButton);
-            radioButtonsHBox.setSpacing(50);
+            root.getChildren().add(cubes);
 
-            cubesButtonsHBox.getChildren().addAll(new ImageView(Images.cubesMap.get("GIALLO")),
-                    new ImageView(Images.cubesMap.get("ROSSO")),
-                    new ImageView(Images.cubesMap.get("BLU")));
-            cubesButtonsHBox.setSpacing(5);
+            cubes.getChildren().stream()
+                    .map(x -> (GameButton) x)
+                    .forEach(x -> {
 
-            root.getChildren().addAll(cubesButtonsHBox, radioButtonsHBox, confirmButton);
+                        x.setOnMouseClicked(mouseEvent -> {
 
-            confirmButton.setOnMouseClicked(mouseEvent -> {
+                            paymentLine.append("paga( ")
+                                    .append(x.getId())
+                                    .append(" )");
 
-                if (radioButtonsHBox.getChildren().stream()
-                        .map(x -> (RadioButton) x)
-                        .anyMatch(RadioButton::isSelected)) {
+                            JsonQueue.add("method", effectType);
+                            JsonQueue.add("line",
+                                    new StringBuilder().append(powerUpString)
+                                            .append(target.toString())
+                                            .append(destination.toString())
+                                            .append(paymentLine.toString())
+                                            .toString());
+                            JsonQueue.send();
 
-                    paymentLine.append("paga( ")
-                            .append(radioButtonsHBox.getChildren().stream()
-                                    .map(x -> (RadioButton) x)
-                                    .filter(RadioButton::isSelected)
-                                    .findAny()
-                                    .get()
-                                    .getId())
-                            .append(" )");
-
-                }
-
-                JsonQueue.add("method", effectType);
-                JsonQueue.add("line",
-                        new StringBuilder().append(powerUpString)
-                                .append(target.toString())
-                                .append(destination.toString())
-                                .append(paymentLine.toString())
-                                .toString());
-                JsonQueue.send();
-
-                shootStage.close();
-            });
+                            shootStage.close();
+                        });
+                    });
         }
 
         if (!shootStage.isShowing()) {
