@@ -32,9 +32,9 @@
 > **Note:** "data.ser" is the serialization data, when the server is disconnected all the available matches are saved to this file. The server loads and saves automatically. If you want a fresh start just delete it from the project's directory.'<br>
 > .<br>
 > └── ing-sw-2019-Bertolini-Cavallo-Capaccio<br>
-> &ensp;&ensp;&ensp;&ensp;├── data.ser<br>
-> &ensp;&ensp;&ensp;&ensp;└── jar<br>
-> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;└── server-jar-with-dependencies.jar
+>     ├── data.ser<br>
+>     └── jar<br>
+>         └── server-jar-with-dependencies.jar
 
 
 To run the server, open a terminal in the project's directory and type:
@@ -67,8 +67,8 @@ To run the client in GUI version of Adrenalina, open a terminal in the project's
 > 3. Rename the extracted folder (ex. "javafx-sdk-12.0.1/") to "javafx/".<br>
 > .<br>
 > └── ing-sw-2019-Bertolini-Cavallo-Capaccio<br>
-> &ensp;&ensp;&ensp;&ensp;├── javafx<br>
-> &ensp;&ensp;&ensp;&ensp;|&ensp;&ensp;&ensp;&ensp;├── ...<br>
-> &ensp;&ensp;&ensp;&ensp;|&ensp;&ensp;&ensp;&ensp;└── lib<br>
-> &ensp;&ensp;&ensp;&ensp;└── jar<br>
-> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;└── client-jar-with-dependencies.jar
+>     ├── javafx<br>
+>     |   ├── ...<br>
+>     |   └── lib<br>
+>     └── jar<br>
+>         └── client-jar-with-dependencies.jar
