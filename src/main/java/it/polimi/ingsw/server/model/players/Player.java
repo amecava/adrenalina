@@ -406,7 +406,8 @@ public class Player implements Target, Serializable {
     /**
      * Sets the firstPlayer property according to the boolean parameter.
      *
-     * @param firstPlayer The boolean value of the firstPlayer property. True if this is the first player.
+     * @param firstPlayer The boolean value of the firstPlayer property. True if this is the first
+     * player.
      */
     public void setFirstPlayer(boolean firstPlayer) {
 
@@ -426,6 +427,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Checks if the player needs to respawn.
+     *
      * @return The boolean that says if the player needs to respawn.
      */
     public boolean isRespawn() {
@@ -435,6 +437,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Sets the respawn boolean.
+     *
      * @param respawn The boolean value that the player needs.
      */
     public void setRespawn(boolean respawn) {
@@ -445,6 +448,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the remaining actions of the player.
+     *
      * @return The integer corresponding to the number of remaining actions of the player.
      */
     public int getRemainingActions() {
@@ -454,6 +458,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Sets the number of remaining actions of the player.
+     *
      * @param remainingActions The integer of the remaining actions of the player.
      */
     public void setRemainingActions(int remainingActions) {
@@ -463,6 +468,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the actions of the player.
+     *
      * @return The list of ActionStructure of the player.
      */
     public List<ActionStructure> getActions() {
@@ -472,6 +478,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Selects the action that the user wants to perform.
+     *
      * @param actionId The number of the action that the user wants to perform.
      * @throws IllegalActionException If the action cannot be performed at the moment.
      */
@@ -509,6 +516,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Creates a PointStructure for the shots list of color.
+     *
      * @param shots The List of Color that will be added to the structure.
      * @return The PointStructure.
      */
@@ -519,6 +527,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the list of cubes of the player.
+     *
      * @return The List of AmmoCube.
      */
     public List<AmmoCube> getAmmoCubesList() {
@@ -528,6 +537,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the list of power ups of the player.
+     *
      * @return The List of AmmoCube.
      */
     public List<PowerUpCard> getPowerUpsList() {
@@ -537,6 +547,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Gets the list of weapons of the player.
+     *
      * @return The List of AmmoCube.
      */
     public List<WeaponCard> getWeaponCardList() {
@@ -546,6 +557,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Adds a weaponCard to the hand of the player.
+     *
      * @param weaponCard The WeaponCard to be added.
      */
     void addWeaponCard(WeaponCard weaponCard) {
@@ -556,6 +568,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Adds a powerUp to the hand of the player.
+     *
      * @param powerUp The powerUp to be added.
      */
     public void addPowerUp(PowerUpCard powerUp) {
@@ -566,10 +579,11 @@ public class Player implements Target, Serializable {
 
     /**
      * Searches a power up based on its name and color.
+     *
      * @param name The name of the power up.
      * @param color The color o the power up.
      * @return The PowerUpCard object.
-     * @throws CardNotFoundException If the searched power up is not present in player's hande.
+     * @throws CardNotFoundException If the searched power up is not present in player's hand.
      */
     public PowerUpCard findPowerUp(String name, Color color) throws CardNotFoundException {
 
@@ -582,11 +596,12 @@ public class Player implements Target, Serializable {
     }
 
     /**
-     * Removes a power up from player's
-     * @param name
-     * @param color
-     * @return
-     * @throws CardNotFoundException
+     * Removes a power up from player's hand.
+     *
+     * @param name The name of the power up.
+     * @param color The color of the power up.
+     * @return The PowerUpCard object.
+     * @throws CardNotFoundException If the searched power up is not present in player's hand.
      */
     private PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
 
@@ -600,6 +615,12 @@ public class Player implements Target, Serializable {
         return this.powerUpsList.remove(this.powerUpsList.indexOf(powerUpCard));
     }
 
+    /**
+     * Removes a given power up.
+     *
+     * @param card The Card to remove.
+     * @return The removed card.
+     */
     public PowerUpCard removePowerUp(PowerUpCard card) {
 
         card.setOwner(null);
@@ -607,6 +628,9 @@ public class Player implements Target, Serializable {
         return this.powerUpsList.remove(this.powerUpsList.indexOf(card));
     }
 
+    /**
+     * Removes the player from the board when he dies.
+     */
     public void removePlayerFromBoard() {
 
         this.currentPosition.removePlayer(this);
@@ -617,6 +641,16 @@ public class Player implements Target, Serializable {
         this.setRespawn(true);
     }
 
+    /**
+     * Performs the "move" action.
+     *
+     * @param effectTarget The target of the move effect, which is this player.
+     * @param effectHandler The effectHandler of the match.
+     * @throws PropertiesException If there are some problems with the properties of the target
+     * during the execution of the effect.
+     * @throws EffectException If there are some problems with the execution of the effect.
+     * @throws IllegalActionException If the action can0t be performed right now.
+     */
     public void move(EffectArgument effectTarget, EffectHandler effectHandler)
             throws PropertiesException, EffectException, IllegalActionException {
 
@@ -632,6 +666,13 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(1, false);
     }
 
+    /**
+     * Performs the "collect" action when the player is in a square that is not a spawn square.
+     * @return The ammo tile collected.
+     * @throws SquareException If the player is in a spawn square.
+     * @throws EmptySquareException If the square is empty.
+     * @throws IllegalActionException If the action cannot be performed at the moment.
+     */
     public AmmoTile collect()
             throws SquareException, EmptySquareException, IllegalActionException {
 
@@ -645,7 +686,7 @@ public class Player implements Target, Serializable {
         if (this.currentPosition.isSpawn()) {
 
             throw new SquareException(
-                    "Sei in uno square di rigenerazione, seleziona l'id della carta da raccogliere\ned eventualmente l'id della carta da scartare.");
+                    "Sei in uno square di rigenerazione, seleziona il comando giusto!");
         }
 
         AmmoTile tmpTile = this.currentPosition.collectAmmoTile();
@@ -665,6 +706,13 @@ public class Player implements Target, Serializable {
         return tmpTile;
     }
 
+    /**
+     * Performs the "collect" action when the player is in a spawn square and doesn't need to discard a card.
+     * @param cardId The id of the card to collect.
+     * @param powerUpCards The power ups with which the user may want to pay the cost of the card.
+     * @throws CardException If the card can't be found in the square.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     */
     public void collect(int cardId, List<PowerUpCard> powerUpCards)
             throws CardException, IllegalActionException {
 
@@ -705,6 +753,14 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(2, false);
     }
 
+    /**
+     * Performs the "collect" action when the player is in a spawn square and needs to discard a card.
+     * @param squareCardId The id of the card to collect.
+     * @param playerCardId The id of the card to discard.
+     * @param powerUpCards The power ups with which the user may want to pay the cost of the card.
+     * @throws CardException If the card can't be found in the square.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     */
     public void collect(int squareCardId, int playerCardId, List<PowerUpCard> powerUpCards)
             throws CardException, IllegalActionException {
 
@@ -742,6 +798,13 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(2, false);
     }
 
+    /**
+     * Performs the "reload" action. Reloads the weapon given as a parameter.
+     * @param cardId The id of the card to discard.
+     * @param powerUpCardList The power ups with which the user may want to pay the cost of the card.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     * @throws CardException If the card can't be found in player's hand.
+     */
     public void reload(int cardId, List<PowerUpCard> powerUpCardList)
             throws IllegalActionException, CardException {
 
@@ -763,6 +826,12 @@ public class Player implements Target, Serializable {
 
     }
 
+    /**
+     * Activates the card chosen by the user.
+     * @param cardId The id of the card to activate.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     * @throws CardException If the card can't be found in player's hand.
+     */
     public void activateCard(int cardId) throws CardException, IllegalActionException {
 
         if (this.getCurrentAction() == null || this.getCurrentAction().isShoot() == null || !this
@@ -781,6 +850,16 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(4, false);
     }
 
+    /**
+     * Performs the "useCard" action.
+     * @param effectType The type of the effect that the user wants to be executed (primary/alternative/optionali1/optional2).
+     * @param effectTarget The targets of the effect.
+     * @param powerUpCardList The power ups with which the user may want to pay the cost of the effect.
+     * @throws PropertiesException if there are some problems with the effect and target properties.
+     * @throws EffectException If there are some problems during the execution of the effect (or it can't be used at the moment).
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     * @throws CardException If the card can't be found in player's hand.
+     */
     public void useCard(EffectType effectType, EffectArgument effectTarget,
             List<PowerUpCard> powerUpCardList)
             throws PropertiesException, EffectException, CardException, IllegalActionException {
@@ -811,6 +890,13 @@ public class Player implements Target, Serializable {
         }
     }
 
+    /**
+     * This method creates a JsonObjectBuilder containing all the information needed in the View. To
+     * the said JsonObjectBuilder will be added some JsonValues in the GameHandler.toJsonObject()
+     * method, and that will be sent to the view when needed.
+     *
+     * @return The JsonObect containig all the information of this card.
+     */
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder weaponsBuilder = Json.createArrayBuilder();
