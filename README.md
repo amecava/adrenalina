@@ -29,12 +29,15 @@
 
 
 ## Run server 
-> **Note:** "data.ser" is the serialization data, when the server is disconnected all the available matches are saved to this file. The server loads and saves automatically. If you want a fresh start just delete it from the project's directory.'<br>
-> .<br>
-> └── ing-sw-2019-Bertolini-Cavallo-Capaccio<br>
->     ├── data.ser<br>
->     └── jar<br>
->         └── server-jar-with-dependencies.jar
+>**Note:** "data.ser" is the serialization data, when the server is disconnected all the available matches are saved to this file. The server loads and saves automatically. If you want a fresh start just delete it from the project's directory.'
+
+```bash
+.
+└── ing-sw-2019-Bertolini-Cavallo-Capaccio
+    ├── data.ser
+    └── jar
+        └── server-jar-with-dependencies.jar
+```
 
 
 To run the server, open a terminal in the project's directory and type:
@@ -43,7 +46,7 @@ To run the server, open a terminal in the project's directory and type:
 ./adrenalina -s 
 ``
 
-> **WARNING:** The server requires an IP address in addition to the loopback (127.0.0.1) to set the "java.rmi.server.hostname" system property for RMI connections. Please either connect to a Wi-Fi, plug the server to an ethernet switch, or connect to any available network. No internet connection is required.
+>**WARNING:** The server requires an IP address in addition to the loopback (127.0.0.1) to set the "java.rmi.server.hostname" system property for RMI connections. Please either connect to a Wi-Fi, plug the server to an ethernet switch, or connect to any available network. No internet connection is required.
 
 ## Run client (CLI version)
 
@@ -61,14 +64,17 @@ To run the client in GUI version of Adrenalina, open a terminal in the project's
 ./adrenalina -g 
 ``
 
-> **Warning:** The JavaFX SDK is required to run the GUI version of Adrenalina, follow these steps to correctly download and install all the required packages:
-> 1. Download the OS dependend version of JavaFX SDK from [this site](https://openjfx.io/).
-> 2. Unzip the downloaded zip file in the project's directory.
-> 3. Rename the extracted folder (ex. "javafx-sdk-12.0.1/") to "javafx/".<br>
-> .<br>
-> └── ing-sw-2019-Bertolini-Cavallo-Capaccio<br>
->     ├── javafx<br>
->     |   ├── ...<br>
->     |   └── lib<br>
->     └── jar<br>
->         └── client-jar-with-dependencies.jar
+>**Warning:** The JavaFX SDK is required to run the GUI version of Adrenalina, follow these steps to correctly download and install all the required packages:
+>1. Download the OS dependend version of JavaFX SDK from [this site](https://openjfx.io/).
+>2. Unzip the downloaded zip file in the project's directory.
+>3. Rename the extracted folder (ex. "javafx-sdk-12.0.1/") to "javafx/".
+
+```bash
+.
+└── ing-sw-2019-Bertolini-Cavallo-Capaccio
+    ├── javafx
+    |   ├── ...
+    |   └── lib
+    └── jar
+        └── client-jar-with-dependencies.jar
+```
