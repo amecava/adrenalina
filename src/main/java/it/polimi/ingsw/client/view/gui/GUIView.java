@@ -348,10 +348,6 @@ public class GUIView extends Application implements View, VirtualView {
 
                         borderPane.getChildren().add(entry.getKey());
                     });
-                    /**
-                     * socket connection button
-                     */
-                    Button tcpButton = new GameButton(new ImageView(Images.imagesMap.get("tcp")));
 
                     tcpButton.setOnMouseClicked(x -> {
 
