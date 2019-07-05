@@ -17,11 +17,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the Player class.
+ */
 class PlayerTest {
 
     EffectHandler effectHandler = new EffectHandler();
-    private PowerUpCard PowerUpCard;
 
+    /**
+     * Tests the move player action/
+     */
     @Test
     void movePlayer() {
 
@@ -42,8 +47,9 @@ class PlayerTest {
         assertFalse(board.getRoom(0).getSquare(0).getPlayers().contains(player));
     }
 
-    //Every test is temporarily not completely reliable due to a change in the "collect" action implementation,
-    // it will be updated as soon as we finish the final implementation
+    /**
+     * Tests the collect from not spawn method.
+     */
     @Test
     void collectFromNotSpawn() {
 
@@ -156,6 +162,9 @@ class PlayerTest {
 
     }
 
+    /**
+     * Tests the collect from spawn method.
+     */
     @Test
     void collectFromSpawn() {
 
@@ -282,6 +291,9 @@ class PlayerTest {
 
     }
 
+    /**
+     * Tests the collect from spawn method.
+     */
     @Test
     void collectFromSpawn2() {
 
@@ -336,7 +348,5 @@ class PlayerTest {
         } catch (IllegalActionException e) {
             assertTrue(true);
         }
-
-
     }
 }

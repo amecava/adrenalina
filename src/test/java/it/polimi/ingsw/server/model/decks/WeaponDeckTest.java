@@ -10,8 +10,14 @@ import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the weaponn deck
+ */
 class WeaponDeckTest {
 
+    /**
+     * Tests the correct creation of the weaponsDeck.
+     */
     @Test
     void buildDeck() {
 

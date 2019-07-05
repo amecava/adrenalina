@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 
 class EffectParserTest {
 
+    /**
+     * Tests the user input string parser for the effect usage.
+     */
     @Test
     void test() {
 

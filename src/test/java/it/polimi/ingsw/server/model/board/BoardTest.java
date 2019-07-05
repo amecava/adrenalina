@@ -11,10 +11,16 @@ import it.polimi.ingsw.server.model.board.rooms.Direction;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the Board methods.
+ */
 class BoardTest {
 
+    /**
+     * Tests that the boards are built correctly.
+     */
     @Test
-    void  buildBoard() {
+    void buildBoard() {
 
         Board board = new Board.BoardBuilder(new EffectHandler()).build(0);
 
@@ -64,6 +70,9 @@ class BoardTest {
         );
     }
 
+    /**
+     * Tests the board json creation.
+     */
     @Test
     void squareJson() {
 
@@ -71,6 +80,9 @@ class BoardTest {
         board.fillBoard();
     }
 
+    /**
+     * Tests the filling of the boards with new WeaponCards and new AmmoTiles.
+     */
     @Test
     void fillBoard() {
 
@@ -92,6 +104,9 @@ class BoardTest {
                 });
     }
 
+    /**
+     * Tests the method that finds the spawn square given a selected color.
+     */
     @Test
     void findSpawn() {
 
@@ -118,6 +133,9 @@ class BoardTest {
         }
     }
 
+    /**
+     * Tests the method that finds a square in the board given the room color and the squareId.
+     */
     @Test
     void findSquare() {
 

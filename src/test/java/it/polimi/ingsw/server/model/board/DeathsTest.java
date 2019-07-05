@@ -12,12 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the killStreak.
+ */
 class DeathsTest {
 
+    /**
+     * Tests the game ending, that launches an EndGameException.
+     */
     @Test
     void endGame() {
 
-        EffectHandler effectHandler = new EffectHandler();
         List<Player> playerList = new ArrayList<>();
         Player player1 = new Player("Jacopo", Color.BLU);
         playerList.add(player1);

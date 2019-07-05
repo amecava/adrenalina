@@ -5,8 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.server.model.players.Color;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the player's DamageBridge.
+ */
 class DamageBridgeTest {
 
+    /**
+     * Tests giving damage to players.
+     */
     @Test
     void appendShot() {
 
@@ -42,6 +48,9 @@ class DamageBridgeTest {
                 .count(), 1);
     }
 
+    /**
+     * Tests giving marks to players.
+     */
     @Test
     void appendMark() {
 
@@ -66,6 +75,9 @@ class DamageBridgeTest {
                 .count(), 0);
     }
 
+    /**
+     * Check the isDead function.
+     */
     @Test
     void isDead() {
 
@@ -78,6 +90,9 @@ class DamageBridgeTest {
         assertTrue(damageBridge.isDead());
     }
 
+    /**
+     * Tests if the correct Adrenaline states are changed during the game.
+     */
     @Test
     void checkAdrenalin() {
 
