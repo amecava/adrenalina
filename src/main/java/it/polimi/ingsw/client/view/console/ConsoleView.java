@@ -19,6 +19,9 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * The cli implementation for the View.
+ */
 public class ConsoleView implements View, VirtualView {
 
     /**

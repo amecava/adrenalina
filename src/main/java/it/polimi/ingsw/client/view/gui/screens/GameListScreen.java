@@ -40,8 +40,14 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * Screen for choosing the game to join or creating a new game.
+ */
 public class GameListScreen {
 
+    /**
+     * creates the game list screen
+     */
     private GameListScreen() {
 
         //
@@ -49,9 +55,18 @@ public class GameListScreen {
 
     private static BorderPane borderPane;
 
-    private static VBox games = new VBox();
-    private static ScrollPane scrollPane = new ScrollPane();
 
+    /**
+     * a list af all the available games on the server
+     */
+    private static VBox games = new VBox();
+    /**
+     * scroll pane containing the list of games
+     */
+    private static ScrollPane scrollPane = new ScrollPane();
+    /**
+     *expresses if the game list screen is empty or not
+     */
     private static boolean empty = true;
 
     public static void generateScreen() {
@@ -196,6 +211,11 @@ public class GameListScreen {
         Platform.runLater(() -> GUIView.changeScene(borderPane));
     }
 
+    /**
+     * this method updates the game list screen after a new method has successfully been
+     * created so that avery client can see all the available games
+     * @param object containing all the available games with their parameters
+     */
     public static void updateScreen(JsonObject object) {
 
         Platform.runLater(() -> {
@@ -364,6 +384,10 @@ public class GameListScreen {
         });
     }
 
+    /**
+     * creates a new screen in which the player must select the character to use in the game
+     * @param game name of the selected game
+     */
     private static void selectCharacterScreen(String game) {
 
         BorderPane borderPane2 = GUIView.createBorderPane(true, false);
@@ -376,11 +400,15 @@ public class GameListScreen {
         label.setFont(Font.font("Silom", FontWeight.BOLD, 70));
         label.setAlignment(Pos.CENTER);
         label.setTextFill(Color.WHITE);
-
+        /**
+         * hbox containing characters
+         */
         HBox characters = new HBox();
         characters.setAlignment(Pos.CENTER);
         characters.setSpacing(20);
-
+        /**
+         * button for going backwards
+         */
         Button back = new GameButton("indietro");
 
         back.setOnMouseClicked(mouseEvent ->
@@ -395,7 +423,9 @@ public class GameListScreen {
             ImageView imageView = new ImageView(value);
             imageView.setPreserveRatio(true);
             imageView.setFitHeight(200);
-
+            /**
+             * getting the images of the characters
+             */
             Button button = new GameButton(imageView);
 
             button.setOnMouseClicked(mouseEvent -> {

@@ -11,36 +11,76 @@ import javax.json.JsonObject;
 
 class DamageBridge implements Serializable {
 
+    /**
+     * indicates if  the first damage of the linked player
+     * needs to be counted as a first blood shot
+     */
     private boolean killStreakCount = false;
 
+    /**
+     * a list of all shots taken by the player linked with the color
+     * of the player who did the shot
+     */
     private List<Color> shots = new ArrayList<>();
+
+    /**
+     * list of marks taken by the payer linked with
+     * the color of the player who did the mark
+     */
     private List<Color> marks = new ArrayList<>();
 
+    /**
+     *
+     * @return true if the player's first shot needs to be counted as
+     * a first blood shot
+     */
     boolean isKillStreakCount() {
 
         return this.killStreakCount;
     }
 
+    /**
+     * sets the player's first shot as a first blood shot
+     */
     void setKillStreakCount() {
 
         this.killStreakCount = true;
     }
 
+    /**
+     *
+     * @return the list of all damages taken by the player
+     */
     List<Color> getShots() {
 
         return new ArrayList<>(this.shots);
     }
 
+    /**
+     *
+     * @return a list of all marks taken by the player
+     */
     List<Color> getMarks() {
 
         return new ArrayList<>(this.marks);
     }
 
+    /**
+     * clears all the damages taken by the player so that after the player's death
+     * there are no more damages in his damage bridge
+     */
     void clearShots() {
 
         this.shots.clear();
     }
 
+    /**
+     * the linked player has taken another shot so it needs to be added
+     * to his damage bridge
+     * @param color the color of the player who did the damage
+     * @param checkMarks indicates if the most recent damage taken by the player
+     * should transform all the marks of the same color into damages
+     */
     void appendShot(Color color, boolean checkMarks) {
 
         if (this.shots.size() < 12) {
@@ -53,6 +93,10 @@ class DamageBridge implements Serializable {
         }
     }
 
+    /**
+     * appends another mark to the linked player damage bridge
+     * @param color indicates the color of the player who did the mark to the linked player
+     */
     void appendMark(Color color) {
 
         if (this.marks.stream().filter(x -> x.equals(color)).count() < 3) {
@@ -61,11 +105,19 @@ class DamageBridge implements Serializable {
         }
     }
 
+    /**
+     * idicates if the player at the end of the turn is dead or not
+     * @return true if the player at the end of the turn is dead
+     */
     boolean isDead() {
 
         return this.shots.size() >= 11;
     }
 
+    /**
+     * gets the adrenalin state of the linked player
+     * @return the adrenalin state of the linked player
+     */
     Adrenalin getAdrenalin() {
 
         if (this.shots.size() <= 2) {
@@ -81,6 +133,12 @@ class DamageBridge implements Serializable {
         return Adrenalin.SECONDADRENALIN;
     }
 
+
+    /**
+     * transforms all the marks done by a given player to damages done by the same player
+     * @param color indicates the color of marks that should be transformed into damages
+     * @return the list of marks without the transformed ones
+     */
     private List<Color> updateMarksToShots(Color color) {
 
         return this.marks.stream()
@@ -96,6 +154,10 @@ class DamageBridge implements Serializable {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     * creates the json object for this structure
+     * @return the json object of this damage bridge
+     */
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder shotsBuilder = Json.createArrayBuilder();

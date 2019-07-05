@@ -16,14 +16,28 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * preloader class for loading all the needed images in the ram
+ */
 public class GUIPreloader extends Preloader {
 
+    /**
+     * A progress bar to indicate the progress of all the images been loaded in the ram
+     */
     private ProgressBar bar;
-
+    /**
+     * A temporary  stage for showing the preloader
+     */
     private Stage stage;
-
+    /**
+     * Boolean that expresses if the loading has started
+     */
     private boolean noLoadingProgress = true;
 
+    /**
+     * Initializing the stage for the preloader
+     * @param stage the current stage
+     */
     @Override
     public void start(Stage stage) {
 
@@ -59,6 +73,10 @@ public class GUIPreloader extends Preloader {
         stage.show();
     }
 
+    /**
+     * This method increments the progress bar indicator
+     * @param pn node of the progress bar
+     */
     @Override
     public void handleProgressNotification(ProgressNotification pn) {
 
@@ -73,12 +91,20 @@ public class GUIPreloader extends Preloader {
         }
     }
 
+    /**
+     * Needed to be implemented to respect the inheritance
+     * @param evt parameter  needed for the method
+     */
     @Override
     public void handleStateChangeNotification(StateChangeNotification evt) {
 
         //
     }
 
+    /**
+     * method for handling the application notifications
+     * @param pn Preloader notifications
+     */
     @Override
     public void handleApplicationNotification(PreloaderNotification pn) {
 

@@ -3,6 +3,9 @@ package it.polimi.ingsw.common;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * The interface for the connection.
+ */
 public interface VirtualAccessPoint extends Remote {
 
     /**

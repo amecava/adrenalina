@@ -11,6 +11,10 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * Class responsible of analyzing the JsonObject of the board that arrives from the server and
+ * building the Strings that will be printed by the Terminal class.
+ */
 public class BoardDrawer {
 
     /**

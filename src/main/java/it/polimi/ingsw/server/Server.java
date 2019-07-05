@@ -21,19 +21,43 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The Server class.
+ */
 public class Server {
 
+    /**
+     * The RMI registry.
+     */
     private static Registry registry;
+
+    /**
+     * The AccessPoint that gives the client the access point for the server.
+     */
     private static AccessPoint accessPoint;
+
+    /**
+     * The RMI stub.
+     */
     private static VirtualAccessPoint stub;
 
+    /**
+     * The thread responsible of the ping method that checks if the clients are still connected.
+     */
     private static final Thread pingThread = new Thread(Server::pingServer);
 
+    /**
+     * The Logger that prints updates on the server.
+     */
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
+    /**
+     * A method that waits for udp packages to answer client's discovery research of the server.
+     * @param port The port used to wait.
+     */
     private static void discoveryServer(int port) {
 
         try (DatagramSocket socket = new DatagramSocket(port, InetAddress.getByName("0.0.0.0"))) {
@@ -60,6 +84,10 @@ public class Server {
         }
     }
 
+    /**
+     * The method for the RMI server.
+     * @param port The RMI port.
+     */
     private static void rmiServer(int port) {
 
         LOGGER.log(Level.INFO, "Creating RMI server...");
@@ -86,6 +114,10 @@ public class Server {
         }
     }
 
+    /**
+     * The method for the socket server.
+     * @param port The socket port.
+     */
     private static void socketServer(int port) {
 
         LOGGER.log(Level.INFO, "Creating socket server...");
@@ -114,6 +146,9 @@ public class Server {
         }
     }
 
+    /**
+     * The method that pings the client to check its connection.
+     */
     private static void pingServer() {
 
         while (Thread.currentThread().isAlive()) {
@@ -132,6 +167,9 @@ public class Server {
         }
     }
 
+    /**
+     * The main method.
+     */
     public static void main(String[] args) {
 
         try {

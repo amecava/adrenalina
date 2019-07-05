@@ -15,23 +15,39 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+/**
+ * Login screen for inserting the player's id.
+ */
 public class LoginScreen {
 
+    /**
+     * creates a login screen
+     */
     private LoginScreen() {
 
         //
     }
 
+    /**
+     * generates the login screen in wiche the user must put his user name id
+     */
     public static void generateScreen() {
-
+        /**
+         * the new root of the scene
+         */
         BorderPane borderPane = GUIView.createBorderPane(true, true);
-
+        /**
+         * label for inserting the user name
+         */
         Label label = new Label("Inserisci un nome utente:");
         label.setFont(Font.font("Silom", 30));
         label.setTextAlignment(TextAlignment.CENTER);
         label.setAlignment(Pos.CENTER);
         label.setTextFill(Color.WHITE);
 
+        /**
+         * text field for inserting the user name
+         */
         TextField userLogin = new TextField();
         userLogin.setFont(Font.font("Silom", FontWeight.BOLD, 70));
         userLogin.setAlignment(Pos.CENTER);
@@ -52,7 +68,9 @@ public class LoginScreen {
                 JsonQueue.send();
             }
         });
-
+        /**
+         * box in wich user login elements are put
+         */
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(20);

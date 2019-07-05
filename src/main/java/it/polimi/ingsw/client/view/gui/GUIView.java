@@ -49,44 +49,88 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.json.JsonObject;
 
+/**
+ * main class for the gui .this class implements the method for changing the scene and
+ * for interacting with the preloader.
+ */
 public class GUIView extends Application implements View, VirtualView {
 
+    /**
+     * player name
+     */
     private static String playerId;
+    /**
+     * character chosen by the player
+     */
     private static String character;
+    /**
+     * primary stage showing all the scenes
+     */
     private static Stage currentStage;
 
+    /**
+     * variable necessary for the preloader to work
+     */
     private static BooleanProperty ready = new SimpleBooleanProperty(false);
 
+    /**
+     *
+     * @return the player idn
+     */
     public static String getPlayerId() {
 
         return playerId;
     }
 
+    /**
+     * sets the player id
+     * @param id of the player
+     */
     public static void setPlayerId(String id) {
 
         playerId = id;
     }
 
+    /**
+     *
+     * @return name of the character chosen by the player
+     */
     public static String getCharacter() {
 
         return character;
     }
 
+    /**
+     * sets the character chosen by the player
+     * @param player is the chosen character
+     */
     public static void setCharacter(String player) {
 
         character = player;
     }
 
+    /**
+     *
+     * @return the current stage showing the current scene
+     */
     public static Stage getCurrentStage() {
 
         return currentStage;
     }
 
+    /**
+     * sets the current stage
+     * @param stage the next current stage
+     */
     private static void setCurrentStage(Stage stage) {
 
         currentStage = stage;
     }
 
+    /**
+     * necessary method for the preloader to work with javafx
+     * @param guiView the view that will be launched after the preloader has finished
+     */
     private static void initialize(GUIView guiView) {
 
         new Thread(() -> {
@@ -100,6 +144,10 @@ public class GUIView extends Application implements View, VirtualView {
         }).start();
     }
 
+    /**
+     * the current scene will be changed for a new scene
+     * @param root new scene that will be shown
+     */
     public static void changeScene(BorderPane root) {
 
         root.addEventHandler(MouseEvent.MOUSE_CLICKED, x -> {
@@ -121,6 +169,12 @@ public class GUIView extends Application implements View, VirtualView {
         }
     }
 
+    /**
+     * creating the first scene after the preloader has finished
+     * @param adrenalina expresses if the image adrenalina can be shown
+     * @param character expresses if the character image can be shown
+     * @return the new current scene
+     */
     public static BorderPane createBorderPane(boolean adrenalina, boolean character) {
 
         BorderPane borderPane = new BorderPane();
@@ -154,6 +208,10 @@ public class GUIView extends Application implements View, VirtualView {
         return borderPane;
     }
 
+    /**
+     * starts the gui view
+     * @param stage current stage that will be shown
+     */
     @Override
     public void start(Stage stage) {
 
@@ -161,7 +219,9 @@ public class GUIView extends Application implements View, VirtualView {
         stage.getIcons().add(new Image("images/adrenaline_icon.png"));
 
         initialize(this);
-
+        /**
+         * first scene in the stage
+         */
         Scene scene = new Scene(new BorderPane());
         scene.setFill(Color.TRANSPARENT);
 
@@ -194,6 +254,12 @@ public class GUIView extends Application implements View, VirtualView {
 
     /////////////////////////////////////////////////////////////////////////
 
+    /**
+     * this method creates a bridge between the user and the gui ,
+     * the gui takes user's input and puts it into a queue where a thread is waiting
+     * to take information and send it to the server
+     * @return the information that will be sent to the server
+     */
     @Override
     public JsonObject userInput() {
 
@@ -215,6 +281,13 @@ public class GUIView extends Application implements View, VirtualView {
         return JsonQueue.getQueue().remove();
     }
 
+    /**
+     * initial screen on wich the user chooses rmi or socket connections , also in this method
+     * the gui sends a udp packet to discover the server's ip adress
+     * @param discoveryPort port on wich the client sends udp packets to find server's ip
+     * @param rmiPort rmi port
+     * @param socketPort socket port
+     */
     @Override
     public void initialScreen(int discoveryPort, int rmiPort, int socketPort) {
 
@@ -223,14 +296,24 @@ public class GUIView extends Application implements View, VirtualView {
             if (Boolean.TRUE.equals(t1)) {
 
                 try {
-
+                    /**
+                     * the real adress of the server found with the discovery port
+                     */
                     InetAddress inetAddress = Client.discoverServer(discoveryPort);
 
+                    /**
+                     * new current scene
+                     */
                     BorderPane borderPane = createBorderPane(true, true);
-
+                    /**
+                     * box in wich will reside the two types of connections
+                     */
                     HBox hBox = new HBox();
                     hBox.setSpacing(50);
 
+                    /**
+                     * rmi connection button
+                     */
                     Button rmiButton = new GameButton(new ImageView(Images.imagesMap.get("rmi")));
                     Button tcpButton = new GameButton(new ImageView(Images.imagesMap.get("tcp")));
 
@@ -265,7 +348,10 @@ public class GUIView extends Application implements View, VirtualView {
 
                         borderPane.getChildren().add(entry.getKey());
                     });
-
+                    /**
+                     * socket connection button
+                     */
+                    Button tcpButton = new GameButton(new ImageView(Images.imagesMap.get("tcp")));
 
                     tcpButton.setOnMouseClicked(x -> {
 
@@ -315,24 +401,37 @@ public class GUIView extends Application implements View, VirtualView {
         });
     }
 
+    /**
+     * creates the login screen
+     */
     @Override
     public void loginScreen() {
 
         LoginScreen.generateScreen();
     }
 
+    /**
+     * creates the game List Screen
+     */
     @Override
     public void gameListScreen() {
 
         GameListScreen.generateScreen();
     }
 
+    /**
+     * creates the game not started screen
+     */
     @Override
     public void gameNotStartedScreen() {
 
         GameNotStartedScreen.generateScreen();
     }
 
+    /**
+     * creates the main board screen
+     * @param object Json Object with the information of all the game
+     */
 
     @Override
     public void boardScreen(JsonObject object) {
@@ -342,11 +441,22 @@ public class GUIView extends Application implements View, VirtualView {
 
     /////////////////////////////////////////////////////////////////////////
 
+    /**
+     * method called by the server to broadcast messages to the end users
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void broadcast(String value) {
 
         Notifications.createNotification("broadcast", value);
     }
+
+    /**
+     * method called by the server for broadcasting messages to the end users in a specific game
+     * @param value A serialized JsonObject that will be deserialized   using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
 
     @Override
     public void gameBroadcast(String value) {
@@ -354,17 +464,34 @@ public class GUIView extends Application implements View, VirtualView {
         Notifications.createNotification("broadcast", value);
     }
 
+    /**
+     * method called by the server for sending an  info message to a user
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void infoMessage(String value) {
 
         Notifications.createNotification("info", value);
     }
 
+    /**
+     * method called by the server for sending an  error message  to a user
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
+
     @Override
     public void errorMessage(String value) {
 
         Notifications.createNotification("error", value);
     }
+
+    /**
+     * method used by the server to test if the client is still connected
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
 
 
     @Override
@@ -373,6 +500,11 @@ public class GUIView extends Application implements View, VirtualView {
         //
     }
 
+    /**
+     * method called by the server after tthe client has completed the login screen
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void completeLogin(String value) {
 
@@ -399,24 +531,44 @@ public class GUIView extends Application implements View, VirtualView {
         }
     }
 
+    /**
+     * method used to verify the complete disconnection  from the server
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void completeDisconnect(String value) {
 
         System.exit(0);
     }
 
+    /**
+     * method used to update the game list screen when a new game is created
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void updateGameList(String value) {
 
         GameListScreen.updateScreen(JsonUtility.jsonDeserialize(value));
     }
 
+    /**
+     * method called when a new game is created successfully
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void completeCreateGame(String value) {
 
         Notifications.createNotification("info", "Partita creata con nome " + value + ".");
     }
 
+    /**
+     * method called by the server after a game has been successfully selected
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void completeSelectGame(String value) {
 
@@ -426,12 +578,23 @@ public class GUIView extends Application implements View, VirtualView {
         this.gameNotStartedScreen();
     }
 
+    /**
+     * method called by the server after the player has entered successfully a game
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void updateGameNotStartedScreen(String value) {
 
         GameNotStartedScreen.updateScreen(JsonUtility.jsonDeserialize(value));
     }
 
+    /**
+     * method called by the server after a client has successfully voted for a board in
+     * the game not started screen
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void completeVoteBoard(String value) {
 
@@ -439,11 +602,23 @@ public class GUIView extends Application implements View, VirtualView {
                 .createNotification("info", "Hai votato per giocare con l'arena " + value + ".");
     }
 
+    /**
+     * method called by the server after the client has successfully selected an action in
+     * the game started screen
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
     @Override
     public void completeSelectAction(String value) {
 
         Notifications.createNotification("info", "Selezione azione completata.");
     }
+
+    /**
+     * method called by the server after the client has successfully ended an action
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
 
     @Override
     public void completeEndAction(String value) {
@@ -451,11 +626,23 @@ public class GUIView extends Application implements View, VirtualView {
         Notifications.createNotification("info", "Azione terminata.");
     }
 
+    /**
+     * method called by the server after the user has asked for a card info
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
+
     @Override
     public void completeCardInfo(String value) {
 
         CardHandler.weaponCardInfo(JsonUtility.jsonDeserialize(value));
     }
+
+    /**
+     * method called by the server after a client has asked for an info on a power up
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
 
     @Override
     public void completePowerUpInfo(String value) {
@@ -463,17 +650,38 @@ public class GUIView extends Application implements View, VirtualView {
         CardHandler.powerUpCardInfo(JsonUtility.jsonDeserialize(value));
     }
 
+    /**
+     * method called by the server for updating the board of the client after something has
+     * been changed
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
+
     @Override
     public synchronized void updateBoard(String value) {
 
         BoardScreen.updateScreen(JsonUtility.jsonDeserialize(value));
     }
 
+    /**
+     * method called by the server for updating the client state , the state defines the
+     * possible action a client can call on the server
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     */
+
     @Override
     public synchronized void updateState(String value) {
 
         StateHandler.updateState(JsonUtility.jsonDeserialize(value));
     }
+
+    /**
+     * method called by the server for finishing the game and showing the winners
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
+     * @throws RemoteException
+     */
 
     @Override
     public void endGameScreen(String value) throws RemoteException {

@@ -16,18 +16,37 @@ import javafx.scene.text.FontWeight;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+* Final screen in which the chart is shown.
+ */
 public class EndGameScreen {
 
+    /**
+     * box containing all the players characters
+     */
     private static HBox characters = new HBox();
+
+    /**
+     * a box containing the centre of the stage
+     */
     private static VBox center = new VBox();
 
+    /**
+     * creates the end game screen
+     */
     private EndGameScreen() {
 
         //
     }
 
+    /**
+     * generates the end game screen with the winners
+     * @param object containing the information of the winning players
+     */
     public static void generateScreen(JsonObject object) {
-
+        /**
+         * creating the root for the new scene
+         */
         BorderPane borderPane = GUIView.createBorderPane(true, false);
 
         Label gameEndedLabel = new Label();

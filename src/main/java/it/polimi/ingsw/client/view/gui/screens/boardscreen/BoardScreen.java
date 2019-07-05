@@ -51,45 +51,112 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * main screen of the gui in which the board is created and all the nodes are initialized.
+ */
 public class BoardScreen {
 
+    /**
+     * Chosen board id
+     */
     private static int boardId;
+    /**
+     * object containing all the information for creating the board
+     */
     private static JsonObject jsonObject;
-
+    /**
+     * expresses if the linked player must respawn
+     */
     public static boolean isSpawnState = true;
-
+    /**
+     * main root of the next scene
+     */
     private static AnchorPane board;
-
+    /**
+     * box containing the kill streak of all the game
+     */
     private static final HBox killsOfAllPlayers = new HBox();
+    /**
+     * box containing all the weapon cards in the top spawn square
+     */
     private static final HBox weaponsTop = new HBox();
+    /**
+     * box containing all the weapons in the right spawn square
+     */
     private static final VBox weaponsDx = new VBox();
+    /**
+     * box containing all the weapons in the left spawn square
+     */
     private static final VBox weaponsSx = new VBox();
+    /**
+     * box containing all the weapon cards of the game
+     */
+    private static final StackPane weaponDeck = new StackPane();
+    /**
+     * box containing all the power up
+     */
+    private static final StackPane powerUpDeck = new StackPane();
+    /**
+     * label to indicate the linked player's points
+     */
 
     private static final Label character = new Label();
     private static final Label playerPoints = new Label();
+    /**
+     * box containing all the ammos of the linked player
+     */
     private static final HBox playerCubes = new HBox();
+    /**
+     *box containing all the cards of the linked player
+     */
     private static final HBox playerCards = new HBox();
-
+    /**
+     * right part of the stage
+     */
     private static final AnchorPane right = new AnchorPane();
-
+    /**
+     * Box containing all the bridges of all the player's bridges
+     */
     private static final VBox bridges = new VBox();
+    /**
+     * box containing all the buttons the player can use during his action
+     */
     public static final VBox collectiveButtons = new VBox();
-
+    /**
+     * id of the chosen weapon card for shooting
+     */
     public static int activatedWeapon;
+    /**
+     * players in game
+     */
     public static List<String> playersInGame = new ArrayList<>();
 
+    /**
+     * variable to indicate if it's ready to generate the  board screen
+     */
     private static final BooleanProperty ready = new SimpleBooleanProperty(false);
 
+    /**
+     * initialize the board screen
+     */
     private BoardScreen() {
 
         //
     }
 
+    /**
+     *
+     * @return a list of all the squares present in the board screen
+     */
     public static List<ButtonSquare> getSquareList() {
 
         return BoardFunction.getSquareList(board);
     }
 
+    /**
+     *
+     * @return A list containing all the player's weapons
+     */
     public static List<ButtonWeapon> getPlayerWeaponList() {
 
         return playerCards.getChildren().stream()
@@ -98,6 +165,10 @@ public class BoardScreen {
                 .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @return A list containing all the player's power ups.
+     */
     public static List<ButtonPowerUp> getPlayerPowerUpList() {
 
         return playerCards.getChildren().stream()
@@ -106,6 +177,10 @@ public class BoardScreen {
                 .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @return a list containing all the weapons present in all the spawn squares
+     */
     public static List<ButtonWeapon> getSpawnWeaponList() {
 
         return Stream.of(
@@ -117,6 +192,11 @@ public class BoardScreen {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * generates the main board screen with all the information present in the json object
+     * @param object containing all the information in order to place the players in correct
+     * spot ecc...
+     */
     private static void generateScreen(JsonObject object) {
 
         jsonObject = object;
@@ -239,6 +319,10 @@ public class BoardScreen {
         GUIView.changeScene(borderPane);
     }
 
+    /**
+     * updates the main board screen with all the changes made by one or more players.
+     * @param object Containing all the information in order to update the screen.
+     */
     private static void createInfoCardStage(){
 
         Stage infoCardStage = new Stage();
@@ -800,6 +884,12 @@ public class BoardScreen {
         });
     }
 
+    /**
+     * creates the board with the right dimensions and proportions
+     * @param cards to se if weapon cards need to be inserted
+     * @param scaleFactor scale factor for creating the board
+     * @return a node of the board
+     */
     public static AnchorPane createBoard(boolean cards, double scaleFactor) {
 
         ImageView boardImage;

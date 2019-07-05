@@ -10,10 +10,18 @@ import javax.json.JsonArrayBuilder;
 
 class DeathBridge implements Serializable {
 
+    /**
+     * all  the times the linked player has died
+     */
     private int kills;
-
+    /**
+     * list of points given to the players who helped kill the player
+     */
     private List<PointsOfDeath> pointsOfDeaths = new ArrayList<>();
 
+    /**
+     * creating the death bridge of the linked player
+     */
     DeathBridge() {
 
         this.kills = 0;
@@ -25,6 +33,9 @@ class DeathBridge implements Serializable {
         this.pointsOfDeaths.add(new PointsOfDeath(1));
     }
 
+    /**
+     * the player who owns this death bridge has died one more time
+     */
     void addKill() {
 
         this.kills++;
@@ -35,6 +46,9 @@ class DeathBridge implements Serializable {
         }
     }
 
+    /**
+     * the linked player is in frenzy mode
+     */
     void setFrenzy() {
 
         this.kills = 0;
@@ -45,6 +59,10 @@ class DeathBridge implements Serializable {
         this.pointsOfDeaths.add(new PointsOfDeath(1));
     }
 
+    /**
+     * resets all the used points from the last kill
+     * sow that the points can be given to other players
+     */
     void setPointsUsed() {
 
         this.pointsOfDeaths.stream()
@@ -52,6 +70,11 @@ class DeathBridge implements Serializable {
                 .forEach(PointsOfDeath::reset);
     }
 
+    /**
+     * gives to the correct player the correct amount of points he deserves
+     * for helping to kill the player
+     * @return the points that  need to be assigned to the player
+     */
     int assignPoints() {
 
         return this.pointsOfDeaths.stream()
@@ -62,6 +85,10 @@ class DeathBridge implements Serializable {
                 .orElse(1);
     }
 
+    /**
+     * creates the json object of the death bridge structure for  each player
+     * @return
+     */
     JsonArray toJsonArray() {
 
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
