@@ -1,8 +1,11 @@
 package it.polimi.ingsw.server.model.board;
 
 import it.polimi.ingsw.server.model.cards.WeaponCard;
+import it.polimi.ingsw.server.model.cards.effects.Effect;
+import it.polimi.ingsw.server.model.cards.effects.properties.PropertiesAnalyzer;
 import it.polimi.ingsw.server.model.exceptions.cards.SquareException;
 import it.polimi.ingsw.server.model.exceptions.jacop.ColorException;
+import it.polimi.ingsw.server.model.exceptions.properties.SquareDistanceException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.board.rooms.Connection;
 import it.polimi.ingsw.server.model.board.rooms.Direction;
@@ -17,6 +20,7 @@ import it.polimi.ingsw.common.JsonUtility;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import javax.json.Json;
@@ -213,6 +217,34 @@ public class Board implements Serializable {
     }
 
     /**
+     * Finds the object of a power up given the name.
+     *
+     * @param name The name of the power up.
+     * @return The JsonObject of the power up.
+     */
+    private JsonObject findPowerUpObject(String name) {
+
+        if (this.getInfoPowerUp(name)
+                != null) {
+
+            return this.getInfoPowerUp(name);
+
+        } else {
+
+            return this.roomsList.stream()
+                    .flatMap(x -> x.getSquaresList().stream())
+                    .flatMap(y -> y.getPlayers().stream())
+                    .flatMap(x -> x.getPowerUpsList().stream())
+                    .filter(y -> JsonUtility
+                            .levenshteinDistance(name,
+                                    y.getName()) <= 3)
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new)
+                    .toJsonObject();
+        }
+    }
+
+    /**
      * Searches in the powerUpDeck if the power up named "powerUpName".
      *
      * @param powerUpName The name of the power up that needs to be found.
@@ -232,6 +264,36 @@ public class Board implements Serializable {
     }
 
     /**
+     * Creates a JsonArray containing only the available squares for the move action.
+     *
+     * @param currentPosition The player current position.
+     * @param effect The move action effect.
+     * @return The specified JsonArray.
+     */
+    public JsonArray getReachableJsonArray(Square currentPosition, Effect effect) {
+
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+
+        this.roomsList.stream()
+                .flatMap(x -> x.getSquaresList().stream())
+                .forEach(x -> {
+
+                    try {
+
+                        PropertiesAnalyzer.checkDistance(effect, currentPosition, Arrays.asList(x));
+
+                        builder.add(x.toJsonObject());
+
+                    } catch (SquareDistanceException e) {
+
+                        //
+                    }
+                });
+
+        return builder.build();
+    }
+
+    /**
      * For each line of squares it builds a JsonArray that will be added to a JsonArray containing
      * every line of the board. Building it in this way makes it possible to scan it with a
      * JsonArray used to build the strings of the cli. This method creates a JsonObject containing
@@ -243,6 +305,14 @@ public class Board implements Serializable {
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder builder;
+
+        JsonArrayBuilder fourPowerUpsBuilder = Json.createArrayBuilder();
+
+        fourPowerUpsBuilder.add(this.findPowerUpObject("RAGGIOCINETICO"));
+        fourPowerUpsBuilder.add(this.findPowerUpObject("GRANATAVENOM"));
+        fourPowerUpsBuilder.add(this.findPowerUpObject("TELETRASPORTO"));
+        fourPowerUpsBuilder.add(this.findPowerUpObject("MIRINO"));
+
         List<JsonArray> board = new ArrayList<>();
 
         int i = 0;
@@ -298,6 +368,7 @@ public class Board implements Serializable {
         return Json.createObjectBuilder()
                 .add("boardId", this.boardId)
                 .add("arrays", builder.build())
+                .add("fourPowerUps", fourPowerUpsBuilder.build())
                 .build();
     }
 

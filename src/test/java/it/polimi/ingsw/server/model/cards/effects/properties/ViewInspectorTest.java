@@ -2,6 +2,12 @@ package it.polimi.ingsw.server.model.cards.effects.properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.server.model.cards.WeaponCard;
+import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
+import it.polimi.ingsw.server.model.cards.effects.EffectType;
+import it.polimi.ingsw.server.model.exceptions.cards.CardException;
+import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
+import it.polimi.ingsw.server.model.exceptions.properties.PropertiesException;
 import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.board.rooms.Square;
@@ -10,6 +16,7 @@ import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import it.polimi.ingsw.server.model.exceptions.properties.SquareDistanceException;
 import it.polimi.ingsw.server.model.players.Player;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -165,6 +172,42 @@ class ViewInspectorTest {
         test.add(testPlayer);
 
         assertTrue(ViewInspector.sameDirection(five, test));
+    }
 
+    @Test
+    void computeDistance2() {
+
+        Board board = new Board.BoardBuilder(this.effectHandler).build(1);
+
+        Player source = new Player("source", Color.GRIGIO);
+        Player target = new Player("target", Color.GIALLO);
+
+        source.movePlayer(board.getRoom(3).getSquare(0));
+        target.movePlayer(board.getRoom(0).getSquare(2));
+
+        WeaponCard card = board.getWeaponDeck().getCard(15);
+
+        card.setOwner(source);
+        this.effectHandler.setActivePlayer(source);
+
+        try {
+
+            card.activateCard();
+
+        } catch (CardException e) {
+
+            fail();
+        }
+
+        EffectArgument effectArgument = new EffectArgument(Arrays.asList(target));
+
+        try {
+
+            card.useCard(EffectType.PRIMARY, effectArgument, new ArrayList<>());
+
+        } catch (EffectException | PropertiesException | CardException e) {
+
+            fail();
+        }
     }
 }

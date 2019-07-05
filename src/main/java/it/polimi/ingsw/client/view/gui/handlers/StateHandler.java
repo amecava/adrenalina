@@ -201,21 +201,21 @@ public class StateHandler {
 
                                 moveActionButton.setMouseTransparent(true);
 
-                                ButtonSquare.setOnMouse1(mouseEvent -> {
+                                ButtonSquare.setOnMouse1(object.getJsonArray("available"),
+                                        mouseEvent -> {
 
-                                    ButtonSquare destination = ((ButtonSquare) mouseEvent
-                                            .getSource());
+                                            ButtonSquare destination = ((ButtonSquare) mouseEvent
+                                                    .getSource());
 
-                                    JsonQueue.add("method", "moveAction");
-                                    JsonQueue.add("squareColor", destination.getColor());
-                                    JsonQueue.add("squareId",
-                                            String.valueOf(destination.getSquareId()));
+                                            JsonQueue.add("method", "moveAction");
+                                            JsonQueue.add("squareColor", destination.getColor());
+                                            JsonQueue.add("squareId",
+                                                    String.valueOf(destination.getSquareId()));
 
-                                    JsonQueue.send();
-                                });
+                                            JsonQueue.send();
+                                        });
 
-                                BoardScreen.getSquareList()
-                                        .forEach(ButtonSquare::update);
+                                BoardScreen.getSquareList().forEach(ButtonSquare::update);
 
                                 BoardScreen.collectiveButtons.getChildren()
                                         .add(moveActionButton);
@@ -425,17 +425,16 @@ public class StateHandler {
                                         collectStage.show();
 
                                     } else {
+
                                         JsonQueue.add("method", "askCollect");
                                         JsonQueue.add("cardIdCollect", "");
                                         JsonQueue.add("cardIdDiscard", "");
                                         JsonQueue.add("powerups", "");
                                         JsonQueue.send();
-
                                     }
                                 });
 
-                                BoardScreen.getSquareList()
-                                        .forEach(ButtonSquare::update);
+                                BoardScreen.getSquareList().forEach(ButtonSquare::update);
                                 BoardScreen.collectiveButtons.getChildren().add(collectButton);
                                 resizeButtons();
 
@@ -538,6 +537,7 @@ public class StateHandler {
                                                 .toString(valueOfAction);
 
                                         Button actionButton = new GameButton(action);
+                                        actionButton.setId(String.valueOf(valueOfAction));
 
                                         actionButton.setOnMouseClicked(
                                                 mouseEvent1 -> {
@@ -555,46 +555,56 @@ public class StateHandler {
 
                             BoardScreen.collectiveButtons.getChildren().add(actions);
 
+                            if (object.getJsonObject("bridge").getJsonObject("actionBridge")
+                                    .getInt("remainingActions") == 0) {
+
+                                actions.getChildren().stream()
+                                        .filter(y -> !y.getId().equals("4"))
+                                        .map(y -> (Button) y)
+                                        .forEach(y -> {
+
+                                            y.setMouseTransparent(true);
+                                        });
+                            }
+
                         } else if (method.equals("askUsePowerUp")) {
 
-                            Button usePowerUpButton = new GameButton("usa power up");
+                            Button usePowerUpButton = new InfoButton(
+                                    "clicca un powerUp per usarlo");
 
-                            usePowerUpButton.setOnMouseClicked(mouseEvent -> {
+                            ButtonPowerUp.setOnMouse(mouseEvent2 ->
 
-                                ButtonPowerUp.setOnMouse(mouseEvent2 ->
+                                    createShootStage("askUsePowerUp",
+                                            ((ButtonPowerUp) mouseEvent2
+                                                    .getSource()).getArgs(),
+                                            ((ButtonPowerUp) mouseEvent2
+                                                    .getSource()).hasCost(),
+                                            ((ButtonPowerUp) mouseEvent2
+                                                    .getSource()).getTargetType(),
+                                            new StringBuilder()
+                                                    .append("powerup( ")
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getName())
+                                                    .append("-")
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getColor())
+                                                    .append(" )")
+                                                    .toString(),
+                                            new StringBuilder()
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getName())
+                                                    .append(" ")
+                                                    .append(((ButtonPowerUp) mouseEvent2
+                                                            .getSource())
+                                                            .getColor())
+                                                    .toString())
+                            );
 
-                                        createShootStage("askUsePowerUp",
-                                                ((ButtonPowerUp) mouseEvent2
-                                                        .getSource()).getArgs(),
-                                                ((ButtonPowerUp) mouseEvent2
-                                                        .getSource()).hasCost(),
-                                                ((ButtonPowerUp) mouseEvent2
-                                                        .getSource()).getTargetType(),
-                                                new StringBuilder()
-                                                        .append("powerup( ")
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getName())
-                                                        .append("-")
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getColor())
-                                                        .append(" )")
-                                                        .toString(),
-                                                new StringBuilder()
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getName())
-                                                        .append(" ")
-                                                        .append(((ButtonPowerUp) mouseEvent2
-                                                                .getSource())
-                                                                .getColor())
-                                                        .toString())
-                                );
-
-                                BoardScreen.getPlayerPowerUpList()
-                                        .forEach(ButtonPowerUp::update);
-                            });
+                            BoardScreen.getPlayerPowerUpList()
+                                    .forEach(ButtonPowerUp::update);
 
                             BoardScreen.collectiveButtons.getChildren().add(usePowerUpButton);
 
@@ -677,7 +687,10 @@ public class StateHandler {
         root.getChildren().addAll(myPlayerCards, playerToggles);
 
         Label powerUpsLabel = new Label();
-        powerUpsLabel.setText("I tuoi powerUp:");
+
+        if (!BoardScreen.getPlayerPowerUpList().isEmpty()) {
+            powerUpsLabel.setText("I tuoi powerUp:");
+        }
         powerUpsLabel.setWrapText(true);
         powerUpsLabel.setFont(Font.font("Silom", FontWeight.BOLD, 20));
         powerUpsLabel.setTextFill(Color.WHITE);
@@ -757,7 +770,7 @@ public class StateHandler {
                 reloadStage.close();
             } else {
 
-                Notifications.createNotification("Attenzione!",
+                Notifications.createNotification("error",
                         "Devi selezionare quale carta vuoi ricaricare.");
             }
         });
@@ -794,14 +807,8 @@ public class StateHandler {
             BoardScreen.getPlayerWeaponList().forEach(ButtonWeapon::update);
             BoardScreen.getSpawnWeaponList().forEach(ButtonWeapon::update);
 
-            ButtonSquare.setOnMouse1(mouseEvent -> {
-
-                //
-            });
-            ButtonSquare.setOnMouse2(mouseEvent -> {
-
-                //
-            });
+            ButtonSquare.setOnMouse1(null, null);
+            ButtonSquare.setOnMouse2(null);
 
             BoardScreen.getSquareList().forEach(ButtonSquare::update);
 
@@ -841,10 +848,10 @@ public class StateHandler {
         StringBuilder target = new StringBuilder();
         StringBuilder destination = new StringBuilder();
 
-        if (args == 0 && !hasCost) {
+        if (args == 0 && (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty())) {
 
             JsonQueue.add("method", effectType);
-            JsonQueue.add("line", "");
+            JsonQueue.add("line", powerString == null ? "" : powerString);
             JsonQueue.send();
 
         } else {
@@ -910,19 +917,12 @@ public class StateHandler {
             StringBuilder target, StringBuilder destination, String powerString,
             String powerUpName) {
 
-        ImageView cardImage = powerString == null ? new ImageView(
-                Images.weaponsMap.get(BoardScreen.activatedWeapon))
-                : new ImageView(Images.powerUpsMap.get(powerUpName));
-
-        cardImage.setFitWidth(100);
-        cardImage.setFitHeight(150);
-
         Label label = new Label();
         label.setFont(Font.font("Silom", 25));
         label.setTextFill(Color.WHITE);
         label.setAlignment(Pos.CENTER);
 
-        root.getChildren().addAll(cardImage, label);
+        root.getChildren().add(label);
 
         Button confirm = new GameButton("conferma");
         confirm.setVisible(false);
@@ -997,7 +997,7 @@ public class StateHandler {
 
                 }
 
-                if (args == 1 && !hasCost) {
+                if (args == 1 && (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty())) {
 
                     JsonQueue.add("method", effectType);
                     JsonQueue.add("line",
@@ -1038,7 +1038,7 @@ public class StateHandler {
 
                 target.append(" )");
 
-                if (args == 1 && !hasCost) {
+                if (args == 1 && (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty())) {
 
                     JsonQueue.add("method", effectType);
                     JsonQueue.add("line",
@@ -1140,35 +1140,35 @@ public class StateHandler {
 
         BoardFunction.getSquareList(board).forEach(s ->
 
-            s.setOnMouseClicked(
-                    mouseEvent -> {
+                s.setOnMouseClicked(
+                        mouseEvent -> {
 
-                        destination.append("destinazione(")
-                                .append(((ButtonSquare) mouseEvent.getSource())
-                                        .getColor().toLowerCase())
-                                .append("-")
-                                .append(((ButtonSquare) mouseEvent.getSource())
-                                        .getSquareId())
-                                .append(")");
+                            destination.append("destinazione(")
+                                    .append(((ButtonSquare) mouseEvent.getSource())
+                                            .getColor().toLowerCase())
+                                    .append("-")
+                                    .append(((ButtonSquare) mouseEvent.getSource())
+                                            .getSquareId())
+                                    .append(")");
 
-                        if (!hasCost) {
+                            if (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty()) {
 
-                            JsonQueue.add("method", effectType);
-                            JsonQueue.add("line",
-                                    new StringBuilder().append(target.toString())
-                                            .append(destination.toString())
-                                            .append(powerUpString == null ? "" : powerUpString)
-                                            .toString());
-                            JsonQueue.send();
+                                JsonQueue.add("method", effectType);
+                                JsonQueue.add("line",
+                                        new StringBuilder().append(target.toString())
+                                                .append(destination.toString())
+                                                .append(powerUpString == null ? "" : powerUpString)
+                                                .toString());
+                                JsonQueue.send();
 
-                            shootStage.close();
+                                shootStage.close();
 
-                        } else {
+                            } else {
 
-                            thirdUseEffectScreen(shootStage, root, effectType, target,
-                                    destination, powerUpString);
-                        }
-                    }));
+                                thirdUseEffectScreen(shootStage, root, effectType, target,
+                                        destination, powerUpString);
+                            }
+                        }));
 
         if (!shootStage.isShowing()) {
 
@@ -1201,7 +1201,7 @@ public class StateHandler {
         if (!effectType.equals("askUsePowerUp")) {
 
             Label selectPaymentLabel = new Label();
-            selectPaymentLabel.setText("Puoi pagare l'effetto con un power up");
+            selectPaymentLabel.setText("Puoi pagare con un power up");
             selectPaymentLabel.setFont(Font.font("Silom", FontWeight.BOLD, 25));
             selectPaymentLabel.setTextFill(Color.WHITE);
 
@@ -1289,67 +1289,49 @@ public class StateHandler {
         } else {
 
             Label payWithCube = new Label();
-            payWithCube.setText("Seleziona il cubo che vuoi usare");
+            payWithCube.setText("Seleziona un cubo");
             payWithCube.setFont(Font.font("Silom", FontWeight.BOLD, 25));
             payWithCube.setTextFill(Color.WHITE);
 
             root.getChildren().add(payWithCube);
 
-            HBox cubesButtonsHBox = new HBox();
-            HBox radioButtonsHBox = new HBox();
-            ToggleGroup radioButtonToggle = new ToggleGroup();
-            RadioButton yellowRadioButton = new RadioButton();
-            RadioButton redRadioButton = new RadioButton();
-            RadioButton blueRadioButton = new RadioButton();
-            Button confirmButton = new GameButton("vai!");
+            Button yellow = new GameButton(new ImageView(Images.cubesMap.get("GIALLO")));
+            Button red = new GameButton(new ImageView(Images.cubesMap.get("ROSSO")));
+            Button blue = new GameButton(new ImageView(Images.cubesMap.get("BLU")));
+            yellow.setId("GIALLO");
+            red.setId("ROSSO");
+            blue.setId("BLU");
 
-            yellowRadioButton.setId("giallo");
-            redRadioButton.setId("rosso");
-            blueRadioButton.setId("blu");
+            HBox cubes = new HBox();
+            cubes.setAlignment(Pos.CENTER);
+            cubes.setSpacing(10);
 
-            yellowRadioButton.setToggleGroup(radioButtonToggle);
-            redRadioButton.setToggleGroup(radioButtonToggle);
-            blueRadioButton.setToggleGroup(radioButtonToggle);
+            cubes.getChildren().addAll(yellow, red, blue);
 
-            radioButtonsHBox.getChildren()
-                    .addAll(yellowRadioButton, redRadioButton, blueRadioButton);
-            radioButtonsHBox.setSpacing(50);
+            root.getChildren().add(cubes);
 
-            cubesButtonsHBox.getChildren().addAll(new ImageView(Images.cubesMap.get("GIALLO")),
-                    new ImageView(Images.cubesMap.get("ROSSO")),
-                    new ImageView(Images.cubesMap.get("BLU")));
-            cubesButtonsHBox.setSpacing(5);
+            cubes.getChildren().stream()
+                    .map(x -> (GameButton) x)
+                    .forEach(x -> {
 
-            root.getChildren().addAll(cubesButtonsHBox, radioButtonsHBox, confirmButton);
+                        x.setOnMouseClicked(mouseEvent -> {
 
-            confirmButton.setOnMouseClicked(mouseEvent -> {
+                            paymentLine.append("paga( ")
+                                    .append(x.getId())
+                                    .append(" )");
 
-                if (radioButtonsHBox.getChildren().stream()
-                        .map(x -> (RadioButton) x)
-                        .anyMatch(RadioButton::isSelected)) {
+                            JsonQueue.add("method", effectType);
+                            JsonQueue.add("line",
+                                    new StringBuilder().append(powerUpString)
+                                            .append(target.toString())
+                                            .append(destination.toString())
+                                            .append(paymentLine.toString())
+                                            .toString());
+                            JsonQueue.send();
 
-                    paymentLine.append("paga( ")
-                            .append(radioButtonsHBox.getChildren().stream()
-                                    .map(x -> (RadioButton) x)
-                                    .filter(RadioButton::isSelected)
-                                    .findAny()
-                                    .get()
-                                    .getId())
-                            .append(" )");
-
-                }
-
-                JsonQueue.add("method", effectType);
-                JsonQueue.add("line",
-                        new StringBuilder().append(powerUpString)
-                                .append(target.toString())
-                                .append(destination.toString())
-                                .append(paymentLine.toString())
-                                .toString());
-                JsonQueue.send();
-
-                shootStage.close();
-            });
+                            shootStage.close();
+                        });
+                    });
         }
 
         if (!shootStage.isShowing()) {

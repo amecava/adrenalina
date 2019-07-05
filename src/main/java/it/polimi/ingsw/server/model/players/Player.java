@@ -33,24 +33,67 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+/**
+ * The class representing a player of the match.
+ */
 public class Player implements Target, Serializable {
 
+    /**
+     * The id of the player.
+     */
     private String playerId;
 
+    /**
+     * It says if this player is still connected.
+     */
     private boolean connected = true;
+
+    /**
+     * It says if this player is the activePlayer.
+     */
     private boolean activePlayer = false;
 
+    /**
+     * The last position of this player.
+     */
     private Square oldPosition;
+
+    /**
+     * The current position of the player.
+     */
     private Square currentPosition;
 
+    /**
+     * The Bridge of this player.
+     */
     private Bridge bridge;
+
+    /**
+     * The point structure that counts the points of this player.
+     */
     private PointStructure pointStructure;
 
+    /**
+     * The list AmmoCube of the player.
+     */
     private List<AmmoCube> ammoCubesList = new ArrayList<>();
 
+    /**
+     * The list WeaponCard of the player.
+     */
     private List<WeaponCard> weaponCardList = new ArrayList<>();
+
+    /**
+     * The list PowerUpCard of the player.
+     */
     private List<PowerUpCard> powerUpsList = new ArrayList<>();
 
+    /**
+     * Creates the player based on the parameters.
+     *
+     * @param playerId The id of the player.
+     * @param playerColor The color of the player.
+     */
     public Player(String playerId, Color playerColor) {
 
         this.playerId = playerId;
@@ -71,29 +114,55 @@ public class Player implements Target, Serializable {
         this.ammoCubesList.add(new AmmoCube(Color.GIALLO, true));
     }
 
+    /**
+     * Gets the TargetType corresponding to Player.
+     *
+     * @return The TargetType.
+     */
     @Override
     public TargetType getTargetType() {
 
         return TargetType.PLAYER;
     }
 
+    /**
+     * Gets the current position of the player.
+     *
+     * @return The Square which is the current position of the player.
+     */
     @Override
     public Square getCurrentPosition() {
 
         return this.currentPosition;
     }
 
+    /**
+     * Gets a list containing only this player.
+     *
+     * @return A list containing only this player.
+     */
     @Override
     public List<Player> getPlayers() {
 
         return Arrays.asList(this);
     }
 
+    /**
+     * Gets the id of the player.
+     *
+     * @return The id of the player.
+     */
     public String getPlayerId() {
 
         return this.playerId;
     }
 
+    /**
+     * Sets the connection status of the player.
+     *
+     * @param connected The connection status of the player.
+     * @return This player.
+     */
     public Player setConnected(boolean connected) {
 
         this.connected = connected;
@@ -101,77 +170,147 @@ public class Player implements Target, Serializable {
         return this;
     }
 
+    /**
+     * Checks if this is the current active player.
+     *
+     * @return a boolean that says if this is the current active player.
+     */
     public boolean isActivePlayer() {
 
         return this.activePlayer;
     }
 
+    /**
+     * Sets the activePlayer property.
+     *
+     * @param activePlayer The new state.
+     */
     public void setActivePlayer(boolean activePlayer) {
 
         this.activePlayer = activePlayer;
     }
 
+    /**
+     * Gets the last position of the player.
+     *
+     * @return The Square corresponding to the last position of the player.
+     */
     public Square getOldPosition() {
 
         return this.oldPosition;
     }
 
+    /**
+     * Gets the bridge of the player.
+     *
+     * @return The
+     */
     public Bridge getBridge() {
 
         return this.bridge;
     }
 
+    /**
+     * Gets the color of the player.
+     *
+     * @return The Color of the player.
+     */
     public Color getColor() {
 
         return this.bridge.getColor();
     }
 
+    /**
+     * Gets the points of the player.
+     *
+     * @return The integer value of the points.
+     */
     public int getPoints() {
 
         return this.bridge.getPoints();
     }
 
+    /**
+     * Sets the points of the player.
+     *
+     * @param points The integer value of the points of the player.
+     */
     public void setPoints(int points) {
 
         this.bridge.setPoints(points);
     }
 
+    /**
+     * Adds a kill to the bridge of the player.
+     */
     public void addKill() {
 
         this.bridge.addKill();
     }
 
+    /**
+     * Sets the frenzy mode to the player.
+     */
     public void setFrenzy() {
 
         this.bridge.setFrenzy();
         this.bridge.setKillStreakCount();
     }
 
+    /**
+     * Sets a point used to the bridge of the player.
+     */
     public void setPointsUsed() {
 
         this.bridge.setPointsUsed();
     }
 
+    /**
+     * Gets the damages of the player.
+     *
+     * @return The list of Color of the damages.
+     */
     public List<Color> getShots() {
 
         return this.bridge.getShots();
     }
 
+    /**
+     * Gets the marks of the player.
+     *
+     * @return The list of Color of the marks of the player.
+     */
     public List<Color> getMarks() {
 
         return this.bridge.getMarks();
     }
 
+    /**
+     * Adds a mark to the bridge of the player.
+     *
+     * @param color The Color of the damage that will be added.
+     * @param checkMarks A boolean that says if this damage implies adding the marks.
+     */
     public void damagePlayer(Color color, boolean checkMarks) {
 
         this.bridge.appendShot(color, checkMarks);
     }
 
+    /**
+     * Adds a mark to the bridge of the player.
+     *
+     * @param color The Color of the mark that will be added.
+     */
     public void markPlayer(Color color) {
 
         this.bridge.appendMark(color);
     }
 
+    /**
+     * Performs the "move" action. Moves the player to the square "destination".
+     *
+     * @param destination The Square which is the final destination of the movement.
+     */
     public void movePlayer(Square destination) {
 
         if (this.currentPosition != null) {
@@ -184,21 +323,39 @@ public class Player implements Target, Serializable {
         this.currentPosition.addPlayer(this);
     }
 
+    /**
+     * Checks if the player is dead.
+     *
+     * @return A boolean that says if the player is dead.
+     */
     public boolean isDead() {
 
         return this.bridge.isDead();
     }
 
+    /**
+     * Gets the level of adrenalin of the player.
+     *
+     * @return The Adrenalin enum value.
+     */
     public Adrenalin getAdrenalin() {
 
         return this.bridge.getAdrenalin();
     }
 
+    /**
+     * Sets the adrenalin level of the player.
+     *
+     * @param adrenalin The new adrenalin level of the player.
+     */
     public void setAdrenalin(Adrenalin adrenalin) {
 
         this.bridge.setAdrenalin(adrenalin);
     }
 
+    /**
+     * Checks the adrenalin level of the player.
+     */
     public void checkAdrenalin() {
 
         if (!this.bridge.isFrenzyActions()) {
@@ -206,62 +363,125 @@ public class Player implements Target, Serializable {
         }
     }
 
+    /**
+     * Gets the action of the player currently activated.
+     *
+     * @return The ActionStructure of the action.
+     */
     public ActionStructure getCurrentAction() {
 
         return this.bridge.getCurrentAction();
     }
 
+    /**
+     * Gets the weaponCard currently activated by the user.
+     *
+     * @return The WeaponCard currently activated by the user.
+     */
     public WeaponCard getCurrentWeaponCard() {
 
         return this.bridge.getCurrentWeaponCard();
     }
 
+    /**
+     * Checks if the player is shooting.
+     *
+     * @return A boolean that says if the player is shooting.
+     */
     public boolean isShooting() {
 
         return this.bridge.isShooting();
     }
 
+    /**
+     * Checks if the player is the first one of the turn.
+     *
+     * @return A boolean that says if the first one of the turn.
+     */
     public boolean isFirstPlayer() {
 
         return this.bridge.isFirstPlayer();
     }
 
+    /**
+     * Sets the firstPlayer property according to the boolean parameter.
+     *
+     * @param firstPlayer The boolean value of the firstPlayer property. True if this is the first
+     * player.
+     */
     public void setFirstPlayer(boolean firstPlayer) {
 
         this.bridge.setFirstPlayer(firstPlayer);
     }
 
+    /**
+     * Sets the frenzyActions property according to the boolean parameter.
+     *
+     * @param frenzyActions The boolean value of the frenzyAction property. True if the player is in
+     * a state in which he has frenzy actions.
+     */
     public void setFrenzyActions(boolean frenzyActions) {
 
         this.bridge.setFrenzyActions(frenzyActions);
     }
 
+    /**
+     * Checks if the player needs to respawn.
+     *
+     * @return The boolean that says if the player needs to respawn.
+     */
     public boolean isRespawn() {
 
         return this.bridge.isRespawn();
     }
 
+    /**
+     * Sets the respawn boolean.
+     *
+     * @param respawn The boolean value that the player needs.
+     */
     public void setRespawn(boolean respawn) {
 
         this.bridge.setRespawn(respawn);
 
     }
 
+    /**
+     * Gets the remaining actions of the player.
+     *
+     * @return The integer corresponding to the number of remaining actions of the player.
+     */
     public int getRemainingActions() {
 
         return this.bridge.getRemainingActions();
     }
 
+    /**
+     * Sets the number of remaining actions of the player.
+     *
+     * @param remainingActions The integer of the remaining actions of the player.
+     */
     public void setRemainingActions(int remainingActions) {
 
         this.bridge.setRemainingActions(remainingActions);
     }
 
+    /**
+     * Gets the actions of the player.
+     *
+     * @return The list of ActionStructure of the player.
+     */
     public List<ActionStructure> getActions() {
 
         return this.bridge.getActions();
     }
 
+    /**
+     * Selects the action that the user wants to perform.
+     *
+     * @param actionId The number of the action that the user wants to perform.
+     * @throws IllegalActionException If the action cannot be performed at the moment.
+     */
     public void selectAction(int actionId) throws IllegalActionException {
 
         if ((this.getRemainingActions() == -1) || !this.activePlayer) {
@@ -286,43 +506,85 @@ public class Player implements Target, Serializable {
         this.setRemainingActions(actionId == 4 ? 0 : this.getRemainingActions() - 1);
     }
 
+    /**
+     * End the action the player is currently performing.
+     */
     public void endAction() {
 
         this.bridge.endAction();
     }
 
+    /**
+     * Creates a PointStructure for the shots list of color.
+     *
+     * @param shots The List of Color that will be added to the structure.
+     * @return The PointStructure.
+     */
     public PointStructure createPointStructure(List<Color> shots) {
 
         return this.pointStructure.createPointStructure(shots);
     }
 
+    /**
+     * Gets the list of cubes of the player.
+     *
+     * @return The List of AmmoCube.
+     */
     public List<AmmoCube> getAmmoCubesList() {
 
         return this.ammoCubesList;
     }
 
+    /**
+     * Gets the list of power ups of the player.
+     *
+     * @return The List of AmmoCube.
+     */
     public List<PowerUpCard> getPowerUpsList() {
 
         return this.powerUpsList;
     }
 
+    /**
+     * Gets the list of weapons of the player.
+     *
+     * @return The List of AmmoCube.
+     */
     public List<WeaponCard> getWeaponCardList() {
 
         return this.weaponCardList;
     }
 
+    /**
+     * Adds a weaponCard to the hand of the player.
+     *
+     * @param weaponCard The WeaponCard to be added.
+     */
     void addWeaponCard(WeaponCard weaponCard) {
 
         weaponCard.setOwner(this);
         this.weaponCardList.add(weaponCard);
     }
 
+    /**
+     * Adds a powerUp to the hand of the player.
+     *
+     * @param powerUp The powerUp to be added.
+     */
     public void addPowerUp(PowerUpCard powerUp) {
 
         powerUp.setOwner(this);
         this.powerUpsList.add(powerUp);
     }
 
+    /**
+     * Searches a power up based on its name and color.
+     *
+     * @param name The name of the power up.
+     * @param color The color o the power up.
+     * @return The PowerUpCard object.
+     * @throws CardNotFoundException If the searched power up is not present in player's hand.
+     */
     public PowerUpCard findPowerUp(String name, Color color) throws CardNotFoundException {
 
         return this.powerUpsList.stream()
@@ -333,6 +595,14 @@ public class Player implements Target, Serializable {
                         "Non hai in mano il powerup che hai selezionato."));
     }
 
+    /**
+     * Removes a power up from player's hand.
+     *
+     * @param name The name of the power up.
+     * @param color The color of the power up.
+     * @return The PowerUpCard object.
+     * @throws CardNotFoundException If the searched power up is not present in player's hand.
+     */
     private PowerUpCard removePowerUp(String name, Color color) throws CardNotFoundException {
 
         PowerUpCard powerUpCard = this.powerUpsList.stream()
@@ -345,6 +615,12 @@ public class Player implements Target, Serializable {
         return this.powerUpsList.remove(this.powerUpsList.indexOf(powerUpCard));
     }
 
+    /**
+     * Removes a given power up.
+     *
+     * @param card The Card to remove.
+     * @return The removed card.
+     */
     public PowerUpCard removePowerUp(PowerUpCard card) {
 
         card.setOwner(null);
@@ -352,6 +628,9 @@ public class Player implements Target, Serializable {
         return this.powerUpsList.remove(this.powerUpsList.indexOf(card));
     }
 
+    /**
+     * Removes the player from the board when he dies.
+     */
     public void removePlayerFromBoard() {
 
         this.currentPosition.removePlayer(this);
@@ -362,6 +641,16 @@ public class Player implements Target, Serializable {
         this.setRespawn(true);
     }
 
+    /**
+     * Performs the "move" action.
+     *
+     * @param effectTarget The target of the move effect, which is this player.
+     * @param effectHandler The effectHandler of the match.
+     * @throws PropertiesException If there are some problems with the properties of the target
+     * during the execution of the effect.
+     * @throws EffectException If there are some problems with the execution of the effect.
+     * @throws IllegalActionException If the action can0t be performed right now.
+     */
     public void move(EffectArgument effectTarget, EffectHandler effectHandler)
             throws PropertiesException, EffectException, IllegalActionException {
 
@@ -377,6 +666,13 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(1, false);
     }
 
+    /**
+     * Performs the "collect" action when the player is in a square that is not a spawn square.
+     * @return The ammo tile collected.
+     * @throws SquareException If the player is in a spawn square.
+     * @throws EmptySquareException If the square is empty.
+     * @throws IllegalActionException If the action cannot be performed at the moment.
+     */
     public AmmoTile collect()
             throws SquareException, EmptySquareException, IllegalActionException {
 
@@ -390,7 +686,7 @@ public class Player implements Target, Serializable {
         if (this.currentPosition.isSpawn()) {
 
             throw new SquareException(
-                    "Sei in uno square di rigenerazione, seleziona l'id della carta da raccogliere\ned eventualmente l'id della carta da scartare.");
+                    "Sei in uno square di rigenerazione, seleziona il comando giusto!");
         }
 
         AmmoTile tmpTile = this.currentPosition.collectAmmoTile();
@@ -410,6 +706,13 @@ public class Player implements Target, Serializable {
         return tmpTile;
     }
 
+    /**
+     * Performs the "collect" action when the player is in a spawn square and doesn't need to discard a card.
+     * @param cardId The id of the card to collect.
+     * @param powerUpCards The power ups with which the user may want to pay the cost of the card.
+     * @throws CardException If the card can't be found in the square.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     */
     public void collect(int cardId, List<PowerUpCard> powerUpCards)
             throws CardException, IllegalActionException {
 
@@ -450,6 +753,14 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(2, false);
     }
 
+    /**
+     * Performs the "collect" action when the player is in a spawn square and needs to discard a card.
+     * @param squareCardId The id of the card to collect.
+     * @param playerCardId The id of the card to discard.
+     * @param powerUpCards The power ups with which the user may want to pay the cost of the card.
+     * @throws CardException If the card can't be found in the square.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     */
     public void collect(int squareCardId, int playerCardId, List<PowerUpCard> powerUpCards)
             throws CardException, IllegalActionException {
 
@@ -487,6 +798,13 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(2, false);
     }
 
+    /**
+     * Performs the "reload" action. Reloads the weapon given as a parameter.
+     * @param cardId The id of the card to discard.
+     * @param powerUpCardList The power ups with which the user may want to pay the cost of the card.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     * @throws CardException If the card can't be found in player's hand.
+     */
     public void reload(int cardId, List<PowerUpCard> powerUpCardList)
             throws IllegalActionException, CardException {
 
@@ -508,6 +826,12 @@ public class Player implements Target, Serializable {
 
     }
 
+    /**
+     * Activates the card chosen by the user.
+     * @param cardId The id of the card to activate.
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     * @throws CardException If the card can't be found in player's hand.
+     */
     public void activateCard(int cardId) throws CardException, IllegalActionException {
 
         if (this.getCurrentAction() == null || this.getCurrentAction().isShoot() == null || !this
@@ -526,6 +850,16 @@ public class Player implements Target, Serializable {
         this.getCurrentAction().endAction(4, false);
     }
 
+    /**
+     * Performs the "useCard" action.
+     * @param effectType The type of the effect that the user wants to be executed (primary/alternative/optionali1/optional2).
+     * @param effectTarget The targets of the effect.
+     * @param powerUpCardList The power ups with which the user may want to pay the cost of the effect.
+     * @throws PropertiesException if there are some problems with the effect and target properties.
+     * @throws EffectException If there are some problems during the execution of the effect (or it can't be used at the moment).
+     * @throws IllegalActionException If the action cannot be performed at th moment.
+     * @throws CardException If the card can't be found in player's hand.
+     */
     public void useCard(EffectType effectType, EffectArgument effectTarget,
             List<PowerUpCard> powerUpCardList)
             throws PropertiesException, EffectException, CardException, IllegalActionException {
@@ -556,6 +890,13 @@ public class Player implements Target, Serializable {
         }
     }
 
+    /**
+     * This method creates a JsonObjectBuilder containing all the information needed in the View. To
+     * the said JsonObjectBuilder will be added some JsonValues in the GameHandler.toJsonObject()
+     * method, and that will be sent to the view when needed.
+     *
+     * @return The JsonObect containig all the information of this card.
+     */
     public JsonObject toJsonObject() {
 
         JsonArrayBuilder weaponsBuilder = Json.createArrayBuilder();

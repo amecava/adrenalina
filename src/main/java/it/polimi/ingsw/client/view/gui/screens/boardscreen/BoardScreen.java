@@ -47,6 +47,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
@@ -98,6 +99,8 @@ public class BoardScreen {
     /**
      * label to indicate the linked player's points
      */
+
+    private static final Label character = new Label();
     private static final Label playerPoints = new Label();
     /**
      * box containing all the ammos of the linked player
@@ -218,11 +221,6 @@ public class BoardScreen {
         weaponsDx.setSpacing(10);
         weaponsTop.setSpacing(3);
 
-        weaponDeck.setId("weaponDeck");
-        weaponDeck.setMouseTransparent(false);
-        weaponDeck.setPrefWidth(61);
-        weaponDeck.setPrefHeight(92);
-
         AnchorPane.setTopAnchor(weaponsTop, 3.0);
         AnchorPane.setLeftAnchor(weaponsTop, 393.0);
 
@@ -232,10 +230,7 @@ public class BoardScreen {
         AnchorPane.setTopAnchor(weaponsDx, 320.0);
         AnchorPane.setLeftAnchor(weaponsDx, 644.0);
 
-        AnchorPane.setTopAnchor(weaponDeck, 165.0);
-        AnchorPane.setLeftAnchor(weaponDeck, 658.0);
-
-        board.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop, weaponDeck);
+        board.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop);
 
         killsOfAllPlayers.setId("kills");
         AnchorPane.setLeftAnchor(killsOfAllPlayers, 70.0);
@@ -243,6 +238,7 @@ public class BoardScreen {
 
         playerCubes.setId("cubes");
         playerCubes.setPrefHeight(30);
+        playerCubes.setSpacing(-16);
 
         playerCards.setId("cards");
         playerCards.setPrefWidth(990);
@@ -252,14 +248,20 @@ public class BoardScreen {
 
         playerPoints.setId("points");
         playerPoints.setTextFill(Color.WHITE);
-        playerPoints.setFont(Font.font("Silom", FontWeight.BOLD, 20));
+        playerPoints.setFont(Font.font("Silom", FontWeight.BOLD, 15));
+
+        character.setId("character");
+        character.setTextFill(Color.WHITE);
+        character.setFont(Font.font("Silom", FontWeight.BOLD, 20));
 
         AnchorPane.setLeftAnchor(playerPoints, 10.0);
-        AnchorPane.setBottomAnchor(playerPoints, 35.0);
-        AnchorPane.setLeftAnchor(playerCubes, 10.0);
+        AnchorPane.setBottomAnchor(playerPoints, 65.0);
+        AnchorPane.setLeftAnchor(character, 10.0);
+        AnchorPane.setBottomAnchor(character, 39.0);
+        AnchorPane.setLeftAnchor(playerCubes, 0.0);
         AnchorPane.setBottomAnchor(playerCubes, 0.0);
 
-        board.getChildren().addAll(killsOfAllPlayers, playerPoints, playerCubes);
+        board.getChildren().addAll(killsOfAllPlayers, playerPoints, character, playerCubes);
 
         centre.setSpacing(0);
         borderPane.setCenter(centre);
@@ -285,81 +287,33 @@ public class BoardScreen {
         Button infoCard = new GameButton(backCard);
         infoCard.setId("infoCard");
 
+        ImageView backPowerUp = new ImageView(Images.powerUpsMap.get("back"));
+        backPowerUp.setFitHeight(69);
+        backPowerUp.setFitWidth(45);
+
+        Button infoPowerUp = new GameButton(backPowerUp);
+        infoPowerUp.setId("infoPowerUp");
+
+        infoPowerUp.setOnMouseClicked(mouseEvent -> {
+
+            createInfoPowerUpsStage(jsonObject.getJsonObject("board").getJsonArray("fourPowerUps"));
+        });
+
         infoCard.setOnMouseClicked(mouseEvent -> {
 
-            Stage infoCardStage = new Stage();
-            infoCardStage.setHeight(575);
-            infoCardStage.initModality(Modality.APPLICATION_MODAL);
-            infoCardStage.initOwner(GUIView.getCurrentStage());
-
-            ScrollPane images = new ScrollPane();
-            images.setBackground(new Background(
-                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT)));
-
-            HBox threeCards = new HBox();
-            threeCards.setSpacing(40);
-            threeCards.setBackground(new Background(
-                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT)));
-
-            VBox allCards = new VBox();
-            allCards.setSpacing(20);
-            allCards.setBackground(new Background(
-                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT)));
-
-            for (int i = 1; i < 22; i++) {
-                ImageView back = new ImageView(Images.weaponsMap.get(0));
-                ImageView card = new ImageView(Images.weaponsMap.get(i));
-                card.setFitWidth(150);
-                card.setFitHeight(250);
-                ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card,
-                        Rotate.Y_AXIS);
-
-                buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
-
-                    JsonQueue.add("method", "askCardInfo");
-                    JsonQueue.add("cardId", Integer.toString(
-                            ((ButtonWeapon) weaponMouseEvent.getSource())
-                                    .getCardId()));
-                    JsonQueue.send();
-                });
-                threeCards.getChildren().add(buttonWeapon);
-
-                if (threeCards.getChildren().size() == 3) {
-
-                    allCards.getChildren().add(threeCards);
-                    threeCards = new HBox();
-                    threeCards.setSpacing(40);
-                    threeCards.setBackground(new Background(
-                            new BackgroundImage(Images.imagesMap.get("background"),
-                                    BackgroundRepeat.REPEAT,
-                                    BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                                    BackgroundSize.DEFAULT)));
-                }
-
-                buttonWeapon.setVisible(false);
-                buttonWeapon.flipTransition(Duration.millis(1),
-                        actionEvent -> buttonWeapon.setVisible(true)).play();
-            }
-            images.setContent(allCards);
-            images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-            images.setHbarPolicy(ScrollBarPolicy.NEVER);
-            Scene imagesScene = new Scene(new StackPane(images));
-            infoCardStage.setResizable(false);
-            infoCardStage.setScene(imagesScene);
-            infoCardStage.show();
+            createInfoCardStage();
         });
+
         infoCard.setAlignment(Pos.CENTER);
+
+        AnchorPane.setLeftAnchor(infoPowerUp, 667.0);
+        AnchorPane.setTopAnchor(infoPowerUp, 30.0);
 
         AnchorPane.setLeftAnchor(infoCard, 649.0);
         AnchorPane.setTopAnchor(infoCard, 160.0);
 
         board.getChildren().add(infoCard);
+        board.getChildren().add(infoPowerUp);
         ready.setValue(true);
 
         GUIView.changeScene(borderPane);
@@ -369,6 +323,140 @@ public class BoardScreen {
      * updates the main board screen with all the changes made by one or more players.
      * @param object Containing all the information in order to update the screen.
      */
+    private static void createInfoCardStage(){
+
+        Stage infoCardStage = new Stage();
+        infoCardStage.setHeight(575);
+        infoCardStage.initModality(Modality.APPLICATION_MODAL);
+        infoCardStage.initOwner(GUIView.getCurrentStage());
+
+        ScrollPane images = new ScrollPane();
+        images.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        HBox threeCards = new HBox();
+        threeCards.setSpacing(40);
+        threeCards.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        VBox allCards = new VBox();
+        allCards.setSpacing(20);
+        allCards.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        for (int i = 1; i < 22; i++) {
+
+            ImageView back = new ImageView(Images.weaponsMap.get(0));
+            ImageView card = new ImageView(Images.weaponsMap.get(i));
+            card.setFitWidth(150);
+            card.setFitHeight(250);
+            ButtonWeapon buttonWeapon = new ButtonWeapon(i, back, card,
+                    Rotate.Y_AXIS);
+
+            buttonWeapon.setOnMouseClicked(weaponMouseEvent -> {
+
+                JsonQueue.add("method", "askCardInfo");
+                JsonQueue.add("cardId", Integer.toString(
+                        ((ButtonWeapon) weaponMouseEvent.getSource())
+                                .getCardId()));
+                JsonQueue.send();
+            });
+            threeCards.getChildren().add(buttonWeapon);
+
+            if (threeCards.getChildren().size() == 3) {
+
+                allCards.getChildren().add(threeCards);
+                threeCards = new HBox();
+                threeCards.setSpacing(40);
+                threeCards.setBackground(new Background(
+                        new BackgroundImage(Images.imagesMap.get("background"),
+                                BackgroundRepeat.REPEAT,
+                                BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                                BackgroundSize.DEFAULT)));
+            }
+
+            buttonWeapon.setVisible(false);
+            buttonWeapon.flipTransition(Duration.millis(1),
+                    actionEvent -> buttonWeapon.setVisible(true)).play();
+        }
+        images.setContent(allCards);
+        images.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+        images.setHbarPolicy(ScrollBarPolicy.NEVER);
+        Scene imagesScene = new Scene(new StackPane(images));
+        infoCardStage.setResizable(false);
+        infoCardStage.setScene(imagesScene);
+        infoCardStage.show();
+    }
+
+    private static void createInfoPowerUpsStage(JsonArray fourPowerUpsArray) {
+
+        Stage infoCardStage = new Stage();
+        infoCardStage.setHeight(450);
+        infoCardStage.setWidth(800);
+        infoCardStage.initModality(Modality.APPLICATION_MODAL);
+        infoCardStage.initOwner(GUIView.getCurrentStage());
+
+        VBox cardsAndButton = new VBox();
+        cardsAndButton.setSpacing(20);
+        cardsAndButton.setAlignment(Pos.CENTER);
+        cardsAndButton.setBackground(new Background(
+                new BackgroundImage(Images.imagesMap.get("background"),
+                        BackgroundRepeat.REPEAT,
+                        BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT)));
+
+        HBox fourCards = new HBox();
+        fourCards.setAlignment(Pos.CENTER);
+        fourCards.setBackground(new Background(
+                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
+                        Insets.EMPTY)));
+
+        for (JsonValue object : fourPowerUpsArray) {
+
+            ImageView back = new ImageView(
+                    Images.powerUpsMap.get("back"));
+
+            ImageView powerUp = new ImageView(
+                    Images.powerUpsMap.get(new StringBuilder()
+                            .append(object.asJsonObject().getString("name"))
+                            .append(" ")
+                            .append(object.asJsonObject().getString("color"))
+                            .toString()));
+
+            ButtonPowerUp powerUpButton = new ButtonPowerUp(object.asJsonObject().getString("name"),
+                    object.asJsonObject().getString("color"),
+                    object.asJsonObject().getString("targetType"),
+                    object.asJsonObject().getJsonNumber("args").doubleValue(),
+                    object.asJsonObject().getBoolean("hasCost"),
+                    back, powerUp);
+
+            powerUpButton.setId("powerUp");
+            powerUpButton.flipTransition(Duration.millis(1),
+                    actionEvent -> powerUpButton.setVisible(true)).play();
+            powerUpButton.setOnMouseClicked(
+                    mouseEvent -> CardHandler.powerUpCardInfo(object.asJsonObject()));
+
+            fourCards.getChildren().add(powerUpButton);
+        }
+
+        Button quitButton = new GameButton("chiudi");
+        quitButton.setOnMouseClicked(mouseEvent -> infoCardStage.close());
+
+        cardsAndButton.getChildren().addAll(fourCards, quitButton);
+
+        Scene imagesScene = new Scene(cardsAndButton);
+        infoCardStage.setResizable(false);
+        infoCardStage.setScene(imagesScene);
+        infoCardStage.show();
+    }
+
+
     public static synchronized void updateScreen(JsonObject object) {
 
         if (object == null) {
@@ -591,7 +679,8 @@ public class BoardScreen {
                         ImageView cubeView = new ImageView(Images.cubesMap.get(cube));
                         cubeView.setFitHeight(30);
                         cubeView.setFitWidth(30);
-                        playerCubes.getChildren().add(cubeView);
+                        Button ammo = new GameButton(cubeView);
+                        playerCubes.getChildren().add(ammo);
                     });
 
             thisPlayerObject.getJsonArray("weapons").stream()
@@ -655,16 +744,12 @@ public class BoardScreen {
                         powerUpButton.setId("powerUp");
                         powerUpButton.setVisible(false);
 
-                        if (!isSpawnState) {
-
-                            powerUpButton.setOnMouseClicked(
-                                    mouseEvent -> CardHandler.powerUpCardInfo(x));
-                        }
                         powerUpButton.flipTransition(Duration.millis(1),
                                 actionEvent -> powerUpButton.setVisible(true)).play();
                         playerCards.getChildren().add(powerUpButton);
                     });
 
+            character.setText(GUIView.getCharacter());
             playerPoints.setText("Punti: " + thisPlayerObject.getInt("points"));
 
             /////////////////////////////////////////////////destra metto plance giocatori
@@ -672,7 +757,8 @@ public class BoardScreen {
             bridges.getChildren().clear();
 
             new ArrayList<>(right.getChildren()).stream()
-                    .filter(x -> x.getId().equals("shots") || x.getId().equals("kills"))
+                    .filter(x -> x.getId().equals("shots") ||
+                            x.getId().equals("kills") || x.getId().equals("marks"))
                     .forEach(x -> right.getChildren().remove(x));
 
             jsonObject.getJsonArray("playerList").stream()

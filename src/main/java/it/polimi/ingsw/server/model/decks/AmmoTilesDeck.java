@@ -28,11 +28,19 @@ public class AmmoTilesDeck implements Serializable {
         Collections.shuffle(this.ammoTilesList);
     }
 
+    /**
+     * Checks if the deck is empty.
+     * @return A boolean that says if the deck is empty.
+     */
     public boolean isEmpty() {
 
         return this.ammoTilesList.isEmpty();
     }
 
+    /**
+     * Gets a tile from the deck of tiles.
+     * @return A Card (An AmmoTile).
+     */
     public Card getTile() {
 
         return this.ammoTilesList.remove(0);

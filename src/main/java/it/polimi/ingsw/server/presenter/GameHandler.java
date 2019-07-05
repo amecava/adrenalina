@@ -14,6 +14,7 @@ import it.polimi.ingsw.server.model.players.Player;
 import it.polimi.ingsw.server.presenter.exceptions.LoginException;
 import it.polimi.ingsw.server.presenter.exceptions.SpawnException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -24,43 +25,91 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
 public class GameHandler implements Serializable {
 
+    /**
+     * The id of the match handled by this GameHandler.
+     */
     private String gameId;
+
+    /**
+     * An integer used to updated the status of the countdown until the game starts.
+     */
     private int gameStarted = 60;
 
+    /**
+     * A map that contains the votes of every player who voted for the board to use in this match.
+     */
     private Map<String, Integer> votes = new HashMap<>();
 
+    /**
+     * The model of the game.
+     */
     private Model model;
 
+    /**
+     * Turn timer.
+     */
+    private transient Timer turn;
+
+    /**
+     * Creates the GameHandler.
+     *
+     * @param gameId The id of the game.
+     * @param numberOfDeaths The number of deaths this game will have.
+     * @param frenzy If the final frenzy turn will be played.
+     */
     GameHandler(String gameId, int numberOfDeaths, boolean frenzy) {
 
         this.gameId = gameId;
         this.model = new Model(numberOfDeaths, frenzy);
     }
 
+    /**
+     * Gets the game id.
+     *
+     * @return The game id.
+     */
     String getGameId() {
 
         return this.gameId;
     }
 
+    /**
+     * Checks if this game already started.
+     */
     boolean isGameStarted() {
 
         return this.gameStarted == 0;
     }
 
+    /**
+     * Gets the list of players connected to this game.
+     *
+     * @return The list of Players.
+     */
     List<Player> getPlayerList() {
 
         return this.model.getPlayerList();
     }
 
+    /**
+     * Gets the Model of this game.
+     *
+     * @return The Model of this game.
+     */
     Model getModel() {
 
         return this.model;
     }
 
+    /**
+     * Creates the board of the game based on the most voted one, or chooses randomly.
+     */
     private void createBoard() {
 
         this.model.createBoard(this.votes.values().stream()
@@ -71,6 +120,16 @@ public class GameHandler implements Serializable {
                 .orElse(ThreadLocalRandom.current().nextInt(0, 4)));
     }
 
+    /**
+     * Adds a player to the game and, as soon as there are three players connected, starts the
+     * countdown.
+     *
+     * @param playerId The id of the player that will be added.
+     * @param character The character chosen by the player.
+     * @return The Player object.
+     * @throws LoginException If the id has already been chosen.
+     * @throws ColorException If the character has already been chosen.
+     */
     Player addPlayer(String playerId, String character) throws LoginException, ColorException {
 
         Player player = this.model.addPlayer(playerId, character);
@@ -118,6 +177,13 @@ public class GameHandler implements Serializable {
         return player;
     }
 
+    /**
+     * Updates the votes map with the vote of the player playerId.
+     *
+     * @param playerId The id of the player who's voting.
+     * @param board The int of the board voted by the player.
+     * @throws BoardVoteException If the player already voted.
+     */
     void voteBoard(String playerId, int board) throws BoardVoteException {
 
         if (this.votes.containsKey(playerId)) {
@@ -128,6 +194,11 @@ public class GameHandler implements Serializable {
         this.votes.put(playerId, board);
     }
 
+    /**
+     * Makes the player spawn automatically if he doesn't respect the timer.
+     *
+     * @param player The Player that has to spawn.
+     */
     private void randomSpawn(Player player) {
 
         try {
@@ -142,6 +213,16 @@ public class GameHandler implements Serializable {
         }
     }
 
+    /**
+     * Performs the "spawn" action. The player spawns in the Square colored "colorName".
+     *
+     * @param player The Player that has to spawn.
+     * @param cardId The name of the PowerUp the player wants to discard in order to spawn.
+     * @param colorName The name of the color of the power up the player wants to discard in order
+     * to spawn.
+     * @throws SpawnException If there are some problems in the information the player chose to
+     * spawn.
+     */
     void spawnPlayer(Player player, String cardId, String colorName) throws SpawnException {
 
         try {
@@ -182,6 +263,10 @@ public class GameHandler implements Serializable {
         }
     }
 
+    /**
+     * Furthers the game by setting the active player to the next one of the playersList and updates
+     * states of every player.
+     */
     private synchronized void nextPlayer() {
 
         this.model.nextPlayer();
@@ -202,68 +287,128 @@ public class GameHandler implements Serializable {
 
         ClientHandler.gameBroadcast(this, x -> !x.getKey().isActivePlayer(), "updateState",
                 Presenter.state.get("notActivePlayerState").toString());
-    }
 
-    void endOfTurn() throws EndGameException {
+        turn = new Timer();
 
-        this.model.endOfTurn();
-
-        Timer timer = new Timer();
-
-        Thread thread = new Thread(() -> {
-
-            try {
-                synchronized (GameHandler.this) {
-
-                    while (this.model.getPlayerList().stream().anyMatch(Player::isRespawn)) {
-
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(),
-                                "infoMessage",
-                                "Devi fare il respawn.");
-
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> x.getKey().isRespawn(),
-                                "updateState",
-                                Presenter.state.get("spawnState").toString());
-
-                        ClientHandler.gameBroadcast(GameHandler.this, x -> !x.getKey().isRespawn(),
-                                "updateState",
-                                Presenter.state.get("notActivePlayerState").toString());
-
-                        GameHandler.this.wait();
-                    }
-
-                    timer.cancel();
-
-                    GameHandler.this.nextPlayer();
-
-                    ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
-                            this.toJsonObject().toString());
-
-                }
-            } catch (InterruptedException e) {
-
-                Thread.currentThread().interrupt();
-            }
-
-        });
-
-        timer.schedule(new TimerTask() {
+        turn.schedule(new TimerTask() {
             @Override
             public void run() {
 
-                synchronized (GameHandler.this) {
+                synchronized (this) {
 
-                    model.getPlayerList().stream()
-                            .filter(Player::isRespawn)
-                            .forEach(GameHandler.this::randomSpawn);
-
+                    endOfTurn();
                 }
             }
-        }, 10000);
-
-        thread.start();
+        }, 180000);
     }
 
+    /**
+     * Performs the "endOfTurn" action, checks if there are players that need to respawn.
+     */
+    void endOfTurn() {
+
+        synchronized (this) {
+
+            if (turn != null) {
+
+                turn.cancel();
+            }
+
+            try {
+
+                this.model.endOfTurn();
+
+                Timer spawn = new Timer();
+
+                Thread thread = new Thread(() -> {
+
+                    try {
+                        synchronized (GameHandler.this) {
+
+                            while (this.model.getPlayerList().stream()
+                                    .anyMatch(Player::isRespawn)) {
+
+                                ClientHandler
+                                        .gameBroadcast(GameHandler.this,
+                                                x -> x.getKey().isRespawn(),
+                                                "infoMessage",
+                                                "Devi fare il respawn.");
+
+                                ClientHandler
+                                        .gameBroadcast(GameHandler.this,
+                                                x -> x.getKey().isRespawn(),
+                                                "updateState",
+                                                Presenter.state.get("spawnState").toString());
+
+                                ClientHandler
+                                        .gameBroadcast(GameHandler.this,
+                                                x -> !x.getKey().isRespawn(),
+                                                "updateState",
+                                                Presenter.state.get("notActivePlayerState")
+                                                        .toString());
+
+                                GameHandler.this.wait();
+                            }
+
+                            spawn.cancel();
+
+                            GameHandler.this.nextPlayer();
+
+                            ClientHandler.gameBroadcast(this, x -> true, "updateBoard",
+                                    this.toJsonObject().toString());
+
+                        }
+                    } catch (InterruptedException e) {
+
+                        Thread.currentThread().interrupt();
+                    }
+
+                });
+
+                spawn.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        synchronized (GameHandler.this) {
+
+                            model.getPlayerList().stream()
+                                    .filter(Player::isRespawn)
+                                    .forEach(GameHandler.this::randomSpawn);
+
+                        }
+                    }
+                }, 10000);
+
+                thread.start();
+
+            } catch (EndGameException e) {
+
+                JsonArrayBuilder array = Json.createArrayBuilder();
+
+                e.getWinner().stream()
+                        .flatMap(Collection::stream)
+                        .forEach(x ->
+
+                                array.add(
+                                        Json.createObjectBuilder()
+                                                .add("playerId", x.getPlayerId())
+                                                .add("character", x.getColor().getCharacter())
+                                                .add("points", x.getPoints())
+                                                .build())
+                        );
+
+                ClientHandler.gameBroadcast(
+                        this,
+                        x -> true,
+                        "endGameScreen",
+                        Json.createObjectBuilder().add("array", array.build()).build().toString());
+            }
+        }
+    }
+
+    /**
+     * Initializes the game by creating the board and the playersList.
+     */
     private void startGame() {
 
         this.createBoard();
@@ -280,7 +425,17 @@ public class GameHandler implements Serializable {
                 this.toJsonObject().toString());
     }
 
+
+
+    /**
+     * This method creates a JsonObject containing all the information needed in the View. The said
+     * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
+     * sent to the view when needed.
+     *
+     * @return The JsonObject containing all the information of this card.
+     */
     public JsonObject toJsonObject() {
+
 
         return this.model.toJsonObject()
                 .add("gameId", this.gameId)

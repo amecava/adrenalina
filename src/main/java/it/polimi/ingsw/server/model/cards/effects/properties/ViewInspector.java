@@ -180,7 +180,7 @@ class ViewInspector {
         }
 
         // Launch exception if toSquare not found
-        throw new SquareDistanceException("Target not found with selected properties!");
+        throw new SquareDistanceException("Il quadrato selezionato non è in direzione cardinale!");
     }
 
     /**

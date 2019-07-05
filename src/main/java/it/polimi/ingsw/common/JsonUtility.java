@@ -4,17 +4,23 @@ import java.io.StringReader;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * This class offers some static auxiliary method used in the view.
+ */
 public class JsonUtility {
 
+    /**
+     * Creates the JsonUtility class.
+     */
     private JsonUtility() {
 
         //
     }
 
     /**
-     * Static method to deserialize the JsonObject sent from the server.
+     * Static method to deserialize the JsonObject sent from the client.
      *
-     * @param line JsonObect as a String.
+     * @param line JsonObject as a String.
      * @return deserialized JsonObject
      */
     public static JsonObject jsonDeserialize(String line) {
@@ -23,8 +29,8 @@ public class JsonUtility {
     }
 
     /**
-     * Method that deals with typos in the cli. The Levenshtein distance is how many steps it takes
-     * to transform the string input into the string match.
+     * Method that deals with typos in the cli. The Levenshtein distance consists in how many steps
+     * it takes to transform the string input into the string match.
      *
      * @param input Users's string
      * @param match String that is expected.

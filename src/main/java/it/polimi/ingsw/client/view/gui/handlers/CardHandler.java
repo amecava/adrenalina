@@ -54,7 +54,10 @@ public class CardHandler {
             Stage infoCard = new Stage();
             infoCard.initModality(Modality.APPLICATION_MODAL);
             infoCard.initOwner(GUIView.getCurrentStage());
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.CENTER);
             HBox elements = new HBox();
+            elements.setAlignment(Pos.CENTER);
             AnchorPane.setRightAnchor(elements, 20.0);
             AnchorPane.setTopAnchor(elements, 20.0);
             AnchorPane.setLeftAnchor(elements, 20.0);
@@ -68,31 +71,24 @@ public class CardHandler {
             text.setSpacing(7);
 
             Label name = new Label();
-            name.setText("Nome :" + jsonCard.getString("name"));
-            name.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
+            name.setText(jsonCard.getString("name"));
+            name.setFont(Font.font("Silom", FontWeight.NORMAL, 30));
             name.setTextFill(Color.WHITE);
             name.setWrapText(true);
-            text.getChildren().add(name);
+            vBox.getChildren().addAll(name, new Label(), new Label());
 
-            Label loaded = new Label();
-            loaded.setText("Carica: " + (jsonCard.getBoolean("isLoaded") ? "Sì" : "No"));
-            loaded.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
-            loaded.setTextFill(Color.WHITE);
-            loaded.setWrapText(true);
-            text.getChildren().add(loaded);
+            vBox.getChildren().add(elements);
 
             JsonObject primary = jsonCard.getJsonObject("primary");
             Label primaryEffect = new Label();
-            primaryEffect.setText("Effetto primario :" + primary.getString("name"));
-            primaryEffect.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
+            primaryEffect.setText("Primario: " + primary.getString("name"));
+            primaryEffect.setFont(Font.font("Silom", FontWeight.NORMAL, 25));
             primaryEffect.setTextFill(Color.WHITE);
             primaryEffect.setWrapText(true);
             text.getChildren().add(primaryEffect);
 
             Label primaryEffectDescription = new Label();
-            primaryEffectDescription.setMinHeight(30);
-            primaryEffectDescription
-                    .setText("Descrizione effetto primario: " + primary.getString("description"));
+            primaryEffectDescription.setText(primary.getString("description"));
             primaryEffectDescription.setWrapText(true);
             primaryEffectDescription.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
             primaryEffectDescription.setTextFill(Color.WHITE);
@@ -102,15 +98,13 @@ public class CardHandler {
 
                 JsonObject alternative = jsonCard.getJsonObject("alternative");
                 Label alternativeEffect = new Label();
-                alternativeEffect.setText("Effetto alternativo :" + alternative.getString("name"));
-                alternativeEffect.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
+                alternativeEffect.setText("Alternativo: " + alternative.getString("name"));
+                alternativeEffect.setFont(Font.font("Silom", FontWeight.NORMAL, 25));
                 alternativeEffect.setTextFill(Color.WHITE);
                 alternativeEffect.setWrapText(true);
                 text.getChildren().add(alternativeEffect);
                 Label alternativeEffectDescription = new Label();
-                alternativeEffectDescription.setMinHeight(30);
-                alternativeEffectDescription.setText(
-                        "Descrizione effetto alternativo: " + alternative.getString("description"));
+                alternativeEffectDescription.setText(alternative.getString("description"));
                 alternativeEffectDescription.setWrapText(true);
                 alternativeEffectDescription.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
                 alternativeEffectDescription.setTextFill(Color.WHITE);
@@ -122,16 +116,14 @@ public class CardHandler {
                 JsonObject optional1 = jsonCard.getJsonObject("optional1");
 
                 Label optional1Effect = new Label();
-                optional1Effect.setText("Effetto opzionale 1:" + optional1.getString("name"));
-                optional1Effect.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
+                optional1Effect.setText("Opzionale 1: " + optional1.getString("name"));
+                optional1Effect.setFont(Font.font("Silom", FontWeight.NORMAL, 25));
                 optional1Effect.setTextFill(Color.WHITE);
                 optional1Effect.setWrapText(true);
                 text.getChildren().add(optional1Effect);
 
                 Label optional1EffectDescription = new Label();
-                optional1EffectDescription.setMinHeight(30);
-                optional1EffectDescription.setText(
-                        "Descrizione effetto opzionale 1: " + optional1.getString("description"));
+                optional1EffectDescription.setText(optional1.getString("description"));
                 optional1EffectDescription.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
                 optional1EffectDescription.setTextFill(Color.WHITE);
                 optional1EffectDescription.setWrapText(true);
@@ -143,18 +135,16 @@ public class CardHandler {
                 JsonObject optional2 = jsonCard.getJsonObject("optional2");
 
                 Label optional2Effect = new Label();
-                optional2Effect.setText("Effetto opzionale 2:" + optional2.getString("name"));
-                optional2Effect.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
+                optional2Effect.setText("Opzionale 2: " + optional2.getString("name"));
+                optional2Effect.setFont(Font.font("Silom", FontWeight.NORMAL, 25));
                 optional2Effect.setTextFill(Color.WHITE);
                 optional2Effect.setWrapText(true);
                 text.getChildren().add(optional2Effect);
 
                 Label optional2EffectDescription = new Label();
-                optional2EffectDescription.setMinHeight(30);
                 optional2EffectDescription.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
                 optional2EffectDescription.setTextFill(Color.WHITE);
-                optional2EffectDescription.setText(
-                        "Descrizione effetto opzionale 2: " + optional2.getString("description"));
+                optional2EffectDescription.setText(optional2.getString("description"));
                 optional2EffectDescription.setWrapText(true);
                 text.getChildren().add(optional2EffectDescription);
             }
@@ -162,22 +152,22 @@ public class CardHandler {
             if (jsonCard.getString("notes") != null) {
                 Label notes = new Label();
                 notes.setMinHeight(30);
-                notes.setText("Note: " + jsonCard.getString("notes"));
+                notes.setText(jsonCard.getString("notes"));
                 notes.setWrapText(true);
                 notes.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
                 notes.setTextFill(Color.WHITE);
-                text.getChildren().add(notes);
+                vBox.getChildren().addAll(new Label(), new Label(), notes);
             }
 
             Button exit = new GameButton("chiudi");
             exit.setOnMouseClicked(x -> infoCard.close());
-            text.getChildren().add(exit);
             elements.getChildren().add(text);
-            elements.setBackground(new Background(
+            vBox.getChildren().add(exit);
+            vBox.setBackground(new Background(
                     new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                             BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                             BackgroundSize.DEFAULT)));
-            Scene infoCardScene = new Scene(elements, 700, 500);
+            Scene infoCardScene = new Scene(vBox, 800, 600);
             infoCard.setScene(infoCardScene);
             PauseTransition delay = new PauseTransition(Duration.seconds(50));
             delay.setOnFinished(event -> infoCard.close());
@@ -212,16 +202,26 @@ public class CardHandler {
                     new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
             playerObject.getJsonArray("weapons").stream()
-                    .filter(x -> x.asJsonObject().getBoolean("isLoaded"))
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
 
-                        ImageView card = new ImageView(Images.weaponsMap.get(x.getInt("id")));
-                        card.setFitWidth(200);
-                        card.setFitHeight(300);
+                        if (x.getBoolean("isLoaded")) {
 
-                        elements.getChildren()
-                                .add(card);
+                            ImageView card = new ImageView(Images.weaponsMap.get(x.getInt("id")));
+                            card.setFitWidth(200);
+                            card.setFitHeight(300);
+
+                            elements.getChildren()
+                                    .add(card);
+
+                        } else {
+
+                            ImageView back = new ImageView(Images.weaponsMap.get(0));
+                            back.setFitWidth(200);
+                            back.setFitHeight(300);
+
+                            elements.getChildren().add(back);
+                        }
                     });
 
             Button exit = new GameButton("chiudi");
@@ -229,6 +229,7 @@ public class CardHandler {
             exit.setAlignment(Pos.CENTER);
 
             cardsAndClose.getChildren().addAll(elements, exit);
+            cardsAndClose.setAlignment(Pos.CENTER);
 
             Scene infoCardScene = new Scene(cardsAndClose);
             infoCard.setScene(infoCardScene);
@@ -253,10 +254,7 @@ public class CardHandler {
             infoCard.initModality(Modality.APPLICATION_MODAL);
             infoCard.initOwner(GUIView.getCurrentStage());
             HBox elements = new HBox();
-            AnchorPane.setRightAnchor(elements, 20.0);
-            AnchorPane.setTopAnchor(elements, 20.0);
-            AnchorPane.setLeftAnchor(elements, 20.0);
-            AnchorPane.setBottomAnchor(elements, 20.0);
+            elements.setAlignment(Pos.CENTER);
             elements.setSpacing(20);
 
             ImageView cardImage = new ImageView(
@@ -267,27 +265,31 @@ public class CardHandler {
                             .toString()));
             cardImage.setFitWidth(200);
             cardImage.setFitHeight(300);
-            elements.getChildren().add(cardImage);
-            VBox text = new VBox();
-            text.setSpacing(7);
+            elements.setSpacing(7);
 
             Label description = new Label();
             description.setText(object.getString("info"));
             description.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
             description.setTextFill(Color.WHITE);
             description.setWrapText(true);
-            text.getChildren().add(description);
+            elements.getChildren().addAll(cardImage, description);
 
             Button exit = new GameButton("chiudi");
             exit.setOnMouseClicked(x -> infoCard.close());
-            text.getChildren().add(exit);
-            elements.getChildren().add(text);
-            elements.setBackground(new Background(
+
+            VBox vBox = new VBox();
+            vBox.setBackground(new Background(
                     new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                             BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                             BackgroundSize.DEFAULT)));
+            vBox.setAlignment(Pos.CENTER);
+            vBox.getChildren().addAll(elements, exit);
+            AnchorPane.setRightAnchor(vBox, 20.0);
+            AnchorPane.setTopAnchor(vBox, 20.0);
+            AnchorPane.setLeftAnchor(vBox, 20.0);
+            AnchorPane.setBottomAnchor(vBox, 20.0);
 
-            Scene infoCardScene = new Scene(elements, 500, 500);
+            Scene infoCardScene = new Scene(vBox, 500, 500);
             infoCard.setScene(infoCardScene);
             PauseTransition delay = new PauseTransition(Duration.seconds(50));
             delay.setOnFinished(event -> infoCard.close());

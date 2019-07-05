@@ -17,37 +17,93 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This class executes the effect. Every time an action needs to be executed passes through the
+ * EffectHandler. This is the core class of the logic of the model.
+ */
 public class EffectHandler implements Serializable {
 
+    /**
+     * The player who is currently active: the one who has the turn.
+     */
     private Player activePlayer;
+
+    /**
+     * The square in which is the activePlayer.
+     */
     private Square activeSquare;
 
+    /**
+     * The Target is incapsulated in this more complex class to hold every information needed by the
+     * EffectHandler.
+     */
     private EffectArgument target;
 
+    /**
+     * Every player target goes in this list after being damaged (or marked). It gives us the
+     * possibility to have a "memory" of the previous target.
+     */
     private List<Target> active = new ArrayList<>();
+
+    /**
+     * Every player target of the active list goes in this list after being damaged (or marked). It
+     * gives us the possibility to have a "memory" of the target damaged twice within the same
+     * card.
+     */
     private List<Target> inactive = new ArrayList<>();
 
+    /**
+     * Gets the active player.
+     *
+     * @return The Player object.
+     */
     public Player getActivePlayer() {
 
         return this.activePlayer;
     }
 
+    /**
+     * Sets the active player.
+     *
+     * @param activePlayer The active player.
+     */
     public void setActivePlayer(Player activePlayer) {
 
         this.activePlayer = activePlayer;
         this.activeSquare = activePlayer.getCurrentPosition();
     }
 
+    /**
+     * Gets the activeList.
+     *
+     * @return The List of Target.
+     */
     public List<Target> getActive() {
 
         return this.active;
     }
 
+    /**
+     * Gets the inactiveList.
+     *
+     * @return The List of target.
+     */
     public List<Target> getInactive() {
 
         return this.inactive;
     }
 
+    /**
+     * The method responsible for the execution of every kind of effect:
+     * - WeaponCard effect;
+     * - PowerUpCard effect;
+     * - Action effect.
+     *
+     * @param effect The Effect to be executed.
+     * @param target The Target of the effect.
+     * @throws EffectException If there are some problems during the execution of the effect.
+     * @throws PropertiesException If some properties are violated.
+     */
     public void useEffect(Effect effect, EffectArgument target)
             throws EffectException, PropertiesException {
 
@@ -76,14 +132,14 @@ public class EffectHandler implements Serializable {
             if (effect.getArgs() != target.getArgs()) {
 
                 throw new EffectCallException(
-                        "Il numerod di parametri che hai scritto è sbagliato.");
+                        "Hai selezionato troppe cose! Riprova.");
             }
 
             // Launch exception if wrong target type
             if (target.getTargetList().stream().anyMatch(x ->
                     x.getTargetType() != effect.getTargetType())) {
 
-                throw new TargetTypeException("Il target che hai selezionato non è valido.");
+                throw new TargetTypeException("Il bersaglio che hai selezionato non è valido.");
             }
 
             // Create properties related target list
@@ -106,6 +162,13 @@ public class EffectHandler implements Serializable {
         }
     }
 
+    /**
+     * Updates the card usage variables given the Effect executed and the WeaponCard with the
+     * effect.
+     *
+     * @param effect The effect executed.
+     * @param card The card to be updated.
+     */
     public void updateCardUsageVariables(Effect effect, WeaponCard card) {
 
         effect.setUsed(true);
@@ -129,6 +192,12 @@ public class EffectHandler implements Serializable {
         }
     }
 
+    /**
+     * Updates the activeList and inactiveList after the execution of the effect in order to prepare
+     * the correct execution of the effect that may be used next.
+     *
+     * @param effect The effect just executed.
+     */
     private void updateActiveInactiveVariables(Effect effect) {
 
         // If it's not a power up effect
@@ -159,6 +228,13 @@ public class EffectHandler implements Serializable {
         }
     }
 
+    /**
+     * Creates the targetList related to the properties of the effect.
+     *
+     * @param effect The effect.
+     * @param target The EffectArgument to be filled.
+     * @return The filled EffectArgument.
+     */
     private EffectArgument createPropertiesRelatedTarget(Effect effect, EffectArgument target) {
 
         // Create target if no user interaction needed
@@ -186,6 +262,14 @@ public class EffectHandler implements Serializable {
         return target;
     }
 
+    /**
+     * Creates a targetList in the cases of effects that need no explicit target given by the user.
+     * Example: "damage every other player in your square".
+     *
+     * @param effect The effect.
+     * @param target The EffectArgument to be filled.
+     * @return The filled EffectArgument.
+     */
     private EffectArgument createTargetForNoArgumentsEffects(Effect effect, EffectArgument target) {
 
         // Create target list for adjacent types of effect
@@ -251,6 +335,14 @@ public class EffectHandler implements Serializable {
         return target;
     }
 
+    /**
+     * Checks the properties of the effect combined with the target given.
+     *
+     * @param effect The Effect to execute.
+     * @param target The EffectArguments
+     * @return The Effect given.
+     * @throws PropertiesException If one or more properties are violated.
+     */
     private Effect checkProperties(Effect effect, EffectArgument target)
             throws PropertiesException {
 

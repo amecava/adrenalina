@@ -167,7 +167,7 @@ public class Images {
         possibleActionsMap
                 .put(":DistruttOR36", new Image("images/actions/D-strutt-OR36.png"));
         possibleActionsMap
-                .put(":DistruttOR37", new Image("images/actions/D-strutt-OR38.png"));
+                .put(":DistruttOR37", new Image("images/actions/D-strutt-OR37.png"));
         possibleActionsMap
                 .put(":DistruttOR38", new Image("images/actions/D-strutt-OR38.png"));
         possibleActionsMap

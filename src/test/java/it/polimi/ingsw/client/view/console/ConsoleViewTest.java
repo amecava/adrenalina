@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 
 class ConsoleViewTest {
 
+    /**
+     * Checks if the info of the cards are well built.
+     */
     @Test
     void completeCardInfo() {
 

@@ -69,6 +69,9 @@ public abstract class Presenter implements VirtualPresenter {
                 );
     }
 
+    /**
+     * Disconnects the Presenter.
+     */
     abstract void disconnectPresenter();
 
     /**
@@ -79,16 +82,31 @@ public abstract class Presenter implements VirtualPresenter {
      */
     abstract void callRemoteMethod(String method, String value) throws RemoteException;
 
+    /**
+     * Gets the id of the player of this presenter.
+     *
+     * @return The player id.
+     */
     String getPlayerId() {
 
         return this.playerId;
     }
 
+    /**
+     * Gets the player of this presenter.
+     *
+     * @return The Player of this presenter.
+     */
     Player getPlayer() {
 
         return this.player;
     }
 
+    /**
+     * Gets the GameHandler of this presenter.
+     *
+     * @return The GameHandler of this presenter.
+     */
     GameHandler getGameHandler() {
 
         return this.gameHandler;
@@ -384,47 +402,21 @@ public abstract class Presenter implements VirtualPresenter {
 
         } else {
 
-            try {
+            this.gameHandler.endOfTurn();
 
-                this.gameHandler.endOfTurn();
+            this.callRemoteMethod("infoMessage", "Turno finito.");
 
-                this.callRemoteMethod("infoMessage", "Turno finito.");
-
-                ClientHandler.gameBroadcast(
-                        this.gameHandler,
-                        x -> true,
-                        "updateBoard",
-                        this.gameHandler.toJsonObject().toString());
-
-            } catch (EndGameException e) {
-
-                JsonArrayBuilder array = Json.createArrayBuilder();
-
-                e.getWinner().stream()
-                        .flatMap(Collection::stream)
-                        .forEach(x ->
-
-                                array.add(
-                                        Json.createObjectBuilder()
-                                                .add("playerId", x.getPlayerId())
-                                                .add("character", x.getColor().getCharacter())
-                                                .add("points", x.getPoints())
-                                                .build())
-                        );
-
-                ClientHandler.gameBroadcast(
-                        this.gameHandler,
-                        x -> true,
-                        "endGameScreen",
-                        Json.createObjectBuilder().add("array", array.build()).build().toString());
-
-            }
+            ClientHandler.gameBroadcast(
+                    this.gameHandler,
+                    x -> true,
+                    "updateBoard",
+                    this.gameHandler.toJsonObject().toString());
         }
     }
 
     /**
      * Method that is called when the user needs to decide which action he wants to perform (run,
-     * collect, etc...).
+     * collect, reload).
      *
      * @param value A serialized JsonObject with the integer of the action he wants to perform.
      */
@@ -461,7 +453,8 @@ public abstract class Presenter implements VirtualPresenter {
                                 .toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(),
+                                this.player, state.get("actionState"))
                                 .toString());
 
             } catch (IllegalActionException e) {
@@ -510,7 +503,8 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(),
+                                this.player, state.get("actionState"))
                                 .toString());
 
             } catch (ColorException | IllegalActionException | CardException | EffectException | PropertiesException e) {
@@ -580,7 +574,8 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(),
+                                this.player, state.get("actionState"))
                                 .toString());
 
 
@@ -812,7 +807,8 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
                 this.callRemoteMethod("updateState",
-                        StateHandler.createActionState(this.player, state.get("actionState"))
+                        StateHandler.createActionState(this.gameHandler.getModel().getBoard(),
+                                this.player, state.get("actionState"))
                                 .toString());
 
             } catch (CardException | IllegalActionException e) {
@@ -1027,7 +1023,9 @@ public abstract class Presenter implements VirtualPresenter {
         } else if (this.player.getCurrentAction() != null) {
 
             this.callRemoteMethod("updateState",
-                    StateHandler.createActionState(this.player, state.get("actionState"))
+                    StateHandler
+                            .createActionState(this.gameHandler.getModel().getBoard(), this.player,
+                                    state.get("actionState"))
                             .toString());
 
         } else {
