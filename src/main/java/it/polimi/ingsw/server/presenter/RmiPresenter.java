@@ -1,9 +1,12 @@
 package it.polimi.ingsw.server.presenter;
 
 import it.polimi.ingsw.common.VirtualView;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,16 +66,34 @@ public class RmiPresenter extends Presenter {
     @Override
     public void callRemoteMethod(String method, String value) throws RemoteException {
 
+        Thread thread = new Thread(() -> {
+
+            try {
+
+                VirtualView.class
+                        .getMethod(method, String.class)
+                        .invoke(this.skeleton, value);
+
+            } catch (ReflectiveOperationException e) {
+
+                //
+            }
+        });
+
         try {
 
-            VirtualView.class
-                    .getMethod(method, String.class)
-                    .invoke(this.skeleton, value);
+            thread.start();
 
-        } catch (ReflectiveOperationException e) {
+            thread.join(1000);
 
-            throw new RemoteException();
+            if (thread.isAlive()) {
+
+                throw new RemoteException();
+            }
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
         }
     }
-
 }
