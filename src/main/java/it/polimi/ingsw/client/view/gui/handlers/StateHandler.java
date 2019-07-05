@@ -1195,6 +1195,8 @@ public class StateHandler {
 
         StringBuilder paymentLine = new StringBuilder();
 
+        shootStage.setWidth(700);
+        shootStage.setHeight(400);
         root.getChildren().clear();
         root.setBackground(new Background(
                 new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,

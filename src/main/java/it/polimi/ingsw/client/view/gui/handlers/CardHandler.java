@@ -198,8 +198,15 @@ public class CardHandler {
                             BackgroundSize.DEFAULT)));
 
             HBox elements = new HBox();
+            elements.setAlignment(Pos.CENTER);
             elements.setSpacing(20);
             elements.setBackground(new Background(
+                    new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+
+            HBox cubes = new HBox();
+            cubes.setAlignment(Pos.CENTER);
+            cubes.setSpacing(20);
+            cubes.setBackground(new Background(
                     new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
             playerObject.getJsonArray("weapons").stream()
@@ -225,11 +232,23 @@ public class CardHandler {
                         }
                     });
 
+            playerObject.getJsonArray("ammoCubes").stream()
+                    .map(x -> x.toString().substring(1, x.toString().length() - 1))
+                    .forEach(cube -> {
+
+                        ImageView cubeView = new ImageView(Images.cubesMap.get(cube));
+                        cubeView.setFitHeight(30);
+                        cubeView.setFitWidth(30);
+                        Button ammo = new GameButton(cubeView);
+                        cubes.getChildren().add(ammo);
+                    });
+
+
             Button exit = new GameButton("chiudi");
             exit.setOnMouseClicked(x -> infoCard.close());
             exit.setAlignment(Pos.CENTER);
 
-            cardsAndClose.getChildren().addAll(elements, exit);
+            cardsAndClose.getChildren().addAll(elements, cubes, exit);
             cardsAndClose.setAlignment(Pos.CENTER);
 
             Scene infoCardScene = new Scene(cardsAndClose);
