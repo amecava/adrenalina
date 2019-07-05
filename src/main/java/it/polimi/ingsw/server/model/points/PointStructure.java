@@ -7,27 +7,56 @@ import java.util.List;
 
 public class PointStructure implements Serializable {
 
+    /**
+     * reference to the player that owns this points
+     */
     private Player player;
-
+    /**
+     * number of shots that that the player did to the dead player
+     */
     private int numberDamage;
+    /**
+     * first damge that the player did to the dead player
+     */
     private int firstDamage;
+    /**
+     * last damage that the player did to the dead player
+     */
     private int lastDamage;
 
+    /**
+     * creating the point structer for the refrenced player
+     * @param player is the player for wich we need to count the points after
+     * a death of a player or after the end game
+     */
     public PointStructure(Player player) {
 
         this.player = player;
     }
 
+    /**
+     * gets the referenced player
+     * @return
+     */
     Player getPlayer() {
 
         return this.player;
     }
 
+    /**
+     * gets the number of damages done by the referenced player to the dead player
+     * @return
+     */
     int getNumberDamage() {
 
         return this.numberDamage;
     }
 
+    /**
+     * sets the number of damages done by the referenced player
+     * @param numberDamage are the damages done by the referenced player
+     * @return point structure of the referenced player
+     */
     PointStructure setNumberDamage(int numberDamage) {
 
         this.numberDamage = numberDamage;
@@ -35,24 +64,47 @@ public class PointStructure implements Serializable {
         return this;
     }
 
+    /**
+     * gets the first damage done by the referenced player to the dead player
+     * @return the first damage
+     */
     int getFirstDamage() {
 
         return this.firstDamage;
     }
 
+    /**
+     * gets the last damage done by referenced player to the dead player
+     * @return the last damage
+     */
     int getLastDamage() {
 
         return this.lastDamage;
     }
 
+    /**
+     * sets the last damage done by the referenced player to the dead player
+     * @param lastDamage is the last damage done by the referenced player
+     */
     void setLastDamage(int lastDamage) {
 
         this.lastDamage = lastDamage;
     }
 
+    /**
+     * creates the point structure of the referenced player
+     * @param shots is the list of all damages taken by  the dead player
+     * @return the point structure of the player linked with the list of damages taken by
+     * the dead player
+     */
     public PointStructure createPointStructure(List<Color> shots) {
 
         this.numberDamage = 0;
+
+        /**
+         * indicates if it has been  found  the first damage done by the referenced player
+         * to the dead player
+         */
         boolean foundFirstShot = false;
 
         for (int i = 0; i < shots.size(); i++) {

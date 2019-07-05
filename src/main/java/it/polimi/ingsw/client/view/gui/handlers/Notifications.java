@@ -24,15 +24,30 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+/**
+ * main class for showing and creating notifications
+ */
 public class Notifications {
 
+    /**
+     * List of all the notifications shown on screen
+     */
     private static List<Stage> dialogList = new ArrayList<>();
 
+    /**
+     * Private constructor
+     */
     private Notifications() {
 
         //
     }
 
+    /**
+     * method for creating the notifications and shifting all the other notifications
+     * shown on the stage
+     * @param title The title of the notifications
+     * @param value The text that will be shown
+     */
     public static synchronized void createNotification(String title, String value) {
 
         Platform.runLater(() -> {

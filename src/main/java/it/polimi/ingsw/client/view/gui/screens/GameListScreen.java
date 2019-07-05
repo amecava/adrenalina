@@ -37,20 +37,36 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * Screen for choosing the game to join or creating a new game.
+ */
 public class GameListScreen {
 
+    /**
+     * creates the game list screen
+     */
     private GameListScreen() {
 
         //
     }
 
+    /**
+     * a list af all the available games on the server
+     */
     private static VBox games = new VBox();
+    /**
+     * scroll pane containing the list of games
+     */
     private static ScrollPane scrollPane = new ScrollPane();
-
+    /**
+     *expresses if the game list screen is empty or not
+     */
     private static boolean empty = true;
 
     public static void generateScreen() {
-
+        /**
+         * creating the new root for the  next scene
+         */
         BorderPane borderPane = GUIView.createBorderPane(true, false);
 
         scrollPane.setMaxHeight(200);
@@ -63,19 +79,29 @@ public class GameListScreen {
         scrollPane.setContent(games);
 
         borderPane.setCenter(scrollPane);
-
+        /**
+         * box containing the elements to create a new game
+         */
         HBox newGame = new HBox();
         newGame.setSpacing(20);
-
+        /**
+         * box containing the info that appear and disappear when creating a new game
+         */
         HBox show = new HBox();
         show.setSpacing(20);
-
+        /**
+         * button for creating a new game
+         */
         Button createGame = new GameButton("crea Partita");
-
+        /**
+         * game name label
+         */
         Label gameName = new Label("Nome:");
         gameName.setTextFill(Color.WHITE);
         gameName.setWrapText(true);
-
+        /**
+         * text field for inserting the new game name
+         */
         TextField insertGameName = new TextField();
         insertGameName.setOnKeyTyped(keyEvent -> {
 
@@ -84,11 +110,15 @@ public class GameListScreen {
             }
         });
         insertGameName.setPrefSize(80, 30);
-
+        /**
+         * label for inserting the number of deaths in the newly created game
+         */
         Label numberOfDeaths = new Label("Morti:");
         numberOfDeaths.setTextFill(Color.WHITE);
         numberOfDeaths.setWrapText(true);
-
+        /**
+         * text field  for inserting the number of deaths in the newly created game
+         */
         TextField insertNumberOdDeaths = new TextField();
         insertNumberOdDeaths.setOnKeyTyped(keyEvent -> {
 
@@ -109,6 +139,9 @@ public class GameListScreen {
         frenzy.setWrapText(true);
 
         CheckBox checkBoxFrenzy = new CheckBox();
+        /**
+         * button for confirming the creation of a new game
+         */
         Button confirmGame = new GameButton("crea");
 
         /////////////////////////////////////////////
@@ -134,6 +167,11 @@ public class GameListScreen {
         Platform.runLater(() -> GUIView.changeScene(borderPane));
     }
 
+    /**
+     * this method updates the game list screen after a new method has successfully been
+     * created so that avery client can see all the available games
+     * @param object containing all the available games with their parameters
+     */
     public static void updateScreen(JsonObject object) {
 
         Platform.runLater(() -> {
@@ -236,10 +274,18 @@ public class GameListScreen {
         });
     }
 
+    /**
+     * creates a new screen in which the player must select the character to use in the game
+     * @param game name of the selected game
+     */
     private static void selectCharacterScreen(String game) {
-
+        /**
+         * creating the new root for the next scene
+         */
         BorderPane borderPane = GUIView.createBorderPane(true, false);
-
+        /**
+         * box containing images of characters and labels
+         */
         VBox vBox = new VBox();
         vBox.setSpacing(50);
         vBox.setAlignment(Pos.CENTER);
@@ -248,11 +294,15 @@ public class GameListScreen {
         label.setFont(Font.font("Silom", FontWeight.BOLD, 70));
         label.setAlignment(Pos.CENTER);
         label.setTextFill(Color.WHITE);
-
+        /**
+         * hbox containing characters
+         */
         HBox characters = new HBox();
         characters.setAlignment(Pos.CENTER);
         characters.setSpacing(20);
-
+        /**
+         * button for going backwards
+         */
         Button back = new GameButton("indietro");
 
         back.setOnMouseClicked(mouseEvent ->
@@ -267,7 +317,9 @@ public class GameListScreen {
             ImageView imageView = new ImageView(value);
             imageView.setPreserveRatio(true);
             imageView.setFitHeight(200);
-
+            /**
+             * getting the images of the characters
+             */
             Button button = new GameButton(imageView);
 
             button.setOnMouseClicked(mouseEvent -> {

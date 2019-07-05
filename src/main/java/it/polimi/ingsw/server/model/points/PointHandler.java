@@ -16,6 +16,13 @@ public class PointHandler {
         //
     }
 
+    /**
+     *  it is called at the end of the turn
+     *  for each player it looks if they are dead , if sow
+     *  calls the method death update of PointHandler , otherwise
+     *  it changes their state of adrenalin
+     * @param playerList all the players that are playing the same game
+     */
     public static void checkIfDead(List<Player> playerList) {
 
         playerList.forEach(x -> {
@@ -30,6 +37,11 @@ public class PointHandler {
         });
     }
 
+    /**
+     * adds the kill of the dead player to the general kill streak of the game
+     * @param deaths kill streak of the general game
+     * @param playerList list of players in the game
+     */
     public static void countKills(Deaths deaths, List<Player> playerList) {
 
         for (Player player : playerList) {
@@ -60,6 +72,12 @@ public class PointHandler {
         }
     }
 
+    /**
+     * checks if the game is ended or if it has entered the frenzy stage
+     * @param deaths kill streak of the entire game
+     * @param playerList list of players in the same game
+     * @return true if  the game has ended  or not
+     */
     public static boolean checkEndGame(Deaths deaths, List<Player> playerList) {
 
         if (!deaths.isGameEnded()) {
@@ -111,12 +129,24 @@ public class PointHandler {
         return true;
     }
 
+    /**
+     * gives the correct points to all the players based on the killstreak of all the players
+     * and on the damages that are still on players non dead
+     * @param deaths all the deaths of the game
+     * @param playerList all players in the same game
+     * @return a list a player in winning order
+     */
     public static List<List<Player>> endGame(Deaths deaths, List<Player> playerList) {
 
         playerList.forEach(x -> deathUpdate(x.getBridge(), playerList));
         deathUpdate(deaths, playerList);
-
+        /**
+         * index for placing the player in the correct winning order
+         */
         int i = 0;
+        /**
+         * index for placing the player in the correct winning order
+         */
         int j = 0;
 
         List<List<Player>> winnerList = new ArrayList<>();
@@ -161,9 +191,25 @@ public class PointHandler {
         return playerList.get(nextPlayer);
     }
 
-    private static void deathUpdate(Bridge bridge, List<Player> playerList) {
 
+    /**
+     * creates the point structure for all the players ,  all the
+     * point structures are linked to the bridge of the dead player .After
+     * creating all the point structure it sorts them based on the PointSorter class
+     * @param bridge essentially a list of damage taken by the dead player
+     * @param playerList list of all players in the same game
+     */
+    private static void deathUpdate(Bridge bridge, List<Player> playerList) {
+        /**
+         * it checks if it has found the player that has done the first damage
+         * to the dead player
+         */
         boolean foundFirstBlood = false;
+
+        /**
+         * it check if it has found or not the player that has done the 12th damage
+         * to the dead player
+         */
         boolean foundLastBlood = false;
 
         List<PointStructure> pointStructures = playerList.stream()
