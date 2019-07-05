@@ -6,5 +6,6 @@
 !.gitattributes
 !deliverable/
 !jar/
+!javadoc/
 !adrenalina
 .DS_store

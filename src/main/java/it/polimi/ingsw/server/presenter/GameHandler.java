@@ -276,7 +276,7 @@ public class GameHandler implements Serializable {
         this.model.nextPlayer();
 
         ClientHandler.gameBroadcast(this, x -> x.getKey().isActivePlayer(), "infoMessage",
-                "È il tuo turno, digita aiuto per vedere la lista di comandi.");
+                "È il tuo turno!");
 
         ClientHandler.gameBroadcast(this,
                 x -> x.getKey().isActivePlayer() && x.getKey().getCurrentPosition() == null,

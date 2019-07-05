@@ -284,7 +284,7 @@ public abstract class Presenter implements VirtualPresenter {
 
         } catch (NoSuchElementException e) {
 
-            this.callRemoteMethod("errorMessage", "Non esiste questa partita cazzo.");
+            this.callRemoteMethod("errorMessage", "Non esiste questa partita.");
 
         } catch (LoginException | ColorException e) {
 
@@ -722,8 +722,7 @@ public abstract class Presenter implements VirtualPresenter {
                 if (!line.contains("powerup")) {
 
                     this.callRemoteMethod("errorMessage",
-                            "Per favore, per usare un power up scrivi:\n"
-                                    + "usapowerup powerup(nomePowerUp-colorePowerUp) target(eventualeTarget)  paga(eventualeColore).");
+                            "Scrivi bene il comando per usare il power up!");
                 } else {
 
                     PowerUpCard powerUpCard = EffectParser
@@ -804,7 +803,7 @@ public abstract class Presenter implements VirtualPresenter {
                         this.gameHandler.toJsonObject().toString());
 
                 this.callRemoteMethod("infoMessage",
-                        "Carta ricaricata! Adesso puoi solo finire il tuo turno con il comando \"fineturno\".");
+                        "Carta ricaricata! Adesso puoi solo finire il tuo turno.");
 
                 ClientHandler.gameBroadcast(
                         this.gameHandler,

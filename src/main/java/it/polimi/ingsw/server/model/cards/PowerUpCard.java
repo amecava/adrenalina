@@ -107,7 +107,7 @@ public class PowerUpCard implements Card, Ammo, Serializable {
      * @param target The target of the effect.
      * @throws EffectException If the said effect cannot be used right now.
      * @throws PropertiesException If some properties of the target are not respected.
-     * @throws CardException If the card cannot be used right now.
+     * @throws CardNotLoadedException If the card cannot be used right now.
      */
     public void useCard(EffectArgument target)
             throws EffectException, PropertiesException, CardNotLoadedException {
