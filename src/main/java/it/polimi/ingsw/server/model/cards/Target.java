@@ -5,6 +5,9 @@ import it.polimi.ingsw.server.model.cards.effects.TargetType;
 import it.polimi.ingsw.server.model.players.Player;
 import java.util.List;
 
+/**
+ * The interface for the targets with basic method implementation for the possible targets of effects.
+ */
 public interface Target {
 
     /**

@@ -18,6 +18,10 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+/**
+ * This class holds all the logic of the game. At different level of depth there are all the classes
+ * of the model.
+ */
 public class Model implements Serializable {
 
     /**

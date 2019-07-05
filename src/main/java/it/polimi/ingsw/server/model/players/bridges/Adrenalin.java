@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.model.players.bridges;
 
 /**
- * class that expresses the different adrenalin states
+ * The enum for the adrenalin states.
  */
 public enum Adrenalin {
     /**

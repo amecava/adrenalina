@@ -4,6 +4,9 @@ import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.players.Player;
 import java.io.Serializable;
 
+/**
+ * The Damage atomic Effect.
+ */
 public class AtomicDamage implements AtomicEffect, Serializable {
 
     /**

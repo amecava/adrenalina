@@ -54,6 +54,9 @@ public class BoardDrawer {
         jDrawSquares = Json.createReader(in).readArray();
     }
 
+    /**
+     * Private constructor to hide the public implicit one.
+     */
     private BoardDrawer() {
 
         //

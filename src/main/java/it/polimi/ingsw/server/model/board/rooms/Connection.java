@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server.model.board.rooms;
 
+/**
+ * Enumeration to represent the idea of connection between squares.
+ */
 public enum Connection {
 
     /**

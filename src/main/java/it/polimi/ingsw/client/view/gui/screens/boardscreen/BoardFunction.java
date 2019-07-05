@@ -27,8 +27,8 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 /**
- * This class implements some of the functions needed by the board such as placing
- * the weapons in the right place and calculating the right distance
+ * This class implements some of the functions needed by the board such as placing the weapons in
+ * the right place and calculating the right distance
  */
 public class BoardFunction {
 
@@ -42,6 +42,7 @@ public class BoardFunction {
 
     /**
      * creates a list of all the squares in the board
+     *
      * @param board a node containing all the elements of the board screen
      * @return a list of all the squares present in the board
      */
@@ -61,6 +62,7 @@ public class BoardFunction {
 
     /**
      * removes the weapon card from the spawn square so that another player can't collect it
+     *
      * @param children a list of all the weapon card present in the spawn square
      * @param jsonList a list of all the parameters needed for the function
      */
@@ -87,8 +89,9 @@ public class BoardFunction {
     }
 
     /**
-     *this method add's a card to the spawn square list by first translating and
-     * then rotating the card
+     * this method add's a card to the spawn square list by first translating and then rotating the
+     * card
+     *
      * @param children a list of all the weapon cards in the spawn square
      * @param color the color of the spawn square
      * @param id of the weapon card
@@ -163,6 +166,7 @@ public class BoardFunction {
 
     /**
      * Calculates the distance for placing the weapon card in the correct place.
+     *
      * @param rotate The integer value of the angle to rotate.
      * @param size The size of the weapon card placement
      * @return The correct placement of the weapon card

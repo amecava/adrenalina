@@ -12,8 +12,15 @@ import it.polimi.ingsw.server.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class offers static methods to parse the string received from the client with the
+ * information needed in order to execute some kind of effects.
+ */
 class EffectParser {
 
+    /**
+     * Private constructor to hide the public implicit one.
+     */
     private EffectParser() {
 
         //
@@ -49,6 +56,7 @@ class EffectParser {
      * to search some information.
      * @param request The string sent by the user.
      * @return An EffectArgument based on what the user asked.
+     * @throws SquareException If there are some square related problems durin
      */
     static EffectArgument effectArgument(GameHandler gameHandler, String request)
             throws SquareException, ColorException {
@@ -67,6 +75,10 @@ class EffectParser {
     /**
      * Method that inspects the users's String in order to find which ammo cube the user wants to
      * discard when using the power up that needs it.
+     *
+     * @param line The String to analyze.
+     * @return The Color value.
+     * @throws ColorException If the color doesn't exist.
      */
     static Color paymentCube(String line) throws ColorException {
 

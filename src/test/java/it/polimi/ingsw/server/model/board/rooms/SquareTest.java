@@ -11,8 +11,14 @@ import it.polimi.ingsw.server.model.decks.WeaponDeck;
 import it.polimi.ingsw.server.model.exceptions.cards.EmptySquareException;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the squares methods.
+ */
 class SquareTest {
 
+    /**
+     * Tests successes and fails of the collect action in non spawn squares.
+     */
     @Test
     void collectAmmoTile() {
 
@@ -46,6 +52,9 @@ class SquareTest {
         }
     }
 
+    /**
+     * Tests successes and failes of the collect action in a spawn square.
+     */
     @Test
     void collectWeaponCard() {
 
@@ -79,6 +88,10 @@ class SquareTest {
         }
     }
 
+    /**
+     * Tests successes and failes of the collect action in a spawn square when the player already
+     * has three weapons.
+     */
     @Test
     void collectWeaponCard1() {
 

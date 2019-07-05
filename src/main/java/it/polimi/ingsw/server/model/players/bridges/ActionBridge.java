@@ -12,6 +12,9 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * The Action Bridge of the player.
+ */
 class ActionBridge implements Serializable {
 
     /**

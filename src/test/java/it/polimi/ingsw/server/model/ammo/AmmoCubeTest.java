@@ -5,9 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.server.model.players.Color;
 import org.junit.jupiter.api.Test;
 
-
+/**
+ * Tests the AmmoCube creating and modification.
+ */
 class AmmoCubeTest {
 
+    /**
+     * Tests the AmmmoCube getColor method.
+     */
     @Test
     void getColor() {
 
@@ -16,6 +21,9 @@ class AmmoCubeTest {
         assertEquals(tester.getColor(), Color.GIALLO);
     }
 
+    /**
+     * Tests that new AmmoCubes are not already used.
+     */
     @Test
     void isUsed() {
 
@@ -24,6 +32,9 @@ class AmmoCubeTest {
         assertFalse(tester.isUsed());
     }
 
+    /**
+     * Tests the AmmoCube setUsed method.
+     */
     @Test
     void setUsed() {
 

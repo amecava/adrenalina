@@ -12,10 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the player's ActionBridge.
+ */
 class ActionBridgeTest {
 
-    EffectHandler effectHandler = new EffectHandler();
-
+    /**
+     * Tests if the Adrenaline states are correctly changed during the game.
+     */
     @Test
     void ActionTest() {
         Player player1 = new Player("jacopo", Color.BLU);
@@ -83,8 +87,5 @@ class ActionBridgeTest {
         }
         assertTrue(player1.getAdrenalin() == Adrenalin.SECONDADRENALIN);
         assertTrue(player3.getAdrenalin() == Adrenalin.NORMAL);
-
     }
-
-
 }

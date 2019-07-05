@@ -6,6 +6,9 @@ import it.polimi.ingsw.common.VirtualView;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+/**
+ * This class offers the callBack method to allow the server to expose some of his method.
+ */
 public class AccessPoint implements VirtualAccessPoint {
 
     /**

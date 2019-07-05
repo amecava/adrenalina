@@ -6,30 +6,85 @@ import java.util.Map;
 import javafx.application.Preloader.ProgressNotification;
 import javafx.scene.image.Image;
 
+/**
+ * A class that offers static attributes we frequently use to update the GUI
+ */
 public class Images {
 
+    /**
+     * A map that holds the Image for every board used for effect execution.
+     */
     public static final Map<String, Image> boardsMap = new HashMap<>();
+
+    /**
+     * A map that holds the Image for every main board.
+     */
     public static final Map<String, Image> gameBoardMap = new HashMap<>();
 
+    /**
+     * A map that holds the Image for every weapon.
+     */
     public static final Map<Integer, Image> weaponsMap = new HashMap<>();
+
+    /**
+     * A map that holds the Image for every power up.
+     */
     public static final Map<String, Image> powerUpsMap = new HashMap<>();
+
+    /**
+     * A map that holds the Image for every ammo tile.
+     */
     public static final Map<String, Image> ammoTilesMap = new HashMap<>();
 
+    /**
+     * A map that holds the Image for every player.
+     */
     public static final Map<String, Image> playersMap = new HashMap<>();
+
+    /**
+     * A map that holds the Image for every player bridge.
+     */
     public static final Map<String, Image> bridgesMap = new HashMap<>();
+
+    /**
+     * A map that holds the Image for every action.
+     */
     public static final Map<String, Image> possibleActionsMap = new HashMap<>();
 
+    /**
+     * A map that holds the Image for every damage drop.
+     */
+
     public static final Map<String, Image> dropsMap = new HashMap<>();
+
+    /**
+     * A map that holds the Image for every ammo cube.
+     */
     public static final Map<String, Image> cubesMap = new HashMap<>();
+
+    /**
+     * A map that holds the Image for every image used in the gui that is not in a map already.
+     */
     public static final Map<String, Image> imagesMap = new HashMap<>();
 
+    /**
+     * A map that holds the Image for every notification.
+     */
     public static final Map<String, Image> notifications = new HashMap<>();
 
+    /**
+     * Private constructor to hide the public implicit one
+     */
     private Images() {
 
         //
     }
 
+    /**
+     * Load the images in their maps.
+     *
+     * @param guiView The GuiView.
+     */
     public static void loadImages(GUIView guiView) {
 
         guiView.notifyPreloader(new ProgressNotification(0));

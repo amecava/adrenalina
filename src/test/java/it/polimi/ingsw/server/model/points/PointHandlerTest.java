@@ -10,10 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the PointHandler static class, that counts the points during all the match.
+ */
 class PointHandlerTest {
 
-    EffectHandler effectHandler = new EffectHandler();
-
+    /**
+     * Tests if the correct points are assigned to the players.
+     */
     @Test
     void deathUpdate() {
 
@@ -54,6 +58,9 @@ class PointHandlerTest {
         assertEquals(player3.getPoints(), 7);
     }
 
+    /**
+     * Tests a multiple death and the counting of such points.
+     */
     @Test
     void multipleDeaths() {
 
@@ -112,7 +119,7 @@ class PointHandlerTest {
                 throw new EndGameException(PointHandler.endGame(deaths, playerList));
             }
 
-        }  catch (EndGameException e) {
+        } catch (EndGameException e) {
             e.printStackTrace();
         }
         assertEquals(player2.getPoints(), 16);
@@ -121,6 +128,9 @@ class PointHandlerTest {
         assertEquals(player4.getPoints(), 4);
     }
 
+    /**
+     * Tests the get winner computation.
+     */
     @Test
     void getWinner() {
 
@@ -187,7 +197,9 @@ class PointHandlerTest {
         }
     }
 
-
+    /**
+     * Tests a multiple death and the counting of such points.
+     */
     @Test
     void multipleKills() {
         Player player1 = new Player("jacopo", Color.VIOLA);
@@ -261,8 +273,5 @@ class PointHandlerTest {
             assertEquals(6, pointHandler.getDeaths().getShots().size());
              */
         }
-
     }
-
-
 }

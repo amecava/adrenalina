@@ -21,6 +21,9 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+/**
+ * A class that offers static methods to handle the clients of the server and their messages.
+ */
 public class ClientHandler {
 
     /**
@@ -43,7 +46,7 @@ public class ClientHandler {
     );
 
     /**
-     * Initializes the ClientHandler.
+     * Private constructor to hide the public implicit one.
      */
     private ClientHandler() {
 

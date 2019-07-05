@@ -15,6 +15,14 @@ import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * Socket extension of the Presenter (it implements ita abstract methods):
+ * The presenter of the Model - Passive View - Presenter
+ * pattern. This class is responsible of furthering the correct requests by calling the correct
+ * methods of the model (through the GameHandler) and by preparing the proper JsonObjects for the
+ * View. Every method of this class not only performs the action but also sends the proper
+ * notification to the client.
+ */
 public class SocketPresenter extends Presenter implements Runnable {
 
     /**

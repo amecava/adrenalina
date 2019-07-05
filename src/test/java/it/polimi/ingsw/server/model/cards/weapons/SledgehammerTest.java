@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests Sledgehammer, with a test method for every effect it has.
+ */
 class SledgehammerTest {
 
     private EffectHandler effectHandler = new EffectHandler();

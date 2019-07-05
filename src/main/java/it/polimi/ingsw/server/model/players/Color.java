@@ -13,47 +13,47 @@ import java.util.Map;
 public enum Color {
 
     /**
-     *
+     * :DistruttOR3 - Giallo
      */
     GIALLO("Giallo", "\u001b[33m", ":DistruttOR3"),
 
     /**
-     *
+     * Banshee - Azzurro
      */
     AZZURRO("Azzurro", "\u001b[36m", "Banshee"),
 
     /**
-     *
+     * Dozer - Grigio
      */
     GRIGIO("Grigio", "\u001b[37m", "Dozer"),
 
     /**
-     *
+     * Violetta - Viola
      */
     VIOLA("Viola", "\u001b[35m", "Violetta"),
 
     /**
-     *
+     * Sprog - Verde
      */
     VERDE("Verde", "\u001b[32m", "Sprog"),
 
     /**
-     *
+     * Rosso
      */
     ROSSO("Rosso", "\u001b[31m"),
 
     /**
-     *
+     * Blu
      */
     BLU("Blu", "\u001b[34m"),
 
     /**
-     *
+     * Bianco
      */
     BIANCO("Bianco", "\u001b[37m"),
 
     /**
-     *
+     * Reset and neutral color.
      */
     ALL("All", "\u001b[0m");
 
@@ -89,6 +89,7 @@ public enum Color {
 
     /**
      * Builds the Color with the name and ansiColor
+     *
      * @param name The name of the color.
      * @param ansiColor The ansiColor code of the color.
      */
@@ -101,6 +102,7 @@ public enum Color {
 
     /**
      * Builds the Color with the name, ansiColor and character.
+     *
      * @param name The name of the color.
      * @param ansiColor The ansiColor code of the color.
      * @param character The character colored "color".
@@ -114,6 +116,7 @@ public enum Color {
 
     /**
      * Gets the name of Color.this.
+     *
      * @return The name of Colo.this.
      */
     public String getName() {
@@ -123,6 +126,7 @@ public enum Color {
 
     /**
      * Gets the name of the character of Color.this.
+     *
      * @return The name of the character of Color.this.
      */
     public String getCharacter() {
@@ -132,6 +136,7 @@ public enum Color {
 
     /**
      * Gets the Color of the character sent as a parameter.
+     *
      * @param character The character that you want to know the color.
      * @return The Color of the character "character".
      */
@@ -142,6 +147,7 @@ public enum Color {
 
     /**
      * Gets the Color that has the name "name".
+     *
      * @param name The name of the color you want to get the Color.
      * @return The Color.
      */
@@ -155,6 +161,7 @@ public enum Color {
 
     /**
      * Gets the color of the character sent as a parameter.
+     *
      * @param characterName The name of the character.
      * @return The Color of the character.
      * @throws ColorException If the character sent as a parameter doesn't exixst.

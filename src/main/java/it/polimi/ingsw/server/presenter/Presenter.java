@@ -28,6 +28,12 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * The presenter of the Model - Passive View - Presenter pattern. This class is responsible of
+ * furthering the correct requests by calling the correct methods of the model (through the
+ * GameHandler) and by preparing the proper JsonObjects for the View. Every method of this class not
+ * only performs the action but also sends the proper notification to the client.
+ */
 public abstract class Presenter implements VirtualPresenter {
 
     /**

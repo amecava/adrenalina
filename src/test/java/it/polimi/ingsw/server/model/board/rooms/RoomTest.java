@@ -8,8 +8,14 @@ import it.polimi.ingsw.server.model.players.Player;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the rooms methods.
+ */
 class RoomTest {
 
+    /**
+     * Tests the unsupported operations.
+     */
     @Test
     void getCurrentPosition() {
 
@@ -24,9 +30,11 @@ class RoomTest {
         }
     }
 
+    /**
+     * Tests if the Room getPlayers method return all the players in the selected room.
+     */
     @Test
     void getPlayers() {
-        EffectHandler effectHandler = new EffectHandler();
         Room room = new Room(Color.ROSSO);
 
         Square square1 = new Square(0, false);

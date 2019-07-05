@@ -17,6 +17,9 @@ import java.io.Serializable;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * The power up class to model the power up and offer methods to execute its effects.
+ */
 public class PowerUpCard implements Card, Ammo, Serializable {
 
     /**

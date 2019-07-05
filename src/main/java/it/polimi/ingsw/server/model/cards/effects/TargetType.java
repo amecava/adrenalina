@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server.model.cards.effects;
 
+/**
+ * An enum to differentiate target types directly.
+ */
 public enum TargetType {
 
     /**

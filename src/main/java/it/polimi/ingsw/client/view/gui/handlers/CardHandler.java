@@ -45,6 +45,7 @@ public class CardHandler {
 
     /**
      * This method opens a new stage with all the information of a specific weapon card
+     *
      * @param jsonCard A json object with the information af the linked card
      */
     public static void weaponCardInfo(JsonObject jsonCard) {
@@ -178,8 +179,8 @@ public class CardHandler {
 
     /**
      * this method shows all the cards and information of a selected player
-     * @param playerObject Holds all the information needed to show the cards and the
-     * power ups
+     *
+     * @param playerObject Holds all the information needed to show the cards and the power ups
      */
     public static void specificWeaponCardInfo(JsonObject playerObject) {
 
@@ -244,6 +245,7 @@ public class CardHandler {
 
     /**
      * method to show all the information relative to a single power up
+     *
      * @param object Containing all the information of a power up
      */
     public static void powerUpCardInfo(JsonObject object) {

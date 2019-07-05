@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests LockRifle, with a test method for every effect it has.
+ */
 class LockRifleTest {
 
     private EffectHandler effectHandler = new EffectHandler();
-
 
     @Test
     void primaryEffect() {

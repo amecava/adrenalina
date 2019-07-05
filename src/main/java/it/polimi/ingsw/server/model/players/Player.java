@@ -34,7 +34,8 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
 /**
- * The class representing a player of the match.
+ * The class representing a player of the match. It offers all the method necessary to allow the
+ * player to do whats it should.
  */
 public class Player implements Target, Serializable {
 
@@ -668,6 +669,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Performs the "collect" action when the player is in a square that is not a spawn square.
+     *
      * @return The ammo tile collected.
      * @throws SquareException If the player is in a spawn square.
      * @throws EmptySquareException If the square is empty.
@@ -707,7 +709,9 @@ public class Player implements Target, Serializable {
     }
 
     /**
-     * Performs the "collect" action when the player is in a spawn square and doesn't need to discard a card.
+     * Performs the "collect" action when the player is in a spawn square and doesn't need to
+     * discard a card.
+     *
      * @param cardId The id of the card to collect.
      * @param powerUpCards The power ups with which the user may want to pay the cost of the card.
      * @throws CardException If the card can't be found in the square.
@@ -754,7 +758,9 @@ public class Player implements Target, Serializable {
     }
 
     /**
-     * Performs the "collect" action when the player is in a spawn square and needs to discard a card.
+     * Performs the "collect" action when the player is in a spawn square and needs to discard a
+     * card.
+     *
      * @param squareCardId The id of the card to collect.
      * @param playerCardId The id of the card to discard.
      * @param powerUpCards The power ups with which the user may want to pay the cost of the card.
@@ -800,8 +806,10 @@ public class Player implements Target, Serializable {
 
     /**
      * Performs the "reload" action. Reloads the weapon given as a parameter.
+     *
      * @param cardId The id of the card to discard.
-     * @param powerUpCardList The power ups with which the user may want to pay the cost of the card.
+     * @param powerUpCardList The power ups with which the user may want to pay the cost of the
+     * card.
      * @throws IllegalActionException If the action cannot be performed at th moment.
      * @throws CardException If the card can't be found in player's hand.
      */
@@ -828,6 +836,7 @@ public class Player implements Target, Serializable {
 
     /**
      * Activates the card chosen by the user.
+     *
      * @param cardId The id of the card to activate.
      * @throws IllegalActionException If the action cannot be performed at th moment.
      * @throws CardException If the card can't be found in player's hand.
@@ -852,11 +861,16 @@ public class Player implements Target, Serializable {
 
     /**
      * Performs the "useCard" action.
-     * @param effectType The type of the effect that the user wants to be executed (primary/alternative/optionali1/optional2).
+     *
+     * @param effectType The type of the effect that the user wants to be executed
+     * (primary/alternative/optionali1/optional2).
      * @param effectTarget The targets of the effect.
-     * @param powerUpCardList The power ups with which the user may want to pay the cost of the effect.
-     * @throws PropertiesException if there are some problems with the effect and target properties.
-     * @throws EffectException If there are some problems during the execution of the effect (or it can't be used at the moment).
+     * @param powerUpCardList The power ups with which the user may want to pay the cost of the
+     * effect.
+     * @throws PropertiesException if there are some problems with the effect and target
+     * properties.
+     * @throws EffectException If there are some problems during the execution of the effect (or it
+     * can't be used at the moment).
      * @throws IllegalActionException If the action cannot be performed at th moment.
      * @throws CardException If the card can't be found in player's hand.
      */

@@ -17,10 +17,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests "mirino" powerup.
+ */
 class MirinoTest {
 
     private EffectHandler effectHandler = new EffectHandler();
 
+    /**
+     * Tests the correctness of this power up implementation.
+     */
     @Test
     void useCardMirino() {
 
@@ -140,6 +146,9 @@ class MirinoTest {
         }
     }
 
+    /**
+     * Tests the correctness of this power up implementation after a series of effects.
+     */
     @Test
     void useCardMirino2() {
 

@@ -11,7 +11,6 @@ import javax.json.JsonObject;
 /**
  * Main class for storing all the damages , marks , kills  and  possible
  * actions of the linked player.
-
  */
 public class Bridge implements Serializable {
 

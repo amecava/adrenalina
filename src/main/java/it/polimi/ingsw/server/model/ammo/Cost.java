@@ -6,8 +6,14 @@ import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
 import java.util.List;
 
+/**
+ * Class that offers a static method to support the cost checking action.
+ */
 public class Cost {
 
+    /**
+     * Private constructor to hide the public implicit one.
+     */
     private Cost() {
 
         //

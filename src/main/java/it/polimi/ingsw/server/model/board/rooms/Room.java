@@ -12,6 +12,9 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+/**
+ * Class of the Room. A room is a list of squares and has a color.
+ */
 public class Room implements Target, Serializable {
 
     /**
@@ -63,26 +66,52 @@ public class Room implements Target, Serializable {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets the color of the room.
+     *
+     * @return The Color of the room.
+     */
     public Color getColor() {
 
         return this.color;
     }
 
+    /**
+     * Sets the color of the room.
+     *
+     * @param color The Color of the room.
+     */
     public void setColor(Color color) {
 
         this.color = color;
     }
 
+    /**
+     * Gets the list of squares.
+     *
+     * @return The List of Square.
+     */
     public List<Square> getSquaresList() {
 
         return this.squaresList;
     }
 
+    /**
+     * Gets a specific square.
+     *
+     * @param index The id of the square.
+     * @return The Square object.
+     */
     public Square getSquare(int index) {
 
         return this.squaresList.get(index);
     }
 
+    /**
+     * Adds a square to the room.
+     *
+     * @param square The Square to add.
+     */
     public void addSquare(Square square) {
 
         this.squaresList.add(square);

@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests Furnace, with a test method for every effect it has.
+ */
 class FurnaceTest {
 
     private EffectHandler effectHandler = new EffectHandler();

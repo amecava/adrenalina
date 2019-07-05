@@ -4,6 +4,9 @@ import it.polimi.ingsw.server.model.exceptions.effects.EffectException;
 import it.polimi.ingsw.common.JsonUtility;
 import java.util.Arrays;
 
+/**
+ * Enum to differentiate effects directly.
+ */
 public enum EffectType {
 
     /**
@@ -43,6 +46,8 @@ public enum EffectType {
      *
      * @param request The string of the EffectType.
      * @return The searched EffectType.
+     *
+     * @throws EffectException If the effect doesn't exist.
      */
     public static EffectType ofString(String request) throws EffectException {
 
@@ -57,6 +62,7 @@ public enum EffectType {
      *
      * @param name The string of the EffectType.
      * @return The searched EffectType.
+     * @throws EffectException If the effect doesn't exist.
      */
     public static EffectType ofName(String name) throws EffectException {
 

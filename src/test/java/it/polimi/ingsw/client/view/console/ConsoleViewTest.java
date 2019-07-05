@@ -1,7 +1,5 @@
 package it.polimi.ingsw.client.view.console;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import it.polimi.ingsw.server.model.board.Board;
 import it.polimi.ingsw.server.model.cards.effects.EffectHandler;
 import java.io.StringReader;
@@ -11,10 +9,13 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the ConsoleView methods.
+ */
 class ConsoleViewTest {
 
     /**
-     * Checks if the info of the cards are well built.
+     * Checks if the cards infos are well built.
      */
     @Test
     void completeCardInfo() {

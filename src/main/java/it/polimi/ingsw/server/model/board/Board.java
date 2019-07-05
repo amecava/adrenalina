@@ -29,6 +29,9 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * The board class. The board hold the square graph and the Card decks.
+ */
 public class Board implements Serializable {
 
     /**
@@ -77,27 +80,52 @@ public class Board implements Serializable {
         return this.roomsList;
     }
 
-
+    /**
+     * Gets a room given an index.
+     *
+     * @param index The index of the room.
+     * @return The Room object.
+     */
     public Room getRoom(int index) {
 
         return this.roomsList.get(index);
     }
 
+    /**
+     * Gets the WeaponDeck.
+     *
+     * @return The WeaponDeck.
+     */
     public WeaponDeck getWeaponDeck() {
 
         return this.weaponDeck;
     }
 
+    /**
+     * Gets the AmmoTilesDeck.
+     *
+     * @return The AmmoTilesDeck.
+     */
     public AmmoTilesDeck getAmmoTilesDeck() {
 
         return this.ammoTilesDeck;
     }
 
+    /**
+     * Gets the PowerUpDeck.
+     *
+     * @return The PowerUpDeck.
+     */
     public PowerUpDeck getPowerUpDeck() {
 
         return this.powerUpDeck;
     }
 
+    /**
+     * Gets a PowerUpCard card.
+     *
+     * @return A PowerUpCard
+     */
     public PowerUpCard getPowerUp() {
 
         return this.powerUpDeck.getPowerUpCard();
@@ -128,6 +156,7 @@ public class Board implements Serializable {
      *
      * @param color The color of the room in which you want to search the spawn square.
      * @return The spawn square of the room.
+     * @throws SquareException If the square doesn't exist.
      */
 
     public Square findSpawn(Color color) throws SquareException {
@@ -146,6 +175,8 @@ public class Board implements Serializable {
      * @param name The color of the square.
      * @param id The id of the square.
      * @return The square with "name" color and "id" id.
+     * @throws SquareException If the square doesn't exist.
+     * @throws ColorException If the given color doesn't exist.
      */
     public Square findSquare(String name, String id) throws SquareException, ColorException {
 

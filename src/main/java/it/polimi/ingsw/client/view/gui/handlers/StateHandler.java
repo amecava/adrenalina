@@ -39,7 +39,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 /**
- *Updates the state of the gui
+ * Updates the state of the gui
  */
 public class StateHandler {
 
@@ -53,6 +53,7 @@ public class StateHandler {
 
     /**
      * updates the state of the player by making available some buttons
+     *
      * @param object object containing all the possible actions that the player can do
      */
     public static synchronized void updateState(JsonObject object) {
@@ -632,6 +633,7 @@ public class StateHandler {
 
     /**
      * creates the reload stage for the weapon card
+     *
      * @param methodName the name of the method that will be called on the server
      */
     private static void createReloadStage(String methodName) {
@@ -783,8 +785,8 @@ public class StateHandler {
     }
 
     /**
-     * resets the event handler linked with the mouse clicked
-     * for all the nodes present on the stage
+     * resets the event handler linked with the mouse clicked for all the nodes present on the
+     * stage
      */
     private static void eliminateSetOnMouseClicked() {
 
@@ -833,9 +835,10 @@ public class StateHandler {
 
     /**
      * creates shoot stage for the selected weapon card or power up
+     *
      * @param effectType primary , secondary or alternative
-     * @param args  double value that gives us the information about the number of
-     * parameters needed.
+     * @param args double value that gives us the information about the number of parameters
+     * needed.
      * @param hasCost if it has a cost associated with the effect
      * @param targetType Player or a room or a square
      * @param powerString The String that will be sent to the server to use the power up.
@@ -898,6 +901,7 @@ public class StateHandler {
 
     /**
      * creates the target for the shoot state
+     *
      * @param shootStage the shoot stage linked with the target
      * @param root in wich the scene is showing
      * @param board node representing the board
@@ -906,8 +910,7 @@ public class StateHandler {
      * @param hasCost if the effect has a linked cost
      * @param targetType type of target , room or square or character
      * @param target Target of the shoot stage
-     * @param destination if the target is a square than there has to be a square
-     * as destination
+     * @param destination if the target is a square than there has to be a square as destination
      * @param powerString The String that will be sent to the server to use the power up.
      * @param powerUpName The name of the power up to get the right imageView.
      */
@@ -1097,6 +1100,7 @@ public class StateHandler {
 
     /**
      * creates the destination for the shoot stage
+     *
      * @param shootStage the shoot stage linked with the target
      * @param root in wich the scene is showing
      * @param board node representing the board
@@ -1104,10 +1108,8 @@ public class StateHandler {
      * @param args number of parameters needed
      * @param hasCost if the effect has a linked cost
      * @param target Target of the shoot stage
-     * @param destination if the target is a square than there has to be a square
-     * as a destination
+     * @param destination if the target is a square than there has to be a square as a destination
      * @param powerUpString The String that will be sent to the server to use the power up.
-
      */
     private static void createDestination(Stage shootStage, VBox root, AnchorPane board,
             String effectType, double args, boolean hasCost,
@@ -1178,6 +1180,7 @@ public class StateHandler {
 
     /**
      * screen needed to choose to pay with cubes or with power ups
+     *
      * @param shootStage current shoot stage
      * @param root root of the current scene
      * @param effectType effect type of the effect
@@ -1342,6 +1345,7 @@ public class StateHandler {
 
     /**
      * creates the end action button
+     *
      * @return the node representative of the end action button
      */
     private static Button createEndActionButton() {
