@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.server.model.players.Color;
 import org.junit.jupiter.api.Test;
 
+
 class AmmoCubeTest {
 
     @Test

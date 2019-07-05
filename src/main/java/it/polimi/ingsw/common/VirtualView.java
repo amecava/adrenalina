@@ -3,6 +3,9 @@ package it.polimi.ingsw.common;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * The interface that declares all the method that the view must have.
+ */
 public interface VirtualView extends Remote {
 
     /**

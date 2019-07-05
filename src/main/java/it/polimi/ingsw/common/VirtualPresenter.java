@@ -3,6 +3,9 @@ package it.polimi.ingsw.common;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * The interface that declares all the methods that the Presenter must have.
+ */
 public interface VirtualPresenter extends Remote {
 
     /**
