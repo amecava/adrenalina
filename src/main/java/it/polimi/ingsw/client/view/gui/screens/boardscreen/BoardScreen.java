@@ -321,7 +321,6 @@ public class BoardScreen {
 
     /**
      * updates the main board screen with all the changes made by one or more players.
-     * @param object Containing all the information in order to update the screen.
      */
     private static void createInfoCardStage(){
 

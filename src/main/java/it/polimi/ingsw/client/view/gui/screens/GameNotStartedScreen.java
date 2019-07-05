@@ -51,34 +51,24 @@ public class GameNotStartedScreen {
      * generates the game not started screen
      */
     public static void generateScreen() {
-        /**
-         * creating the new root for the new scene
-         */
+
         BorderPane borderPane = GUIView.createBorderPane(true, false);
-        /**
-         * centre of the scene in which characters images and count down reside in
-         */
+
         VBox center = new VBox();
         center.setSpacing(30);
         center.setAlignment(Pos.CENTER);
-        /**
-         * box in which all the boards that are eligible for voting reside in
-         */
+
         HBox boards = new HBox();
         boards.setMouseTransparent(false);
         boards.setAlignment(Pos.CENTER);
 
         Images.boardsMap.forEach((key, entry) -> {
-            /**
-             * image of the board
-             */
+
             ImageView imageView = new ImageView(entry);
 
             imageView.setPreserveRatio(true);
             imageView.setFitHeight(150);
-            /**
-             * board button that can be clicked  for voting
-             */
+
             Button board = new GameButton(imageView);
 
             board.setOnMouseClicked(mouseEvent -> {
@@ -108,9 +98,7 @@ public class GameNotStartedScreen {
         characters.setAlignment(Pos.CENTER);
 
         Images.playersMap.forEach((key, value) -> {
-            /**
-             * image of the character not selected
-             */
+
             ImageView desaturated = new ImageView(value);
             desaturated.setPreserveRatio(true);
             desaturated.setFitHeight(180);
@@ -123,9 +111,7 @@ public class GameNotStartedScreen {
             label.setFont(Font.font("Silom", 30));
             label.setTextFill(Color.WHITE);
             label.setAlignment(Pos.CENTER);
-            /**
-             * temporary box for storing images
-             */
+
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.CENTER);
             vBox.setSpacing(20);
@@ -162,9 +148,7 @@ public class GameNotStartedScreen {
             object.getJsonArray("playerList").stream()
                     .map(JsonValue::asJsonObject)
                     .forEach(x -> {
-                        /**
-                         * box containing all the characters images
-                         */
+
                         VBox characterVBox = characters.getChildren().stream()
                                 .map(y -> (VBox) y)
                                 .filter(y -> y.getId().equals(x.getString("character")))
@@ -179,9 +163,7 @@ public class GameNotStartedScreen {
                             imageView.setOpacity(1);
                             ((ColorAdjust) imageView.getEffect()).setSaturation(0);
 
-                            /**
-                             * translating image after a character has been chosen
-                             */
+
                             RotateTransition rotator = new RotateTransition(Duration.millis(300),
                                     imageView);
                             rotator.setAxis(Rotate.Y_AXIS);

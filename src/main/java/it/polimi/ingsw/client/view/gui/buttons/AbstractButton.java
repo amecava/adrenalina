@@ -11,8 +11,14 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+/**
+ * abstract class for extending functionality of basic javafx buttons
+ */
 abstract class AbstractButton extends javafx.scene.control.Button {
 
+    /**
+     * defines the variables of the abstract button
+     */
     AbstractButton() {
 
         this.setContentDisplay(ContentDisplay.CENTER);

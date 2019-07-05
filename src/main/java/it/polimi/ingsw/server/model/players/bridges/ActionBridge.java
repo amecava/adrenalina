@@ -81,7 +81,7 @@ class ActionBridge implements Serializable {
     /**
      * sets the adrenalin state of the player , if the state changes than all the
      * possible actions will change
-     * @param adrenalin
+     * @param adrenalin sets if the player should be in adrenalin state or not
      */
     void setAdrenalin(Adrenalin adrenalin) {
 
@@ -151,7 +151,7 @@ class ActionBridge implements Serializable {
 
     /**
      * sets if the linked player should have access to the frenzy actions
-     * @param frenzyActions
+     * @param frenzyActions if the linked player should have access to the frenzy actions
      */
     void setFrenzyActions(boolean frenzyActions) {
 

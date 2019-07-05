@@ -4,6 +4,9 @@ import java.io.Serializable;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * class for representing the reward points for helping kill a player
+ */
 public class PointsOfDeath implements Serializable {
 
     /**
@@ -43,7 +46,7 @@ public class PointsOfDeath implements Serializable {
 
     /**
      * ensures that this points can not be given to another player
-     * unless tehy are reset with the reset method
+     * unless they  are reset with the reset method
      * @return the value of points that the referenced player now owns
      */
     public int getValueSetUsed() {

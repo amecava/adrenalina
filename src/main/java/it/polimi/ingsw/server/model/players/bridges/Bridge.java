@@ -8,6 +8,11 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * Main class for storing all the damages , marks , kills  and  possible
+ * actions of the linked player.
+
+ */
 public class Bridge implements Serializable {
 
     /**
@@ -38,7 +43,7 @@ public class Bridge implements Serializable {
 
     /**
      * creates a player's bridge with the players linked color
-     * @param color
+     * @param color bridge's color
      */
     public Bridge(Color color) {
 
@@ -46,7 +51,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     *gets the color of the linked  player's bridge
      * @return the color of the linked  player's bridge
      */
 
@@ -56,7 +61,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     * gets the total points earned by the player
      * @return the total points earned by the player
      */
     public int getPoints() {
@@ -111,8 +116,9 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
-     * @return true if the player's firt shot needs to be counted as
+     * checks if the player's first shot needs to be counted as
+     * a first blood shot
+     * @return true if the player's first shot needs to be counted as
      * a first blood shot
      */
     public boolean isKillStreakCount() {
@@ -129,7 +135,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     *gets all the damages taken by the player
      * @return all the damages taken by the player
      */
     public List<Color> getShots() {
@@ -138,7 +144,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     *gets all the marks taken by the player
      * @return all the marks taken by the player
      */
     public List<Color> getMarks() {
@@ -168,7 +174,7 @@ public class Bridge implements Serializable {
 
     /**
      * checks if the player is dead at the end of the turn
-     * @return
+     * @return true uf the player is dead at the end of the turn
      */
     public boolean isDead() {
 
@@ -176,7 +182,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     *gets the adrenalin state of the linked player
      * @return the adrenalin state of the linked player
      */
     public Adrenalin getAdrenalin() {
@@ -193,7 +199,7 @@ public class Bridge implements Serializable {
     /**
      * changes the adrenalin state of the linked player based on his damages and on
      * the game state
-     * @param adrenalin
+     * @param adrenalin the adrenalin state of the linked player
      */
     public void setAdrenalin(Adrenalin adrenalin) {
 
@@ -201,7 +207,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     *gets the current action selected by the player during his turn
      * @return the current action selected by the player during his turn
      */
     public ActionStructure getCurrentAction() {
@@ -210,7 +216,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     * gets the current action selected by the player is a shoot action
      * @return true if the current action selected by the player is a shoot action
      */
     public boolean isShooting() {
@@ -219,7 +225,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     *checks id the linked player is the one that started the game
      * @return true if the linked player is the one that started the game
      */
     public boolean isFirstPlayer() {
@@ -237,7 +243,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     * checks if the linked player has gotten access  to the frenzy actions
      * @return true if the linked player has gotten access  to the frenzy actions
      */
     public boolean isFrenzyActions() {
@@ -247,7 +253,8 @@ public class Bridge implements Serializable {
 
     /**
      * sets if the linked player should have access to the frenzy actions
-     * @param frenzyActions
+     * @param frenzyActions expresses if the linked player should have access to
+     * the frenzy actions
      */
     public void setFrenzyActions(boolean frenzyActions) {
 
@@ -255,7 +262,7 @@ public class Bridge implements Serializable {
     }
 
     /**
-     *
+     * checks if the player is dead and can respawn
      * @return true if the player is dead and can respawn
      */
     public boolean isRespawn() {
@@ -283,7 +290,7 @@ public class Bridge implements Serializable {
 
     /**
      * sets the remaining actions of the player in his turn
-     * @param remainingActions
+     * @param remainingActions number of remaining actions in the player's turn
      */
     public void setRemainingActions(int remainingActions) {
 

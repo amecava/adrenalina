@@ -116,9 +116,7 @@ public class ActionStructure implements Serializable {
      * @param change the state that the features need to go in
      */
     public void endAction(int limit, boolean change) {
-        /**
-         * index to keep track of the current feature
-         */
+
         int i = 0;
 
         if (this.getMove() != null) {
@@ -157,6 +155,9 @@ public class ActionStructure implements Serializable {
         }
     }
 
+    /**
+     * builder for the action structure class
+     */
     static class ActionStructureBuilder {
 
         /**
@@ -203,7 +204,7 @@ public class ActionStructure implements Serializable {
         /**
          * builds the action builder by taking all the parameters of the json file
          * and using them to create action features
-         * @return
+         * @return a action structure for the linked player
          */
         ActionStructure build() {
 

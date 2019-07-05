@@ -9,9 +9,15 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-
+/**
+ * button for displaying information on actions that the player can do during his action
+ */
 public class InfoButton extends javafx.scene.control.Button {
 
+    /**
+     * creating the info button
+     * @param infoText info text displaying in the info button
+     */
     public InfoButton(String infoText) {
 
         super();

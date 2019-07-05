@@ -96,7 +96,7 @@ public class BoardFunction {
      * @param rotate to rotate the image
      * @param width of the weapon card  placement
      * @param height of the weapon card placement
-     * @param sequentialTransition
+     * @param sequentialTransition sequantial transition to follow
      */
     static synchronized void addCardToSpawn(ObservableList<Node> children, String color, int id,
             Point3D axis, int rotate,

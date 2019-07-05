@@ -9,6 +9,11 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+/**
+ * This class stores all the damages
+ * and marks of the linked player
+ * among with the color of the player who did them
+ */
 class DamageBridge implements Serializable {
 
     /**
@@ -30,7 +35,8 @@ class DamageBridge implements Serializable {
     private List<Color> marks = new ArrayList<>();
 
     /**
-     *
+     *checks if the player's first shot needs to be counted as
+     * a first blood shot
      * @return true if the player's first shot needs to be counted as
      * a first blood shot
      */
@@ -48,7 +54,7 @@ class DamageBridge implements Serializable {
     }
 
     /**
-     *
+     * gets the list of all damages taken by the player
      * @return the list of all damages taken by the player
      */
     List<Color> getShots() {
@@ -57,7 +63,7 @@ class DamageBridge implements Serializable {
     }
 
     /**
-     *
+     * gets the list of all marks taken by the player
      * @return a list of all marks taken by the player
      */
     List<Color> getMarks() {

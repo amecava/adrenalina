@@ -13,11 +13,26 @@ import javafx.scene.image.ImageView;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
+/**
+ * button used for rotating the images in the buttons
+ */
 abstract class ButtonFlip extends AbstractButton {
 
+    /**
+     * axes of rotation
+     */
     private Point3D axis;
+    /**
+     * boolean property for showing the front or the rear of the image in the button
+     */
     private BooleanProperty showFront = new SimpleBooleanProperty(false);
 
+    /**
+     * creating the button that needs to be rotated
+     * @param back image of the back
+     * @param card image of the front
+     * @param axis axis point of rotation
+     */
     ButtonFlip(ImageView back, ImageView card, Point3D axis) {
 
         super();
@@ -39,6 +54,12 @@ abstract class ButtonFlip extends AbstractButton {
         }
     }
 
+    /**
+     * Creates the transition for the button to flip
+     * @param duration of the transition
+     * @param event event linked with finish of the rotation
+     * @return a sequential transition after the rotation
+     */
     public SequentialTransition flipTransition(Duration duration, EventHandler<ActionEvent> event) {
 
         RotateTransition rotator1 = new RotateTransition(duration, this);
@@ -62,6 +83,9 @@ abstract class ButtonFlip extends AbstractButton {
         return new SequentialTransition(rotator1, rotator2);
     }
 
+    /**
+     * flips the button and the images
+     */
     private void flip() {
 
         showFront.setValue(!showFront.get());

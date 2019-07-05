@@ -8,6 +8,10 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 
+/**
+ * this class stores all the time the linked player has died and all the points each kill
+ * will give to all the players who helped kill the linked player
+ */
 class DeathBridge implements Serializable {
 
     /**
@@ -86,8 +90,8 @@ class DeathBridge implements Serializable {
     }
 
     /**
-     * creates the json object of the death bridge structure for  each player
-     * @return
+     * creates the json object of the death bridge structure for the linked player
+     * @return the json object of the death bridge structure for  the linked player
      */
     JsonArray toJsonArray() {
 

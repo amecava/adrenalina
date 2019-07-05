@@ -7,7 +7,6 @@ import it.polimi.ingsw.client.view.gui.handlers.Notifications;
 import it.polimi.ingsw.client.view.gui.animations.Explosion;
 import it.polimi.ingsw.client.view.gui.buttons.GameButton;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import javafx.animation.Animation;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -23,10 +22,6 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
@@ -400,15 +395,11 @@ public class GameListScreen {
         label.setFont(Font.font("Silom", FontWeight.BOLD, 70));
         label.setAlignment(Pos.CENTER);
         label.setTextFill(Color.WHITE);
-        /**
-         * hbox containing characters
-         */
+
         HBox characters = new HBox();
         characters.setAlignment(Pos.CENTER);
         characters.setSpacing(20);
-        /**
-         * button for going backwards
-         */
+
         Button back = new GameButton("indietro");
 
         back.setOnMouseClicked(mouseEvent ->
@@ -423,9 +414,7 @@ public class GameListScreen {
             ImageView imageView = new ImageView(value);
             imageView.setPreserveRatio(true);
             imageView.setFitHeight(200);
-            /**
-             * getting the images of the characters
-             */
+
             Button button = new GameButton(imageView);
 
             button.setOnMouseClicked(mouseEvent -> {

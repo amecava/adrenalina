@@ -2,6 +2,9 @@ package it.polimi.ingsw.server.model.points;
 
 import java.util.Comparator;
 
+/**
+ * class for sorting the player's contribute in killing a player
+ */
 public class PointSorter implements Comparator<PointStructure> {
 
     /**

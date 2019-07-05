@@ -5,6 +5,11 @@ import it.polimi.ingsw.server.model.players.Player;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * structure that every player has when making damage to another player . In this structure
+ * it is saved the first damage the player did to the other one , the last damage , and the
+ * number of damage.
+ */
 public class PointStructure implements Serializable {
 
     /**
@@ -16,7 +21,7 @@ public class PointStructure implements Serializable {
      */
     private int numberDamage;
     /**
-     * first damge that the player did to the dead player
+     * first damage that the player did to the dead player
      */
     private int firstDamage;
     /**
@@ -25,8 +30,8 @@ public class PointStructure implements Serializable {
     private int lastDamage;
 
     /**
-     * creating the point structer for the refrenced player
-     * @param player is the player for wich we need to count the points after
+     * creating the point structure for the referenced  player
+     * @param player is the player for which we need to count the points after
      * a death of a player or after the end game
      */
     public PointStructure(Player player) {
@@ -36,7 +41,7 @@ public class PointStructure implements Serializable {
 
     /**
      * gets the referenced player
-     * @return
+     * @return the referenced player
      */
     Player getPlayer() {
 
@@ -45,7 +50,7 @@ public class PointStructure implements Serializable {
 
     /**
      * gets the number of damages done by the referenced player to the dead player
-     * @return
+     * @return the number of damages done by the referenced player to the dead player
      */
     int getNumberDamage() {
 
@@ -101,10 +106,7 @@ public class PointStructure implements Serializable {
 
         this.numberDamage = 0;
 
-        /**
-         * indicates if it has been  found  the first damage done by the referenced player
-         * to the dead player
-         */
+
         boolean foundFirstShot = false;
 
         for (int i = 0; i < shots.size(); i++) {

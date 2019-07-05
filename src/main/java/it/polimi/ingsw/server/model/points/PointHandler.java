@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+/**
+ * main class for counting all the points each player deserves after a kill or at the end
+ * of the game , the main method of this class is called at the end of each turn.
+ */
 public class PointHandler {
 
     private PointHandler() {
@@ -143,13 +147,8 @@ public class PointHandler {
 
         playerList.forEach(x -> deathUpdate(x.getBridge(), playerList));
         deathUpdate(deaths, playerList);
-        /**
-         * index for placing the player in the correct winning order
-         */
+
         int i = 0;
-        /**
-         * index for placing the player in the correct winning order
-         */
         int j = 0;
 
         List<List<Player>> winnerList = new ArrayList<>();
@@ -182,6 +181,12 @@ public class PointHandler {
         return winnerList;
     }
 
+    /**
+     * gets the next player in te list , making the list circular
+     * @param playerList list of all players
+     * @param player the active player who holds the turn
+     * @return the next player
+     */
     private static Player getNextPlayer(List<Player> playerList, Player player) {
 
         int nextPlayer = playerList.indexOf(player) + 1;
@@ -203,16 +208,8 @@ public class PointHandler {
      * @param playerList list of all players in the same game
      */
     private static void deathUpdate(Bridge bridge, List<Player> playerList) {
-        /**
-         * it checks if it has found the player that has done the first damage
-         * to the dead player
-         */
-        boolean foundFirstBlood = false;
 
-        /**
-         * it check if it has found or not the player that has done the 12th damage
-         * to the dead player
-         */
+        boolean foundFirstBlood = false;
         boolean foundLastBlood = false;
 
         List<PointStructure> pointStructures = playerList.stream()

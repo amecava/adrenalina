@@ -8,6 +8,10 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * main class for storing the kill streak of all the game among
+ * with the player's color who did the kill shot
+ */
 public class Deaths extends Bridge implements Serializable {
 
     /**
@@ -65,7 +69,7 @@ public class Deaths extends Bridge implements Serializable {
     }
 
     /**
-     *
+     *gets referenced player that started frenzy mode
      * @return the referenced player that started frenzy mode
      */
     Player getFirstFrenzyPlayer() {
@@ -122,7 +126,7 @@ public class Deaths extends Bridge implements Serializable {
 
     /**
      * creates a json object of the current structure
-     * @return
+     * @return a json object of the current structure
      */
     public JsonObject toJsonDeaths() {
 

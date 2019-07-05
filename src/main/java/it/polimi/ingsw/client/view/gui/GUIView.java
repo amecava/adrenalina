@@ -219,9 +219,6 @@ public class GUIView extends Application implements View, VirtualView {
         stage.getIcons().add(new Image("images/adrenaline_icon.png"));
 
         initialize(this);
-        /**
-         * first scene in the stage
-         */
         Scene scene = new Scene(new BorderPane());
         scene.setFill(Color.TRANSPARENT);
 
@@ -296,24 +293,13 @@ public class GUIView extends Application implements View, VirtualView {
             if (Boolean.TRUE.equals(t1)) {
 
                 try {
-                    /**
-                     * the real adress of the server found with the discovery port
-                     */
-                    InetAddress inetAddress = Client.discoverServer(discoveryPort);
 
-                    /**
-                     * new current scene
-                     */
+                    InetAddress inetAddress = Client.discoverServer(discoveryPort);
                     BorderPane borderPane = createBorderPane(true, true);
-                    /**
-                     * box in wich will reside the two types of connections
-                     */
+
                     HBox hBox = new HBox();
                     hBox.setSpacing(50);
 
-                    /**
-                     * rmi connection button
-                     */
                     Button rmiButton = new GameButton(new ImageView(Images.imagesMap.get("rmi")));
                     Button tcpButton = new GameButton(new ImageView(Images.imagesMap.get("tcp")));
 
@@ -676,7 +662,8 @@ public class GUIView extends Application implements View, VirtualView {
      * method called by the server for finishing the game and showing the winners
      * @param value A serialized JsonObject that will be deserialized using
      * JsonUtility.jsonDeserialize(String value) method, containing all the information from the model
-     * @throws RemoteException
+     * @throws RemoteException if the client-server can't talk to each other with the
+     * network
      */
 
     @Override

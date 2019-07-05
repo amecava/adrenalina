@@ -44,9 +44,7 @@ public class EndGameScreen {
      * @param object containing the information of the winning players
      */
     public static void generateScreen(JsonObject object) {
-        /**
-         * creating the root for the new scene
-         */
+
         BorderPane borderPane = GUIView.createBorderPane(true, false);
 
         Label gameEndedLabel = new Label();
