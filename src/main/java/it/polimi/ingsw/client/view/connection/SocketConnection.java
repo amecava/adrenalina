@@ -15,18 +15,40 @@ import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * This class handles the socket connection between the view and the server.
+ */
 public class SocketConnection implements Runnable {
 
+    /**
+     * The server InetAdress received with the UDP broadcast message.
+     */
     private InetAddress inetAddress;
+    /**
+     * The server socket port received with the UDP broadcast message.
+     */
     private int port;
 
+    /**
+     * The view that the connection will use to communicate with the user (CLI or GUI).
+     */
     private View view;
 
+    /**
+     * Logger
+     */
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
+    /**
+     * Constructor for the socket connection.
+     *
+     * @param inetAddress The server InetAdress received with the UDP broadcast message.
+     * @param port The server socket port received with the UDP broadcast message.
+     * @param view The view that the connection will use to communicate with the user (CLI or GUI).
+     */
     public SocketConnection(InetAddress inetAddress, int port, View view) {
 
         this.inetAddress = inetAddress;
@@ -35,6 +57,11 @@ public class SocketConnection implements Runnable {
         this.view = view;
     }
 
+    /**
+     * This method connects to the socket of the server. When the connection is established there is
+     * an input thread that receives data from the server and an output thread that sends the view
+     * user's input to the server.
+     */
     @Override
     public void run() {
 
@@ -119,6 +146,13 @@ public class SocketConnection implements Runnable {
         }
     }
 
+    /**
+     * This method creates the JsonObject required for the network communication.
+     *
+     * @param method The method to be called on the server.
+     * @param value The method argument.
+     * @return The JsonObject.
+     */
     private JsonObject jsonSerialize(String method, String value) {
 
         return Json.createObjectBuilder()

@@ -18,17 +18,35 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+/**
+ * This class handles the terminal user input parsing.
+ */
 public class JsonRegex {
 
+    /**
+     * Private constructor to hide the public implicit one.
+     */
     private JsonRegex() {
 
         //
     }
 
+    /**
+     * The info methods that the user can type and use.
+     */
     private static final List<String> info = new ArrayList<>();
+    /**
+     * The game methods that the user can type and use.
+     */
     private static final List<String> commands = new ArrayList<>();
 
+    /**
+     * This Map maps what the user types with the corresponding server method.
+     */
     private static Map<String, String> inputMethod = new HashMap<>();
+    /**
+     * This Map maps the methods with the corresponding regexes.
+     */
     private static Map<String, List<Triple<String, Pattern, String>>> regexConnection = new HashMap<>();
 
     static {
@@ -73,6 +91,11 @@ public class JsonRegex {
                 });
     }
 
+    /**
+     * This method updates the client state.
+     *
+     * @param object The JsonObject containing the state information.
+     */
     public static void updateState(JsonObject object) {
 
         info.clear();
@@ -87,6 +110,11 @@ public class JsonRegex {
                 .forEach(x -> commands.add(x.substring(1, x.length() - 1)));
     }
 
+    /**
+     * This methods calculates the info methods of the actual client state.
+     *
+     * @return The list of commands.
+     */
     static List<String> getInfo() {
 
         return inputMethod.entrySet().stream()
@@ -95,6 +123,11 @@ public class JsonRegex {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * This methods calculates the game methods of the actual client state.
+     *
+     * @return The list of commands.
+     */
     static List<String> getCommands() {
 
         return inputMethod.entrySet().stream()
@@ -103,6 +136,12 @@ public class JsonRegex {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * This method parses the user input transforming it in a JsonObject.
+     *
+     * @param parts The user input divided in key word and value.
+     * @return The JsonObject to be sent to the server.
+     */
     public static JsonObject toJsonObject(String[] parts) {
 
         JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -159,6 +198,13 @@ public class JsonRegex {
         return builder.build();
     }
 
+    /**
+     * A triple set
+     *
+     * @param <T> The first element of the triple.
+     * @param <U> The second element of the triple.
+     * @param <V> The third element of the triple.
+     */
     private static class Triple<T, U, V> {
 
         private final T first;

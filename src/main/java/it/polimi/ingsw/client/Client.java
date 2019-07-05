@@ -10,14 +10,37 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 
+/**
+ * This is the main class of the client.
+ */
 public class Client {
 
+    /**
+     * The port to send the UDP broadcast messages to. Needed to retain the server IP address.
+     */
     private int discoveryPort;
+    /**
+     * The RMI server port to establish the RMI connection.
+     */
     private int rmiPort;
+    /**
+     * The socket server port to establish the socket connection.
+     */
     private int socketPort;
 
+    /**
+     * The view, it can be a ConsoleView or a GUIView.
+     */
     private View view;
 
+    /**
+     * The Client constructor method.
+     *
+     * @param discoveryPort The port to send the UDP broadcast messages to. Needed to retain the
+     * server IP address.
+     * @param rmiPort The RMI server port to establish the RMI connection.
+     * @param socketPort The socket server port to establish the socket connection.
+     */
     private Client(int discoveryPort, int rmiPort, int socketPort) {
 
         this.discoveryPort = discoveryPort;
@@ -25,6 +48,12 @@ public class Client {
         this.socketPort = socketPort;
     }
 
+    /**
+     * This method parses the main args and starts the ConsoleView or the GUIView. The initialScreen
+     * is then presented to the user.
+     *
+     * @param args The main method args.
+     */
     private void start(String[] args) {
 
         if (Arrays.stream(args).anyMatch("c"::equals)) {
@@ -58,6 +87,13 @@ public class Client {
         View.connection.remove().run();
     }
 
+    /**
+     * This method sends UDP broadcast messages to the discoveryPort until the server is found.
+     *
+     * @param port The port to send the UDP broadcast messages to. Needed to retain the server IP address.
+     * @return The found server InetAddress.
+     * @throws IOException If the connection is broken.
+     */
     public static InetAddress discoverServer(int port) throws IOException {
 
         InetAddress inetAddress = null;
@@ -94,12 +130,22 @@ public class Client {
         return inetAddress;
     }
 
+    /**
+     * This method sets the GUI preloader and launches the GUIView.
+     *
+     * @param args The main method args.
+     */
     private static void launch(String[] args) {
 
         System.setProperty("javafx.preloader", "it.polimi.ingsw.client.view.gui.GUIPreloader");
         GUIView.launch(GUIView.class, args);
     }
 
+    /**
+     * This is the main method of the Client class.
+     *
+     * @param args The main method args.
+     */
     public static void main(String[] args) {
 
         Client client = new Client(4560, 4561, 4562);

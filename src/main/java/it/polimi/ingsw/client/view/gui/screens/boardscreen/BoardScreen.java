@@ -153,8 +153,8 @@ public class BoardScreen {
         board.getChildren().addAll(weaponsDx, weaponsSx, weaponsTop);
 
         killsOfAllPlayers.setId("kills");
-        AnchorPane.setLeftAnchor(killsOfAllPlayers, 70.0);
         AnchorPane.setTopAnchor(killsOfAllPlayers, 30.0);
+        AnchorPane.setLeftAnchor(killsOfAllPlayers, 55.0);
 
         playerCubes.setId("cubes");
         playerCubes.setPrefHeight(30);
@@ -553,14 +553,14 @@ public class BoardScreen {
 
             killsOfAllPlayers.getChildren().clear();
 
-            jsonObject.getJsonObject("deaths").getJsonArray("deathBridgeArray").stream()
-                    .map(JsonValue::asJsonObject)
+            jsonObject.getJsonObject("deaths").getJsonObject("damageBridge")
+                    .getJsonArray("shots").stream()
                     .forEach(x -> {
                         ImageView killshot = new ImageView(
                                 Images.dropsMap
                                         .get(x.toString()
                                                 .substring(1, x.toString().length() - 1)));
-                        killshot.setFitWidth(40);
+                        killshot.setFitWidth(31);
                         killshot.setFitHeight(40);
                         killsOfAllPlayers.getChildren().add(killshot);
 

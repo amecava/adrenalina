@@ -15,18 +15,40 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.JsonObject;
 
+/**
+ * This class handles the RMI connection between the view and the server.
+ */
 public class RmiConnection implements Runnable {
 
+    /**
+     * The server InetAdress received with the UDP broadcast message.
+     */
     private InetAddress inetAddress;
+    /**
+     * The server RMI port received with the UDP broadcast message.
+     */
     private int port;
 
+    /**
+     * The view that the connection will use to communicate with the user (CLI or GUI).
+     */
     private View view;
 
+    /**
+     * Logger
+     */
     private static final Logger LOGGER = Logger.getLogger(
 
             Thread.currentThread().getStackTrace()[0].getClassName()
     );
 
+    /**
+     * Constructor for the RMI connection.
+     *
+     * @param inetAddress The server InetAdress received with the UDP broadcast message.
+     * @param port The server RMi port received with the UDP broadcast message.
+     * @param view The view that the connection will use to communicate with the user (CLI or GUI).
+     */
     public RmiConnection(InetAddress inetAddress, int port, View view) {
 
         this.inetAddress = inetAddress;
@@ -35,6 +57,11 @@ public class RmiConnection implements Runnable {
         this.view = view;
     }
 
+    /**
+     * This method connects to the server RMI registry and exports a VirtualView to be used on the
+     * RMI callback. When the connection is established it waits for user inputs from the view to be
+     * sent to the server.
+     */
     @Override
     public void run() {
 

@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * This class is the virtual terminal used to separate input and output streams on the real
+ * terminal.
+ */
 public class Terminal {
 
     /**

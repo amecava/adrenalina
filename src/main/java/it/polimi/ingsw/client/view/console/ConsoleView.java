@@ -44,6 +44,11 @@ public class ConsoleView implements View, VirtualView {
         input.start();
     }
 
+    /**
+     * This method parses the terminal user input.
+     *
+     * @return The computed JsonObject.
+     */
     @Override
     public JsonObject userInput() {
 
@@ -60,6 +65,10 @@ public class ConsoleView implements View, VirtualView {
         }
     }
 
+    /**
+     * The initial screen of the CLI. The user can choose between RMI connection and socket
+     * connection.
+     */
     @Override
     public void initialScreen(int discoveryPort, int rmiPort, int socketPort) {
 
@@ -121,6 +130,9 @@ public class ConsoleView implements View, VirtualView {
         }
     }
 
+    /**
+     * This is the login screen, the user can choose an username and login to the server.
+     */
     @Override
     public void loginScreen() {
 
@@ -138,12 +150,18 @@ public class ConsoleView implements View, VirtualView {
                 "Come prima cosa effettua il login scrivendo la parola chiave \"login\" seguita dal tuo playerId.");
     }
 
+    /**
+     * This is the game list screen.
+     */
     @Override
     public void gameListScreen() {
 
         this.splashScreen();
     }
 
+    /**
+     * This is the game not started screen.
+     */
     @Override
     public void gameNotStartedScreen() {
 
@@ -161,6 +179,11 @@ public class ConsoleView implements View, VirtualView {
         Terminal.output("");
     }
 
+    /**
+     * This is the board screen.
+     *
+     * @param object The update board JsonObject.
+     */
     @Override
     public void boardScreen(JsonObject object) {
 
@@ -172,7 +195,7 @@ public class ConsoleView implements View, VirtualView {
     }
 
     /**
-     * This method sends a broadcast message to every client connected to the server.
+     * This method receives a broadcast message from the server.
      *
      * @param value A serialized JsonObject that will be deserialized using
      * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
@@ -185,8 +208,7 @@ public class ConsoleView implements View, VirtualView {
     }
 
     /**
-     * This method sends a broadcast message to every client of a specific game connected to the
-     * server.
+     * This method receives a broadcast message from the server.
      *
      * @param value A serialized JsonObject that will be deserialized using
      * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
@@ -198,18 +220,36 @@ public class ConsoleView implements View, VirtualView {
         Terminal.gameBroadcast(value);
     }
 
+    /**
+     * This method receives an info message from the server.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     */
     @Override
     public void infoMessage(String value) {
 
         Terminal.info(value);
     }
 
+    /**
+     * This method receives an error message from the server.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     */
     @Override
     public void errorMessage(String value) {
 
         Terminal.error(value);
     }
 
+    /**
+     * This method is used by the server to ping the client.
+     *
+     * @param value A serialized JsonObject that will be deserialized using
+     * JsonUtility.jsonDeserialize(String value) method, containing all the information from the
+     */
     @Override
     public void isConnected(String value) {
 
@@ -619,6 +659,9 @@ public class ConsoleView implements View, VirtualView {
         JsonRegex.updateState(JsonUtility.jsonDeserialize(value));
     }
 
+    /**
+     * This method prints on the virtual terminal the Adrenaline splash screen.
+     */
     private void splashScreen() {
 
         Terminal.clearScreen();
