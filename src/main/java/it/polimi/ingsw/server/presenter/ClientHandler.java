@@ -185,6 +185,7 @@ public class ClientHandler {
 
     /**
      * Gets a GameHandler based on a filter Predicate.
+     *
      * @param filter The Predicate that is the condition for getting th right GameHandler.
      * @return The GameHandler.
      */
@@ -198,6 +199,7 @@ public class ClientHandler {
 
     /**
      * Get a Player of a match based on a filter Predicate.
+     *
      * @param gameHandler The GameHandler of the match in which the player should be.
      * @param filter The filter Predicate.
      * @return The Player.
@@ -212,22 +214,8 @@ public class ClientHandler {
     }
 
     /**
-     *
-     * @param gameHandler
-     * @param filter
-     * @return
-     */
-    public static synchronized Presenter getPresenter(GameHandler gameHandler,
-            Predicate<Entry<Player, Presenter>> filter) {
-
-        return map.get(gameHandler).entrySet().stream()
-                .filter(filter).map(Entry::getValue)
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
-    }
-
-    /**
      * Adds a new GameHandler to the Map: creates a new Game.
+     *
      * @param gameId The id of the game that has been created.
      * @param numberOdDeaths The number of deaths of the new game.
      * @param frenzy A boolean that says if the created game will have the final frenzy turn.
@@ -239,7 +227,9 @@ public class ClientHandler {
     }
 
     /**
-     * Checks if a certain GameHandler is present in the maps: checks if a game has already been created.
+     * Checks if a certain GameHandler is present in the maps: checks if a game has already been
+     * created.
+     *
      * @param gameId The id of the game you're searching.
      * @return A boolean that says if the gameHandler is present.
      */
@@ -249,7 +239,9 @@ public class ClientHandler {
     }
 
     /**
-     * Adds a new Key-Value(Player-Presenter) tuple to the map which is value of a certain GameHandler: adds a player to a match.
+     * Adds a new Key-Value(Player-Presenter) tuple to the map which is value of a certain
+     * GameHandler: adds a player to a match.
+     *
      * @param gameHandler The GameHandler in which the player has to be added.
      * @param player The player that has to be added.
      * @param presenter The Presenter of the Player that has to be added.
@@ -268,6 +260,7 @@ public class ClientHandler {
 
     /**
      * Checks if a player is present in the map.
+     *
      * @param playerId The id of the player that has to be found.
      * @return A boolean that says if the player i present.
      */
@@ -280,8 +273,11 @@ public class ClientHandler {
     }
 
     /**
-     * Creates a JsonObject with the information of the games that have been created and the Players in.
-     * @return The JsonObject with the information of the games that have been created and the Players in.
+     * Creates a JsonObject with the information of the games that have been created and the Players
+     * in.
+     *
+     * @return The JsonObject with the information of the games that have been created and the
+     * Players in.
      */
     static synchronized JsonObject getGameHandlerJsonArray() {
 
@@ -294,6 +290,7 @@ public class ClientHandler {
 
     /**
      * Saves a game to the saving file specified in the path string.
+     *
      * @param path The path of the saving file.
      */
     public static void save(String path) {
@@ -337,6 +334,7 @@ public class ClientHandler {
 
     /**
      * Loads a game from the saving file specified in the path string
+     *
      * @param path The path of the saving file.
      */
     public static void load(String path) {

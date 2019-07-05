@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -29,6 +30,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -45,6 +47,8 @@ public class GameListScreen {
         //
     }
 
+    private static BorderPane borderPane;
+
     private static VBox games = new VBox();
     private static ScrollPane scrollPane = new ScrollPane();
 
@@ -52,13 +56,20 @@ public class GameListScreen {
 
     public static void generateScreen() {
 
-        BorderPane borderPane = GUIView.createBorderPane(true, false);
+        borderPane = GUIView.createBorderPane(true, false);
 
-        scrollPane.setMaxHeight(200);
+        scrollPane.setMaxHeight(400);
         scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+        scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
         scrollPane.setMaxWidth(800);
         scrollPane.setBackground(new Background(
+                new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        borderPane.getStylesheets().add("scrollpane.css");
+
+        games.setPrefWidth(scrollPane.getMaxWidth());
+        games.setSpacing(20);
+        games.setBackground(new Background(
                 new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         scrollPane.setContent(games);
@@ -72,7 +83,7 @@ public class GameListScreen {
         Button createGame = new GameButton("crea partita");
         createGame.setAlignment(Pos.CENTER);
 
-        VBox newGameFieldsVBox = new VBox();
+        HBox newGameFieldsVBox = new HBox();
         newGameFieldsVBox.setAlignment(Pos.CENTER);
         newGameFieldsVBox.setBackground(new Background(
                 new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
@@ -155,6 +166,8 @@ public class GameListScreen {
 
         confirmGame.setOnMouseClicked(mouseEvent -> {
 
+            newGameFieldsVBox.setVisible(!newGameFieldsVBox.isVisible());
+
             if (!insertGameName.getText().equals("") && !insertNumberOdDeaths.getText().equals("")) {
 
                 JsonQueue.add("method", "askCreateGame");
@@ -189,12 +202,6 @@ public class GameListScreen {
 
             JsonArray jsonArray = object.getJsonArray("gameList");
 
-            games.setPrefWidth(scrollPane.getMaxWidth());
-            games.setBackground(new Background(
-                    new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
-                            BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT)));
-
             if (jsonArray.isEmpty()) {
 
                 empty = true;
@@ -216,55 +223,127 @@ public class GameListScreen {
 
             jsonArray.stream().map(JsonValue::asJsonObject).forEach(x -> {
 
-                StringBuilder infos = new StringBuilder();
+                StackPane pane = new StackPane();
+                pane.setId(x.getString("gameId"));
+                pane.setAlignment(Pos.CENTER);
 
-                infos.append("Nome partita: ").append(x.getString("gameId")).append("\n");
-                infos.append("Morti: ").append(x.getInt("numberOfDeaths")).append("\n");
-                infos.append("Frenesia finale: ").append(x.getBoolean("frenzy") ? "Sì\n" : "No\n");
-                infos.append("Giocatori connessi: " + x.getJsonArray("playerList")
+                ImageView imageView = new ImageView(Images.imagesMap.get("button"));
+                imageView.setFitWidth(games.getPrefWidth() - 200);
+                imageView.setFitHeight(175);
+                imageView.setId("image");
+
+                VBox vBox = new VBox();
+                vBox.setId(x.getString("gameId"));
+                vBox.setBackground(new Background(
+                        new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+                vBox.setAlignment(Pos.CENTER);
+                vBox.setSpacing(-10);
+
+                pane.getChildren().addAll(imageView, vBox);
+
+                HBox elements = new HBox();
+                elements.setAlignment(Pos.CENTER);
+                elements.setSpacing(20);
+
+                Label name = new Label(x.getString("gameId"));
+                name.setAlignment(Pos.CENTER);
+                name.setTextFill(Color.WHITE);
+                name.setTextAlignment(TextAlignment.CENTER);
+                name.setFont(Font.font("Silom", 40));
+                HBox skulls = new HBox();
+                skulls.setAlignment(Pos.CENTER);
+
+                for (int i = 0; i < x.getInt("numberOfDeaths"); i++) {
+
+                    ImageView image = new ImageView(Images.dropsMap.get("morte"));
+                    image.setPreserveRatio(true);
+                    image.setFitWidth(30);
+
+                    skulls.getChildren().add(image);
+                }
+
+                HBox players = new HBox();
+                players.setAlignment(Pos.CENTER);
+                players.setSpacing(30);
+
+                x.getJsonArray("playerList")
                         .stream()
                         .map(JsonValue::asJsonObject)
-                        .map(y -> y.getString("playerId") + ": " + y
-                                .getString("character") + (
-                                y.getBoolean("connected")
-                                        ? "" : " (disconnesso)"))
-                        .collect(Collectors.toList()));
+                        .forEach(y -> {
 
-                Button game = new Button();
-                game.setBackground(new Background(
-                        new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-                game.setText(infos.toString());
-                game.setWrapText(true);
-                game.setId(x.getString("gameId"));
-                game.setTextFill(Color.WHITE);
-                game.setMinWidth(games.getMaxWidth());
-                game.setPrefWidth(games.getMaxWidth());
-                game.setPrefHeight(200);
-                game.setOpacity(0.6);
-                game.setStyle(" -fx-text-inner-color: white; -fx-font: 20px Silom");
+                            VBox player = new VBox();
+                            player.setAlignment(Pos.CENTER);
 
-                game.setOnMouseEntered(mouseEvent -> {
+                            ImageView image = new ImageView(Images.playersMap.get(y.getString("character")));
+                            image.setPreserveRatio(true);
+                            image.setFitWidth(40);
 
-                    ((Button) (mouseEvent.getSource())).setOpacity(100);
+                            if (!y.getBoolean("connected")) {
+
+                                ColorAdjust desaturate = new ColorAdjust();
+                                desaturate.setSaturation(-1);
+                                image.setEffect(desaturate);
+                            }
+
+                            Label pn = new Label(y.getString("playerId"));
+                            pn.setAlignment(Pos.CENTER);
+                            pn.setTextFill(Color.WHITE);
+                            pn.setTextAlignment(TextAlignment.CENTER);
+                            pn.setFont(Font.font("Silom", 15));
+
+                            player.getChildren().addAll(image, pn);
+
+                            players.getChildren().add(player);
+
+                        });
+
+                elements.getChildren().addAll(name, skulls);
+
+                if (x.getBoolean("frenzy")) {
+
+                    Label infos = new Label(" F");
+                    infos.setAlignment(Pos.CENTER);
+                    infos.setTextFill(Color.WHITE);
+                    infos.setFont(Font.font("Silom", 40));
+
+                    elements.getChildren().add(infos);
+                }
+
+                vBox.getChildren().addAll(elements, players);
+
+                vBox.setOnMouseEntered(mouseEvent -> {
+
+                    vBox.setOpacity(1);
                     GUIView.getCurrentStage().getScene().setCursor(Cursor.HAND);
                 });
 
-                game.setOnMouseExited(mouseEvent -> {
+                vBox.setOnMouseExited(mouseEvent -> {
 
-                    ((Button) (mouseEvent.getSource())).setOpacity(0.6);
+                    vBox.setOpacity(0.6);
                     GUIView.getCurrentStage().getScene().setCursor(Cursor.DEFAULT);
                 });
 
-                game.setOnMouseClicked(mouseEvent -> {
+                vBox.setOnMouseClicked(mouseEvent -> {
 
-                    if (!x.getBoolean("gameStarted")) {
+                    Entry<ImageView, Animation> entry = Explosion.getExplosion(4, mouseEvent);
 
-                        selectCharacterScreen(game.getId());
+                    entry.getValue().setOnFinished(y -> {
 
-                    } else {
+                        borderPane.getChildren().remove(entry.getKey());
 
-                        Notifications.createNotification("error", "La partita è già iniziata!");
-                    }
+                        if (!x.getBoolean("gameStarted")) {
+
+                            selectCharacterScreen(vBox.getId());
+
+                        } else {
+
+                            Notifications.createNotification("error", "La partita è già iniziata!");
+                        }
+                    });
+
+                    entry.getValue().play();
+
+                    borderPane.getChildren().add(entry.getKey());
                 });
 
                 if (!empty) {
@@ -280,14 +359,14 @@ public class GameListScreen {
                     empty = false;
                 }
 
-                games.getChildren().add(game);
+                games.getChildren().add(pane);
             });
         });
     }
 
     private static void selectCharacterScreen(String game) {
 
-        BorderPane borderPane = GUIView.createBorderPane(true, false);
+        BorderPane borderPane2 = GUIView.createBorderPane(true, false);
 
         VBox vBox = new VBox();
         vBox.setSpacing(50);
@@ -325,7 +404,7 @@ public class GameListScreen {
 
                 entry.getValue().setOnFinished(y -> {
 
-                    borderPane.getChildren().remove(entry.getKey());
+                    borderPane2.getChildren().remove(entry.getKey());
 
                     JsonQueue.add("method", "selectGame");
 
@@ -338,7 +417,7 @@ public class GameListScreen {
 
                 entry.getValue().play();
 
-                borderPane.getChildren().add(entry.getKey());
+                borderPane2.getChildren().add(entry.getKey());
             });
 
             characters.getChildren().add(button);
@@ -347,9 +426,9 @@ public class GameListScreen {
 
         characters.setAlignment(Pos.CENTER);
 
-        borderPane.setCenter(vBox);
+        borderPane2.setCenter(vBox);
         BorderPane.setAlignment(vBox, Pos.CENTER);
 
-        Platform.runLater(() -> GUIView.changeScene(borderPane));
+        Platform.runLater(() -> GUIView.changeScene(borderPane2));
     }
 }

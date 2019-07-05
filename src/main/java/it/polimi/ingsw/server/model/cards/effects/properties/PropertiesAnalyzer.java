@@ -30,14 +30,14 @@ public class PropertiesAnalyzer {
         // Launch exception if duplicates found
         if (target.size() != target.stream().distinct().collect(Collectors.toList()).size()) {
 
-            throw new DuplicateException("Hai selezionato troppe cose! Riprova.");
+            throw new DuplicateException("Hai selezionato alcuni target più di una volta! Riprova.");
         }
 
         // Launch exception if max targets property is violated
         if (effect.getMaxTargets() != null &&
                 target.size() > effect.getMaxTargets()) {
 
-            throw new MaxTargetsException("Hai selezionato troppe cose! Riprova.");
+            throw new MaxTargetsException("Hai selezionato troppi target! Riprova.");
         }
     }
 
@@ -122,7 +122,7 @@ public class PropertiesAnalyzer {
                             target.getCurrentPosition())) {
 
                         throw new TargetViewException(
-                                "Devi scegliere qualcuno che può essere visto\nda chi hi appena colpito!");
+                                "Devi scegliere qualcuno che può essere visto da chi hai appena colpito!");
                     }
                 }
             }
@@ -200,7 +200,7 @@ public class PropertiesAnalyzer {
                 effect.getTargetType().equals(TargetType.ROOM) && target.stream()
                         .anyMatch(x -> x.equals(activePlayer.getCurrentPosition().getRoom())))) {
 
-            throw new SameAsPlayerException("Il bersaglio puoi essere solo tu!");
+            throw new SameAsPlayerException("I bersagli non possono essere nel tuo stesso quadrato!");
         }
     }
 }

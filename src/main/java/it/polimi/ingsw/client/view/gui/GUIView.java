@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.util.Map.Entry;
 import javafx.animation.Animation;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.application.Preloader.StateChangeNotification;
@@ -43,7 +44,9 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.json.JsonObject;
 
 public class GUIView extends Application implements View, VirtualView {
@@ -168,6 +171,17 @@ public class GUIView extends Application implements View, VirtualView {
 
             JsonQueue.add("method", "remoteDisconnect");
             JsonQueue.send();
+
+            try {
+
+                Thread.sleep(1000);
+
+                System.exit(0);
+
+            } catch (InterruptedException e) {
+
+                Thread.currentThread().interrupt();
+            }
         });
 
         stage.setMinWidth(750.0 + 485.0);
@@ -218,13 +232,24 @@ public class GUIView extends Application implements View, VirtualView {
                     hBox.setSpacing(50);
 
                     Button rmiButton = new GameButton(new ImageView(Images.imagesMap.get("rmi")));
+                    Button tcpButton = new GameButton(new ImageView(Images.imagesMap.get("tcp")));
 
                     rmiButton.setOnMouseClicked(x -> {
 
                         Entry<ImageView, Animation> entry = Explosion
                                 .getExplosion(4, x);
 
-                        entry.getValue().setOnFinished(y -> {
+                        entry.getValue().setOnFinished(actionEvent -> {
+
+                            hBox.getChildren().remove(tcpButton);
+                            rmiButton.setMouseTransparent(true);
+
+                            RotateTransition rotateTransition = new RotateTransition(Duration.millis(500), rmiButton);
+                            rotateTransition.setAxis(Rotate.Y_AXIS);
+                            rotateTransition.setFromAngle(0);
+                            rotateTransition.setToAngle(360);
+                            rotateTransition.setCycleCount(1000);
+                            rotateTransition.play();
 
                             borderPane.getChildren().remove(entry.getKey());
 
@@ -241,7 +266,6 @@ public class GUIView extends Application implements View, VirtualView {
                         borderPane.getChildren().add(entry.getKey());
                     });
 
-                    Button tcpButton = new GameButton(new ImageView(Images.imagesMap.get("tcp")));
 
                     tcpButton.setOnMouseClicked(x -> {
 
@@ -249,6 +273,16 @@ public class GUIView extends Application implements View, VirtualView {
                                 .getExplosion(4, x);
 
                         entry.getValue().setOnFinished(y -> {
+
+                            hBox.getChildren().remove(rmiButton);
+                            tcpButton.setMouseTransparent(true);
+
+                            RotateTransition rotateTransition = new RotateTransition(Duration.millis(500), tcpButton);
+                            rotateTransition.setAxis(Rotate.Y_AXIS);
+                            rotateTransition.setFromAngle(0);
+                            rotateTransition.setToAngle(360);
+                            rotateTransition.setCycleCount(1000);
+                            rotateTransition.play();
 
                             borderPane.getChildren().remove(entry.getKey());
 

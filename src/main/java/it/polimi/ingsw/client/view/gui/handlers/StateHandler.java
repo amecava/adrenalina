@@ -817,7 +817,7 @@ public class StateHandler {
         StringBuilder target = new StringBuilder();
         StringBuilder destination = new StringBuilder();
 
-        if (args == 0 && !hasCost) {
+        if (args == 0 && (!hasCost || BoardScreen.getPlayerPowerUpList().isEmpty())) {
 
             JsonQueue.add("method", effectType);
             JsonQueue.add("line", powerString == null ? "" : powerString);

@@ -235,10 +235,7 @@ public class CardHandler {
             infoCard.initModality(Modality.APPLICATION_MODAL);
             infoCard.initOwner(GUIView.getCurrentStage());
             HBox elements = new HBox();
-            AnchorPane.setRightAnchor(elements, 20.0);
-            AnchorPane.setTopAnchor(elements, 20.0);
-            AnchorPane.setLeftAnchor(elements, 20.0);
-            AnchorPane.setBottomAnchor(elements, 20.0);
+            elements.setAlignment(Pos.CENTER);
             elements.setSpacing(20);
 
             ImageView cardImage = new ImageView(
@@ -249,27 +246,31 @@ public class CardHandler {
                             .toString()));
             cardImage.setFitWidth(200);
             cardImage.setFitHeight(300);
-            elements.getChildren().add(cardImage);
-            VBox text = new VBox();
-            text.setSpacing(7);
+            elements.setSpacing(7);
 
             Label description = new Label();
             description.setText(object.getString("info"));
             description.setFont(Font.font("Silom", FontWeight.NORMAL, 16));
             description.setTextFill(Color.WHITE);
             description.setWrapText(true);
-            text.getChildren().add(description);
+            elements.getChildren().addAll(cardImage, description);
 
             Button exit = new GameButton("chiudi");
             exit.setOnMouseClicked(x -> infoCard.close());
-            text.getChildren().add(exit);
-            elements.getChildren().add(text);
-            elements.setBackground(new Background(
+
+            VBox vBox = new VBox();
+            vBox.setBackground(new Background(
                     new BackgroundImage(Images.imagesMap.get("background"), BackgroundRepeat.REPEAT,
                             BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                             BackgroundSize.DEFAULT)));
+            vBox.setAlignment(Pos.CENTER);
+            vBox.getChildren().addAll(elements, exit);
+            AnchorPane.setRightAnchor(vBox, 20.0);
+            AnchorPane.setTopAnchor(vBox, 20.0);
+            AnchorPane.setLeftAnchor(vBox, 20.0);
+            AnchorPane.setBottomAnchor(vBox, 20.0);
 
-            Scene infoCardScene = new Scene(elements, 500, 500);
+            Scene infoCardScene = new Scene(vBox, 500, 500);
             infoCard.setScene(infoCardScene);
             PauseTransition delay = new PauseTransition(Duration.seconds(50));
             delay.setOnFinished(event -> infoCard.close());

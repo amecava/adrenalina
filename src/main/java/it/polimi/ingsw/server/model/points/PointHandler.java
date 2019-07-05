@@ -43,11 +43,11 @@ public class PointHandler {
                 if (deaths.getFirstFrenzyPlayer() != null && !(player.getBridge()
                         .isKillStreakCount())) {
 
-                    player.getBridge().setFrenzy();
-                    player.getBridge().setKillStreakCount();
-
                     player.setPointsUsed();
                     player.addKill();
+
+                    player.getBridge().setFrenzy();
+                    player.getBridge().setKillStreakCount();
 
                 } else {
 
