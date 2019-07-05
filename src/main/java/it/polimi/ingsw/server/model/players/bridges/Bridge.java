@@ -8,6 +8,7 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+
 public class Bridge implements Serializable {
 
     /**

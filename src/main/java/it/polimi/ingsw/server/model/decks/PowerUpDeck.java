@@ -10,6 +10,9 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 
+/**
+ * The deck of power ups.
+ */
 public class PowerUpDeck implements Serializable {
 
     /**

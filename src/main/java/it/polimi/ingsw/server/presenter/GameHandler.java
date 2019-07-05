@@ -29,6 +29,10 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+/**
+ * This class is responsible of furthering the game. It has the timers and all the logic that deals
+ * with the match progress from the very beginning.
+ */
 public class GameHandler implements Serializable {
 
     /**
@@ -303,7 +307,9 @@ public class GameHandler implements Serializable {
     }
 
     /**
-     * Performs the "endOfTurn" action, checks if there are players that need to respawn.
+     * Performs the "endOfTurn" action, checks if there are players that need to respawn. If there
+     * are, waits for them to respawn (either automatically on not). It also catches the
+     * EndGameException, and when it does so it starts the end game process.
      */
     void endOfTurn() {
 
@@ -426,7 +432,6 @@ public class GameHandler implements Serializable {
     }
 
 
-
     /**
      * This method creates a JsonObject containing all the information needed in the View. The said
      * JsonObject will add up to every other JsonObject of every other (necessary) class and will be
@@ -435,7 +440,6 @@ public class GameHandler implements Serializable {
      * @return The JsonObject containing all the information of this card.
      */
     public JsonObject toJsonObject() {
-
 
         return this.model.toJsonObject()
                 .add("gameId", this.gameId)

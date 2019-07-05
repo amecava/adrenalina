@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests Thor, with a test method for every effect it has.
+ */
 class ThorTest {
 
     private EffectHandler effectHandler = new EffectHandler();

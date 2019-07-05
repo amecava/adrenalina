@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 class SquareTest {
 
     /**
-     * Tests successes and failes of the collect action in non spawn squares.
+     * Tests successes and fails of the collect action in non spawn squares.
      */
     @Test
     void collectAmmoTile() {

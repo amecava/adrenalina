@@ -107,7 +107,7 @@ public class BoardScreen {
      */
     private static final HBox playerCubes = new HBox();
     /**
-     *box containing all the cards of the linked player
+     * box containing all the cards of the linked player
      */
     private static final HBox playerCards = new HBox();
     /**
@@ -145,7 +145,6 @@ public class BoardScreen {
     }
 
     /**
-     *
      * @return a list of all the squares present in the board screen
      */
     public static List<ButtonSquare> getSquareList() {
@@ -154,7 +153,6 @@ public class BoardScreen {
     }
 
     /**
-     *
      * @return A list containing all the player's weapons
      */
     public static List<ButtonWeapon> getPlayerWeaponList() {
@@ -166,7 +164,6 @@ public class BoardScreen {
     }
 
     /**
-     *
      * @return A list containing all the player's power ups.
      */
     public static List<ButtonPowerUp> getPlayerPowerUpList() {
@@ -178,7 +175,6 @@ public class BoardScreen {
     }
 
     /**
-     *
      * @return a list containing all the weapons present in all the spawn squares
      */
     public static List<ButtonWeapon> getSpawnWeaponList() {
@@ -194,8 +190,9 @@ public class BoardScreen {
 
     /**
      * generates the main board screen with all the information present in the json object
-     * @param object containing all the information in order to place the players in correct
-     * spot ecc...
+     *
+     * @param object containing all the information in order to place the players in correct spot
+     * ecc...
      */
     private static void generateScreen(JsonObject object) {
 
@@ -321,9 +318,8 @@ public class BoardScreen {
 
     /**
      * updates the main board screen with all the changes made by one or more players.
-     * @param object Containing all the information in order to update the screen.
      */
-    private static void createInfoCardStage(){
+    private static void createInfoCardStage() {
 
         Stage infoCardStage = new Stage();
         infoCardStage.setHeight(575);
@@ -886,6 +882,7 @@ public class BoardScreen {
 
     /**
      * creates the board with the right dimensions and proportions
+     *
      * @param cards to se if weapon cards need to be inserted
      * @param scaleFactor scale factor for creating the board
      * @return a node of the board

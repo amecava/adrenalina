@@ -10,6 +10,9 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 
+/**
+ * The class for the deck of AmmoTiles.
+ */
 public class AmmoTilesDeck implements Serializable {
 
     /**

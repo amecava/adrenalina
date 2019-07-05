@@ -20,6 +20,10 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+/**
+ * The Square class. A square can be either a spawn square or a normal square, and based on this it
+ * has different properties.
+ */
 public class Square implements Target, Serializable {
 
     /**
@@ -87,33 +91,61 @@ public class Square implements Target, Serializable {
         this.map.get(false).put(this, 0);
     }
 
+    /**
+     * Gets the TargetType value corresponding to the square.
+     *
+     * @return The TargetType value.
+     */
     @Override
     public TargetType getTargetType() {
 
         return TargetType.SQUARE;
     }
 
+    /**
+     * Gets the current position. Implemented from Target.
+     *
+     * @return This.
+     */
     @Override
     public Square getCurrentPosition() {
 
         return this;
     }
 
+    /**
+     * Gets the id of the square.
+     *
+     * @return The integer
+     */
     public int getSquareId() {
 
         return this.squareId;
     }
 
+    /**
+     * Gets the room of this square.
+     *
+     * @return The Room of this square.
+     */
     public Room getRoom() {
 
         return this.room;
     }
 
+    /**
+     * Sets the room to this square.
+     *
+     * @param room The room of this square.
+     */
     public void setRoom(Room room) {
 
         this.room = room;
     }
 
+    /**
+     * Checks if this is a spawn square.
+     */
     public boolean isSpawn() {
 
         return this.spawn;
@@ -134,21 +166,46 @@ public class Square implements Target, Serializable {
         return new ArrayList<>(this.adjacent.values());
     }
 
+    /**
+     * Gets the adjacent square in a certain direction.
+     *
+     * @param direction Te given direction.
+     * @return The Square object.
+     */
     public Square getAdjacent(Direction direction) {
 
         return this.adjacent.get(direction);
     }
 
+    /**
+     * Sets an adjacent square in a given direction.
+     *
+     * @param direction The direction.
+     * @param square The adjacent square in that direction.
+     */
     public void setAdjacent(Direction direction, Square square) {
 
         this.adjacent.put(direction, square);
     }
 
+    /**
+     * Gets the connection type in a given direction.
+     *
+     * @param direction The direction.
+     * @return The Connection value.
+     */
     public Connection getConnection(Direction direction) {
 
         return this.connection.get(direction);
     }
 
+    /**
+     * Sets a connection type in a given direction.
+     *
+     * @param direction The direction.
+     * @param connection The connection in the given direction.
+     * @return A boolean that says if in that direction there is Connection.ENDMAP.
+     */
     public boolean setConnection(Direction direction, Connection connection) {
 
         this.connection.put(direction, connection);
@@ -156,11 +213,22 @@ public class Square implements Target, Serializable {
         return !connection.equals(Connection.ENDMAP);
     }
 
+    /**
+     * Gets the map of distances given the boolean key.
+     *
+     * @param throughWalls The boolean gey to get the correct map.
+     * @return The map.
+     */
     public Map<Square, Integer> getMap(boolean throughWalls) {
 
         return this.map.get(throughWalls);
     }
 
+    /**
+     * Gets the players in the square.
+     *
+     * @return The List of Player.
+     */
     public List<Player> getPlayers() {
 
         return this.players;
@@ -201,6 +269,7 @@ public class Square implements Target, Serializable {
      * spawn-square.
      *
      * @return The AmmoTile in the square.
+     * @throws EmptySquareException If the Square is empty
      */
     public AmmoTile collectAmmoTile() throws EmptySquareException {
 
@@ -218,6 +287,7 @@ public class Square implements Target, Serializable {
      *
      * @param id The id of the card.
      * @return The List of Color - the cost of the card.
+     * @throws EmptySquareException If the Square is empty
      */
     public List<Color> getCostOfCard(int id) throws EmptySquareException {
 
@@ -238,6 +308,7 @@ public class Square implements Target, Serializable {
      *
      * @param id The card the player wants to collect.
      * @return The desired card.
+     * @throws EmptySquareException If the Square is empty
      */
     public Card collectWeaponCard(int id) throws EmptySquareException {
 
@@ -257,6 +328,7 @@ public class Square implements Target, Serializable {
      * @param playerCard The WeaponCard that the user chose to discard.
      * @param squareCardId The id of the card that he wants to collect.
      * @return The desired card.
+     * @throws EmptySquareException If the Square is empty.
      */
     public Card collectWeaponCard(WeaponCard playerCard, int squareCardId)
             throws EmptySquareException {

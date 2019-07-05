@@ -10,6 +10,9 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
+/**
+ * This class offers static methods to update the game states of each player of the game.
+ */
 class StateHandler {
 
     /**

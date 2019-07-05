@@ -11,6 +11,9 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+/**
+ * Implementation of Card interface fot representing the ammo tiles.
+ */
 public class AmmoTile implements Card, Serializable {
 
     /**

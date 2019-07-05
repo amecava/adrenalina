@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests HeatSeeker, with a test method for every effect it has.
+ */
 class HeatSeekerTest {
 
     private EffectHandler effectHandler = new EffectHandler();

@@ -15,10 +15,16 @@ import it.polimi.ingsw.server.model.players.Player;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests "raggiocinetico" power up.
+ */
 class RaggiocineticoTest {
 
     private EffectHandler effectHandler = new EffectHandler();
 
+    /**
+     * Tests the general correctness of this power up implementation.
+     */
     @Test
     void raggioCinetico() {
 

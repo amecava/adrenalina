@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests Railgun, with a test method for every effect it has.
+ */
 class RailgunTest {
 
     private EffectHandler effectHandler = new EffectHandler();

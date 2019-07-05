@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server.model.players.bridges;
 
+/**
+ * The enum for the adrenalin states.
+ */
 public enum Adrenalin {
     /**
      * normale state adrenalin

@@ -3,6 +3,9 @@ package it.polimi.ingsw.server.model.ammo;
 import it.polimi.ingsw.server.model.players.Color;
 import java.io.Serializable;
 
+/**
+ * Implementation of Ammo for the AmmoCube.Represents the physical ammo cube.
+ */
 public class AmmoCube implements Ammo, Serializable {
 
     /**
@@ -16,6 +19,11 @@ public class AmmoCube implements Ammo, Serializable {
      */
     private boolean used;
 
+    /**
+     * Builds the ammo cube.
+     * @param color Color
+     * @param used used value.
+     */
     public AmmoCube(Color color, boolean used) {
 
         this.color = color;

@@ -5,6 +5,9 @@ import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.players.Player;
 import java.io.Serializable;
 
+/**
+ * The Mark atomic effect.
+ */
 public class AtomicMark implements AtomicEffect, Serializable {
 
     /**

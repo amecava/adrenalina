@@ -1,10 +1,13 @@
 package it.polimi.ingsw.server.model.exceptions.properties;
 
+/**
+ * It is thrown when there are too many targets in the target list, so the effect cannot be
+ * executed.
+ */
 public class MaxTargetsException extends PropertiesException {
 
     /**
-     * It is thrown when there are too many targets in the target list, so the effect cannot be
-     * executed.
+     * Creates the exception.
      *
      * @param message The related message.
      */

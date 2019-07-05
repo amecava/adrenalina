@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server.model.cards.effects.atomic;
 
+/**
+ * An enum to differentiate effects directly.
+ */
 public enum AtomicType {
 
     /**

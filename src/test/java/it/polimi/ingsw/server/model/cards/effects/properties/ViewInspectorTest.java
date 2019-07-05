@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the ViewInspector methods.
+ */
 class ViewInspectorTest {
 
     private EffectHandler effectHandler = new EffectHandler();
@@ -40,6 +43,9 @@ class ViewInspectorTest {
 
     private Square seven = board.getRoom(1).getSquare(1);
 
+    /**
+     * Tests if square distances are well computed.
+     */
     @Test
     void computeDistance() {
 
@@ -133,6 +139,9 @@ class ViewInspectorTest {
     }
 
 
+    /**
+     * Tests if target view property is well computed.
+     */
     @Test
     void targetView() {
 
@@ -143,6 +152,9 @@ class ViewInspectorTest {
         assertTrue(!ViewInspector.targetView(four, seven));
     }
 
+    /**
+     * Tests if the sameDirection property is well computed.
+     */
     @Test
     void sameDirection() {
 
@@ -174,6 +186,9 @@ class ViewInspectorTest {
         assertTrue(ViewInspector.sameDirection(five, test));
     }
 
+    /**
+     * Tests the correct exception thrown during useCard and activateCard processes.
+     */
     @Test
     void computeDistance2() {
 

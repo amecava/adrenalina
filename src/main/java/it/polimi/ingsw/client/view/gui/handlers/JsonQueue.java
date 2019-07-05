@@ -13,7 +13,6 @@ public class JsonQueue {
 
     /**
      * main queue for creating the bridge between the gui and the server
-     *
      */
     private static final Queue<JsonObject> queue = new ArrayDeque<>();
     /**
@@ -30,7 +29,6 @@ public class JsonQueue {
     }
 
     /**
-     *
      * @return The queue on which the connection is pending
      */
     public static Queue<JsonObject> getQueue() {
@@ -40,6 +38,7 @@ public class JsonQueue {
 
     /**
      * adds a new information to the object that will be sent to the server
+     *
      * @param key key of the json object
      * @param value linked with the key
      */
@@ -49,8 +48,8 @@ public class JsonQueue {
     }
 
     /**
-     * sends the json object from the queue to the server waking up the
-     * sending client  connection thread
+     * sends the json object from the queue to the server waking up the sending client  connection
+     * thread
      */
     public static void send() {
 

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server.model.board.rooms;
 
+/**
+ * Enumeration for the four cardinal directions.
+ */
 public enum Direction {
 
     /**

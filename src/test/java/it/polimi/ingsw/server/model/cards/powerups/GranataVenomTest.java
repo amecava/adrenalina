@@ -19,10 +19,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests "granatavenom".
+ */
 class GranataVenomTest {
 
     private EffectHandler effectHandler = new EffectHandler();
 
+    /**
+     * Tests basic correctness of this power up usage.
+     */
     @Test
     void granataVenom1() {
 
@@ -81,6 +87,9 @@ class GranataVenomTest {
         }
     }
 
+    /**
+     * Tests correctness of this power up usage in parallel access at effectHandler.
+     */
     @Test
     void granataVenom2() {
 
@@ -172,6 +181,9 @@ class GranataVenomTest {
 
     }
 
+    /**
+     * Tests synchronized effect handler.
+     */
     @Test
     void granataVenom3() {
 

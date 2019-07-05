@@ -90,7 +90,8 @@ public class Client {
     /**
      * This method sends UDP broadcast messages to the discoveryPort until the server is found.
      *
-     * @param port The port to send the UDP broadcast messages to. Needed to retain the server IP address.
+     * @param port The port to send the UDP broadcast messages to. Needed to retain the server IP
+     * address.
      * @return The found server InetAddress.
      * @throws IOException If the connection is broken.
      */

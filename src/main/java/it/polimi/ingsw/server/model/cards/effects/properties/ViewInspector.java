@@ -12,8 +12,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Class that offers static method to inspect the board and compute properties values.
+ */
 class ViewInspector {
 
+    /**
+     * Private constructor to hide implicit ones.
+     */
     private ViewInspector() {
 
         //

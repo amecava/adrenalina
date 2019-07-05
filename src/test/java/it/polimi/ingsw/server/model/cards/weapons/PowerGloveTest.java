@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests PowerGlove, with a test method for every effect it has.
+ */
 class PowerGloveTest {
 
     private EffectHandler effectHandler = new EffectHandler();

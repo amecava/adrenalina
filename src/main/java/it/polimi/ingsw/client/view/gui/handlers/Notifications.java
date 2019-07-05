@@ -43,8 +43,9 @@ public class Notifications {
     }
 
     /**
-     * method for creating the notifications and shifting all the other notifications
-     * shown on the stage
+     * method for creating the notifications and shifting all the other notifications shown on the
+     * stage
+     *
      * @param title The title of the notifications
      * @param value The text that will be shown
      */

@@ -3,6 +3,9 @@ package it.polimi.ingsw.server.model.cards.effects.atomic;
 import it.polimi.ingsw.server.model.cards.effects.EffectArgument;
 import it.polimi.ingsw.server.model.players.Player;
 
+/**
+ * An atomic effect is the smallest effect that can be applied.
+ */
 public interface AtomicEffect {
 
     /**

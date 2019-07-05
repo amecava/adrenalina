@@ -3,6 +3,9 @@ package it.polimi.ingsw.server.model.cards;
 import it.polimi.ingsw.server.model.players.Color;
 import javax.json.JsonObject;
 
+/**
+ * Card interface with basic methods declaration for the "card" object.
+ */
 public interface Card {
 
     /**

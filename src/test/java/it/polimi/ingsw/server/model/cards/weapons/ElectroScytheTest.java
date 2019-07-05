@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests ElectroScythe, with a test method for every effect it has.
+ */
 class ElectroScytheTest {
 
     private EffectHandler effectHandler = new EffectHandler();

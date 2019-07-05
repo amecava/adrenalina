@@ -25,6 +25,9 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+/**
+ * The weapon card class to model the weapon card and offer methods to execute its effects.
+ */
 public class WeaponCard implements Card, Serializable {
 
     /**

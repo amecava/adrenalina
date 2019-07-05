@@ -14,10 +14,16 @@ import it.polimi.ingsw.server.model.players.Color;
 import it.polimi.ingsw.server.model.players.Player;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests "teletrasporto" power up.
+ */
 class TeletrasportoTest {
 
     private EffectHandler effectHandler = new EffectHandler();
 
+    /**
+     * Tests the general correctness of the implementation of this power up.
+     */
     @Test
     void teletrasporto() {
 

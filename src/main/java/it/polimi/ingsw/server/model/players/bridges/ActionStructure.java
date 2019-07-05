@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * A structure to incapsulate the single action with its flag.
+ */
 public class ActionStructure implements Serializable {
 
     /**
@@ -16,19 +19,22 @@ public class ActionStructure implements Serializable {
      * expresses if in the created action is possible to move
      */
     private Boolean move;
+
     /**
      * expresses if in the created action is possible to collect
      */
     private Boolean collect;
+
     /**
      * expresses if in the created action is possible to reload
      */
     private Boolean reload;
+
     /**
      * expresses if in the created action is possible to shoot
      */
-
     private Boolean shoot;
+
     /**
      * expresses how many steps can the player do if this action is selected
      */
@@ -36,8 +42,9 @@ public class ActionStructure implements Serializable {
 
     /**
      * creates a specific action based on the player adrenalin and frenzy state
-     * @param builder a builder object that holds all the correct parameters for the
-     * creation of the action
+     *
+     * @param builder a builder object that holds all the correct parameters for the creation of the
+     * action
      */
     private ActionStructure(ActionStructureBuilder builder) {
 
@@ -52,7 +59,6 @@ public class ActionStructure implements Serializable {
     }
 
     /**
-     *
      * @return the unique id of the action
      */
     int getId() {
@@ -61,7 +67,6 @@ public class ActionStructure implements Serializable {
     }
 
     /**
-     *
      * @return true if in this action is possible to move
      */
     public Boolean getMove() {
@@ -70,7 +75,6 @@ public class ActionStructure implements Serializable {
     }
 
     /**
-     *
      * @return true if in this action is possible to collect
      */
 
@@ -80,7 +84,6 @@ public class ActionStructure implements Serializable {
     }
 
     /**
-     *
      * @return true if in this action is possible to reload
      */
     public Boolean isReload() {
@@ -111,6 +114,7 @@ public class ActionStructure implements Serializable {
 
     /**
      * ends the current action or sets as used some of its features such as reload or shoot
+     *
      * @param limit number of parameter of the current action  that need to change state from free
      * to used or the opposite
      * @param change the state that the features need to go in
@@ -192,8 +196,8 @@ public class ActionStructure implements Serializable {
 
         /**
          * creates the action builder in order to create the actions
-         * @param jActionObject a json file where all the features af all actions
-         * are saved
+         *
+         * @param jActionObject a json file where all the features af all actions are saved
          */
         ActionStructureBuilder(JsonObject jActionObject) {
 
@@ -201,9 +205,8 @@ public class ActionStructure implements Serializable {
         }
 
         /**
-         * builds the action builder by taking all the parameters of the json file
-         * and using them to create action features
-         * @return
+         * builds the action builder by taking all the parameters of the json file and using them to
+         * create action features
          */
         ActionStructure build() {
 
@@ -242,6 +245,7 @@ public class ActionStructure implements Serializable {
 
     /**
      * creates a representation of the object in a json object
+     *
      * @return a json object that is a representation of the current object
      */
     public JsonObject toJsonObject() {

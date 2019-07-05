@@ -11,6 +11,9 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 
+/**
+ * The deck of weaponCards.
+ */
 public class WeaponDeck implements Serializable {
 
     /**

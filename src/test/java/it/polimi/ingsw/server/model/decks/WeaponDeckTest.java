@@ -11,7 +11,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests the weaponn deck
+ * Tests the weapon deck
  */
 class WeaponDeckTest {
 
