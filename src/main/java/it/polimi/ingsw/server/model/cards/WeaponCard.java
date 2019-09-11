@@ -281,6 +281,8 @@ public class WeaponCard implements Card, Serializable {
             throw new CardNotLoadedException("Weapon not loaded!");
         }
 
+        this.effectHandler.setActivePlayer(this.owner);
+
         this.effectHandler.getActive().clear();
         this.effectHandler.getInactive().clear();
 

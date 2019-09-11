@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,6 +74,8 @@ public class RmiPresenter extends Presenter {
     @Override
     public void callRemoteMethod(String method, String value) throws RemoteException {
 
+        final AtomicBoolean completed = new AtomicBoolean(false);
+
         Thread thread = new Thread(() -> {
 
             try {
@@ -80,6 +83,8 @@ public class RmiPresenter extends Presenter {
                 VirtualView.class
                         .getMethod(method, String.class)
                         .invoke(this.skeleton, value);
+
+                completed.set(true);
 
             } catch (ReflectiveOperationException e) {
 
@@ -89,11 +94,13 @@ public class RmiPresenter extends Presenter {
 
         try {
 
+            thread.setDaemon(true);
+
             thread.start();
 
             thread.join(1000);
 
-            if (thread.isAlive()) {
+            if (thread.isAlive() || !completed.get()) {
 
                 throw new RemoteException();
             }
