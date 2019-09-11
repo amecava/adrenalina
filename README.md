@@ -1,8 +1,8 @@
 # Adrenalina
 
-Adrenalina porta i classici videogiochi “spara-tutto” direttamente sul vostro tavolo.
-Costruisci il tuo arsenale per un turno micidiale, la risoluzione dei combattimenti è facile, ma senza dadi.
-Prendi fucile e munizioni ed inizia a sparare!
+In the future, war has left the world in complete destruction and split the people into factions. The factions have decided to stop the endless war and settle their dispute in the arena. A new virtual bloodsport was created. The Adrenaline tournament. Every faction has a champion, every champion has a chance to fight and the chance to win. Will you take the chance of becoming the next champion of the Adrenaline tournament?
+
+Play a first-person shooter on your gaming table. Grab some ammo, grab a gun, and start shooting. Build up an arsenal for a killer turn. Combat resolution is quick and diceless. And if you get shot, you get faster!
 
 ## Usage
 
